@@ -110,7 +110,21 @@ def ping():
 def replanta_medium():
     try:
         app.logger.debug("Entrando al endpoint /replanta-medium")
-        data = request.get_json(force=True)
+        app.logger.debug(f"Content-Type: {request.content_type}")
+        app.logger.debug(f"Request data length: {len(request.data)}")
+        
+        # Intentar parsear JSON con manejo de errores mejorado
+        try:
+            data = request.get_json(force=True)
+            app.logger.debug(f"JSON parseado exitosamente: {list(data.keys()) if data else 'None'}")
+        except Exception as json_error:
+            app.logger.error(f"Error parseando JSON: {json_error}")
+            app.logger.error(f"Raw data: {request.data[:500]}")  # Primeros 500 chars
+            return jsonify({
+                "error": "JSON inválido",
+                "message": str(json_error),
+                "received_data": request.data.decode('utf-8')[:200] if request.data else 'empty'
+            }), 400
 
         title = data.get('title')
         url = data.get('url')
@@ -121,7 +135,8 @@ def replanta_medium():
         publish = data.get('publish', False)
 
         if not all([title, url, content]):
-            return jsonify({"error": "Faltan campos requeridos"}), 400
+            app.logger.error(f"Faltan campos: title={bool(title)}, url={bool(url)}, content={bool(content)}")
+            return jsonify({"error": "Faltan campos requeridos: title, url, content"}), 400
 
         if image.endswith(".webp"):
             image = re.sub(r'(-\d+x\d+)?\.webp$', '-1024x1024.jpg', image)
@@ -274,8 +289,19 @@ Título: [Título generado]
 def replanta_devto():
     try:
         app.logger.debug("Generando y publicando en Dev.to")
-
-        data = request.get_json(force=True)
+        app.logger.debug(f"Content-Type: {request.content_type}")
+        
+        try:
+            data = request.get_json(force=True)
+            app.logger.debug(f"JSON parseado exitosamente: {list(data.keys()) if data else 'None'}")
+        except Exception as json_error:
+            app.logger.error(f"Error parseando JSON: {json_error}")
+            app.logger.error(f"Raw data: {request.data[:500]}")
+            return jsonify({
+                "error": "JSON inválido",
+                "message": str(json_error),
+                "received_data": request.data.decode('utf-8')[:200] if request.data else 'empty'
+            }), 400
 
         title = data.get('title')
         url = data.get('url')
