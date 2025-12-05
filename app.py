@@ -282,6 +282,9 @@ Título: [Título generado]
         medium_data = medium_response.json()['data']
 
         return jsonify({
+            "success": True,
+            "url": medium_data['url'],
+            "title": generated_title,
             "titulo": generated_title,
             "contenido": ai_output,
             "medium_url": medium_data['url'],
@@ -375,6 +378,9 @@ Título: [Título generado]
         devto_url = response.json()["url"]
 
         return jsonify({
+            "success": True,
+            "url": devto_url,
+            "title": generated_title,
             "devto_url": devto_url,
             "titulo": generated_title,
             "resumen": data.get("excerpt", ""),
