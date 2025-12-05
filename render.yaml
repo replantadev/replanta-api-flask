@@ -3,7 +3,7 @@ services:
     name: replanta-api
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --timeout 120 --workers 2 --log-level debug
+    startCommand: gunicorn --config gunicorn.conf.py app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.0

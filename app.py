@@ -87,25 +87,24 @@ logging.basicConfig(
     force=True
 )
 
-# Environment variables (pueden venir del request o del entorno)
+# Configuración de API keys desde variables de entorno
 openai.api_key = os.environ.get("OPENAI_API_KEY")
-MEDIUM_TOKEN = os.environ.get("MEDIUM_TOKEN")
-IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")
-DEVTO_TOKEN = os.environ.get("DEVTO_TOKEN")
-
-# Validar solo OpenAI (obligatorio) - los demás pueden venir en el request
 if not openai.api_key:
-    raise ValueError("Missing required environment variable: OPENAI_API_KEY")
+    raise ValueError("OPENAI_API_KEY no configurada en variables de entorno")
 
-# Advertir si faltan tokens (pero no fallar - pueden venir en el request)
+MEDIUM_TOKEN = os.environ.get("MEDIUM_TOKEN")
 if not MEDIUM_TOKEN:
-    app.logger.warning("MEDIUM_TOKEN not set in environment - debe venir en el request")
-if not DEVTO_TOKEN:
-    app.logger.warning("DEVTO_TOKEN not set in environment - debe venir en el request")
-if not IMGUR_CLIENT_ID:
-    app.logger.warning("IMGUR_CLIENT_ID not set in environment - generación de imágenes puede fallar")
+    raise ValueError("MEDIUM_TOKEN no configurada en variables de entorno")
 
 client = OpenAI(api_key=openai.api_key)
+
+IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")
+if not IMGUR_CLIENT_ID:
+    app.logger.warning("IMGUR_CLIENT_ID no configurada - imágenes DALL-E no se subirán a Imgur")
+
+DEVTO_TOKEN = os.environ.get("DEVTO_TOKEN")
+if not DEVTO_TOKEN:
+    app.logger.warning("DEVTO_TOKEN no configurada - publicación en Dev.to desactivada")
 
 # --- Ping ---
 @app.route('/ping', methods=['GET'])
@@ -118,21 +117,8 @@ def ping():
 def replanta_medium():
     try:
         app.logger.debug("Entrando al endpoint /replanta-medium")
-        app.logger.debug(f"Content-Type: {request.content_type}")
-        app.logger.debug(f"Request data length: {len(request.data)}")
-        
-        # Intentar parsear JSON con manejo de errores mejorado
-        try:
-            data = request.get_json(force=True)
-            app.logger.debug(f"JSON parseado exitosamente: {list(data.keys()) if data else 'None'}")
-        except Exception as json_error:
-            app.logger.error(f"Error parseando JSON: {json_error}")
-            app.logger.error(f"Raw data: {request.data[:500]}")  # Primeros 500 chars
-            return jsonify({
-                "error": "JSON inválido",
-                "message": str(json_error),
-                "received_data": request.data.decode('utf-8')[:200] if request.data else 'empty'
-            }), 400
+        data = request.get_json(force=True)
+        app.logger.debug(f"Datos recibidos: {data.keys() if data else 'None'}")
 
         title = data.get('title')
         url = data.get('url')
@@ -142,9 +128,15 @@ def replanta_medium():
         image = data.get('image', '')
         publish = data.get('publish', False)
 
+        app.logger.debug(f"Título: {title}")
+        app.logger.debug(f"URL: {url}")
+        app.logger.debug(f"Contenido length: {len(content) if content else 0}")
+        app.logger.debug(f"Tags: {tags}")
+        app.logger.debug(f"Publish: {publish}")
+
         if not all([title, url, content]):
-            app.logger.error(f"Faltan campos: title={bool(title)}, url={bool(url)}, content={bool(content)}")
-            return jsonify({"error": "Faltan campos requeridos: title, url, content"}), 400
+            app.logger.error("Faltan campos requeridos")
+            return jsonify({"error": "Faltan campos requeridos"}), 400
 
         if image.endswith(".webp"):
             image = re.sub(r'(-\d+x\d+)?\.webp$', '-1024x1024.jpg', image)
@@ -201,6 +193,7 @@ Título: [Título generado]
             temperature=0.7
         )
         output_text = response.choices[0].message.content
+        app.logger.debug(f"OpenAI response length: {len(output_text) if output_text else 0}")
 
         lines = output_text.splitlines()
         if lines and lines[0].lower().startswith("título:"):
@@ -245,24 +238,15 @@ Título: [Título generado]
         if not re.search(r'<a\s+href="https?://[^"]+">', ai_output):
             return jsonify({"error": "El contenido generado no contiene enlaces válidos. Reintenta."}), 422
 
-        # Usar token del request si viene, si no usar variable de entorno
-        medium_token = data.get('medium_token', MEDIUM_TOKEN)
-        if not medium_token:
-            app.logger.error("No hay Medium token disponible (ni en request ni en env)")
-            return jsonify({"error": "Medium token no configurado"}), 500
-            
-        headers = {"Authorization": f"Bearer {medium_token}"}
-        
-        app.logger.debug(f"Autenticando con Medium...")
+        headers = {"Authorization": f"Bearer {MEDIUM_TOKEN}"}
+        app.logger.debug("Verificando autenticación con Medium")
         user_info = requests.get("https://api.medium.com/v1/me", headers=headers)
-        app.logger.debug(f"Medium auth response: {user_info.status_code}")
-        
         if user_info.status_code != 200:
-            app.logger.error(f"Medium auth failed: {user_info.text}")
+            app.logger.error(f"Error autenticando con Medium: {user_info.status_code} - {user_info.text}")
             return jsonify({"error": "Error autenticando con Medium", "details": user_info.text}), 403
 
         user_id = user_info.json()["data"]["id"]
-        app.logger.debug(f"Medium user_id: {user_id}")
+        app.logger.debug(f"Usuario Medium autenticado: {user_id}")
 
         medium_payload = {
             "title": generated_title,
@@ -271,22 +255,28 @@ Título: [Título generado]
             "tags": tags[:5],
             "publishStatus": "public" if publish else "draft"
         }
-        
-        app.logger.debug(f"Enviando a Medium API - Title: {generated_title[:50]}...")
+
+        app.logger.debug(f"Publicando en Medium - Título: {generated_title}")
         medium_response = requests.post(
             f"https://api.medium.com/v1/users/{user_id}/posts",
             headers={**headers, "Content-Type": "application/json"},
             json=medium_payload
         )
-        
-        app.logger.debug(f"Medium response status: {medium_response.status_code}")
-        
+
+        app.logger.debug(f"Respuesta Medium: {medium_response.status_code}")
+
+        medium_response = requests.post(
+            f"https://api.medium.com/v1/users/{user_id}/posts",
+            headers={**headers, "Content-Type": "application/json"},
+            json=medium_payload
+        )
+
         if medium_response.status_code != 201:
             try:
                 medium_error = medium_response.json()
             except Exception:
                 medium_error = {"raw_response": medium_response.text}
-            app.logger.error(f"Medium publish error ({medium_response.status_code}): {medium_error}")
+            app.logger.error(f"Medium error: {medium_error}")
             return jsonify({"error": "Error al publicar en Medium", "details": medium_error}), 500
 
         medium_data = medium_response.json()['data']
@@ -312,19 +302,8 @@ Título: [Título generado]
 def replanta_devto():
     try:
         app.logger.debug("Generando y publicando en Dev.to")
-        app.logger.debug(f"Content-Type: {request.content_type}")
-        
-        try:
-            data = request.get_json(force=True)
-            app.logger.debug(f"JSON parseado exitosamente: {list(data.keys()) if data else 'None'}")
-        except Exception as json_error:
-            app.logger.error(f"Error parseando JSON: {json_error}")
-            app.logger.error(f"Raw data: {request.data[:500]}")
-            return jsonify({
-                "error": "JSON inválido",
-                "message": str(json_error),
-                "received_data": request.data.decode('utf-8')[:200] if request.data else 'empty'
-            }), 400
+
+        data = request.get_json(force=True)
 
         title = data.get('title')
         url = data.get('url')
@@ -373,14 +352,9 @@ Título: [Título generado]
             markdown_output = ai_output.strip()
 
         # Publicar como draft
-        devto_token = data.get('devto_api_key', DEVTO_TOKEN)
-        if not devto_token:
-            app.logger.error("No hay Dev.to token disponible (ni en request ni en env)")
-            return jsonify({"error": "Dev.to token no configurado"}), 500
-            
         headers = {
             "Content-Type": "application/json",
-            "api-key": devto_token
+            "api-key": DEVTO_TOKEN
         }
 
         payload = {
@@ -392,14 +366,11 @@ Título: [Título generado]
                 "canonical_url": canonical_url
             }
         }
-        
-        app.logger.debug(f"Enviando a Dev.to API - Title: {generated_title[:50]}...")
+
         response = requests.post("https://dev.to/api/articles", headers=headers, json=payload)
-        app.logger.debug(f"Dev.to response status: {response.status_code}")
 
         if response.status_code not in [200, 201]:
-            app.logger.error(f"Dev.to publish error ({response.status_code}): {response.text}")
-            return jsonify({"error": "Error al publicar en Dev.to", "details": response.json() if response.text else response.text}), 500
+            return jsonify({"error": "Error al publicar en Dev.to", "details": response.text}), 500
 
         devto_url = response.json()["url"]
 
