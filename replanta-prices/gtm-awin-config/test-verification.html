@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awin GTM - Verificación de Cookies</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        h2 { color: #41999F; margin-top: 0; }
+        .status { 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.ok { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warn { background: #fff3cd; color: #856404; }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #41999F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background: #357a7f; }
+        .test-link {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .test-link:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Verificación Awin GTM</h1>
+    
+    <div class="card">
+        <h2>1. Estado actual de la cookie AWC</h2>
+        <div id="cookie-status"></div>
+        <button onclick="checkCookie()">🔄 Verificar ahora</button>
+        <button onclick="deleteCookie()" style="background:#dc3545;">🗑️ Eliminar cookie</button>
+    </div>
+
+    <div class="card">
+        <h2>2. Probar captura de AWC</h2>
+        <p>Haz clic en estos enlaces para probar la captura:</p>
+        <a class="test-link" href="?awc=TEST_123456_789">Test AWC simple</a>
+        <a class="test-link" href="?awc=1234567_8901234567_abcdef123456">Test AWC real format</a>
+        <p style="margin-top:15px;"><small>Después de hacer clic, verifica que la cookie se ha creado arriba.</small></p>
+    </div>
+
+    <div class="card">
+        <h2>3. URL Parameters actuales</h2>
+        <div id="url-params"></div>
+    </div>
+
+    <div class="card">
+        <h2>4. Simular disparo a Awin</h2>
+        <p>Esto simula el pixel de conversión que se enviaría:</p>
+        <div style="margin-bottom:15px;">
+            <label>Transaction ID: <input type="text" id="test-txn" value="TEST-ORDER-001"></label><br><br>
+            <label>Amount (EUR): <input type="number" id="test-amount" value="19.99" step="0.01"></label>
+        </div>
+        <button onclick="simulateConversion()">📤 Simular conversión</button>
+        <button onclick="sendRealPixel()" style="background:#28a745;">🚀 Enviar pixel REAL (testmode=1)</button>
+        <pre id="pixel-preview" style="margin-top:15px;"></pre>
+    </div>
+
+    <div class="card">
+        <h2>5. Resumen de configuración GTM</h2>
+        <p><strong>Contenedor GTM:</strong> <code>GTM-M6WJKQ7K</code></p>
+        <p><strong>Merchant ID Awin:</strong> <code>125596</code></p>
+        <p><strong>Cookie name:</strong> <code>replanta_awin_awc</code></p>
+        <p><strong>Cookie domain:</strong> <code>.replanta.net</code></p>
+        <p><strong>Cookie duration:</strong> 90 días</p>
+    </div>
+
+    <script>
+        // Check cookie on load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkCookie();
+            showUrlParams();
+            captureCookieFromUrl();
+        });
+
+        function getCookie(name) {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.indexOf(name + '=') === 0) {
+                    return decodeURIComponent(cookie.substring(name.length + 1));
+                }
+            }
+            return null;
+        }
+
+        function checkCookie() {
+            var awc = getCookie('replanta_awin_awc');
+            var statusDiv = document.getElementById('cookie-status');
+            
+            if (awc) {
+                statusDiv.innerHTML = '<div class="status ok">✅ Cookie encontrada</div>' +
+                    '<p><strong>Valor AWC:</strong> <code>' + awc + '</code></p>';
+            } else {
+                statusDiv.innerHTML = '<div class="status error">❌ Cookie NO encontrada</div>' +
+                    '<p>No hay AWC guardado. Usa los enlaces de prueba abajo.</p>';
+            }
+        }
+
+        function deleteCookie() {
+            // Try deleting with different domain variations
+            document.cookie = 'replanta_awin_awc=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+            document.cookie = 'replanta_awin_awc=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.replanta.net';
+            document.cookie = 'replanta_awin_awc=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' + window.location.hostname;
+            checkCookie();
+            alert('Cookie eliminada (si existía)');
+        }
+
+        function captureCookieFromUrl() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var awc = urlParams.get('awc');
+            
+            if (awc && /^[a-zA-Z0-9_-]+$/.test(awc)) {
+                var expires = new Date();
+                expires.setDate(expires.getDate() + 90);
+                
+                // For local testing, use current domain
+                // In production, this would be .replanta.net
+                document.cookie = 'replanta_awin_awc=' + encodeURIComponent(awc) 
+                    + ';path=/'
+                    + ';expires=' + expires.toUTCString()
+                    + ';SameSite=Lax';
+                
+                console.log('[Awin Test] Cookie set:', awc);
+                
+                // Refresh status
+                setTimeout(checkCookie, 100);
+            }
+        }
+
+        function showUrlParams() {
+            var params = new URLSearchParams(window.location.search);
+            var paramsDiv = document.getElementById('url-params');
+            
+            if (params.toString()) {
+                var html = '<ul>';
+                params.forEach(function(value, key) {
+                    html += '<li><code>' + key + '</code> = <code>' + value + '</code></li>';
+                });
+                html += '</ul>';
+                paramsDiv.innerHTML = html;
+            } else {
+                paramsDiv.innerHTML = '<div class="status warn">⚠️ No hay parámetros en la URL</div>';
+            }
+        }
+
+        function buildPixelUrl(testmode) {
+            var awc = getCookie('replanta_awin_awc');
+            var txnId = document.getElementById('test-txn').value;
+            var amount = parseFloat(document.getElementById('test-amount').value).toFixed(2);
+            
+            if (!awc) {
+                return { error: 'No hay AWC en cookie', url: null };
+            }
+            
+            var url = 'https://www.awin1.com/sread.php'
+                + '?tt=ss'
+                + '&tv=2'
+                + '&merchant=125596'
+                + '&amount=' + amount
+                + '&ch=aw'
+                + '&cr=EUR'
+                + '&ref=' + encodeURIComponent(txnId)
+                + '&parts=DEFAULT:' + amount
+                + '&vc='
+                + '&testmode=' + (testmode ? '1' : '0')
+                + '&cks=' + encodeURIComponent(awc);
+            
+            return { error: null, url: url, awc: awc };
+        }
+
+        function simulateConversion() {
+            var result = buildPixelUrl(true);
+            var previewDiv = document.getElementById('pixel-preview');
+            
+            if (result.error) {
+                previewDiv.innerHTML = '❌ Error: ' + result.error;
+                return;
+            }
+            
+            previewDiv.innerHTML = '// URL que se enviaría a Awin:\n\n' + result.url.replace(/&/g, '\n  &');
+        }
+
+        function sendRealPixel() {
+            var result = buildPixelUrl(true); // testmode=1 for safety
+            
+            if (result.error) {
+                alert('Error: ' + result.error);
+                return;
+            }
+            
+            if (!confirm('¿Enviar pixel de prueba a Awin?\n\n(testmode=1, no afecta comisiones reales)')) {
+                return;
+            }
+            
+            var img = new Image(1, 1);
+            img.onload = function() {
+                alert('✅ Pixel enviado correctamente!\n\nRevisa Network tab para confirmar.');
+            };
+            img.onerror = function() {
+                alert('❌ Error al enviar pixel. Revisa la consola.');
+            };
+            img.src = result.url;
+            
+            document.getElementById('pixel-preview').innerHTML = 
+                '// Pixel enviado!\n// URL: ' + result.url.replace(/&/g, '\n//      &');
+        }
+    </script>
+</body>
+</html>

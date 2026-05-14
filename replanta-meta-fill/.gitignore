@@ -1,0 +1,34 @@
+# WordPress
+*.log
+.htaccess
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Composer
+vendor/
+composer.lock
+
+# Temp
+*.tmp
+*.bak
+*.swp
+*~
+
+# Build
+dist/
+build/
+*.zip

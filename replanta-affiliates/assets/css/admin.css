@@ -1,0 +1,33 @@
+/* Replanta Affiliates — Admin styles */
+
+.raff-admin-kpis {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.raff-admin-kpi {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 120px;
+}
+
+.raff-admin-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: .75rem;
+    font-weight: 600;
+}
+
+.raff-admin-badge--pending   { background: #fff3cd; color: #856404; }
+.raff-admin-badge--approved  { background: #d4edda; color: #155724; }
+.raff-admin-badge--active    { background: #d4edda; color: #155724; }
+.raff-admin-badge--confirmed { background: #cce5ff; color: #004085; }
+.raff-admin-badge--paid      { background: #d1ecf1; color: #0c5460; }
+.raff-admin-badge--suspended { background: #f8d7da; color: #721c24; }
+.raff-admin-badge--rejected  { background: #f8d7da; color: #721c24; }
+.raff-admin-badge--requested { background: #e2e3e5; color: #383d41; }

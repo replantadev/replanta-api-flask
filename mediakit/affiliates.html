@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Replanta · Affiliate Toolkit | Kit de Medios para Afiliados</title>
+<meta name="description" content="Toolkit para afiliados de Replanta: genera tus enlaces personalizados, copia mensajes para redes sociales, posts listos para publicar y gana comisiones del 20%.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;
+  --rep-sun:#F7D450;--rep-mint:#92F1CB;--rep-white:#FFFFFF;
+  --rep-bg-light:#F7FBF9;--rep-text-secondary:#3B4B45;
+  --rep-text-tertiary:#547065;--rep-text-muted:#6B7D76;
+  --rep-border:#E6F3EF;--rep-card:#FFFFFF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 12px rgba(30,47,35,.10);
+  --rep-shadow-lg:0 10px 30px rgba(30,47,35,.12);
+  --rep-font-display:'Sora',system-ui,sans-serif;
+  --rep-font-body:'Inter',system-ui,sans-serif;
+  --rep-radius-sm:8px;--rep-radius-md:12px;--rep-radius-lg:16px;
+  --rep-radius-xl:24px;--rep-radius-full:999px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--rep-bg-light);color:var(--rep-forest);font-family:var(--rep-font-body)}
+h1,h2,h3,h4{font-family:var(--rep-font-display);color:var(--rep-forest);line-height:1.15}
+.container{max-width:1120px;margin-inline:auto;padding:0 20px}
+.section{padding:56px 0}
+.muted{color:var(--rep-text-muted)}
+.card{background:var(--rep-card);border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);box-shadow:var(--rep-shadow-sm);transition:.3s ease}
+.card:hover{box-shadow:var(--rep-shadow-md);transform:translateY(-2px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.85rem 1.1rem;border-radius:var(--rep-radius-md);font-weight:600;text-decoration:none;transition:.25s ease;gap:.5rem;font-family:var(--rep-font-body);cursor:pointer;border:none;font-size:.95rem}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--rep-teal);color:#fff}
+.btn-primary:hover{background:#368F95;box-shadow:var(--rep-shadow-md)}
+.btn-accent{background:var(--rep-sun);color:var(--rep-forest)}
+.btn-accent:hover{background:#f5cc3d}
+.btn-outline{border:1.5px solid var(--rep-teal);color:var(--rep-teal);background:transparent}
+.btn-outline:hover{background:var(--rep-teal);color:#fff}
+.btn-ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.15)}
+.btn-ghost:hover{background:rgba(255,255,255,.15)}
+.kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;background:rgba(65,153,159,.06);border:1px solid var(--rep-border);border-radius:var(--rep-radius-sm);padding:.15rem .4rem}
+.mono{font-variant-ligatures:none;letter-spacing:.2px}
+.pill{border-radius:var(--rep-radius-full)}
+.grid{display:grid;gap:20px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:1000px){.grid-2,.grid-3,.grid-5{grid-template-columns:1fr}}
+@media(max-width:768px){.config-grid{grid-template-columns:1fr !important}}
+
+/* Dark sticky header */
+header.nav{position:sticky;top:0;background:rgba(30,47,35,.92);backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid rgba(255,255,255,.06);z-index:10}
+header .inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+header .logo-row{display:flex;align-items:center;gap:10px}
+header .logo-row i{font-size:22px;color:var(--rep-green)}
+header .logo-row strong{font-family:var(--rep-font-display);font-size:1.1rem;color:#fff}
+header .back{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:.9rem;transition:.2s;text-decoration:none}
+header .back:hover{color:var(--rep-green)}
+header nav{display:flex;gap:18px}
+header nav a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.9rem;transition:.2s}
+header nav a:hover{color:var(--rep-green)}
+header nav a i{margin-right:4px}
+
+/* Dark hero */
+.hero-dark{background:linear-gradient(165deg,#1E2F23 0%,#0F1A12 55%,#162B1F 100%);color:#fff;padding:40px 0 56px;position:relative;overflow:hidden}
+.hero-dark::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30h60M30 0v60' stroke='%2393F1C9' stroke-width='.3' opacity='.06'/%3E%3C/svg%3E");pointer-events:none}
+.hero-dark::after{content:"";position:absolute;top:-40%;right:-20%;width:60%;height:100%;background:radial-gradient(ellipse,rgba(65,153,159,.12) 0%,transparent 60%);pointer-events:none}
+.hero-dark .container{position:relative;z-index:1}
+.hero-dark h1{color:#fff;margin:0 0 6px;font-size:2rem}
+.hero-dark .sub{color:rgba(255,255,255,.65);margin:0;font-size:.95rem}
+.hero-dark .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#fff}
+.hero-dark .card:hover{transform:none;box-shadow:none}
+.hero-dark label{color:rgba(255,255,255,.85);font-weight:600;font-size:.9rem;display:block;margin-bottom:6px}
+.hero-dark input,.hero-dark select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:var(--rep-radius-md);padding:14px 16px;font-size:1rem;width:100%}
+.hero-dark input::placeholder{color:rgba(255,255,255,.35)}
+.hero-dark input:focus,.hero-dark select:focus{outline:2px solid var(--rep-green);border-color:transparent}
+.hero-dark select option{background:var(--rep-forest);color:#fff}
+.hero-dark .pill-date{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:.35rem .7rem;font-size:.8rem}
+.hero-dark .btn-primary{background:var(--rep-green);color:var(--rep-forest)}
+.hero-dark .btn-primary:hover{background:#7de0b5}
+.hero-dark .btn-ghost i{color:var(--rep-green)}
+
+/* Links container in dark */
+#linksContainer{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+#linksContainer h3{color:#fff}
+.link-row{border-radius:var(--rep-radius-md);padding:16px;margin-bottom:12px}
+.hero-dark .link-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.hero-dark .link-row strong{color:#fff}
+.hero-dark .link-row .muted{color:rgba(255,255,255,.5)}
+.hero-dark .link-row input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:.85rem}
+.hero-dark .link-row .btn-outline{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
+.hero-dark .link-row .btn-outline:hover{background:rgba(255,255,255,.1)}
+.hero-dark .link-row--featured{border:2px solid var(--rep-green) !important;background:rgba(147,241,201,.06) !important}
+.hero-dark .commission-badge{background:var(--rep-sun);color:var(--rep-forest);padding:4px 10px;border-radius:6px;font-size:.8rem;font-weight:600}
+.hero-dark .commission-box{background:linear-gradient(135deg,rgba(247,212,80,.12) 0%,rgba(247,212,80,.05) 100%);border:1px solid rgba(247,212,80,.18);border-radius:var(--rep-radius-md);padding:16px;margin-top:20px}
+.hero-dark .commission-box strong,.hero-dark .commission-box .total{color:#fff}
+.hero-dark .commission-box .muted{color:rgba(255,255,255,.55)}
+.hero-dark .quick-nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:center}
+
+/* Lang toggle */
+.lang-toggle{display:flex;background:rgba(255,255,255,.08);border-radius:var(--rep-radius-sm);overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+.lang-btn{padding:6px 12px;border:none;background:transparent;cursor:pointer;font-weight:600;font-size:.85rem;color:rgba(255,255,255,.6);transition:.2s}
+.lang-btn.active{background:var(--rep-teal);color:#fff}
+
+/* Tabs */
+.tab-btn{padding:10px 18px;border:none;background:rgba(65,153,159,.08);cursor:pointer;font-weight:500;border-radius:var(--rep-radius-sm) var(--rep-radius-sm) 0 0;transition:.2s;font-family:var(--rep-font-body);color:var(--rep-text-secondary);font-size:.9rem}
+.tab-btn:hover{background:rgba(65,153,159,.15)}
+.tab-btn.active{background:var(--rep-teal);color:#fff}
+.tab-content{display:none;padding:20px;background:#fff;border:1px solid var(--rep-border);border-radius:0 var(--rep-radius-md) var(--rep-radius-md) var(--rep-radius-md)}
+.tab-content.active{display:block}
+
+/* Message cards */
+.msg-card{background:var(--rep-bg-light);border:1px solid var(--rep-border);border-radius:var(--rep-radius-md);padding:16px;margin-bottom:12px;transition:.2s}
+.msg-card:hover{border-color:var(--rep-teal)}
+.tone-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--rep-radius-full);font-size:.75rem;font-weight:600}
+.copied{background:var(--rep-green) !important;color:var(--rep-forest) !important}
+@media(max-width:640px){
+  header nav{display:none}
+  header .logo-row strong{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<header class="nav">
+  <div class="container inner">
+    <a href="index.html" class="back"><i class="ph ph-arrow-left"></i> Media Kit</a>
+    <div class="logo-row">
+      <i class="ph-bold ph-plant" style="color:var(--rep-green);font-size:22px;"></i>
+      <strong>Affiliate Toolkit</strong>
+    </div>
+    <nav>
+      <a href="programa.html" style="background:rgba(147,241,201,.15);padding:4px 10px;border-radius:6px;"><i class="ph-duotone ph-crown" style="color:var(--rep-green)"></i>Programa</a>
+      <a href="partner-kit.html" style="background:rgba(247,212,80,.15);padding:4px 10px;border-radius:6px;"><i class="ph-duotone ph-file-pdf" style="color:var(--rep-sun)"></i>Awin Kit</a>
+      <a href="#generador"><i class="ph-duotone ph-link"></i>Enlaces</a>
+      <a href="#hosting"><i class="ph-duotone ph-package"></i>Planes</a>
+      <a href="#mensajes"><i class="ph-duotone ph-chat-circle"></i>Mensajes</a>
+      <a href="#posts"><i class="ph-duotone ph-share-network"></i>Posts</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ====== BANNER REGISTRO ====== -->
+<div id="registerBanner" style="background:linear-gradient(135deg,rgba(147,241,201,.1) 0%,rgba(65,153,159,.08) 100%);border-bottom:1px solid rgba(147,241,201,.2);padding:12px 20px;text-align:center;font-size:.9rem;">
+  <span style="color:var(--rep-forest)"><i class="ph-duotone ph-info" style="color:var(--rep-teal)"></i> ¿No tienes código de afiliado?</span>
+  <a href="https://replanta.net/afiliados" style="color:var(--rep-teal);font-weight:600;margin-left:8px;text-decoration:none;">Regístrate gratis y recibe el tuyo →</a>
+</div>
+
+<!-- ====== HERO: GENERADOR DE ENLACES ====== -->
+<section class="hero-dark" id="generador">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+      <div>
+        <h1>Toolkit de Afiliados Replanta</h1>
+        <p class="sub" data-es="Genera tus enlaces, copia mensajes y maximiza tus comisiones." data-en="Generate your links, copy messages and maximize your commissions.">Genera tus enlaces, copia mensajes y maximiza tus comisiones.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="pill pill-date" style="font-size:.8rem">Actualizado · <span id="today"></span></span>
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA CÓDIGO REF -->
+    <div class="card" style="padding:24px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:end;" class="config-grid">
+        <div>
+          <label><i class="ph-duotone ph-identification-badge"></i> <span data-es="Tu código de afiliado" data-en="Your affiliate code">Tu código de afiliado</span></label>
+          <input type="text" id="couponCode" placeholder="Ej: MARIA210" style="text-transform:uppercase;border:2px solid var(--rep-green) !important;background:rgba(147,241,201,.08) !important"/>
+          <p style="margin:6px 0 0;font-size:.8rem;color:rgba(255,255,255,.45);" data-es="El código que recibiste al ser aprobado (ej: NOMBRE10)" data-en="The code you received when approved (e.g. NAME10)">El código que recibiste al ser aprobado (ej: NOMBRE10)</p>
+        </div>
+        <div>
+          <label><i class="ph-duotone ph-globe"></i> <span data-es="Idioma de destino" data-en="Target language">Idioma de destino</span></label>
+          <select id="targetLang">
+            <option value="es" selected>Español (replanta.net)</option>
+            <option value="en">English (replanta.net/en)</option>
+          </select>
+        </div>
+      </div>
+      <button id="generateLinks" class="btn btn-primary" style="width:100%;margin-top:20px;padding:16px;font-size:1.05rem;">
+        <i class="ph-duotone ph-rocket-launch"></i> <span data-es="Generar mis enlaces para compartir" data-en="Generate my shareable links">Generar mis enlaces para compartir</span>
+      </button>
+    </div>
+
+    <!-- ENLACES GENERADOS -->
+    <div id="linksContainer" class="card" style="padding:24px;display:none;">
+      <h3 style="margin:0 0 6px;font-size:1.2rem;">
+        <i class="ph-duotone ph-link"></i> <span data-es="Tus enlaces para compartir" data-en="Your shareable links">Tus enlaces para compartir</span>
+      </h3>
+      <p style="margin:0 0 16px;font-size:.85rem;color:rgba(255,255,255,.5);" data-es="Comparte cualquiera de estos enlaces. Cuando alguien compre, tu cupón se aplica automáticamente." data-en="Share any of these links. When someone buys, your coupon is applied automatically.">Comparte cualquiera de estos enlaces. Cuando alguien compre, tu cupón se aplica automáticamente.</p>
+
+      <!-- Enlace principal: Migrar eco hosting -->
+      <div class="link-row link-row--featured">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <strong><i class="ph-duotone ph-star" style="color:var(--rep-green)"></i> <span data-es="ENLACE PRINCIPAL" data-en="MAIN LINK">ENLACE PRINCIPAL</span></strong>
+            <span class="muted" style="margin-left:8px;font-size:.9rem;" data-es="Migrar a eco hosting — el más efectivo" data-en="Migrate to eco hosting — most effective">Migrar a eco hosting — el más efectivo</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="text" id="link-migrar" readonly class="mono"/>
+          <button class="btn btn-outline copy-btn" data-target="link-migrar" style="padding:10px 16px;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+      </div>
+
+      <!-- Enlace home -->
+      <div class="link-row">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <strong><i class="ph-duotone ph-house" style="color:var(--rep-green)"></i> <span data-es="HOME" data-en="HOME">HOME</span></strong>
+            <span class="muted" style="margin-left:8px;font-size:.9rem;" data-es="Página principal — para compartir la marca" data-en="Homepage — for sharing the brand">Página principal — para compartir la marca</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="text" id="link-home" readonly class="mono"/>
+          <button class="btn btn-outline copy-btn" data-target="link-home" style="padding:10px 16px;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+      </div>
+
+      <!-- Enlace hosting (apunta a migrar) -->
+      <div class="link-row">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <strong><i class="ph-duotone ph-package" style="color:var(--rep-green)"></i> <span data-es="HOSTING INFO" data-en="HOSTING INFO">HOSTING INFO</span></strong>
+            <span class="muted" style="margin-left:8px;font-size:.9rem;" data-es="Migrar a eco hosting — para audiencia técnica" data-en="Migrate to eco hosting — for technical audience">Migrar a eco hosting — para audiencia técnica</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <input type="text" id="link-hosting" readonly class="mono"/>
+          <button class="btn btn-outline copy-btn" data-target="link-hosting" style="padding:10px 16px;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+      </div>
+
+      <!-- Cómo funciona -->
+      <div style="background:rgba(65,153,159,.08);border:1px solid rgba(65,153,159,.15);border-radius:var(--rep-radius-md);padding:14px 18px;margin-top:16px;">
+        <strong style="font-size:.9rem;"><i class="ph-duotone ph-info" style="color:var(--rep-teal)"></i> <span data-es="¿Cómo funciona?" data-en="How does it work?">¿Cómo funciona?</span></strong>
+        <ol style="margin:8px 0 0;padding-left:20px;font-size:.85rem;line-height:1.7;color:rgba(255,255,255,.7);">
+          <li data-es="Compartes tu enlace (cualquier página con ?ref=TUCODIGO)" data-en="You share your link (any page with ?ref=YOURCODE)">Compartes tu enlace (cualquier página con ?ref=TUCODIGO)</li>
+          <li data-es="Se guarda una cookie de 90 días — si vuelven en 3 meses, sigues atribuyendo" data-en="A 90-day cookie is saved — if they return within 3 months, you still get credit">Se guarda una cookie de 90 días — si vuelven en 3 meses, sigues atribuyendo</li>
+          <li data-es="Al contratar, tu cupón se aplica automáticamente al checkout (10% dto. para el cliente)" data-en="When they subscribe, your coupon is auto-applied at checkout (10% off for customer)">Al contratar, tu cupón se aplica automáticamente al checkout (10% dto. para el cliente)</li>
+          <li data-es="Recibes 20% de comisión por cada venta anual confirmada" data-en="You receive 20% commission on each confirmed annual sale">Recibes 20% de comisión por cada venta anual confirmada</li>
+        </ol>
+      </div>
+
+      <!-- Resumen comisiones -->
+      <div class="commission-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div>
+            <strong><i class="ph-duotone ph-coins" style="color:var(--rep-sun)"></i> <span data-es="Comisiones por venta (20% sobre plan anual)" data-en="Commission per sale (20% on annual plan)">Comisiones por venta (20% sobre plan anual)</span></strong>
+            <p class="muted" style="margin:4px 0 0;font-size:.85rem;" data-es="El cliente ahorra 10% con tu cupón. Tú ganas 20% de comisión por venta (pago único, no recurrente)." data-en="Customer saves 10% with your coupon. You earn 20% commission per sale (one-time payment, not recurring).">El cliente ahorra 10% con tu cupón. Tú ganas 20% de comisión por venta (pago único, no recurrente).</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;text-align:center;">
+          <div style="background:rgba(255,255,255,.06);border-radius:var(--rep-radius-sm);padding:12px;">
+            <div style="font-size:.8rem;color:rgba(255,255,255,.5);">Sauce (129€/año)</div>
+            <div style="font-size:1.3rem;font-weight:700;color:var(--rep-sun);">25,80€</div>
+          </div>
+          <div style="background:rgba(147,241,201,.08);border:1px solid rgba(147,241,201,.15);border-radius:var(--rep-radius-sm);padding:12px;">
+            <div style="font-size:.8rem;color:rgba(255,255,255,.5);">Roble (199€/año)</div>
+            <div style="font-size:1.3rem;font-weight:700;color:var(--rep-sun);">39,80€</div>
+          </div>
+          <div style="background:rgba(255,255,255,.06);border-radius:var(--rep-radius-sm);padding:12px;">
+            <div style="font-size:.8rem;color:rgba(255,255,255,.5);">Cedro (299€/año)</div>
+            <div style="font-size:1.3rem;font-weight:700;color:var(--rep-sun);">59,80€</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:12px;font-size:.85rem;color:rgba(255,255,255,.5);" data-es="Si vendes un plan de cada: " data-en="If you sell one of each: ">Si vendes un plan de cada: <strong style="color:var(--rep-sun);font-size:1.1rem;">125,40€</strong></div>
+      </div>
+    </div>
+
+    <!-- Navegación rápida -->
+    <div class="quick-nav">
+      <a class="btn btn-ghost" href="#hosting"><i class="ph-duotone ph-package"></i> Ver planes</a>
+      <a class="btn btn-ghost" href="#mensajes"><i class="ph-duotone ph-chat-circle"></i> Mensajes tipo</a>
+      <a class="btn btn-ghost" href="#posts"><i class="ph-duotone ph-share-network"></i> Posts para redes</a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== HOSTING PLANS ====== -->
+<section id="hosting" class="section">
+  <div class="container">
+    <h2 style="margin:0 0 10px"><i class="ph-duotone ph-package" style="color:var(--rep-teal)"></i> <span data-es="Planes de Hosting WordPress" data-en="WordPress Hosting Plans">Planes de Hosting WordPress</span></h2>
+    <p class="muted" style="margin-top:-6px" data-es="Base común: LiteSpeed, HTTP/3, Brotli, SSL, backups externos, Redis y soporte WordPress. Energía 100% renovable." data-en="Common base: LiteSpeed, HTTP/3, Brotli, SSL, external backups, Redis and WordPress support. 100% renewable energy.">Base común: LiteSpeed, HTTP/3, Brotli, SSL, backups externos, Redis y soporte WordPress. Energía 100% renovable.</p>
+
+    <div style="background:rgba(65,153,159,.06);border:1px solid var(--rep-teal);border-radius:var(--rep-radius-md);padding:12px 16px;margin:12px 0;display:flex;flex-wrap:wrap;gap:16px;font-size:.9rem;">
+      <div><i class="ph-duotone ph-globe" style="color:var(--rep-teal)"></i> <strong data-es="2 Datacenters:" data-en="2 Datacenters:">2 Datacenters:</strong> <span data-es="Europa (zona euro) + Florida (LATAM)" data-en="Europe (eurozone) + Florida (LATAM)">Europa (zona euro) + Florida (LATAM)</span></div>
+      <div><i class="ph-duotone ph-chat-circle" style="color:var(--rep-teal)"></i> <strong data-es="Soporte preferente en español" data-en="Priority support in Spanish">Soporte preferente en español</strong> <span class="muted">24/7</span></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(247,212,80,.15) 0%,rgba(247,212,80,.05) 100%);border:1px solid rgba(247,212,80,.3);border-radius:var(--rep-radius-md);padding:14px 18px;margin:16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div><strong><i class="ph-duotone ph-coins" style="color:#8A7420"></i> <span data-es="Tu comisión como afiliado:" data-en="Your affiliate commission:">Tu comisión como afiliado:</span></strong> <span data-es="20% del precio anual por cada venta" data-en="20% of annual price per sale">20% del precio anual por cada venta</span></div>
+      <div style="font-size:.9rem;"><span data-es="Cliente ahorra 10% con tu cupón" data-en="Customer saves 10% with your coupon">Cliente ahorra 10% con tu cupón</span> <i class="ph-duotone ph-star" style="color:var(--rep-sun)"></i></div>
+    </div>
+
+    <div class="grid grid-3">
+      <!-- SAUCE -->
+      <article class="card" style="padding:18px;">
+        <div class="muted" style="font-size:.8rem" data-es="Entrada optimizada" data-en="Optimized entry">Entrada optimizada</div>
+        <h3 style="margin:2px 0 0"><i class="ph-duotone ph-leaf" style="color:var(--rep-teal)"></i> Sauce</h3>
+        <div style="font-weight:700;margin:6px 0 4px"><span class="price-sauce">12,99€/mes</span> · <span data-es="129€/año" data-en="$149/year">129€/año</span></div>
+        <div style="background:var(--rep-sun);padding:4px 8px;border-radius:6px;display:inline-block;font-size:.8rem;font-weight:600;margin-bottom:10px;">
+          <i class="ph-duotone ph-coins"></i> <span data-es="Comisión:" data-en="Commission:">Comisión:</span> <span class="comm-sauce">25,80€</span>
+        </div>
+        <ul style="margin:0;padding-left:18px;line-height:1.6;font-size:.9rem;">
+          <li data-es="1 sitio (1 dominio)" data-en="1 site (1 domain)">1 sitio (1 dominio)</li>
+          <li>50 GB NVMe</li>
+          <li data-es="5 cuentas de email" data-en="5 email accounts">5 cuentas de email</li>
+          <li>Redis Object Cache</li>
+          <li data-es="Staging 1-click · Backups" data-en="1-click Staging · Backups">Staging 1-click · Backups</li>
+        </ul>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <a class="btn btn-primary" href="https://replanta.net/migrar-eco-hosting/" target="_blank" rel="noreferrer" style="flex:1;text-align:center;font-size:.9rem;" data-es="Ver planes" data-en="See plans">Ver planes</a>
+          <button class="btn btn-outline copy-plan-link" style="padding:10px 14px;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+      </article>
+
+      <!-- ROBLE -->
+      <article class="card" style="padding:18px;border:2px solid var(--rep-teal);position:relative;">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--rep-sun);color:var(--rep-forest);padding:4px 14px;border-radius:var(--rep-radius-full);font-size:.75rem;font-weight:600;"><i class="ph-duotone ph-star"></i> RECOMENDADO</div>
+        <div class="muted" style="font-size:.8rem;margin-top:8px;" data-es="Escala equilibrada" data-en="Balanced scale">Escala equilibrada</div>
+        <h3 style="margin:2px 0 0"><i class="ph-duotone ph-tree" style="color:var(--rep-teal)"></i> Roble</h3>
+        <div style="font-weight:700;margin:6px 0 4px"><span class="price-roble">19,99€/mes</span> · <span data-es="199€/año" data-en="$219/year">199€/año</span></div>
+        <div style="background:var(--rep-sun);padding:4px 8px;border-radius:6px;display:inline-block;font-size:.8rem;font-weight:600;margin-bottom:10px;">
+          <i class="ph-duotone ph-coins"></i> <span data-es="Comisión:" data-en="Commission:">Comisión:</span> <span class="comm-roble">39,80€</span>
+        </div>
+        <ul style="margin:0;padding-left:18px;line-height:1.6;font-size:.9rem;">
+          <li data-es="Sitios y dominios ilimitados" data-en="Unlimited sites and domains">Sitios y dominios ilimitados</li>
+          <li>100 GB NVMe · Email ∞</li>
+          <li>2 vCPU / 2 GB RAM</li>
+          <li>Smart Updates · Turnstile</li>
+          <li data-es="Soporte prioritario" data-en="Priority support">Soporte prioritario</li>
+        </ul>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <a class="btn btn-primary" href="https://replanta.net/migrar-eco-hosting/" target="_blank" rel="noreferrer" style="flex:1;text-align:center;font-size:.9rem;" data-es="Ver planes" data-en="See plans">Ver planes</a>
+          <button class="btn btn-outline copy-plan-link" style="padding:10px 14px;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+      </article>
+
+      <!-- CEDRO -->
+      <article class="card" style="padding:18px;">
+        <div class="muted" style="font-size:.8rem" data-es="Máximo rendimiento" data-en="Maximum performance">Máximo rendimiento</div>
+        <h3 style="margin:2px 0 0"><i class="ph-duotone ph-tree" style="color:var(--rep-teal)"></i> Cedro</h3>
+        <div style="font-weight:700;margin:6px 0 4px"><span class="price-cedro">29,99€/mes</span> · <span data-es="299€/año" data-en="$329/year">299€/año</span></div>
+        <div style="background:var(--rep-sun);padding:4px 8px;border-radius:6px;display:inline-block;font-size:.8rem;font-weight:600;margin-bottom:10px;">
+          <i class="ph-duotone ph-coins"></i> <span data-es="Comisión:" data-en="Commission:">Comisión:</span> <span class="comm-cedro">59,80€</span>
+        </div>
+        <ul style="margin:0;padding-left:18px;line-height:1.6;font-size:.9rem;">
+          <li data-es="WooCommerce optimizado" data-en="WooCommerce optimized">WooCommerce optimizado</li>
+          <li>200 GB NVMe · Email ∞</li>
+          <li>2 vCPU / 4 GB RAM</li>
+          <li>Redis Woo · WPO inicial</li>
+          <li data-es="WAF opcional (CF Pro)" data-en="Optional WAF (CF Pro)">WAF opcional (CF Pro)</li>
+        </ul>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <a class="btn btn-primary" href="https://replanta.net/migrar-eco-hosting/" target="_blank" rel="noreferrer" style="flex:1;text-align:center;font-size:.9rem;" data-es="Ver planes" data-en="See plans">Ver planes</a>
+          <button class="btn btn-outline copy-plan-link" style="padding:10px 14px;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ====== MENSAJES POR PLATAFORMA ====== -->
+<section id="mensajes" class="section" style="background:var(--rep-bg-light);">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+      <div>
+        <h2 style="margin:0;"><i class="ph-duotone ph-chat-circle" style="color:var(--rep-teal)"></i> <span data-es="Mensajes listos para enviar" data-en="Ready-to-send messages">Mensajes listos para enviar</span></h2>
+        <p class="muted" style="margin:4px 0 0;" data-es="Copia, personaliza y envía. Tu enlace de afiliado se inserta automáticamente." data-en="Copy, customize and send. Your affiliate link is inserted automatically.">Copia, personaliza y envía. Tu enlace de afiliado se inserta automáticamente.</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:0;">
+      <button class="tab-btn active" data-tab="linkedin"><i class="ph-duotone ph-linkedin-logo"></i> LinkedIn</button>
+      <button class="tab-btn" data-tab="instagram"><i class="ph-duotone ph-instagram-logo"></i> Instagram</button>
+      <button class="tab-btn" data-tab="email"><i class="ph-duotone ph-envelope"></i> Email</button>
+      <button class="tab-btn" data-tab="whatsapp"><i class="ph-duotone ph-whatsapp-logo"></i> WhatsApp</button>
+    </div>
+
+    <!-- LINKEDIN -->
+    <div class="tab-content active" id="tab-linkedin">
+      <div class="msg-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div><span class="tone-badge" style="background:#E3F2FD;color:#1565C0;"><i class="ph-duotone ph-crosshair"></i> Profesional</span></div>
+          <button class="btn btn-outline copy-msg-btn" data-msg="linkedin-pro" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i> <span data-es="Copiar" data-en="Copy">Copiar</span></button>
+        </div>
+        <div class="msg-text" id="linkedin-pro-es" style="margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">El rendimiento web es un factor clave en conversiones y SEO. Si tu WordPress carga lento, pierdes clientes.
+
+Llevo meses trabajando con Replanta, un hosting español especializado en WordPress que combina:
+
+- LiteSpeed + NVMe + Redis (TTFB inferior a 200ms)
+- Energía 100% renovable con compensación x2
+- Migración gratuita sin tiempo de inactividad
+- Soporte técnico real, especializado en WP
+
+Tengo un código de descuento del 10% si te interesa probarlo:
+{{LINK_AFILIADO}}
+
+Cualquier duda, encantado de comentarte mi experiencia.</div>
+        <div class="msg-text" id="linkedin-pro-en" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Web performance is a key factor in conversions and SEO. If your WordPress loads slowly, you lose customers.
+
+I've been working with Replanta for months, a Spanish hosting specialized in WordPress that combines:
+
+- LiteSpeed + NVMe + Redis (TTFB under 200ms)
+- 100% renewable energy with 2x offset
+- Free migration with zero downtime
+- Real technical support, WordPress specialized
+
+I have a 10% discount code if you want to try it:
+{{LINK_AFILIADO}}
+
+Happy to share my experience if you have any questions.</div>
+      </div>
+
+      <div class="msg-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div><span class="tone-badge" style="background:#E8F5E9;color:#2E7D32;"><i class="ph-duotone ph-users"></i> Networking</span></div>
+          <button class="btn btn-outline copy-msg-btn" data-msg="linkedin-casual" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i> <span data-es="Copiar" data-en="Copy">Copiar</span></button>
+        </div>
+        <div class="msg-text" id="linkedin-casual-es" style="margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hola [NOMBRE],
+
+Vi que trabajas con WordPress y quería compartirte algo que me ha funcionado muy bien.
+
+Hace unos meses migré a Replanta (hosting español, ecológico) y la diferencia en velocidad es notable. LiteSpeed, Redis, y lo mejor: el soporte sabe de WordPress de verdad.
+
+Si algún día buscas alternativas, tengo un código de 10% que puedo pasarte:
+{{LINK_AFILIADO}}
+
+Sin compromiso, simplemente me pareció que podía interesarte dado tu perfil.
+
+Un saludo</div>
+        <div class="msg-text" id="linkedin-casual-en" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hi [NAME],
+
+I noticed you work with WordPress and wanted to share something that's worked well for me.
+
+A few months ago I migrated to Replanta (Spanish hosting, eco-friendly) and the speed difference is noticeable. LiteSpeed, Redis, and best of all: their support actually knows WordPress.
+
+If you ever look for alternatives, I have a 10% code I can share:
+{{LINK_AFILIADO}}
+
+No pressure, just thought it might interest you given your profile.
+
+Best regards</div>
+      </div>
+    </div>
+
+    <!-- INSTAGRAM -->
+    <div class="tab-content" id="tab-instagram">
+      <div class="msg-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div><span class="tone-badge" style="background:#FCE4EC;color:#C2185B;"><i class="ph-duotone ph-instagram-logo"></i> Caption Feed</span></div>
+          <button class="btn btn-outline copy-msg-btn" data-msg="insta-feed" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i> <span data-es="Copiar" data-en="Copy">Copiar</span></button>
+        </div>
+        <div class="msg-text" id="insta-feed-es" style="margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Tu web puede ser rapida Y sostenible
+
+Llevo tiempo usando @replantanet y la diferencia es real:
++ Carga en menos de 3 segundos
++ Energia 100% renovable
++ Plantan un arbol por cada cliente
++ Seguridad anti-malware incluida
+
+Y con mi codigo tienes un 10% de descuento
+
+Link en bio
+
+#hosting #wordpress #ecohosting #sostenibilidad #webdesign</div>
+        <div class="msg-text" id="insta-feed-en" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Your website can be fast AND sustainable
+
+I've been using @replantanet and the difference is real:
++ Loads in under 3 seconds
++ 100% renewable energy
++ They plant a tree for each customer
++ Anti-malware security included
+
+And with my code you get 10% off
+
+Link in bio
+
+#hosting #wordpress #ecohosting #sustainability #webdesign</div>
+      </div>
+
+      <div class="msg-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div><span class="tone-badge" style="background:#E8EAF6;color:#303F9F;"><i class="ph-duotone ph-chat-circle"></i> DM Directo</span></div>
+          <button class="btn btn-outline copy-msg-btn" data-msg="insta-dm" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i> <span data-es="Copiar" data-en="Copy">Copiar</span></button>
+        </div>
+        <div class="msg-text" id="insta-dm-es" style="margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hola!
+
+Vi tu proyecto y me encanta lo que haces. Te escribo porque tengo un codigo de 10% en un hosting que creo que te vendria genial: Replanta.
+
+Es hosting ecologico (energia renovable, plantan arboles) pero lo mejor es que vuela. LiteSpeed, Redis, todo incluido.
+
+Si te interesa: {{LINK_AFILIADO}}
+
+Un saludo!</div>
+        <div class="msg-text" id="insta-dm-en" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hi!
+
+I saw your project and love what you're doing. I'm reaching out because I have a 10% code for a hosting I think would be great for you: Replanta.
+
+It's eco-hosting (renewable energy, they plant trees) but the best part is it's super fast. LiteSpeed, Redis, all included.
+
+If you're interested: {{LINK_AFILIADO}}
+
+Cheers!</div>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="tab-content" id="tab-email">
+      <div class="msg-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div><span class="tone-badge" style="background:#ECEFF1;color:#37474F;"><i class="ph-duotone ph-envelope"></i> Email Frio</span></div>
+          <button class="btn btn-outline copy-msg-btn" data-msg="email-cold" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i> <span data-es="Copiar" data-en="Copy">Copiar</span></button>
+        </div>
+        <div class="msg-text" id="email-cold-es" style="margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Asunto: Optimiza el rendimiento de tu WordPress
+
+Hola [NOMBRE],
+
+Te escribo porque he analizado tu web y creo que podria interesarte una solucion que estoy recomendando.
+
+Trabajo con Replanta, un hosting WordPress espanol que destaca por:
+
+- Velocidad real: LiteSpeed + NVMe + Redis (TTFB estable, LCP bajo)
+- Sostenibilidad: energia 100% renovable + compensacion x2 con Ecologi
+- Migracion gratuita sin tiempo de inactividad
+- Soporte tecnico especializado en WordPress
+
+Ademas, por cada cliente plantan un arbol en colaboracion con proyectos de reforestacion.
+
+Si quieres probarlo, tengo un codigo que te da un 10% de descuento:
+{{LINK_AFILIADO}}
+
+Quedo a tu disposicion para cualquier consulta.
+
+Un saludo,
+[TU NOMBRE]</div>
+        <div class="msg-text" id="email-cold-en" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Subject: Optimize your WordPress performance
+
+Hi [NAME],
+
+I'm reaching out because I've analyzed your site and thought you might be interested in a solution I've been recommending.
+
+I work with Replanta, a Spanish WordPress hosting that stands out for:
+
+- Real speed: LiteSpeed + NVMe + Redis (stable TTFB, low LCP)
+- Sustainability: 100% renewable energy + 2x offset with Ecologi
+- Free migration with zero downtime
+- Specialized WordPress technical support
+
+Additionally, for every customer they plant a tree in collaboration with reforestation projects.
+
+If you want to try it, I have a code that gives you 10% off:
+{{LINK_AFILIADO}}
+
+I'm available for any questions.
+
+Best regards,
+[YOUR NAME]</div>
+      </div>
+    </div>
+
+    <!-- WHATSAPP -->
+    <div class="tab-content" id="tab-whatsapp">
+      <div class="msg-card">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:8px;">
+          <div><span class="tone-badge" style="background:#25D366;color:#fff;"><i class="ph-duotone ph-whatsapp-logo"></i> Contacto directo</span></div>
+          <button class="btn btn-outline copy-msg-btn" data-msg="whatsapp-direct" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i> <span data-es="Copiar" data-en="Copy">Copiar</span></button>
+        </div>
+        <div class="msg-text" id="whatsapp-direct-es" style="margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hola!
+
+Te paso info del hosting que te comente:
+
+*Replanta* - Hosting WordPress ecologico
+
++ LiteSpeed + Redis (vuela)
++ Energia 100% renovable
++ Migracion gratis
++ Soporte 24/7
+
+Planes:
+- Sauce: 12,99 EUR/mes (1 web)
+- Roble: 19,99 EUR/mes (ilimitadas)
+- Cedro: 29,99 EUR/mes (WooCommerce)
+
+Con mi enlace tienes 10% de descuento:
+{{LINK_AFILIADO}}
+
+Me dices si tienes dudas!</div>
+        <div class="msg-text" id="whatsapp-direct-en" style="display:none;margin-top:12px;padding:12px;background:#fff;border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hi!
+
+Here's the info on the hosting I mentioned:
+
+*Replanta* - Eco WordPress Hosting
+
++ LiteSpeed + Redis (super fast)
++ 100% renewable energy
++ Free migration
++ 24/7 support
+
+Plans:
+- Sauce: $14.99/month (1 site)
+- Roble: $21.99/month (unlimited)
+- Cedro: $32.99/month (WooCommerce)
+
+With my link you get 10% off:
+{{LINK_AFILIADO}}
+
+Let me know if you have questions!</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====== POSTS PARA REDES ====== -->
+<section id="posts" class="section">
+  <div class="container">
+    <h2 style="margin:0 0 8px;"><i class="ph-duotone ph-share-network" style="color:var(--rep-teal)"></i> <span data-es="Posts listos para publicar" data-en="Ready-to-publish posts">Posts listos para publicar</span></h2>
+    <p class="muted" style="margin:0 0 20px;" data-es="Copia y pega directamente en tus redes. Personaliza con tu enlace de afiliado." data-en="Copy and paste directly to your social media. Customize with your affiliate link.">Copia y pega directamente en tus redes. Personaliza con tu enlace de afiliado.</p>
+
+    <div class="grid grid-2">
+      <!-- Post educativo -->
+      <div class="card" style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span class="tone-badge" style="background:#E3F2FD;color:#1565C0;"><i class="ph-duotone ph-book-open"></i> Educativo</span>
+          <button class="btn btn-outline copy-msg-btn" data-msg="post-edu" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+        <div class="msg-text" id="post-edu-es" style="padding:12px;background:var(--rep-bg-light);border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Sabias que tu web contamina?
+
+Cada visita consume energia. Y la mayoria de hostings usan fuentes sucias.
+
+Pero hay alternativas:
+
+Replanta es un hosting WordPress espanol que:
++ Usa 100% energia renovable
++ Compensa x2 sus emisiones
++ Planta un arbol por cada cliente
+
+Y encima es de los mas rapidos que he probado (LiteSpeed + Redis).
+
+Si quieres probarlo, tengo un 10% de descuento para ti. Link en bio.
+
+#sostenibilidad #wordpress #hosting #ecohosting</div>
+        <div class="msg-text" id="post-edu-en" style="display:none;padding:12px;background:var(--rep-bg-light);border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Did you know your website pollutes?
+
+Every visit consumes energy. And most hostings use dirty sources.
+
+But there are alternatives:
+
+Replanta is a Spanish WordPress hosting that:
++ Uses 100% renewable energy
++ Offsets 2x their emissions
++ Plants a tree for each customer
+
+And it's one of the fastest I've tried (LiteSpeed + Redis).
+
+If you want to try it, I have 10% off for you. Link in bio.
+
+#sustainability #wordpress #hosting #ecohosting</div>
+      </div>
+
+      <!-- Post testimonial -->
+      <div class="card" style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span class="tone-badge" style="background:#E8F5E9;color:#2E7D32;"><i class="ph-duotone ph-star"></i> Testimonial</span>
+          <button class="btn btn-outline copy-msg-btn" data-msg="post-test" style="padding:6px 12px;font-size:.85rem;"><i class="ph-duotone ph-copy"></i></button>
+        </div>
+        <div class="msg-text" id="post-test-es" style="padding:12px;background:var(--rep-bg-light);border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">Hace 6 meses cambie mi hosting a Replanta y la diferencia es BRUTAL.
+
+Antes: web lenta, soporte robot, sustos con malware.
+Ahora: carga en 2 segundos, soporte humano, seguridad real.
+
+Lo mejor:
+- LiteSpeed + Redis
+- Migracion gratis (sin caidas)
+- Energia 100% renovable
+- Un arbol plantado a mi nombre
+
+Si estas pensando en cambiar, con mi codigo tienes 10% de descuento.
+
+Link en bio.
+
+#hosting #wordpress #miexperiencia #replanta</div>
+        <div class="msg-text" id="post-test-en" style="display:none;padding:12px;background:var(--rep-bg-light);border-radius:var(--rep-radius-sm);font-size:.9rem;line-height:1.6;white-space:pre-wrap;">6 months ago I switched my hosting to Replanta and the difference is HUGE.
+
+Before: slow site, robot support, malware scares.
+Now: loads in 2 seconds, human support, real security.
+
+The best part:
+- LiteSpeed + Redis
+- Free migration (zero downtime)
+- 100% renewable energy
+- A tree planted in my name
+
+If you're thinking of switching, with my code you get 10% off.
+
+Link in bio.
+
+#hosting #wordpress #myexperience #replanta</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // === CONFIGURACIÓN ===
+  const BASE_URL = 'https://replanta.net';
+  const PAGES = {
+    migrar:  { es: '/migrar-eco-hosting/', en: '/en/migrate-eco-hosting/' },
+    home:    { es: '/', en: '/en/' },
+    hosting: { es: '/migrar-eco-hosting/', en: '/en/migrate-eco-hosting/' }
+  };
+
+  let currentLang = 'es';
+  let currentCode = '';
+  let targetLang = 'es';
+
+  // === INICIALIZACIÓN ===
+  document.addEventListener('DOMContentLoaded', function() {
+    const d = new Date();
+    const todayEl = document.getElementById('today');
+    const yearEl = document.getElementById('year');
+    if (todayEl) todayEl.textContent = d.toLocaleDateString('es-ES',{year:'numeric',month:'short',day:'numeric'});
+    if (yearEl) yearEl.textContent = d.getFullYear();
+  });
+
+  // === HELPERS ===
+  const $ = (id) => document.getElementById(id);
+  const $$ = (sel) => document.querySelectorAll(sel);
+
+  function buildPrettyLink(pageKey) {
+    const path = PAGES[pageKey][targetLang] || PAGES[pageKey].es;
+    return `${BASE_URL}${path}?ref=${currentCode}`;
+  }
+
+  // === GENERADOR DE ENLACES ===
+  document.addEventListener('DOMContentLoaded', function() {
+    $('generateLinks').addEventListener('click', function() {
+      currentCode = $('couponCode').value.trim().toUpperCase();
+      targetLang = $('targetLang').value;
+
+      if (!currentCode) {
+        $('couponCode').focus();
+        $('couponCode').style.borderColor = '#e74c3c';
+        setTimeout(() => { $('couponCode').style.borderColor = ''; }, 2000);
+        return;
+      }
+
+      $('link-migrar').value = buildPrettyLink('migrar');
+      $('link-home').value = buildPrettyLink('home');
+      $('link-hosting').value = buildPrettyLink('hosting');
+
+      $('linksContainer').style.display = 'block';
+      $('linksContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // === COPIAR ENLACES ===
+    $$('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const targetId = this.dataset.target;
+        const input = $(targetId);
+        if (!input || !input.value) return;
+        try {
+          await navigator.clipboard.writeText(input.value);
+          this.classList.add('copied');
+          this.innerHTML = '<i class="ph-duotone ph-check"></i>';
+          setTimeout(() => {
+            this.classList.remove('copied');
+            this.innerHTML = '<i class="ph-duotone ph-copy"></i>';
+          }, 1500);
+        } catch(e) {
+          prompt('Copia este enlace:', input.value);
+        }
+      });
+    });
+
+    // === TOGGLE IDIOMA (interfaz) ===
+    $$('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        $$('.lang-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = '';
+        });
+        this.classList.add('active');
+        this.style.background = 'var(--rep-teal)';
+        this.style.color = '#fff';
+        
+        currentLang = this.dataset.lang;
+        
+        $$('[data-es][data-en]').forEach(el => {
+          el.textContent = el.getAttribute('data-' + currentLang);
+        });
+        
+        $$('.msg-text').forEach(el => {
+          const id = el.id;
+          if (id.endsWith('-es')) {
+            el.style.display = currentLang === 'es' ? 'block' : 'none';
+          } else if (id.endsWith('-en')) {
+            el.style.display = currentLang === 'en' ? 'block' : 'none';
+          }
+        });
+      });
+    });
+
+    // === TABS DE PLATAFORMAS ===
+    $$('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tabId = this.dataset.tab;
+        $$('.tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        $$('.tab-content').forEach(c => c.classList.remove('active'));
+        $('tab-' + tabId).classList.add('active');
+      });
+    });
+
+    // === COPIAR MENSAJES ===
+    $$('.copy-msg-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const msgId = this.dataset.msg;
+        const msgEl = $(msgId + '-' + currentLang);
+        if (!msgEl) return;
+        
+        let text = msgEl.textContent;
+        const affiliateLink = currentCode 
+          ? buildPrettyLink('migrar')
+          : 'https://replanta.net/migrar-eco-hosting/';
+        text = text.replaceAll('{{LINK_AFILIADO}}', affiliateLink);
+        
+        try {
+          await navigator.clipboard.writeText(text);
+          const originalText = this.innerHTML;
+          this.classList.add('copied');
+          this.innerHTML = '<i class="ph-duotone ph-check"></i> ' + (currentLang === 'es' ? 'Copiado!' : 'Copied!');
+          setTimeout(() => {
+            this.classList.remove('copied');
+            this.innerHTML = originalText;
+          }, 1500);
+        } catch(e) {
+          prompt('Copia este texto:', text);
+        }
+      });
+    });
+
+    // === COPIAR ENLACES DE PLANES (info section) ===
+    $$('.copy-plan-link').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const link = currentCode 
+          ? buildPrettyLink('migrar')
+          : 'https://replanta.net/migrar-eco-hosting/';
+        try {
+          await navigator.clipboard.writeText(link);
+          this.classList.add('copied');
+          this.innerHTML = '<i class="ph-duotone ph-check"></i>';
+          setTimeout(() => {
+            this.classList.remove('copied');
+            this.innerHTML = '<i class="ph-duotone ph-copy"></i>';
+          }, 1500);
+        } catch(e) {
+          prompt('Copia este enlace:', link);
+        }
+      });
+    });
+  }); // End DOMContentLoaded
+</script>
+
+<!-- ====== FOOTER ====== -->
+<footer style="border-top:1px solid var(--rep-border);padding:24px 0;background:var(--rep-forest);color:rgba(255,255,255,.7);">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <i class="ph-bold ph-plant" style="color:var(--rep-green);font-size:1.2rem;"></i>
+        <span>© <span id="year"></span> Replanta</span>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a style="color:var(--rep-green);text-decoration:none;" href="index.html">← Media Kit</a>
+        <a style="color:rgba(255,255,255,.7);text-decoration:none;" href="https://replanta.net" target="_blank" rel="noreferrer">replanta.net</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

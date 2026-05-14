@@ -1,0 +1,347 @@
+/* ==========================================================================
+   Replanta Prices — Shortcode-only CSS
+   Solo estilos que el design system del tema NO cubre.
+   El tema ya define: variables :root, .replanta-pricing-card, .rep-btn-*,
+   .plans-bar, .billing-toggle, .plans-grid, .plan-head, .plan-subtitle,
+   .plan-ctas, .plan-card-cta, .rep-tipwrap/.rep-tip/.rep-tooltip,
+   .rep-heading-*, .rep-text-*, .rep-list, .tick, etc.
+   ========================================================================== */
+
+/* ─── Section wrapper (solo layout) ───────────────────────────────── */
+.replanta-plans {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+
+/* ==========================================================================
+   HOSTING — Toggle :has(), segmented control upgrade, checkmarks, details
+   ========================================================================== */
+
+/* ─── Default: ocultar precios anuales ────────────────────────────── */
+.replanta-pricing-card .amount--y,
+.replanta-pricing-card .period--y,
+.replanta-pricing-card .original { display: none; }
+
+/* ─── Billing toggle :has() — mostrar/ocultar prices ──────────────── */
+#bill-y:checked + label .rep-text-small { color: #fff !important; }
+
+.replanta-plans--hosting:has(#bill-y:checked) .amount--m,
+.replanta-plans--hosting:has(#bill-y:checked) .period--m { display: none; }
+
+.replanta-plans--hosting:has(#bill-y:checked) .amount--y,
+.replanta-plans--hosting:has(#bill-y:checked) .period--y,
+.replanta-plans--hosting:has(#bill-y:checked) .original { display: inline; }
+
+/* ─── Segmented control (upgrade del toggle base del tema) ────────── */
+.replanta-plans--hosting .billing-toggle {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 4px;
+    gap: 4px;
+    box-shadow: var(--rep-shadow-sm);
+}
+.replanta-plans--hosting .billing-toggle input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+.replanta-plans--hosting .billing-toggle label {
+    padding: 8px 16px;
+    font-weight: 400;
+    text-align: center;
+}
+.replanta-plans--hosting .billing-toggle input:checked + label {
+    background: var(--rep-teal);
+    color: #fff;
+    box-shadow: var(--rep-shadow-sm);
+}
+@media (max-width: 600px) {
+    .replanta-plans--hosting .billing-toggle label { padding: 8px 12px; font-weight: 600; }
+}
+@media (max-width: 480px) {
+    .replanta-plans--hosting h2 { font-size: 2.6em !important; }
+    .replanta-plans--hosting .right { justify-content: center !important; width: 100%; }
+}
+
+/* ─── Precios: tamaño de .amount (el tema pone 1.5rem en .rep-heading-3) */
+.replanta-plans--hosting .plans-grid {
+    align-items: start;  /* cards no se estiran cuando uno abre "Ver más" */
+}
+.replanta-plans--hosting .replanta-pricing-card {
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+}
+.replanta-plans--hosting .price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+.replanta-plans--hosting .amount {
+    font-family: var(--rep-font-display);
+    font-size: 2rem;
+    line-height: 1;
+}
+
+/* ─── SVG tick across all plan types ──────────────────────────────── */
+.replanta-plans .replanta-pricing-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.replanta-plans .replanta-pricing-card ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 6px 0;
+    padding: 0;
+}
+.replanta-plans .replanta-pricing-card ul li::before { display: none !important; }
+.replanta-plans .replanta-pricing-card ul li svg.tick {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--rep-sun, #F7D450);
+}
+
+/* SAPWOO tooltip readability: ensure tooltips float above neighbor cards */
+.replanta-plans--sapwoo .plans-grid,
+.replanta-plans--sapwoo .replanta-pricing-card,
+.replanta-plans--sapwoo .plan-list,
+.replanta-plans--sapwoo .plan-list li {
+    overflow: visible;
+}
+.replanta-plans--sapwoo .replanta-pricing-card {
+    position: relative;
+    z-index: 1;
+}
+.replanta-plans--sapwoo .replanta-pricing-card:hover,
+.replanta-plans--sapwoo .replanta-pricing-card:focus-within {
+    z-index: 12;
+}
+.replanta-plans--sapwoo .rep-tipwrap {
+    position: relative;
+    z-index: 1;
+}
+.replanta-plans--sapwoo .rep-tip {
+    position: relative;
+    z-index: 1;
+}
+.replanta-plans--sapwoo .rep-tooltip {
+    position: absolute;
+    z-index: 40;
+}
+
+/* ─── Details / ver más ───────────────────────────────────────────── */
+.replanta-plans--hosting details {
+    border-top: 1px solid var(--rep-border);
+    margin-top: 12px;
+    padding-top: 12px;
+}
+.replanta-plans--hosting summary.toggle {
+    list-style: none;
+    position: relative;
+    padding-right: 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.replanta-plans--hosting summary.toggle::-webkit-details-marker { display: none; }
+.replanta-plans--hosting summary.toggle::after {
+    content: "▾";
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: .7;
+    transition: transform .2s ease;
+}
+.replanta-plans--hosting details[open] summary.toggle::after { transform: rotate(-180deg); }
+.replanta-plans--hosting summary.toggle .less { display: none; }
+.replanta-plans--hosting details[open] summary.toggle .more { display: none; }
+.replanta-plans--hosting details[open] summary.toggle .less { display: inline; }
+
+/* ─── CTA — botón único full-width ────────────────────────────────── */
+.replanta-plans--hosting .plan-cta-wrap {
+    margin-top: auto;
+    padding-top: 16px;
+}
+.replanta-plans--hosting .plan-card-cta {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+}
+@media (max-width: 480px) {
+    .replanta-plans--hosting .plan-card-cta { padding: 12px 16px !important; font-size: 14px !important; }
+}
+
+
+/* ==========================================================================
+   MANTENIMIENTO — Tick list li override (el tema usa cuadradito en .rep-list)
+   ========================================================================== */
+
+/* (tick flex layout now handled by the shared .replanta-pricing-card ul li rule above) */
+
+
+/* ==========================================================================
+   UTILITIES
+   ========================================================================== */
+
+.replanta-plans-footer {
+    text-align: center;
+    font-size: .8rem;
+    color: var(--rep-text-muted);
+    margin-top: 24px;
+}
+
+.replanta-price-inline {
+    font-weight: 700;
+    color: var(--rep-forest);
+    white-space: nowrap;
+}
+
+
+/* ==========================================================================
+   DESCUENTO SOLIDARIO — precios originales tachados + badge
+   ========================================================================== */
+
+/* Hide annual original by default */
+.replanta-pricing-card .discount-original-y { display: none; }
+
+/* Strikethrough style for both original-price spans */
+.replanta-pricing-card .original,
+.replanta-pricing-card .discount-original-y {
+    text-decoration: line-through;
+    opacity: .55;
+    font-size: .82em;
+}
+
+/* Discount mode (monthly view): show the monthly original price */
+.replanta-plans--hosting.replanta-plans--discount .original { display: inline; }
+
+/* Discount mode (annual view): hide monthly original, show annual original */
+.replanta-plans--hosting.replanta-plans--discount:has(#bill-y:checked) .original { display: none; }
+.replanta-plans--hosting.replanta-plans--discount:has(#bill-y:checked) .discount-original-y { display: inline; }
+
+/* Badge "-XX% solidario" por tarjeta */
+.rep-discount-tag {
+    display: inline-block;
+    background: var(--rep-sun);
+    color: var(--rep-forest);
+    border-radius: 6px;
+    padding: .2rem .6rem;
+    font-size: .75rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    letter-spacing: .02em;
+}
+
+
+/* ==========================================================================
+   QUOTE MODAL — lead capture for plans marked as "Solicitar presupuesto"
+   ========================================================================== */
+
+.rep-quote-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: none;
+}
+.rep-quote-modal.is-open {
+    display: block;
+}
+.rep-quote-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 47, 35, .55);
+}
+.rep-quote-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(680px, calc(100vw - 32px));
+    margin: 6vh auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, .24);
+}
+.rep-quote-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    border: 0;
+    background: transparent;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: #3b4b45;
+}
+.rep-quote-dialog h3 {
+    margin: 0 0 6px;
+    color: var(--rep-forest, #1e2f23);
+}
+.rep-quote-subtitle {
+    margin: 0 0 14px;
+    color: var(--rep-text-secondary, #3b4b45);
+    font-size: .95rem;
+}
+.rep-quote-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.rep-quote-form label {
+    display: block;
+    margin: 0 0 10px;
+    color: #1e2f23;
+    font-size: .9rem;
+}
+.rep-quote-form input,
+.rep-quote-form textarea {
+    width: 100%;
+    margin-top: 5px;
+    border: 1px solid #d7e6df;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+.rep-quote-form input:focus,
+.rep-quote-form textarea:focus {
+    outline: none;
+    border-color: var(--rep-teal, #41999f);
+    box-shadow: 0 0 0 3px rgba(65, 153, 159, .14);
+}
+.rep-quote-status {
+    min-height: 20px;
+    margin: 4px 0 10px;
+    font-size: .88rem;
+    color: #1e2f23;
+}
+.rep-quote-status.is-error {
+    color: #b42318;
+}
+.rep-quote-submit {
+    border: 0;
+    border-radius: 10px;
+    background: var(--rep-teal, #41999f);
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.rep-quote-submit:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+@media (max-width: 640px) {
+    .rep-quote-dialog {
+        margin: 4vh auto;
+        width: calc(100vw - 20px);
+        padding: 16px;
+    }
+    .rep-quote-grid {
+        grid-template-columns: 1fr;
+    }
+}

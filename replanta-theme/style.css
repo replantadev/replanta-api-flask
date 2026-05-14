@@ -1,0 +1,26 @@
+/*
+Theme Name: Replanta Theme
+Theme URI: https://replanta.net
+Author: Replanta
+Author URI: https://replanta.net
+Description: Tema AI-native, ultra rápido, FSE puro. Edita páginas con prompts desde el admin o desde VS Code (content as code). Soporta Polylang/WPML.
+Version: 0.1.0
+Requires at least: 6.6
+Tested up to: 6.7
+Requires PHP: 8.2
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: replanta-theme
+Tags: full-site-editing, block-theme, ai, multilingual, performance
+*/
+
+/* Build output (Tailwind v4 + critical) is enqueued from /assets/dist/.
+   This file exists only for the WP theme header and a tiny fallback. */
+
+:root {
+	color-scheme: light dark;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-family: var(--wp--preset--font-family--sans, system-ui, sans-serif); }
+img, svg, video { max-width: 100%; height: auto; display: block; }

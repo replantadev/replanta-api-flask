@@ -1,0 +1,258 @@
+/**
+ * Replanta Meta Fill - Admin CSS
+ */
+
+/* Columna de meta descripción */
+.column-replanta_meta {
+    width: 220px;
+}
+
+.rmf-meta-status {
+    font-size: 13px;
+}
+
+.rmf-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.rmf-status-indicator.has-meta.good {
+    color: #46b450;
+}
+
+.rmf-status-indicator.has-meta.warning {
+    color: #f0b849;
+}
+
+.rmf-status-indicator.missing {
+    color: #dc3232;
+}
+
+.rmf-status-indicator .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.rmf-length {
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.rmf-meta-preview {
+    font-size: 12px;
+    color: #646970;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    max-width: 200px;
+}
+
+.rmf-generated-info {
+    font-size: 11px;
+    color: #787c82;
+    font-style: italic;
+    margin-bottom: 6px;
+}
+
+.rmf-generate-btn,
+.rmf-regenerate-btn {
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+}
+
+.rmf-generate-btn .dashicons,
+.rmf-regenerate-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+.rmf-generate-btn:disabled,
+.rmf-regenerate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rmf-generate-btn.loading .dashicons,
+.rmf-regenerate-btn.loading .dashicons {
+    animation: rmf-spin 1s linear infinite;
+}
+
+@keyframes rmf-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Página de configuración */
+.rmf-api-validation-result {
+    margin-top: 10px;
+}
+
+.rmf-api-validation-result.success {
+    color: #46b450;
+    font-weight: 600;
+}
+
+.rmf-api-validation-result.error {
+    color: #dc3232;
+    font-weight: 600;
+}
+
+/* Página de generación masiva */
+#rmf-bulk-progress {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f0f1;
+    border-left: 4px solid #2271b1;
+}
+
+#rmf-progress-bar {
+    width: 100%;
+    height: 30px;
+    border-radius: 3px;
+}
+
+#rmf-progress-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.rmf-bulk-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rmf-bulk-status.success {
+    color: #46b450;
+}
+
+.rmf-bulk-status.error {
+    color: #dc3232;
+}
+
+.rmf-bulk-status.processing {
+    color: #f0b849;
+}
+
+.rmf-bulk-status .dashicons {
+    animation: rmf-spin 1s linear infinite;
+}
+
+/* Notificaciones */
+.rmf-notice {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    padding: 12px 20px;
+    background: white;
+    border-left: 4px solid #2271b1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    animation: rmf-slide-in 0.3s ease-out;
+}
+
+.rmf-notice.success {
+    border-left-color: #46b450;
+}
+
+.rmf-notice.error {
+    border-left-color: #dc3232;
+}
+
+.rmf-notice.warning {
+    border-left-color: #f0b849;
+}
+
+@keyframes rmf-slide-in {
+    from {
+        transform: translateX(420px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.rmf-notice-close {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+    color: #646970;
+}
+
+.rmf-notice-close:hover {
+    color: #000;
+}
+
+/* Columna ALT en Media Library */
+.column-rmf_alt {
+    width: 180px;
+}
+
+.rmf-alt-status {
+    font-size: 13px;
+}
+
+.rmf-generate-alt-btn,
+.rmf-regenerate-alt-btn {
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+}
+
+.rmf-generate-alt-btn .dashicons,
+.rmf-regenerate-alt-btn .dashicons {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+    vertical-align: middle;
+}
+
+.rmf-generate-alt-btn:disabled,
+.rmf-regenerate-alt-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rmf-generate-alt-btn.loading .dashicons,
+.rmf-regenerate-alt-btn.loading .dashicons {
+    animation: rmf-spin 1s linear infinite;
+}
+
+/* Página ALT Imágenes */
+#rmf-alts-table img {
+    display: block;
+}
+
+#rmf-alts-table .rmf-alts-row-status {
+    min-width: 120px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .column-replanta_meta {
+        width: auto;
+    }
+    
+    .rmf-notice {
+        top: 46px;
+        right: 10px;
+        max-width: calc(100% - 20px);
+    }
+}

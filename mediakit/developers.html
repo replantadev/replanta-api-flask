@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Replanta · Design System v4.0</title>
+<meta name="description" content="Documentación técnica del Design System de Replanta: tokens CSS, componentes y utilidades para desarrolladores.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;
+  --rep-sun:#F7D450;--rep-mint:#92F1CB;--rep-white:#FFFFFF;
+  --rep-bg-light:#F7FBF9;--rep-text-secondary:#3B4B45;
+  --rep-text-tertiary:#547065;--rep-text-muted:#6B7D76;
+  --rep-border:#E6F3EF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 12px rgba(30,47,35,.10);
+  --rep-shadow-lg:0 10px 30px rgba(30,47,35,.12);
+  --rep-font-display:'Sora',system-ui,sans-serif;
+  --rep-font-body:'Inter',system-ui,sans-serif;
+  --rep-radius-sm:8px;--rep-radius-md:12px;--rep-radius-lg:16px;--rep-radius-xl:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--rep-bg-light);color:var(--rep-forest);font-family:var(--rep-font-body);line-height:1.6}
+h1,h2,h3,h4{font-family:var(--rep-font-display);line-height:1.2}
+a{color:var(--rep-teal);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;background:rgba(65,153,159,.08);padding:2px 6px;border-radius:4px}
+pre{background:var(--rep-forest);color:var(--rep-green);padding:20px;border-radius:var(--rep-radius-md);overflow-x:auto;font-size:.9rem;line-height:1.5}
+pre code{background:transparent;padding:0}
+
+/* Header */
+header{background:var(--rep-forest);padding:16px 24px;position:sticky;top:0;z-index:10}
+header .inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+header .back{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:.9rem;transition:.2s}
+header .back:hover{color:var(--rep-green);text-decoration:none}
+header .title{color:#fff;font-family:var(--rep-font-display);font-weight:600;font-size:1.1rem}
+header .version{background:var(--rep-teal);color:#fff;padding:4px 10px;border-radius:var(--rep-radius-sm);font-size:.8rem;font-weight:600}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:220px 1fr;gap:0;min-height:calc(100vh - 60px)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+/* Sidebar */
+.sidebar{background:#fff;border-right:1px solid var(--rep-border);padding:24px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+@media(max-width:900px){.sidebar{display:none}}
+.sidebar h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--rep-text-muted);margin:20px 0 8px}
+.sidebar h4:first-child{margin-top:0}
+.sidebar a{display:block;padding:8px 12px;border-radius:var(--rep-radius-sm);color:var(--rep-text-secondary);font-size:.9rem;transition:.15s}
+.sidebar a:hover{background:var(--rep-bg-light);text-decoration:none}
+.sidebar a.active{background:rgba(65,153,159,.1);color:var(--rep-teal);font-weight:500}
+
+/* Main */
+main{padding:40px;max-width:900px}
+@media(max-width:640px){main{padding:24px 16px}}
+@media(max-width:640px){.token-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
+.section{margin-bottom:56px}
+.section-title{font-size:1.5rem;font-weight:600;margin-bottom:8px;padding-bottom:12px;border-bottom:2px solid var(--rep-border)}
+.section-desc{color:var(--rep-text-muted);margin-bottom:24px}
+
+/* Cards */
+.card{background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);box-shadow:var(--rep-shadow-sm);padding:24px;margin-bottom:20px}
+.card h4{font-size:1.1rem;margin-bottom:12px}
+
+/* Token Table */
+.token-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.token-table th,.token-table td{text-align:left;padding:12px;border-bottom:1px solid var(--rep-border)}
+.token-table th{font-weight:600;color:var(--rep-text-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.token-table code{background:rgba(65,153,159,.06)}
+.token-swatch{width:28px;height:28px;border-radius:6px;border:1px solid rgba(0,0,0,.1);display:inline-block;vertical-align:middle;margin-right:8px}
+
+/* Component Preview */
+.preview{background:var(--rep-bg-light);border:1px solid var(--rep-border);border-radius:var(--rep-radius-md);padding:24px;margin:16px 0}
+.preview-dark{background:var(--rep-forest)}
+
+/* Buttons demo */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--rep-radius-md);font-weight:600;font-size:.95rem;transition:all .25s;border:none;cursor:pointer;font-family:var(--rep-font-body)}
+.btn-primary{background:var(--rep-teal);color:#fff}
+.btn-primary:hover{background:#368F95}
+.btn-accent{background:var(--rep-sun);color:var(--rep-forest)}
+.btn-outline{background:transparent;color:var(--rep-teal);border:1.5px solid var(--rep-teal)}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
+
+/* Cards demo */
+.card-demo{background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);padding:20px;box-shadow:var(--rep-shadow-sm);max-width:280px}
+
+/* Chips demo */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:.8rem;font-weight:500}
+.chip-default{background:var(--rep-bg-light);border:1px solid var(--rep-border);color:var(--rep-text-secondary)}
+.chip-teal{background:rgba(65,153,159,.08);border:1px solid rgba(65,153,159,.25);color:var(--rep-teal)}
+.chip-green{background:rgba(146,241,203,.12);border:1px solid rgba(146,241,203,.30);color:var(--rep-forest)}
+
+/* Copy button */
+.copy-wrap{position:relative}
+.copy-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--rep-green);padding:6px 10px;border-radius:6px;font-size:.8rem;cursor:pointer;transition:.2s}
+.copy-btn:hover{background:rgba(255,255,255,.2)}
+
+/* Footer */
+footer{background:var(--rep-forest);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:.9rem}
+footer a{color:var(--rep-green)}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="inner">
+    <a href="index.html" class="back"><i class="ph ph-arrow-left"></i> Media Kit</a>
+    <span class="title">Design System</span>
+    <span class="version">v4.0</span>
+  </div>
+</header>
+
+<!-- Layout -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h4>Fundamentos</h4>
+    <a href="#instalacion" class="active">Instalación</a>
+    <a href="#tokens">Tokens CSS</a>
+    <a href="#colores">Colores</a>
+    <a href="#tipografia">Tipografía</a>
+    <a href="#espaciado">Espaciado</a>
+    <h4>Componentes</h4>
+    <a href="#botones">Botones</a>
+    <a href="#tarjetas">Tarjetas</a>
+    <a href="#chips">Chips & Badges</a>
+    <h4>Utilidades</h4>
+    <a href="#clases">Clases Elementor</a>
+    <a href="#snippets">Snippets</a>
+  </aside>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Installation -->
+    <section class="section" id="instalacion">
+      <h2 class="section-title">Instalación</h2>
+      <p class="section-desc">Cómo integrar el Design System en tu proyecto WordPress/Elementor.</p>
+      
+      <div class="card">
+        <h4>Opción 1: Elementor Site Settings</h4>
+        <p style="color:var(--rep-text-muted);margin-bottom:12px">Pegar en <strong>Site Settings → Custom CSS</strong></p>
+        <div class="copy-wrap">
+          <pre><code>/* Pegar contenido completo de replanta-kit.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap');</code></pre>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h4>Opción 2: functions.php (Recomendado)</h4>
+        <div class="copy-wrap">
+          <pre><code>// En functions.php del tema hijo
+add_action('wp_enqueue_scripts', function() {
+  wp_enqueue_style(
+    'replanta-kit',
+    get_stylesheet_directory_uri() . '/replanta-kit.css',
+    [],
+    '4.0'
+  );
+  wp_enqueue_script(
+    'phosphor-icons',
+    'https://unpkg.com/@phosphor-icons/web@2.1.1',
+    [],
+    null,
+    false
+  );
+});</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tokens -->
+    <section class="section" id="tokens">
+      <h2 class="section-title">Tokens CSS</h2>
+      <p class="section-desc">Variables CSS globales definidas en <code>:root</code>. Usar siempre estos valores para mantener consistencia.</p>
+      
+      <div class="card" id="colores">
+        <h4>Colores</h4>
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Valor</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td><code>--rep-green</code></td><td><span class="token-swatch" style="background:#93F1C9"></span>#93F1C9</td><td>Primario, CTAs</td></tr>
+            <tr><td><code>--rep-forest</code></td><td><span class="token-swatch" style="background:#1E2F23"></span>#1E2F23</td><td>Texto, fondos oscuros</td></tr>
+            <tr><td><code>--rep-teal</code></td><td><span class="token-swatch" style="background:#41999F"></span>#41999F</td><td>Links, botones</td></tr>
+            <tr><td><code>--rep-sun</code></td><td><span class="token-swatch" style="background:#F7D450"></span>#F7D450</td><td>Acentos, alertas</td></tr>
+            <tr><td><code>--rep-bg-light</code></td><td><span class="token-swatch" style="background:#F7FBF9;border:1px solid #E6F3EF"></span>#F7FBF9</td><td>Fondo claro</td></tr>
+            <tr><td><code>--rep-border</code></td><td><span class="token-swatch" style="background:#E6F3EF"></span>#E6F3EF</td><td>Bordes, separadores</td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="card">
+        <h4>Degradado</h4>
+        <div class="preview" style="height:80px;background:var(--rep-grad);border-radius:var(--rep-radius-md)"></div>
+        <pre style="margin-top:12px"><code>--rep-grad: linear-gradient(135deg, #93F1C9 0%, #41999F 50%, #2A6B70 100%);</code></pre>
+      </div>
+      
+      <div class="card">
+        <h4>Sombras (2-layer)</h4>
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td><code>--rep-shadow-sm</code></td><td>0 1px 2px rgba(30,47,35,.05)</td></tr>
+            <tr><td><code>--rep-shadow-md</code></td><td>0 4px 6px -1px rgba(30,47,35,.10), 0 2px 4px -1px rgba(30,47,35,.06)</td></tr>
+            <tr><td><code>--rep-shadow-lg</code></td><td>0 10px 15px -3px rgba(30,47,35,.10), 0 4px 6px -2px rgba(30,47,35,.05)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="card" id="espaciado">
+        <h4>Espaciado (base 4px)</h4>
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td><code>--rep-space-xs</code></td><td>4px</td></tr>
+            <tr><td><code>--rep-space-sm</code></td><td>8px</td></tr>
+            <tr><td><code>--rep-space-md</code></td><td>16px</td></tr>
+            <tr><td><code>--rep-space-lg</code></td><td>24px</td></tr>
+            <tr><td><code>--rep-space-xl</code></td><td>32px</td></tr>
+            <tr><td><code>--rep-space-2xl</code></td><td>48px</td></tr>
+            <tr><td><code>--rep-space-3xl</code></td><td>64px</td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="card">
+        <h4>Border Radius</h4>
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td><code>--rep-radius-sm</code></td><td>8px</td></tr>
+            <tr><td><code>--rep-radius-md</code></td><td>12px</td></tr>
+            <tr><td><code>--rep-radius-lg</code></td><td>16px</td></tr>
+            <tr><td><code>--rep-radius-xl</code></td><td>24px</td></tr>
+            <tr><td><code>--rep-radius-full</code></td><td>999px</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="section" id="tipografia">
+      <h2 class="section-title">Tipografía</h2>
+      <div class="card">
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Valor</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td><code>--rep-font-display</code></td><td>'Sora', system-ui, sans-serif</td><td>Títulos, headings</td></tr>
+            <tr><td><code>--rep-font-body</code></td><td>'Inter', system-ui, sans-serif</td><td>Cuerpo, UI</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Buttons -->
+    <section class="section" id="botones">
+      <h2 class="section-title">Botones</h2>
+      <p class="section-desc">Clases de botón para diferentes contextos.</p>
+      
+      <div class="preview" style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary"><i class="ph-duotone ph-rocket-launch"></i> Primary</button>
+        <button class="btn btn-accent"><i class="ph-duotone ph-star"></i> Accent</button>
+        <button class="btn btn-outline">Outline</button>
+      </div>
+      <div class="preview preview-dark" style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-ghost"><i class="ph-duotone ph-arrow-right"></i> Ghost</button>
+      </div>
+      
+      <pre style="margin-top:16px"><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
+&lt;button class="btn btn-accent"&gt;Accent&lt;/button&gt;
+&lt;button class="btn btn-outline"&gt;Outline&lt;/button&gt;
+&lt;button class="btn btn-ghost"&gt;Ghost&lt;/button&gt;</code></pre>
+    </section>
+
+    <!-- Cards -->
+    <section class="section" id="tarjetas">
+      <h2 class="section-title">Tarjetas</h2>
+      
+      <div class="preview">
+        <div class="card-demo">
+          <h4 style="margin-bottom:8px">Título de Tarjeta</h4>
+          <p style="color:var(--rep-text-muted);font-size:.9rem">Descripción breve del contenido de la tarjeta.</p>
+        </div>
+      </div>
+      
+      <pre><code>&lt;div class="card"&gt;
+  &lt;h4&gt;Título&lt;/h4&gt;
+  &lt;p&gt;Contenido...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+    </section>
+
+    <!-- Chips -->
+    <section class="section" id="chips">
+      <h2 class="section-title">Chips & Badges</h2>
+      
+      <div class="preview" style="display:flex;gap:10px;flex-wrap:wrap">
+        <span class="chip chip-default">Default</span>
+        <span class="chip chip-teal">Teal</span>
+        <span class="chip chip-green">Green</span>
+      </div>
+      
+      <pre><code>&lt;span class="chip"&gt;Default&lt;/span&gt;
+&lt;span class="chip chip--teal"&gt;Teal&lt;/span&gt;
+&lt;span class="chip chip--green"&gt;Green&lt;/span&gt;</code></pre>
+    </section>
+
+    <!-- Elementor Classes -->
+    <section class="section" id="clases">
+      <h2 class="section-title">Clases para Elementor</h2>
+      <p class="section-desc">Clases con <code>!important</code> para sobreescribir estilos de Elementor. Añadir en el campo CSS Classes del widget.</p>
+      
+      <div class="card">
+        <table class="token-table">
+          <thead><tr><th>Clase</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><code>.rep-btn-primary</code></td><td>Botón teal con hover</td></tr>
+            <tr><td><code>.rep-btn-accent</code></td><td>Botón amarillo (CTA)</td></tr>
+            <tr><td><code>.rep-btn-secondary</code></td><td>Botón outline teal</td></tr>
+            <tr><td><code>.rep-card</code></td><td>Tarjeta con borde y sombra</td></tr>
+            <tr><td><code>.rep-heading-1</code></td><td>H1 con Sora</td></tr>
+            <tr><td><code>.rep-heading-2</code></td><td>H2 con Sora</td></tr>
+            <tr><td><code>.rep-heading-3</code></td><td>H3 con Sora</td></tr>
+            <tr><td><code>.rep-text-body</code></td><td>Párrafo con Inter</td></tr>
+            <tr><td><code>.rep-bg-light</code></td><td>Fondo #F7FBF9</td></tr>
+            <tr><td><code>.rep-bg-gradient</code></td><td>Fondo con degradado</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Snippets -->
+    <section class="section" id="snippets">
+      <h2 class="section-title">Snippets útiles</h2>
+      
+      <div class="card">
+        <h4>Texto con degradado</h4>
+        <pre><code>.grad-text {
+  background: var(--rep-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}</code></pre>
+      </div>
+      
+      <div class="card">
+        <h4>Reveal animation (scroll)</h4>
+        <pre><code>.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}</code></pre>
+      </div>
+      
+      <div class="card">
+        <h4>Glow decorativo</h4>
+        <pre><code>.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}</code></pre>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <p><a href="index.html">← Volver al Media Kit</a> · Replanta DS v4.0 · <a href="https://replanta.net">replanta.net</a></p>
+</footer>
+
+<script>
+// Smooth scroll for sidebar links
+document.querySelectorAll('.sidebar a').forEach(link => {
+  link.addEventListener('click', e => {
+    const href = link.getAttribute('href');
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+# Copyright (C) 2025 Replanta
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Replanta Prices 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/replantadev/replantaprices/issues\n"
+"POT-Creation-Date: 2025-01-01T00:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/hosting-grid.php
+msgid "Facturación"
+msgstr ""
+
+#: templates/hosting-grid.php
+msgid "Mensual"
+msgstr ""
+
+#: templates/hosting-grid.php
+msgid "Anual"
+msgstr ""
+
+#: templates/hosting-grid.php
+#. translators: billing discount note shown next to "Annual" toggle
+msgid "(-2 meses)"
+msgstr ""
+
+#: templates/hosting-grid.php templates/mantenimiento-grid.php
+msgid "mes"
+msgstr ""
+
+#: templates/hosting-grid.php
+msgid "año"
+msgstr ""
+
+#: templates/hosting-grid.php
+msgid "Ver más"
+msgstr ""
+
+#: templates/hosting-grid.php
+msgid "Ver menos"
+msgstr ""
+
+#: templates/mantenimiento-grid.php
+msgid "Plan recomendado"
+msgstr ""
+
+#: templates/mantenimiento-grid.php
+msgid "Más info"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Precios dinámicos con detección geográfica multi-divisa"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Configuración"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Productos & Precios"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Características"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "API Token"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Token de Admin API de Upmind. %s"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Generar token →"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Base URL"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "URL de tu instancia Upmind (sin barra final)."
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Cache TTL"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "segundos (mínimo 3600 = 1 hora)"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Guardar configuración"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Sincronización con Upmind"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Última sincronización:"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Nunca"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Sincronizar ahora"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Log última sincronización"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Shortcodes disponibles"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Descripción"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Grid de 3 tarjetas de hosting con toggle mensual/anual"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Grid de 3 tarjetas de mantenimiento (solo mensual)"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Precio inline de un plan concreto"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Test geolocalización"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Añade ?geo_test=XX a cualquier URL para simular un país (solo admins). Ejemplos:"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Plan"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Mensual (€)"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Anual (€)"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Sí"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Guardar precios"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Los precios se guardan en EUR. La conversión a otras divisas se hace vía Upmind."
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Precios actualizados correctamente."
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Características actualizadas correctamente."
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Edita el nombre, subtítulo, texto del botón y características de cada plan. Se admite HTML básico (<b>, <em>, <strong>, &bull;)."
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Para mantenimiento: usa \"Texto || Tooltip\" para añadir tooltip a una característica."
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Título de categoría"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Subtítulo"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Nota al pie"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Nombre"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Texto botón CTA"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Una por línea"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Características extra"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "\"Ver más\" expandible"
+msgstr ""
+
+#: includes/class-admin-settings.php
+msgid "Guardar características"
+msgstr ""
+
+#: replanta-prices.php
+msgid "Cada 6 horas (Replanta Prices)"
+msgstr ""

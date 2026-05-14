@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Replanta · Media Kit</title>
+<meta name="description" content="Centro de recursos oficiales de Replanta: identidad de marca, toolkit de afiliados y guía para desarrolladores.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;
+  --rep-sun:#F7D450;--rep-mint:#92F1CB;--rep-white:#FFFFFF;
+  --rep-bg-light:#F7FBF9;--rep-text-secondary:#3B4B45;
+  --rep-text-tertiary:#547065;--rep-text-muted:#6B7D76;
+  --rep-border:#E6F3EF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 12px rgba(30,47,35,.10);
+  --rep-shadow-lg:0 10px 30px rgba(30,47,35,.12);
+  --rep-font-display:'Sora',system-ui,sans-serif;
+  --rep-font-body:'Inter',system-ui,sans-serif;
+  --rep-radius-md:12px;--rep-radius-lg:16px;--rep-radius-xl:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--rep-bg-light);color:var(--rep-forest);font-family:var(--rep-font-body);min-height:100vh}
+h1,h2,h3{font-family:var(--rep-font-display);line-height:1.15}
+a{text-decoration:none;color:inherit}
+
+/* Hero */
+.hero{background:linear-gradient(165deg,#1E2F23 0%,#0F1A12 55%,#162B1F 100%);color:#fff;padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30h60M30 0v60' stroke='%2393F1C9' stroke-width='.3' opacity='.06'/%3E%3C/svg%3E");pointer-events:none}
+.hero .content{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.hero .hero-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:24px}
+.hero .hero-logo i{font-size:2.6rem;color:var(--rep-green)}
+.hero .hero-logo span{font:700 2rem/1 var(--rep-font-display);color:#fff;letter-spacing:-.02em}
+.hero h1{font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-bottom:12px}
+.hero p{color:rgba(255,255,255,.7);font-size:1.1rem;max-width:480px;margin:0 auto}
+.hero .glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.hero .glow-1{width:400px;height:400px;background:rgba(147,241,201,.15);top:-100px;left:-100px}
+.hero .glow-2{width:300px;height:300px;background:rgba(65,153,159,.12);bottom:-50px;right:-50px}
+
+/* Cards Grid */
+.container{max-width:1000px;margin:0 auto;padding:0 24px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:-60px;position:relative;z-index:2;padding-bottom:80px}
+
+/* Kit Card */
+.kit-card{background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-xl);padding:32px;box-shadow:var(--rep-shadow-sm);transition:all .3s ease;display:flex;flex-direction:column}
+.kit-card:hover{box-shadow:var(--rep-shadow-lg);transform:translateY(-6px)}
+.kit-card .icon{width:56px;height:56px;border-radius:var(--rep-radius-md);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:20px}
+.kit-card .icon--brand{background:linear-gradient(135deg,rgba(147,241,201,.2) 0%,rgba(65,153,159,.15) 100%);color:var(--rep-teal)}
+.kit-card .icon--affiliate{background:linear-gradient(135deg,rgba(247,212,80,.2) 0%,rgba(247,212,80,.1) 100%);color:#8B7000}
+.kit-card .icon--dev{background:linear-gradient(135deg,rgba(30,47,35,.1) 0%,rgba(30,47,35,.05) 100%);color:var(--rep-forest)}
+.kit-card h2{font-size:1.4rem;font-weight:600;margin-bottom:8px}
+.kit-card p{color:var(--rep-text-muted);font-size:.95rem;line-height:1.5;flex-grow:1;margin-bottom:20px}
+.kit-card ul{list-style:none;margin:0 0 24px;padding:0}
+.kit-card ul li{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rep-border);font-size:.9rem;color:var(--rep-text-secondary)}
+.kit-card ul li:last-child{border:none}
+.kit-card ul li i{color:var(--rep-teal);font-size:1rem}
+.kit-card .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--rep-radius-md);font-weight:600;font-size:.95rem;transition:all .25s ease;width:100%;margin-top:auto}
+.kit-card .btn-primary{background:var(--rep-teal);color:#fff}
+.kit-card .btn-primary:hover{background:#368F95;transform:translateY(-2px)}
+.kit-card .btn-outline{background:transparent;color:var(--rep-teal);border:1.5px solid var(--rep-teal)}
+.kit-card .btn-outline:hover{background:var(--rep-teal);color:#fff}
+
+/* Footer */
+footer{background:var(--rep-forest);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:.9rem}
+footer a{color:var(--rep-green)}
+footer a:hover{text-decoration:underline}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero{padding:60px 20px}
+  .cards{margin-top:-40px;gap:16px}
+  .kit-card{padding:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="content">
+    <div class="hero-logo"><i class="ph-bold ph-plant"></i><span>replanta</span></div>
+    <h1>Media Kit</h1>
+    <p>Recursos oficiales para embajadores, afiliados y desarrolladores que trabajan con Replanta.</p>
+  </div>
+</section>
+
+<!-- Cards -->
+<section class="container">
+  <div class="cards">
+
+    <!-- Brand Guidelines -->
+    <article class="kit-card">
+      <div class="icon icon--brand"><i class="ph-duotone ph-palette"></i></div>
+      <h2>Identidad de Marca</h2>
+      <p>Logotipos, colores, tipografía y voz de marca para comunicaciones oficiales.</p>
+      <ul>
+        <li><i class="ph-duotone ph-check-circle"></i> Logotipos SVG / PNG</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Paleta de colores</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Tipografías</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Guía de voz</li>
+      </ul>
+      <a href="brand.html" class="btn btn-primary">
+        <i class="ph-duotone ph-download-simple"></i> Ver guía de marca
+      </a>
+    </article>
+
+    <!-- Affiliate Toolkit -->
+    <article class="kit-card">
+      <div class="icon icon--affiliate"><i class="ph-duotone ph-handshake"></i></div>
+      <h2>Programa de Afiliados</h2>
+      <p>Gana un 20% por cada venta. Registro instantáneo, cupón propio y toolkit completo.</p>
+      <ul>
+        <li><i class="ph-duotone ph-check-circle"></i> 20% comisión directa</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Generador de enlaces</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Mensajes listos para redes</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Dashboard propio</li>
+      </ul>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:auto;">
+        <a href="programa.html" class="btn btn-primary">
+          <i class="ph-duotone ph-crown"></i> Programa Directo (20%)
+        </a>
+        <div style="display:flex;gap:10px;">
+          <a href="affiliates.html" class="btn btn-outline" style="flex:1;">
+            <i class="ph-duotone ph-rocket-launch"></i> Toolkit
+          </a>
+          <a href="partner-kit.html" class="btn btn-outline" style="flex:1;" title="PDF para Awin">
+            <i class="ph-duotone ph-file-pdf"></i> Awin
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Developers -->
+    <article class="kit-card">
+      <div class="icon icon--dev"><i class="ph-duotone ph-code"></i></div>
+      <h2>Design System</h2>
+      <p>Documentación técnica del DS v4.0: tokens CSS, componentes y utilidades.</p>
+      <ul>
+        <li><i class="ph-duotone ph-check-circle"></i> Tokens CSS</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Componentes</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Clases utilitarias</li>
+        <li><i class="ph-duotone ph-check-circle"></i> Snippets Elementor</li>
+      </ul>
+      <a href="developers.html" class="btn btn-outline">
+        <i class="ph-duotone ph-file-code"></i> Ver documentación
+      </a>
+    </article>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 Replanta. Hosting WordPress sostenible. · <a href="https://replanta.net">replanta.net</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-rt-bg: #FBFAF6;
+  --color-rt-fg: #0E1A14;
+  --color-rt-muted: #6B7568;
+  --color-rt-surface: #F1EFE7;
+  --color-rt-border: #D9D6CA;
+  --color-rt-primary: #1F6F45;
+  --color-rt-primary-fg: #FFFFFF;
+  --color-rt-accent: #E8B84C;
+  --radius-rt-sm: 0.375rem;
+  --radius-rt-md: 0.625rem;
+  --radius-rt-lg: 1rem;
+  --radius-rt-xl: 1.5rem;
+  --font-rt-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-rt-serif: "DM Serif Display", ui-serif, Georgia, serif;
+}
+
+/* Scoped to admin root so we don't leak Tailwind into wp-admin globally */
+#replanta-ai-root {
+  font-family: var(--font-rt-sans);
+  color: var(--color-rt-fg);
+}
+
+#replanta-ai-root *,
+#replanta-ai-root *::before,
+#replanta-ai-root *::after {
+  box-sizing: border-box;
+}

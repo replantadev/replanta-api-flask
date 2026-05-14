@@ -1,0 +1,597 @@
+﻿/* ================================================
+   TEW SHOWCASE — Replanta 3.0 Design System
+   Depends on: replanta-kit.css (tokens + fonts)
+   ================================================ */
+
+:root {
+    /* Showcase-only aliases (inherits all --rep-* from kit) */
+    --rep-card: #FFFFFF;
+    --rep-text: var(--rep-text-secondary);
+    --rep-radius: var(--rep-radius-lg);
+    --rep-shadow: var(--rep-shadow-sm);
+    --rep-shadow-hover: var(--rep-shadow-lg);
+}
+
+/* ================================================
+   CONTENEDOR PRINCIPAL
+   ================================================ */
+
+.tew-showcase {
+    font-family: var(--rep-font-body);
+    background: var(--rep-surface);
+    border-radius: var(--rep-radius);
+    padding: clamp(24px, 4vw, 48px);
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.tew-showcase__header {
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.tew-showcase__title {
+    font-family: var(--rep-font-display);
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 700;
+    color: var(--rep-forest);
+    margin: 0 0 12px;
+    line-height: 1.15;
+}
+
+.tew-showcase__subtitle {
+    font-size: clamp(15px, 2.2vw, 17px);
+    color: var(--rep-text);
+    line-height: 1.65;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* Botón toggle vista (mosaico/lista) */
+.tew-view-toggle {
+    position: absolute;
+    top: 0;
+    right: -140px;
+    display: flex;
+    gap: 4px;
+    opacity:0.7;
+    background: #ffffff!important;
+    border: 1px solid var(--rep-border);
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 1px 3px rgba(30, 47, 35, 0.04);
+}
+.tew-view-toggle:hover {
+    opacity:1;
+}
+
+.tew-view-btn {
+    width: 32px!important;
+    height: 32px!important;
+    border: none!important;
+    background: transparent!important;
+    color: #9BA3A0!important;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0!important;
+}
+
+.tew-view-btn:hover {
+    background: var(--rep-surface)!important;
+    color: var(--rep-text-muted)!important;
+}
+
+.tew-view-btn.is-active {
+    background: var(--rep-teal)!important;
+    color: #ffffff!important;
+}
+
+.tew-view-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 768px) {
+    .tew-view-toggle {
+        position: static;
+        margin: 0 auto 24px;
+        width: fit-content;
+    }
+}
+
+/* ================================================
+   FILTROS (OCULTOS - ELIMINADOS SEGÚN PETICIÓN)
+   ================================================ */
+
+.tew-showcase__filters {
+    display: none;
+}
+
+/* ================================================
+   GRID DE CASOS (CONDENSADO TIPO SEMRUSH)
+   ================================================ */
+
+.tew-showcase__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+/* Vista lista (una columna) */
+.tew-showcase[data-view="list"] .tew-showcase__grid {
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.tew-showcase[data-view="list"] .tew-case-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+}
+
+.tew-showcase[data-view="list"] .tew-case-card__metrics {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.tew-showcase[data-view="list"] .tew-case-card__quote {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+@media (max-width: 768px) {
+    .tew-showcase__grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tew-showcase[data-view="list"] .tew-case-card {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* ================================================
+   CARD DE CASO DE ÉXITO (DELICIOSA Y CLARA)
+   ================================================ */
+
+.tew-case-card {
+    position: relative;
+    background: var(--rep-card);
+    border: 1px solid var(--rep-border);
+    border-radius: var(--rep-radius);
+    padding: 24px;
+    box-shadow: var(--rep-shadow);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+}
+
+.tew-case-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rep-green) 0%, var(--rep-teal) 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.tew-case-card:hover {
+    box-shadow: var(--rep-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.tew-case-card:hover::before {
+    opacity: 1;
+}
+
+/* Header de la card */
+.tew-case-card__header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tew-case-card__client {
+    font-family: var(--rep-font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--rep-forest);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.tew-case-card__domain {
+    font-size: 14px;
+    color: var(--rep-text-muted);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tew-case-card__domain::before {
+    content: '🌐';
+    font-size: 12px;
+}
+
+/* Badge eco (chip style) */
+.tew-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 6px;
+    align-self: flex-start;
+}
+
+.tew-badge--eco {
+    background: var(--rep-green);
+    color: var(--rep-forest);
+    border: none;
+}
+
+.tew-badge--eco svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* Métricas (ANTES → DESPUÉS) - Condensado con superíndices */
+.tew-case-card__metrics {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    background: var(--rep-surface);
+    border-radius: var(--rep-radius-sm);
+}
+
+.tew-metric {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.tew-metric__label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--rep-text-muted);
+    font-weight: 700;
+    min-width: 48px;
+}
+
+.tew-metric__values {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex: 1;
+}
+
+.tew-metric__before {
+    font-size: 16px;
+    font-weight: 600;
+    color: #9BA3A0;
+    font-variant-numeric: tabular-nums;
+}
+
+.tew-metric__arrow {
+    color: var(--rep-teal);
+    opacity: 0.5;
+    flex-shrink: 0;
+    width: 14px;
+    height: 10px;
+}
+
+.tew-metric__after {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--rep-teal);
+    font-variant-numeric: tabular-nums;
+    position: relative;
+}
+
+.tew-metric__delta {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    line-height: 1;
+    position: relative;
+    top: -4px;
+    margin-left: 2px;
+}
+
+.tew-metric__delta--positive {
+    background: rgba(65, 153, 159, 0.15);
+    color: var(--rep-teal);
+}
+
+.tew-metric__delta--negative {
+    background: rgba(147, 241, 201, 0.25);
+    color: var(--rep-forest);
+}
+
+/* Testimonial (cita deliciosa) */
+.tew-case-card__quote {
+    font-size: 15px;
+    font-style: normal;
+    color: var(--rep-text);
+    line-height: 1.6;
+    margin: 0;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, rgba(147, 241, 201, 0.08) 0%, rgba(65, 153, 159, 0.05) 100%);
+    border-left: 3px solid var(--rep-teal);
+    border-radius: var(--rep-radius-sm);
+    position: relative;
+}
+
+.tew-case-card__quote::before {
+    content: '"';
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-family: var(--rep-font-display);
+    font-size: 32px;
+    color: var(--rep-green);
+    line-height: 1;
+    opacity: 0.4;
+}
+
+/* Link "Ver análisis" (CTA clara) */
+.tew-case-card__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--rep-forest);
+    background: transparent;
+    border: 1px solid var(--rep-border);
+    border-radius: var(--rep-radius-sm);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    margin-top: auto;
+}
+
+.tew-case-card__link:hover {
+    background: var(--rep-teal);
+    color: #ffffff;
+    border-color: var(--rep-teal);
+}
+
+.tew-case-card__link svg {
+    transition: transform 0.15s ease;
+}
+
+.tew-case-card__link:hover svg {
+    transform: translateX(3px);
+}
+
+/* ================================================
+   CARDS REGULARES (INFORMES SIMPLES)
+   ================================================ */
+
+.tew-showcase-card--regular {
+    background: var(--rep-card);
+    border: 1px solid var(--rep-border);
+    border-radius: var(--rep-radius-sm);
+    padding: 20px;
+    box-shadow: var(--rep-shadow);
+    transition: all 0.3s ease;
+}
+
+.tew-showcase-card--regular:hover {
+    box-shadow: var(--rep-shadow-hover);
+    transform: translateY(-2px);
+}
+
+.tew-card__header {
+    margin-bottom: 12px;
+}
+
+.tew-card__header h3 {
+    font-family: var(--rep-font-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--rep-forest);
+    margin: 0 0 4px;
+}
+
+.tew-card__date {
+    font-size: 12px;
+    color: var(--rep-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Círculo de score */
+.tew-card__score {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.tew-score-circle {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.tew-circular-chart {
+    width: 100%;
+    height: 100%;
+}
+
+.tew-circle-bg {
+    fill: none;
+    stroke: var(--rep-border);
+    stroke-width: 3;
+}
+
+.tew-circle {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dasharray 0.5s ease;
+}
+
+.tew-circle.grade-a,
+.tew-circle.grade-a\+ {
+    stroke: var(--rep-teal);
+}
+
+.tew-circle.grade-b {
+    stroke: var(--rep-green);
+}
+
+.tew-circle.grade-c {
+    stroke: var(--rep-sun);
+}
+
+.tew-circle.grade-d,
+.tew-circle.grade-e,
+.tew-circle.grade-f {
+    stroke: #C24034;
+}
+
+.tew-score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.tew-score-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--rep-forest);
+    line-height: 1;
+}
+
+.tew-score-grade {
+    display: block;
+    font-size: 11px;
+    color: var(--rep-text-muted);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Métricas card regular */
+.tew-card__metrics {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.tew-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--rep-surface);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.tew-metric__label {
+    color: var(--rep-text-muted);
+    font-weight: 500;
+}
+
+.tew-metric__value {
+    color: var(--rep-forest);
+    font-weight: 600;
+}
+
+.tew-metric__value--green {
+    color: var(--rep-teal);
+}
+
+/* Estado vacío */
+.tew-showcase__empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--rep-text-muted);
+    font-size: 15px;
+}
+
+/* ================================================
+   RESPONSIVE
+   ================================================ */
+
+@media (max-width: 640px) {
+    .tew-showcase {
+        padding: 16px;
+    }
+    
+    .tew-showcase__header {
+        margin-bottom: 24px;
+    }
+    
+    .tew-showcase__title {
+        font-size: 24px;
+    }
+    
+    .tew-case-card {
+        padding: 16px;
+    }
+    
+    .tew-metric__values {
+        font-size: 14px;
+    }
+}
+
+/* ================================================
+   ANIMACIONES
+   ================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+    .tew-case-card,
+    .tew-showcase-card--regular {
+        animation: fadeInUp 0.5s ease-out backwards;
+    }
+    
+    .tew-case-card:nth-child(1) { animation-delay: 0.05s; }
+    .tew-case-card:nth-child(2) { animation-delay: 0.1s; }
+    .tew-case-card:nth-child(3) { animation-delay: 0.15s; }
+    .tew-case-card:nth-child(4) { animation-delay: 0.2s; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

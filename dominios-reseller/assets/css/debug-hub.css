@@ -1,0 +1,230 @@
+/* Debug Hub Styles */
+.dr-debug-container {
+    margin-top: 20px;
+}
+
+.dr-debug-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.dr-debug-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #23282d;
+}
+
+.dr-debug-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dr-debug-card {
+    padding: 20px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.dr-debug-card:hover {
+    border-color: #007cba;
+    box-shadow: 0 2px 8px rgba(0,123,186,0.1);
+}
+
+.dr-debug-card h3 {
+    margin-top: 0;
+    color: #23282d;
+    font-size: 16px;
+}
+
+.dr-debug-card p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.dr-debug-card button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.dr-test-result {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    line-height: 1.4;
+}
+
+.dr-test-result.success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.dr-test-result.error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.dr-test-result.info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+.dr-test-result.loading {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+}
+
+.dr-debug-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dr-info-card {
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+}
+
+.dr-info-card h4 {
+    margin-top: 0;
+    color: #495057;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dr-info-card ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.dr-info-card li {
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.dr-info-card li strong {
+    color: #495057;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dr-debug-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dr-debug-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dr-debug-card {
+        padding: 15px;
+    }
+}
+
+/* Loading animation */
+.dr-loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007cba;
+    border-radius: 50%;
+    animation: dr-spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes dr-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button states */
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.button:disabled:hover {
+    background: #007cba;
+    border-color: #007cba;
+}
+
+/* Manual Enqueue Styles */
+.dr-manual-enqueue {
+    margin-top: 20px;
+}
+
+.dr-enqueue-form, .dr-enqueue-actions {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e1e1e1;
+}
+
+.dr-enqueue-actions h3 {
+    margin-top: 0;
+    color: #23282d;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.dr-form-row {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dr-form-row label {
+    font-weight: 600;
+    color: #23282d;
+    min-width: 120px;
+}
+
+.dr-form-row input[type="text"], .dr-form-row select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.dr-form-row input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.dr-domain-actions {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.dr-domain-actions button {
+    margin-right: 10px;
+}
+
+.dr-domain-actions button:last-child {
+    margin-right: 0;
+}

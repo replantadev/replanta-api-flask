@@ -1,0 +1,133 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-03-26T12:00:00.000Z",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Awin Import",
+      "publicId": "GTM-M6WJKQ7K",
+      "usageContext": ["WEB"]
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "2001",
+        "name": "Awin - Set AWC Cookie",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n(function() {\n  var urlParams = new URLSearchParams(window.location.search);\n  var awc = urlParams.get('awc');\n  if (!awc) return;\n  if (!/^[a-zA-Z0-9_-]+$/.test(awc)) return;\n  var expires = new Date();\n  expires.setDate(expires.getDate() + 90);\n  document.cookie = 'replanta_awin_awc=' + encodeURIComponent(awc) + ';domain=.replanta.net;path=/;expires=' + expires.toUTCString() + ';SameSite=Lax';\n  console.log('[Awin GTM] Cookie set:', awc);\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": ["2001"],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "2002",
+        "name": "Awin - Conversion Pixel",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n(function() {\n  var awc = (function() {\n    var cookies = document.cookie.split(';');\n    for (var i = 0; i < cookies.length; i++) {\n      var cookie = cookies[i].trim();\n      if (cookie.indexOf('replanta_awin_awc=') === 0) {\n        return decodeURIComponent(cookie.substring('replanta_awin_awc='.length));\n      }\n    }\n    return null;\n  })();\n  if (!awc) { console.log('[Awin GTM] No AWC cookie'); return; }\n  var ecom = window.dataLayer.filter(function(e){return e.event==='purchase'})[0];\n  if (!ecom || !ecom.ecommerce) { console.log('[Awin GTM] No ecommerce data'); return; }\n  var tid = ecom.ecommerce.transaction_id || 'unknown';\n  var rev = ecom.ecommerce.value || 0;\n  var cur = ecom.ecommerce.currency || 'EUR';\n  if (!rev || rev <= 0) { console.log('[Awin GTM] No revenue'); return; }\n  var url = 'https://www.awin1.com/sread.php?tt=ss&tv=2&merchant=125596&amount=' + parseFloat(rev).toFixed(2) + '&ch=aw&cr=' + encodeURIComponent(cur) + '&ref=' + encodeURIComponent(tid) + '&parts=DEFAULT:' + parseFloat(rev).toFixed(2) + '&vc=&testmode=0&cks=' + encodeURIComponent(awc);\n  var img = new Image(1,1); img.src = url;\n  console.log('[Awin GTM] Conversion:', {tid:tid, rev:rev, awc:awc});\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": ["2002"],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2001",
+        "name": "Awin - AWC in URL",
+        "type": "PAGEVIEW",
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Page URL}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "awc="
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2002",
+        "name": "Awin - Purchase Event",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "purchase"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "2001",
+        "name": "Awin - AWC Cookie Value",
+        "type": "k",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "replanta_awin_awc"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "decodeCookie",
+            "value": "true"
+          }
+        ]
+      }
+    ]
+  }
+}

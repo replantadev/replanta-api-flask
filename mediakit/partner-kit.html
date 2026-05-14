@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Replanta · Affiliate Partner Kit | Guía para Afiliados Awin</title>
+<meta name="description" content="Guía completa para afiliados de Replanta en Awin: qué es Replanta, propuesta de valor, público objetivo, comisiones y ejemplos de copy listos para usar.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;
+  --rep-sun:#F7D450;--rep-mint:#92F1CB;--rep-white:#FFFFFF;
+  --rep-bg-light:#F7FBF9;--rep-text-secondary:#3B4B45;
+  --rep-text-tertiary:#547065;--rep-text-muted:#6B7D76;
+  --rep-border:#E6F3EF;--rep-card:#FFFFFF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 12px rgba(30,47,35,.10);
+  --rep-shadow-lg:0 10px 30px rgba(30,47,35,.12);
+  --rep-font-display:'Sora',system-ui,sans-serif;
+  --rep-font-body:'Inter',system-ui,sans-serif;
+  --rep-radius-sm:8px;--rep-radius-md:12px;--rep-radius-lg:16px;
+  --rep-radius-xl:24px;--rep-radius-full:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;color:var(--rep-forest);font-family:var(--rep-font-body);line-height:1.6}
+h1,h2,h3,h4{font-family:var(--rep-font-display);line-height:1.2}
+a{color:var(--rep-teal);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Print styles - forzamos colores legibles */
+@media print{
+  @page{margin:0}
+  @page:first{margin:0}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#F7FBF9!important;font-size:11pt;color:#000!important;margin:0}
+  h1,h2,h3,h4,p,span,strong,td,th,li{color:#1E2F23!important}
+  a{color:#1E2F23!important;text-decoration:underline}
+  .no-print{display:none!important}
+  .page-break{page-break-before:always}
+  section{page-break-inside:avoid;padding:40px 24px;background:#fff!important}
+  section.alt{background:#F7FBF9!important}
+  .container{max-width:100%!important;padding:0!important}
+  
+  /* Cover print - página completa sin márgenes */
+  .cover{background:#1E2F23!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;
+    min-height:100vh!important;padding:0!important;margin:0!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    page-break-after:always}
+  .cover .content{padding:60px 40px!important}
+  .cover h1,.cover p,.cover .logo span,.cover .badge{color:#fff!important}
+  .cover p strong{color:#F7D450!important}
+  .cover .logo i{color:#93F1C9!important}
+  .cover .glow{display:none!important}
+  
+  /* Cards sin sombra */
+  .card{box-shadow:none!important;border:1px solid #ccc!important}
+  
+  /* Tabla legible */
+  .plans-table th,.plans-table td{color:#1E2F23!important;border-color:#ccc!important}
+  .plans-table{border-collapse:collapse}
+  .plans-table th{background:#f5f5f5!important}
+  
+  /* Comisiones */
+  .commission-box{border:2px solid #1E2F23!important;background:#f9f9f9!important}
+  .commission-box .big{color:#1E2F23!important}
+  .commission-box .sub{color:#333!important}
+  
+  /* Sección proyección ingresos */
+  .container > div[style*="background:var(--rep-forest)"]{background:#1E2F23!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  
+  /* Footer */
+  footer{background:#1E2F23!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  footer p{color:#fff!important}
+}
+
+/* Header */
+header{background:var(--rep-forest);padding:14px 24px;position:sticky;top:0;z-index:10}
+header .inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+header .back{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:.9rem;transition:.2s}
+header .back:hover{color:var(--rep-green);text-decoration:none}
+header .title{color:#fff;font-family:var(--rep-font-display);font-weight:600;font-size:1rem}
+header .btn-pdf{background:var(--rep-sun);color:var(--rep-forest);padding:8px 16px;border-radius:var(--rep-radius-sm);font-weight:600;font-size:.85rem;display:inline-flex;align-items:center;gap:6px;transition:.2s}
+header .btn-pdf:hover{background:#f5cc3d;text-decoration:none}
+
+/* Main */
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+
+/* Cover */
+.cover{background:linear-gradient(165deg,#1E2F23 0%,#0F1A12 55%,#162B1F 100%);color:#fff;padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.cover::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30h60M30 0v60' stroke='%2393F1C9' stroke-width='.3' opacity='.06'/%3E%3C/svg%3E");pointer-events:none}
+.cover .glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.cover .glow-1{width:400px;height:400px;background:rgba(147,241,201,.15);top:-100px;left:-100px}
+.cover .glow-2{width:300px;height:300px;background:rgba(65,153,159,.12);bottom:-50px;right:-50px}
+.cover .content{position:relative;z-index:1;max-width:600px;margin:0 auto}
+.cover .logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px}
+.cover .logo i{font-size:2.4rem;color:var(--rep-green)}
+.cover .logo span{font:700 1.8rem/1 var(--rep-font-display);color:#fff;letter-spacing:-.02em}
+.cover .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(247,212,80,.15);border:1px solid rgba(247,212,80,.3);color:var(--rep-sun);padding:8px 16px;border-radius:var(--rep-radius-full);font-size:.85rem;font-weight:600;margin-bottom:20px}
+.cover h1{font-size:clamp(2rem,5vw,2.8rem);font-weight:700;margin-bottom:16px}
+.cover p{color:rgba(255,255,255,.7);font-size:1.1rem;max-width:500px;margin:0 auto}
+
+/* Sections */
+section{padding:56px 24px}
+section.alt{background:var(--rep-bg-light)}
+.section-head{text-align:center;margin-bottom:40px}
+.section-head .num{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--rep-teal);color:#fff;border-radius:50%;font:700 .9rem/1 var(--rep-font-display);margin-bottom:12px}
+.section-head h2{font-size:1.6rem;margin-bottom:8px}
+.section-head p{color:var(--rep-text-muted);max-width:520px;margin:0 auto}
+
+/* Cards */
+.card{background:var(--rep-card);border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);box-shadow:var(--rep-shadow-sm)}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* Value props */
+.value-card{padding:28px;text-align:center}
+.value-card i{font-size:40px;color:var(--rep-teal);margin-bottom:14px;display:block}
+.value-card h3{font-size:1.1rem;margin-bottom:8px}
+.value-card p{font-size:.9rem;color:var(--rep-text-muted);line-height:1.6}
+
+/* Stats row */
+.stats-row{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:32px}
+.stat-item{text-align:center}
+.stat-item .val{font:700 2rem/1 var(--rep-font-display);color:var(--rep-teal)}
+.stat-item .lab{font-size:.85rem;color:var(--rep-text-muted);margin-top:4px}
+
+/* Audience */
+.audience-card{padding:24px;display:flex;gap:16px;align-items:flex-start}
+.audience-card .icon{width:48px;height:48px;border-radius:var(--rep-radius-md);background:rgba(65,153,159,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.audience-card .icon i{font-size:24px;color:var(--rep-teal)}
+.audience-card h4{font-size:1rem;margin-bottom:4px}
+.audience-card p{font-size:.88rem;color:var(--rep-text-muted);line-height:1.5}
+
+/* Plans table */
+.plans-table{width:100%;border-collapse:collapse;margin-top:24px}
+.plans-table th,.plans-table td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--rep-border)}
+.plans-table th{background:var(--rep-forest);color:#fff;font-weight:600;font-size:.9rem}
+.plans-table th:first-child{border-radius:var(--rep-radius-md) 0 0 0}
+.plans-table th:last-child{border-radius:0 var(--rep-radius-md) 0 0}
+.plans-table tr:hover td{background:rgba(65,153,159,.04)}
+.plans-table .plan-name{font-weight:700;color:var(--rep-forest)}
+.plans-table .plan-name i{color:var(--rep-teal);margin-right:6px}
+.plans-table .commission{background:rgba(247,212,80,.15);color:#8B7000;font-weight:700;border-radius:var(--rep-radius-sm);padding:4px 10px;display:inline-block}
+.plans-table .recommended{background:var(--rep-sun);color:var(--rep-forest);font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:var(--rep-radius-full);margin-left:8px}
+
+/* Copy examples */
+.copy-card{padding:20px;margin-bottom:16px}
+.copy-card .platform{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--rep-teal);margin-bottom:10px}
+.copy-card .platform i{font-size:16px}
+.copy-card .text{background:var(--rep-bg-light);border-radius:var(--rep-radius-sm);padding:16px;font-size:.88rem;line-height:1.7;color:var(--rep-text-secondary);white-space:pre-wrap}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:16px;max-width:600px;margin:0 auto}
+.step{display:flex;gap:16px;align-items:flex-start}
+.step-num{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:var(--rep-green);color:var(--rep-forest);display:grid;place-items:center;font:700 1rem/1 var(--rep-font-display)}
+.step-body h4{font-size:1rem;margin-bottom:4px}
+.step-body p{font-size:.9rem;color:var(--rep-text-muted)}
+
+/* Commission box */
+.commission-box{background:linear-gradient(135deg,rgba(247,212,80,.15) 0%,rgba(247,212,80,.05) 100%);border:2px solid rgba(247,212,80,.3);border-radius:var(--rep-radius-lg);padding:28px;text-align:center;margin:32px 0}
+.commission-box .big{font:700 2.5rem/1 var(--rep-font-display);color:var(--rep-forest);margin-bottom:8px}
+.commission-box .sub{font-size:1rem;color:var(--rep-text-secondary)}
+
+/* CTA */
+.cta-section{background:linear-gradient(135deg,#1E2F23 0%,#2A4A35 50%,#1A3828 100%);color:#fff;text-align:center;padding:64px 24px}
+.cta-section h2{color:#fff;margin-bottom:12px}
+.cta-section p{color:rgba(255,255,255,.7);max-width:450px;margin:0 auto 28px}
+.cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 24px;border-radius:var(--rep-radius-md);font-weight:600;text-decoration:none;transition:.25s ease;gap:8px;font-family:var(--rep-font-body);font-size:.95rem}
+.btn:hover{transform:translateY(-2px);text-decoration:none}
+.btn-primary{background:var(--rep-green);color:var(--rep-forest)}
+.btn-primary:hover{background:#7de0b5}
+.btn-outline{background:transparent;border:2px solid rgba(255,255,255,.3);color:#fff}
+.btn-outline:hover{border-color:var(--rep-green);color:var(--rep-green)}
+
+/* Footer */
+footer{background:var(--rep-forest);color:rgba(255,255,255,.6);padding:28px 24px;text-align:center;font-size:.85rem}
+footer a{color:var(--rep-green)}
+
+/* Highlight box */
+.highlight{background:rgba(65,153,159,.08);border-left:4px solid var(--rep-teal);padding:20px;border-radius:0 var(--rep-radius-md) var(--rep-radius-md) 0;margin:24px 0}
+.highlight strong{color:var(--rep-teal)}
+
+/* USP list */
+.usp-list{list-style:none;margin:24px 0}
+.usp-list li{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--rep-border)}
+.usp-list li:last-child{border:none}
+.usp-list li i{color:var(--rep-green);font-size:20px;flex-shrink:0;margin-top:2px}
+.usp-list li strong{display:block;margin-bottom:2px}
+.usp-list li span{font-size:.9rem;color:var(--rep-text-muted)}
+
+/* Tech stack */
+.tech-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:24px}
+.tech-badge{background:rgba(65,153,159,.1);border:1px solid rgba(65,153,159,.2);color:var(--rep-teal);padding:8px 14px;border-radius:var(--rep-radius-full);font-size:.85rem;font-weight:500}
+</style>
+</head>
+<body>
+
+<!-- Header (no print) -->
+<header class="no-print">
+  <div class="inner">
+    <a href="affiliates.html" class="back"><i class="ph ph-arrow-left"></i> Affiliate Toolkit</a>
+    <span class="title">Partner Kit</span>
+    <button class="btn-pdf" onclick="window.print()"><i class="ph ph-file-pdf"></i> Descargar PDF</button>
+  </div>
+</header>
+
+<!-- ====== COVER ====== -->
+<section class="cover">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="content">
+    <div class="logo"><i class="ph-bold ph-plant"></i><span>replanta</span></div>
+    <div class="badge"><i class="ph-bold ph-handshake"></i> Programa de Afiliados Awin</div>
+    <h1>Genera ingresos recomendando hosting que funciona</h1>
+    <p>Hasta <strong style="color:var(--rep-sun)">44€ por venta</strong>. Producto que convierte. Sin experiencia técnica necesaria.</p>
+  </div>
+</section>
+
+<!-- ====== 1. QUÉ ES REPLANTA ====== -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="num">1</div>
+      <h2>¿Qué es Replanta?</h2>
+      <p>Hosting WordPress premium español que combina rendimiento extremo con compromiso ambiental real.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card value-card">
+        <i class="ph-duotone ph-lightning"></i>
+        <h3>Velocidad Real</h3>
+        <p>LiteSpeed Enterprise, NVMe, Redis y Cloudflare CDN. TTFB inferior a 200ms en el 95% de requests.</p>
+      </div>
+      <div class="card value-card">
+        <i class="ph-duotone ph-leaf"></i>
+        <h3>100% Renovable</h3>
+        <p>Energía verde certificada + compensación x2 con Ecologi. Un árbol plantado por cada cliente.</p>
+      </div>
+      <div class="card value-card">
+        <i class="ph-duotone ph-headset"></i>
+        <h3>Soporte Humano</h3>
+        <p>Equipo especializado en WordPress. Respuesta en español 24/7. Migración gratuita incluida.</p>
+      </div>
+    </div>
+
+    <div class="tech-grid">
+      <span class="tech-badge">LiteSpeed Enterprise</span>
+      <span class="tech-badge">NVMe SSD</span>
+      <span class="tech-badge">Redis Object Cache</span>
+      <span class="tech-badge">Cloudflare CDN</span>
+      <span class="tech-badge">HTTP/3 + Brotli</span>
+      <span class="tech-badge">Backups Diarios</span>
+      <span class="tech-badge">SSL Gratuito</span>
+      <span class="tech-badge">Staging 1-Click</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="val">&lt;200ms</div><div class="lab">TTFB promedio</div></div>
+      <div class="stat-item"><div class="val">99.9%</div><div class="lab">Uptime garantizado</div></div>
+      <div class="stat-item"><div class="val">2</div><div class="lab">Datacenters (EU + US)</div></div>
+      <div class="stat-item"><div class="val">24/7</div><div class="lab">Soporte español</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 2. POR QUÉ FUNCIONA ====== -->
+<section class="alt page-break">
+  <div class="container">
+    <div class="section-head">
+      <div class="num">2</div>
+      <h2>Por qué funciona promocionar Replanta</h2>
+      <p>Argumentos de venta probados que convierten leads en clientes.</p>
+    </div>
+
+    <ul class="usp-list">
+      <li>
+        <i class="ph-bold ph-check-circle"></i>
+        <div>
+          <strong>Problema real → Solución clara</strong>
+          <span>El 70% de webs WordPress cargan lento. Replanta lo soluciona con stack técnico premium a precio accesible.</span>
+        </div>
+      </li>
+      <li>
+        <i class="ph-bold ph-check-circle"></i>
+        <div>
+          <strong>Diferenciación única: sostenibilidad + rendimiento</strong>
+          <span>No hay que elegir entre web rápida y hosting ético. Replanta ofrece ambos, con datos reales y certificaciones.</span>
+        </div>
+      </li>
+      <li>
+        <i class="ph-bold ph-check-circle"></i>
+        <div>
+          <strong>Migración gratuita elimina fricciones</strong>
+          <span>El equipo migra la web sin coste y sin downtime. El cliente no hace nada — solo ve resultados.</span>
+        </div>
+      </li>
+      <li>
+        <i class="ph-bold ph-check-circle"></i>
+        <div>
+          <strong>Soporte técnico especializado (no bots)</strong>
+          <span>Respuestas reales de expertos WordPress. En español. Este punto solo ya genera confianza.</span>
+        </div>
+      </li>
+      <li>
+        <i class="ph-bold ph-check-circle"></i>
+        <div>
+          <strong>Precio competitivo con valor añadido</strong>
+          <span>Desde 129€/año con todo incluido (SSL, backups, staging, Redis). Sin sorpresas ni extras ocultos.</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="highlight">
+      <strong>Tip de conversión:</strong> Enfatiza la migración gratuita y el soporte humano. Son los dos factores que más dudas eliminan en clientes potenciales.
+    </div>
+  </div>
+</section>
+
+<!-- ====== NUEVO: POR QUÉ TUS CLIENTES COMPRARÁN ====== -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="num" style="background:var(--rep-sun);color:var(--rep-forest)"><i class="ph-bold ph-shopping-cart" style="font-size:16px"></i></div>
+      <h2>Por qué tus clientes comprarán esto</h2>
+      <p>Argumentos que cierran ventas. Úsalos en tu contenido.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="padding:24px;border-left:4px solid var(--rep-green)">
+        <h4 style="margin-bottom:8px;display:flex;align-items:center;gap:8px"><i class="ph-duotone ph-rocket-launch" style="color:var(--rep-teal)"></i> Mejora inmediata</h4>
+        <p style="font-size:.9rem;color:var(--rep-text-muted);margin:0">Su web carga 2-3x más rápido desde el día 1. Los clientes lo VEN. No hay que explicar nada — el resultado es obvio.</p>
+      </div>
+      <div class="card" style="padding:24px;border-left:4px solid var(--rep-green)">
+        <h4 style="margin-bottom:8px;display:flex;align-items:center;gap:8px"><i class="ph-duotone ph-arrows-clockwise" style="color:var(--rep-teal)"></i> Migración sin hacer nada</h4>
+        <p style="font-size:.9rem;color:var(--rep-text-muted);margin:0">Nosotros migramos la web gratis. Cero downtime. El cliente no toca nada. Esta fricción eliminada = conversión alta.</p>
+      </div>
+      <div class="card" style="padding:24px;border-left:4px solid var(--rep-green)">
+        <h4 style="margin-bottom:8px;display:flex;align-items:center;gap:8px"><i class="ph-duotone ph-headset" style="color:var(--rep-teal)"></i> Soporte que responde</h4>
+        <p style="font-size:.9rem;color:var(--rep-text-muted);margin:0">Humanos reales. En español. Expertos en WordPress. Esto solo ya diferencia de la competencia.</p>
+      </div>
+      <div class="card" style="padding:24px;border-left:4px solid var(--rep-green)">
+        <h4 style="margin-bottom:8px;display:flex;align-items:center;gap:8px"><i class="ph-duotone ph-leaf" style="color:var(--rep-teal)"></i> Diferenciación eco</h4>
+        <p style="font-size:.9rem;color:var(--rep-text-muted);margin:0">Hosting verde real (no greenwashing). Perfecto para marcas con valores. Argumento que otros hostings no tienen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== NUEVO: SIN FRICCIONES ====== -->
+<section class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="num" style="background:#E8F5E9;color:#2E7D32"><i class="ph-bold ph-check" style="font-size:16px"></i></div>
+      <h2>Sin fricciones para ti ni tu audiencia</h2>
+      <p>Objeciones resueltas antes de que las pregunten.</p>
+    </div>
+
+    <div class="grid-3" style="text-align:center">
+      <div class="card" style="padding:24px">
+        <i class="ph-duotone ph-user-circle-gear" style="font-size:36px;color:var(--rep-teal);display:block;margin-bottom:12px"></i>
+        <h4 style="font-size:.95rem;margin-bottom:6px">No necesitas experiencia técnica</h4>
+        <p style="font-size:.85rem;color:var(--rep-text-muted);margin:0">Solo recomiendas. Nosotros hacemos todo lo técnico.</p>
+      </div>
+      <div class="card" style="padding:24px">
+        <i class="ph-duotone ph-arrows-clockwise" style="font-size:36px;color:var(--rep-teal);display:block;margin-bottom:12px"></i>
+        <h4 style="font-size:.95rem;margin-bottom:6px">Nosotros hacemos la migración</h4>
+        <p style="font-size:.85rem;color:var(--rep-text-muted);margin:0">Gratis. Sin caídas. En menos de 48h.</p>
+      </div>
+      <div class="card" style="padding:24px">
+        <i class="ph-duotone ph-plugs-connected" style="font-size:36px;color:var(--rep-teal);display:block;margin-bottom:12px"></i>
+        <h4 style="font-size:.95rem;margin-bottom:6px">Funciona con cualquier WordPress</h4>
+        <p style="font-size:.85rem;color:var(--rep-text-muted);margin:0">WooCommerce, Elementor, blogs, membership... todo compatible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 3. PÚBLICO OBJETIVO ====== -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="num">3</div>
+      <h2>Público objetivo ideal</h2>
+      <p>Estos perfiles convierten mejor. Enfoca tu contenido hacia ellos.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card audience-card">
+        <div class="icon"><i class="ph-duotone ph-pencil-ruler"></i></div>
+        <div>
+          <h4>Freelancers de diseño web</h4>
+          <p>Necesitan hosting fiable para sus clientes. Valoran soporte técnico que no les haga quedar mal.</p>
+        </div>
+      </div>
+      <div class="card audience-card">
+        <div class="icon"><i class="ph-duotone ph-buildings"></i></div>
+        <div>
+          <h4>Agencias digitales pequeñas</h4>
+          <p>Buscan proveedor de confianza para múltiples proyectos. Plan Roble (ilimitado) es perfecto.</p>
+        </div>
+      </div>
+      <div class="card audience-card">
+        <div class="icon"><i class="ph-duotone ph-shopping-cart"></i></div>
+        <div>
+          <h4>Tiendas WooCommerce</h4>
+          <p>Velocidad = conversiones. Redis optimizado para Woo y recursos dedicados les interesan.</p>
+        </div>
+      </div>
+      <div class="card audience-card">
+        <div class="icon"><i class="ph-duotone ph-article"></i></div>
+        <div>
+          <h4>Bloggers y creadores de contenido</h4>
+          <p>Core Web Vitals afectan SEO. Replanta mejora métricas sin configurar nada.</p>
+        </div>
+      </div>
+      <div class="card audience-card">
+        <div class="icon"><i class="ph-duotone ph-leaf"></i></div>
+        <div>
+          <h4>Marcas con valores sostenibles</h4>
+          <p>ONGs, proyectos eco, empresas B Corp. La propuesta verde les resuena directamente.</p>
+        </div>
+      </div>
+      <div class="card audience-card">
+        <div class="icon"><i class="ph-duotone ph-chart-line-up"></i></div>
+        <div>
+          <h4>Consultores SEO</h4>
+          <p>Saben que hosting lento arruina rankings. Recomiendan Replanta a sus clientes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 4. PLANES Y COMISIONES ====== -->
+<section class="alt page-break">
+  <div class="container">
+    <div class="section-head">
+      <div class="num">4</div>
+      <h2>Cuánto vas a ganar</h2>
+      <p>Comisión del 15% sobre el pago anual vía Awin. Pago único por venta.</p>
+    </div>
+
+    <table class="plans-table">
+      <thead>
+        <tr>
+          <th>Plan</th>
+          <th>Precio cliente</th>
+          <th>Ticket medio</th>
+          <th>Tu comisión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="plan-name"><i class="ph-duotone ph-leaf"></i> SAUCE</span></td>
+          <td>129€/año</td>
+          <td>Blogs, webs personales</td>
+          <td><span class="commission">~19€</span></td>
+        </tr>
+        <tr>
+          <td><span class="plan-name"><i class="ph-duotone ph-tree"></i> ROBLE</span><span class="recommended">MÁS VENDIDO</span></td>
+          <td>199€/año</td>
+          <td>Freelancers, agencias</td>
+          <td><span class="commission">~29€</span></td>
+        </tr>
+        <tr>
+          <td><span class="plan-name"><i class="ph-duotone ph-tree"></i> CEDRO</span></td>
+          <td>299€/año</td>
+          <td>WooCommerce, alto tráfico</td>
+          <td><span class="commission">~44€</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="commission-box">
+      <div class="big">15%</div>
+      <div class="sub">Comisión Awin · Cookie 90 días · <strong style="color:var(--rep-teal)">Hasta 20% para partners seleccionados</strong></div>
+    </div>
+
+    <!-- Cuánto puedes ganar -->
+    <div style="background:var(--rep-forest);color:#fff;border-radius:var(--rep-radius-lg);padding:28px;margin-top:24px">
+      <h4 style="color:var(--rep-green);margin-bottom:16px;font-size:1.1rem"><i class="ph-bold ph-calculator"></i> Proyección realista de ingresos</h4>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center">
+        <div style="background:rgba(255,255,255,.08);padding:20px;border-radius:var(--rep-radius-md)">
+          <div style="font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:4px">5 ventas/mes</div>
+          <div style="font:700 1.5rem/1 var(--rep-font-display);color:var(--rep-green)">~145€/mes</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:4px">1.740€/año</div>
+        </div>
+        <div style="background:rgba(147,241,201,.15);padding:20px;border-radius:var(--rep-radius-md);border:1px solid rgba(147,241,201,.3)">
+          <div style="font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:4px">10 ventas/mes</div>
+          <div style="font:700 1.5rem/1 var(--rep-font-display);color:var(--rep-sun)">~290€/mes</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:4px">3.480€/año</div>
+        </div>
+        <div style="background:rgba(255,255,255,.08);padding:20px;border-radius:var(--rep-radius-md)">
+          <div style="font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:4px">20 ventas/mes</div>
+          <div style="font:700 1.5rem/1 var(--rep-font-display);color:var(--rep-green)">~580€/mes</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:4px">6.960€/año</div>
+        </div>
+      </div>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.5);margin:16px 0 0;text-align:center">* Basado en ticket medio de 29€ (plan Roble). Partners con volumen alto pueden negociar hasta 20%.</p>
+    </div>
+
+    <div class="highlight" style="margin-top:24px">
+      <strong>¿Por qué convierte?</strong> Ticket medio de ~200€/año. Migración gratuita elimina objeciones. Resultado visible inmediato (web más rápida). El cliente no tiene que hacer nada → decisión fácil.
+    </div>
+  </div>
+</section>
+
+<!-- ====== 5. EJEMPLOS DE COPY ====== -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="num">5</div>
+      <h2>Ejemplos de copy listos</h2>
+      <p>Copia, personaliza y publica. Tu enlace de afiliado es el único cambio necesario.</p>
+    </div>
+
+    <div class="card copy-card">
+      <div class="platform"><i class="ph-duotone ph-linkedin-logo"></i> LinkedIn · Profesional</div>
+      <div class="text">El rendimiento web es un factor clave en conversiones y SEO. Si tu WordPress carga lento, pierdes clientes.
+
+Llevo meses trabajando con Replanta, un hosting español especializado en WordPress que combina:
+
+→ LiteSpeed + NVMe + Redis (TTFB inferior a 200ms)
+→ Energía 100% renovable con compensación x2
+→ Migración gratuita sin tiempo de inactividad
+→ Soporte técnico real, especializado en WP
+
+Tengo un código de descuento del 10% si te interesa probarlo:
+[TU ENLACE DE AFILIADO]
+
+Cualquier duda, encantado de comentarte mi experiencia.</div>
+    </div>
+
+    <div class="card copy-card">
+      <div class="platform"><i class="ph-duotone ph-instagram-logo"></i> Instagram · Carrusel/Feed</div>
+      <div class="text">Tu web puede ser rápida Y sostenible 🌱
+
+Llevo tiempo usando @replantanet y la diferencia es real:
+✓ Carga en menos de 3 segundos
+✓ Energía 100% renovable
+✓ Plantan un árbol por cada cliente
+✓ Seguridad incluida
+
+Y con mi código tienes un 10% de descuento.
+Link en bio 👆
+
+#hosting #wordpress #ecohosting #sostenibilidad</div>
+    </div>
+
+    <div class="card copy-card">
+      <div class="platform"><i class="ph-duotone ph-envelope"></i> Email · Outreach frío</div>
+      <div class="text">Asunto: Tu WordPress puede cargar 3x más rápido
+
+Hola [NOMBRE],
+
+He analizado tu web y creo que podrías mejorar mucho el rendimiento con un cambio de hosting.
+
+Trabajo con Replanta, un hosting WordPress español que destaca por:
+- Velocidad real (LiteSpeed + NVMe + Redis)
+- Migración gratuita sin caídas
+- Soporte técnico especializado en WordPress
+
+Además usan energía 100% renovable — algo que cada vez más clientes valoran.
+
+Tengo un código que te da un 10% de descuento: [TU ENLACE]
+
+¿Te interesa que te cuente más?
+
+Un saludo,
+[TU NOMBRE]</div>
+    </div>
+
+    <p style="text-align:center;margin-top:24px;color:var(--rep-text-muted);font-size:.9rem;">
+      <i class="ph ph-lightbulb" style="color:var(--rep-sun)"></i> 
+      Más mensajes y posts en el <a href="affiliates.html">Affiliate Toolkit completo</a>
+    </p>
+  </div>
+</section>
+
+<!-- ====== 6. CÓMO EMPEZAR ====== -->
+<section class="alt page-break">
+  <div class="container">
+    <div class="section-head">
+      <div class="num">6</div>
+      <h2>Cómo empezar</h2>
+      <p>Empieza a generar comisiones en 4 pasos.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Únete al programa en Awin</h4>
+          <p>Si aún no tienes cuenta en Awin, regístrate. Busca "Replanta" y solicita unirte al programa.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Obtén tu cupón personalizado</h4>
+          <p>Contacta con el equipo de Replanta para solicitar un cupón exclusivo con tu nombre/marca.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Genera tus enlaces de afiliado</h4>
+          <p>Usa el <a href="affiliates.html">Affiliate Toolkit</a> para crear enlaces con tu cupón embebido.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Publica y empieza a generar</h4>
+          <p>Comparte tu enlace, publica contenido y empieza a recibir comisiones desde la primera venta.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight" style="margin-top:40px;">
+      <strong>Soporte para afiliados:</strong> ¿Dudas? Escribe a <a href="mailto:info@replanta.net">info@replanta.net</a> — te ayudamos con cualquier cosa.
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(247,212,80,.15) 0%,rgba(247,212,80,.05) 100%);border:2px solid rgba(247,212,80,.3);border-radius:var(--rep-radius-lg);padding:24px;margin-top:24px;text-align:center">
+      <h4 style="margin-bottom:8px;color:var(--rep-forest)"><i class="ph-bold ph-star" style="color:var(--rep-sun)"></i> ¿Generas volumen?</h4>
+      <p style="font-size:.9rem;color:var(--rep-text-secondary);margin:0">Partners seleccionados con resultados consistentes pueden salir del programa Awin y pasar a <strong>comisión directa del 20%</strong>. Escríbenos para negociar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== RECURSOS ADICIONALES ====== -->
+<section class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="num" style="background:var(--rep-forest)"><i class="ph-bold ph-folder-open" style="font-size:16px"></i></div>
+      <h2>Recursos adicionales</h2>
+      <p>Todo lo que necesitas para promocionar Replanta de forma profesional.</p>
+    </div>
+
+    <div class="grid-2">
+      <a href="affiliates.html" class="card" style="padding:28px;text-decoration:none;display:block;transition:transform .2s,box-shadow .2s">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+          <div style="width:48px;height:48px;background:rgba(65,153,159,.1);border-radius:var(--rep-radius-md);display:flex;align-items:center;justify-content:center">
+            <i class="ph-duotone ph-megaphone" style="font-size:24px;color:var(--rep-teal)"></i>
+          </div>
+          <h4 style="margin:0;color:var(--rep-forest)">Affiliate Toolkit</h4>
+        </div>
+        <p style="font-size:.9rem;color:var(--rep-text-muted);margin:0;line-height:1.5">Más ejemplos de mensajes, banners, imágenes para redes sociales y materiales listos para usar en tus campañas.</p>
+        <span style="display:inline-flex;align-items:center;gap:6px;color:var(--rep-teal);font-weight:600;font-size:.85rem;margin-top:12px">Abrir toolkit <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+
+      <a href="brand.html" class="card" style="padding:28px;text-decoration:none;display:block;transition:transform .2s,box-shadow .2s">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+          <div style="width:48px;height:48px;background:rgba(147,241,201,.15);border-radius:var(--rep-radius-md);display:flex;align-items:center;justify-content:center">
+            <i class="ph-duotone ph-palette" style="font-size:24px;color:var(--rep-green)"></i>
+          </div>
+          <h4 style="margin:0;color:var(--rep-forest)">Guía de Marca</h4>
+        </div>
+        <p style="font-size:.9rem;color:var(--rep-text-muted);margin:0;line-height:1.5">Colores, tipografías, logos y directrices de uso. Para crear contenido alineado con la identidad visual de Replanta.</p>
+        <span style="display:inline-flex;align-items:center;gap:6px;color:var(--rep-teal);font-weight:600;font-size:.85rem;margin-top:12px">Ver guía <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CTA ====== -->
+<section class="cta-section no-print">
+  <h2>Empieza a generar ingresos hoy</h2>
+  <p>Hosting que se vende solo. Comisiones reales. Sin experiencia técnica necesaria.</p>
+  <div class="cta-btns">
+    <a href="affiliates.html" class="btn btn-primary"><i class="ph-bold ph-currency-circle-dollar"></i> Generar mis enlaces de afiliado</a>
+    <button class="btn btn-outline" onclick="window.print()"><i class="ph-bold ph-file-pdf"></i> Guardar PDF</button>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 Replanta · Hosting WordPress Sostenible · <a href="https://replanta.net">replanta.net</a></p>
+  <p style="margin-top:8px;font-size:.8rem;opacity:.7">Partner Kit v1.1 · Marzo 2026</p>
+</footer>
+
+</body>
+</html>

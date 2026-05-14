@@ -1,0 +1,387 @@
+/**
+ * Replanta Auto Translate - Admin Styles
+ */
+
+/* General */
+.replanta-auto-translate-settings,
+.replanta-auto-translate-bulk,
+.replanta-auto-translate-logs {
+    max-width: 1200px;
+}
+
+/* Header */
+.replanta-bulk-header {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.replanta-bulk-header p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+}
+
+/* Stats boxes */
+.replanta-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: #f0f0f1;
+    padding: 15px 25px;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.stat-label {
+    display: block;
+    font-size: 12px;
+    color: #646970;
+    text-transform: uppercase;
+}
+
+/* Action buttons */
+.replanta-bulk-actions {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.replanta-bulk-actions h2 {
+    margin-top: 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.action-buttons .button-hero {
+    padding: 12px 24px;
+    height: auto;
+    line-height: 1.4;
+}
+
+/* Progress section */
+.replanta-progress {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.replanta-progress h3 {
+    margin-top: 0;
+}
+
+.progress-bar-container {
+    background: #f0f0f1;
+    height: 30px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    background: #2271b1;
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-bar.completed {
+    background: #00a32a;
+}
+
+.progress-bar.error {
+    background: #d63638;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: #646970;
+    margin-bottom: 15px;
+}
+
+.progress-log {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #f6f7f7;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.progress-log .log-entry {
+    padding: 3px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.progress-log .log-entry:last-child {
+    border-bottom: none;
+}
+
+.progress-log .log-success {
+    color: #00a32a;
+}
+
+.progress-log .log-error {
+    color: #d63638;
+}
+
+.progress-log .log-info {
+    color: #2271b1;
+}
+
+/* Manual selection */
+.replanta-manual-selection {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.replanta-manual-selection h3 {
+    margin-top: 0;
+}
+
+/* Table styles */
+.replanta-manual-selection .wp-list-table {
+    margin-bottom: 15px;
+}
+
+.replanta-manual-selection .check-column {
+    width: 30px;
+}
+
+/* Elementor badge */
+.elementor-badge {
+    display: inline-block;
+    background: #92003b;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* Translation status */
+.translation-status {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.translation-status.loading {
+    color: #2271b1;
+}
+
+.translation-status.success {
+    color: #00a32a;
+}
+
+.translation-status.error {
+    color: #d63638;
+}
+
+/* Status badges in logs */
+.status-completed {
+    color: #00a32a;
+    font-weight: 500;
+}
+
+.status-error {
+    color: #d63638;
+    font-weight: 500;
+}
+
+.status-processing {
+    color: #dba617;
+    font-weight: 500;
+}
+
+.status-pending {
+    color: #646970;
+}
+
+.error-message {
+    color: #d63638;
+    font-size: 11px;
+}
+
+/* Settings page */
+.replanta-auto-translate-settings h2 {
+    margin-top: 30px;
+}
+
+.replanta-auto-translate-settings .form-table th {
+    width: 250px;
+}
+
+.replanta-auto-translate-settings .description {
+    font-style: normal;
+    color: #646970;
+}
+
+/* Connection test */
+#connection-test-result {
+    padding: 10px 15px;
+    border-radius: 4px;
+}
+
+#connection-test-result.success {
+    background: #d1e7dd;
+    color: #0a3622;
+    border: 1px solid #a3cfbb;
+}
+
+#connection-test-result.error {
+    background: #f8d7da;
+    color: #58151c;
+    border: 1px solid #f1aeb5;
+}
+
+/* Buttons */
+.button.translating {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.button.translating::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .replanta-stats {
+        flex-direction: column;
+    }
+    
+    .stat-box {
+        min-width: 100%;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .button-hero {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Logs page */
+.replanta-auto-translate-logs .wp-list-table {
+    margin-top: 20px;
+}
+
+/* Disabled state */
+.button:disabled,
+.button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Notification animations */
+.replanta-notification {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 99999;
+    animation: slideIn 0.3s ease;
+}
+
+.replanta-notification.success {
+    background: #00a32a;
+    color: #fff;
+}
+
+.replanta-notification.error {
+    background: #d63638;
+    color: #fff;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Confirm dialog overlay */
+.replanta-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 99998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.replanta-dialog {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.replanta-dialog h3 {
+    margin-top: 0;
+}
+
+.replanta-dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}

@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Replanta · Identidad de Marca</title>
+<meta name="description" content="Guía de identidad visual de Replanta: logotipos, colores, tipografía y voz de marca.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;
+  --rep-sun:#F7D450;--rep-mint:#92F1CB;--rep-white:#FFFFFF;
+  --rep-bg-light:#F7FBF9;--rep-text-secondary:#3B4B45;
+  --rep-text-tertiary:#547065;--rep-text-muted:#6B7D76;
+  --rep-border:#E6F3EF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 12px rgba(30,47,35,.10);
+  --rep-shadow-lg:0 10px 30px rgba(30,47,35,.12);
+  --rep-font-display:'Sora',system-ui,sans-serif;
+  --rep-font-body:'Inter',system-ui,sans-serif;
+  --rep-radius-sm:8px;--rep-radius-md:12px;--rep-radius-lg:16px;--rep-radius-xl:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--rep-bg-light);color:var(--rep-forest);font-family:var(--rep-font-body);line-height:1.6}
+h1,h2,h3,h4{font-family:var(--rep-font-display);line-height:1.2}
+a{color:var(--rep-teal);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Header */
+header{background:var(--rep-forest);padding:16px 24px;position:sticky;top:0;z-index:10}
+header .inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+header .back{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.7);font-size:.9rem;transition:.2s}
+header .back:hover{color:var(--rep-green);text-decoration:none}
+header .title{color:#fff;font-family:var(--rep-font-display);font-weight:600;font-size:1.1rem}
+
+/* Main */
+.container{max-width:1100px;margin:0 auto;padding:48px 24px}
+.section{margin-bottom:56px}
+.section-title{font-size:1.6rem;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.section-title i{color:var(--rep-teal)}
+.section-desc{color:var(--rep-text-muted);margin-bottom:24px;max-width:600px}
+
+/* Cards */
+.card{background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);box-shadow:var(--rep-shadow-sm)}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+@media(max-width:768px){.grid-5{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.logo-lockup{grid-template-columns:1fr !important}}
+
+/* Logo Cards */
+.logo-card{padding:32px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.logo-card.dark{background:var(--rep-forest);border-color:var(--rep-forest)}
+.logo-card.dark .label{color:rgba(255,255,255,.6)}
+.logo-card img{max-width:180px;height:auto}
+.logo-card .label{font-size:.85rem;color:var(--rep-text-muted)}
+.logo-card .download{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:var(--rep-radius-sm);font-size:.85rem;font-weight:600;background:var(--rep-bg-light);color:var(--rep-teal);border:1px solid var(--rep-border);transition:.2s;margin-top:auto}
+.logo-card .download:hover{background:var(--rep-teal);color:#fff;text-decoration:none}
+.logo-card.dark .download{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--rep-green)}
+.logo-card.dark .download:hover{background:var(--rep-green);color:var(--rep-forest)}
+
+/* Color Swatches */
+.swatch{border-radius:var(--rep-radius-lg);overflow:hidden;transition:.3s}
+.swatch:hover{transform:translateY(-4px);box-shadow:var(--rep-shadow-md)}
+.swatch-color{height:100px;display:flex;align-items:flex-end;padding:12px}
+.swatch-color code{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;background:rgba(255,255,255,.9);padding:4px 8px;border-radius:4px}
+.swatch-info{padding:14px}
+.swatch-info strong{display:block;margin-bottom:2px}
+.swatch-info span{font-size:.85rem;color:var(--rep-text-muted)}
+
+/* Gradient */
+.gradient-box{min-height:80px;border-radius:var(--rep-radius-lg);background:var(--rep-grad);display:flex;align-items:flex-end;flex-wrap:wrap;padding:16px;margin-bottom:12px}
+.gradient-box code{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;background:rgba(255,255,255,.95);padding:6px 12px;border-radius:6px;word-break:break-all}
+
+/* Typography */
+.type-sample{padding:24px}
+.type-sample h4{margin-bottom:16px;color:var(--rep-text-muted);font-weight:500;font-size:.9rem}
+.type-display{font-family:var(--rep-font-display);font-size:2.5rem;font-weight:700;margin-bottom:8px}
+.type-heading{font-family:var(--rep-font-display);font-size:1.5rem;font-weight:600;margin-bottom:8px}
+.type-body{font-family:var(--rep-font-body);font-size:1rem;color:var(--rep-text-secondary)}
+
+/* Voice */
+.voice-card{padding:24px}
+.voice-card h4{font-size:1.1rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.voice-card h4 i{color:var(--rep-teal)}
+.voice-card p{color:var(--rep-text-secondary);font-size:.95rem}
+.voice-card .example{background:var(--rep-bg-light);border-radius:var(--rep-radius-sm);padding:12px;margin-top:12px;font-style:italic;color:var(--rep-text-tertiary);border-left:3px solid var(--rep-teal)}
+
+/* Donts */
+.dont-list{list-style:none}
+.dont-list li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--rep-border)}
+.dont-list li:last-child{border:none}
+.dont-list li i{color:#D64545;margin-top:2px}
+
+/* Downloads */
+.download-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:var(--rep-teal);color:#fff;border-radius:var(--rep-radius-md);font-weight:600;transition:.25s}
+.download-btn:hover{background:#368F95;transform:translateY(-2px);text-decoration:none}
+
+/* Footer */
+footer{background:var(--rep-forest);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:.9rem;margin-top:40px}
+footer a{color:var(--rep-green)}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="inner">
+    <a href="index.html" class="back"><i class="ph ph-arrow-left"></i> Media Kit</a>
+    <span class="title">Identidad de Marca</span>
+  </div>
+</header>
+
+<!-- Content -->
+<main class="container">
+
+  <!-- Logo Section -->
+  <section class="section">
+    <h2 class="section-title">Logotipos</h2>
+    <p class="section-desc">Usa siempre los archivos oficiales. No distorsiones, recolores ni alteres las proporciones del isotipo.</p>
+    
+    <!-- Lockup principal · 3 fondos — fiel a DS v4 (ph-plant + wordmark, sin img) -->
+    <div class="logo-lockup" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px">
+      <div style="border-radius:var(--rep-radius-lg);padding:40px 24px;background:var(--rep-bg-light);border:1px solid var(--rep-border);display:flex;flex-direction:column;align-items:center;gap:14px">
+        <span style="display:flex;align-items:center;gap:10px;color:var(--rep-forest)">
+          <i class="ph-bold ph-plant" style="font-size:30px;color:var(--rep-teal)"></i>
+          <span style="font:700 1.8rem/1 var(--rep-font-display);letter-spacing:-.02em">replanta</span>
+        </span>
+        <span style="font-size:.78rem;color:var(--rep-text-muted);text-transform:uppercase;letter-spacing:.06em">Fondo claro</span>
+      </div>
+      <div style="border-radius:var(--rep-radius-lg);padding:40px 24px;background:var(--rep-forest);display:flex;flex-direction:column;align-items:center;gap:14px">
+        <span style="display:flex;align-items:center;gap:10px;color:#fff">
+          <i class="ph-bold ph-plant" style="font-size:30px;color:var(--rep-green)"></i>
+          <span style="font:700 1.8rem/1 var(--rep-font-display);letter-spacing:-.02em">replanta</span>
+        </span>
+        <span style="font-size:.78rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em">Fondo oscuro</span>
+      </div>
+      <div style="border-radius:var(--rep-radius-lg);padding:40px 24px;background:var(--rep-grad);display:flex;flex-direction:column;align-items:center;gap:14px">
+        <span style="display:flex;align-items:center;gap:10px;color:#fff">
+          <i class="ph-bold ph-plant" style="font-size:30px"></i>
+          <span style="font:700 1.8rem/1 var(--rep-font-display);letter-spacing:-.02em">replanta</span>
+        </span>
+        <span style="font-size:.78rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.06em">Degradado</span>
+      </div>
+    </div>
+
+    <!-- Escalas -->
+    <div style="background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);padding:24px;margin-bottom:20px">
+      <p style="font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--rep-text-muted);margin-bottom:18px">Escalas: SM · Default · LG</p>
+      <div style="display:flex;align-items:center;gap:36px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:7px;color:var(--rep-forest)">
+          <i class="ph-bold ph-plant" style="font-size:18px;color:var(--rep-teal)"></i>
+          <span style="font:700 1rem/1 var(--rep-font-display);letter-spacing:-.02em">replanta</span>
+        </span>
+        <span style="display:flex;align-items:center;gap:9px;color:var(--rep-forest)">
+          <i class="ph-bold ph-plant" style="font-size:26px;color:var(--rep-teal)"></i>
+          <span style="font:700 1.5rem/1 var(--rep-font-display);letter-spacing:-.02em">replanta</span>
+        </span>
+        <span style="display:flex;align-items:center;gap:12px;color:var(--rep-forest)">
+          <i class="ph-bold ph-plant" style="font-size:40px;color:var(--rep-teal)"></i>
+          <span style="font:700 2.4rem/1 var(--rep-font-display);letter-spacing:-.02em">replanta</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Downloads SVG / PNG -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="logov4.svg" download class="download-btn"><i class="ph ph-download-simple"></i> Logo SVG</a>
+      <a href="logov4.png" download class="download-btn" style="background:var(--rep-bg-light);color:var(--rep-teal);border:1px solid var(--rep-border)"><i class="ph ph-download-simple"></i> Logo PNG</a>
+    </div>
+    
+    <div style="margin-top:24px;padding:20px;background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg)">
+      <h4 style="font-size:1rem;margin-bottom:12px;color:var(--rep-teal)"><i class="ph-duotone ph-info"></i> Zona de seguridad</h4>
+      <p style="color:var(--rep-text-secondary);font-size:.95rem;margin-bottom:16px">Mantén un espacio libre alrededor del logo equivalente a la altura de una "hoja" del isotipo. Tamaño mínimo: 24px de altura.</p>
+      <h4 style="font-size:1rem;margin-bottom:12px;color:#D64545"><i class="ph-duotone ph-prohibit"></i> No hagas esto</h4>
+      <ul class="dont-list">
+        <li><i class="ph ph-x-circle"></i> No estires ni distorsiones el logo</li>
+        <li><i class="ph ph-x-circle"></i> No uses colores no autorizados</li>
+        <li><i class="ph ph-x-circle"></i> No añadas sombras ni efectos</li>
+        <li><i class="ph ph-x-circle"></i> No coloques sobre fondos con poco contraste</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Colors Section -->
+  <section class="section">
+    <h2 class="section-title"><i class="ph-duotone ph-palette"></i> Paleta de colores</h2>
+    <p class="section-desc">Colores primarios de la marca. Usa los valores hex exactos para mantener consistencia.</p>
+    
+    <div class="grid-5">
+      <article class="card swatch">
+        <div class="swatch-color" style="background:#93F1C9"><code>#93F1C9</code></div>
+        <div class="swatch-info"><strong>Green</strong><span>Primario · CTAs</span></div>
+      </article>
+      <article class="card swatch">
+        <div class="swatch-color" style="background:#1E2F23;color:#93F1C9"><code style="background:rgba(147,241,201,.2);color:#93F1C9">#1E2F23</code></div>
+        <div class="swatch-info"><strong>Forest</strong><span>Texto · Fondos oscuros</span></div>
+      </article>
+      <article class="card swatch">
+        <div class="swatch-color" style="background:#41999F;color:#fff"><code style="background:rgba(255,255,255,.2);color:#fff">#41999F</code></div>
+        <div class="swatch-info"><strong>Teal</strong><span>Links · Botones</span></div>
+      </article>
+      <article class="card swatch">
+        <div class="swatch-color" style="background:#F7D450"><code>#F7D450</code></div>
+        <div class="swatch-info"><strong>Sun</strong><span>Acentos · Avisos</span></div>
+      </article>
+      <article class="card swatch">
+        <div class="swatch-color" style="background:#F7FBF9;border:1px solid var(--rep-border)"><code>#F7FBF9</code></div>
+        <div class="swatch-info"><strong>BG Light</strong><span>Fondos claros</span></div>
+      </article>
+    </div>
+    
+    <!-- Gradient -->
+    <div style="margin-top:32px">
+      <h3 style="font-size:1.2rem;margin-bottom:12px">Degradado de marca</h3>
+      <div class="gradient-box">
+        <code>linear-gradient(135deg, #93F1C9 0%, #41999F 50%, #2A6B70 100%)</code>
+      </div>
+      <p style="color:var(--rep-text-muted);font-size:.9rem">Usar en: headers, hero sections, highlights y placeholders de imagen.</p>
+    </div>
+  </section>
+
+  <!-- Typography Section -->
+  <section class="section">
+    <h2 class="section-title"><i class="ph-duotone ph-text-aa"></i> Tipografía</h2>
+    <p class="section-desc">Combinación de Sora para títulos e Inter para cuerpo. Ambas vía Google Fonts.</p>
+    
+    <div class="grid-2">
+      <article class="card type-sample">
+        <h4>Sora · Display & Headings</h4>
+        <div class="type-display">Replanta</div>
+        <div class="type-heading">Hosting WordPress Sostenible</div>
+        <p style="color:var(--rep-text-muted);font-size:.9rem;margin-top:12px">
+          Pesos: 600–700 · Tamaños: 24px – 56px<br>
+          <code style="font-family:monospace;font-size:.85rem;background:var(--rep-bg-light);padding:2px 6px;border-radius:4px">font-family: 'Sora', sans-serif</code>
+        </p>
+      </article>
+      <article class="card type-sample">
+        <h4>Inter · Body & UI</h4>
+        <p class="type-body">La sostenibilidad no es una opción, es una responsabilidad. Cada sitio web que alojamos compensa su huella de carbono y contribuye a la reforestación.</p>
+        <p style="color:var(--rep-text-muted);font-size:.9rem;margin-top:12px">
+          Pesos: 400–600 · Tamaños: 14px – 18px<br>
+          <code style="font-family:monospace;font-size:.85rem;background:var(--rep-bg-light);padding:2px 6px;border-radius:4px">font-family: 'Inter', sans-serif</code>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Voice Section -->
+  <section class="section">
+    <h2 class="section-title"><i class="ph-duotone ph-megaphone"></i> Voz de marca</h2>
+    <p class="section-desc">Cómo hablamos en Replanta: cercano, transparente y comprometido.</p>
+    
+    <div class="grid-3">
+      <article class="card voice-card">
+        <h4><i class="ph-duotone ph-heart"></i> Cercano</h4>
+        <p>Hablamos de tú, como si fueras parte del equipo. Sin tecnicismos innecesarios.</p>
+        <div class="example">"Tu web ya compensa su CO₂. Gracias por estar aquí."</div>
+      </article>
+      <article class="card voice-card">
+        <h4><i class="ph-duotone ph-eye"></i> Transparente</h4>
+        <p>Datos reales, sin greenwashing. Mostramos nuestro impacto con números verificables.</p>
+        <div class="example">"Este mes hemos plantado 847 árboles. Verifica en nuestro dashboard público."</div>
+      </article>
+      <article class="card voice-card">
+        <h4><i class="ph-duotone ph-leaf"></i> Comprometido</h4>
+        <p>No es marketing, es convicción. Cada decisión se toma pensando en el planeta.</p>
+        <div class="example">"Elegimos servidores europeos con energía 100% renovable."</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Downloads -->
+  <section class="section" style="text-align:center;padding:40px;background:#fff;border-radius:var(--rep-radius-xl);border:1px solid var(--rep-border)">
+    <h2 style="font-size:1.8rem;margin-bottom:8px">¿Necesitas más recursos?</h2>
+    <p style="color:var(--rep-text-muted);margin-bottom:24px">Descarga el pack completo con logos, iconos y plantillas.</p>
+    <a href="#" class="download-btn"><i class="ph-duotone ph-folder-simple-dotted"></i> Descargar Brand Kit (ZIP)</a>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <p><a href="index.html">← Volver al Media Kit</a> · <a href="https://replanta.net">replanta.net</a></p>
+</footer>
+
+</body>
+</html>

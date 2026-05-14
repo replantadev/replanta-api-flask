@@ -1,0 +1,529 @@
+<script>
+(function() {
+  var AWIN_ENDPOINT = window.replantaAwinEndpoint || 'https://replanta.net/wp-json/replanta-prices/v1/awin-event';
+  var AWIN_MID = '125596';
+
+  function isValidAwc(value) {
+    return typeof value === 'string' && /^[a-zA-Z0-9_-]+$/.test(value);
+  }
+
+  function getSharedCookieFlags(expires) {
+    return ';domain=.replanta.net'
+      + ';path=/'
+      + ';expires=' + expires.toUTCString()
+      + ';SameSite=Lax'
+      + (window.location.protocol === 'https:' ? ';Secure' : '');
+  }
+
+  function postAwinEvent(evt) {
+    if (!evt || !evt.event || !AWIN_ENDPOINT) return;
+
+    var payload = JSON.stringify(evt);
+
+    if (navigator.sendBeacon) {
+      try {
+        var blob = new Blob([payload], { type: 'application/json' });
+        if (navigator.sendBeacon(AWIN_ENDPOINT, blob)) {
+          return;
+        }
+      } catch (e) {}
+    }
+
+    try {
+      fetch(AWIN_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+        credentials: 'omit'
+      });
+    } catch (e) {}
+  }
+
+  // =============================================
+  // AWIN MASTERTAG - Cargar dwin1.com/125596.js
+  // Solo si NO está ya cargado (ej: desde GTM)
+  // Necesario para el flujo ?sn=1 (sin awc en URL)
+  // =============================================
+  (function loadMasterTag() {
+    // Solo cargar si ?sn=1 o ?awc= están en la URL Y no existe ya el script
+    var urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.get('sn') && !urlParams.get('awc')) return;
+    // Esperar un poco para dar oportunidad a GTM de cargarlo primero
+    setTimeout(function() {
+      if (document.querySelector('script[src*="dwin1.com/' + AWIN_MID + '"]')) {
+        console.log('[Replanta] MasterTag already loaded (via GTM)');
+        return;
+      }
+      console.log('[Replanta] Loading MasterTag as fallback');
+      var s = document.createElement('script');
+      s.src = 'https://www.dwin1.com/' + AWIN_MID + '.js';
+      s.async = true;
+      s.type = 'text/javascript';
+      document.body.appendChild(s);
+    }, 1500);
+  })();
+
+  // =============================================
+  // HELPER: Guardar AWC en cookie cross-domain
+  // =============================================
+  function saveAwcCookie(awc) {
+    var expires = new Date();
+    expires.setDate(expires.getDate() + 90);
+    document.cookie = 'replanta_awin_awc=' + encodeURIComponent(awc)
+      + getSharedCookieFlags(expires);
+  }
+
+  // =============================================
+  // HELPER: Leer cookie AWIN del MasterTag
+  // Busca múltiples nombres posibles: _aw_m_MID, _aw_sn_MID, awMID
+  // =============================================
+  function getAwinMasterTagCookie() {
+    var cookies = document.cookie.split(';');
+    var prefixes = ['_aw_m_' + AWIN_MID + '=', '_aw_sn_' + AWIN_MID + '=', 'aw' + AWIN_MID + '='];
+    for (var i = 0; i < cookies.length; i++) {
+      var c = cookies[i].trim();
+      for (var j = 0; j < prefixes.length; j++) {
+        if (c.indexOf(prefixes[j]) === 0) {
+          return decodeURIComponent(c.substring(prefixes[j].length));
+        }
+      }
+    }
+    return null;
+  }
+
+  // =============================================
+  // HELPER: Buscar AWC en cookies o window.AWIN
+  // =============================================
+  function findAwcAnywhere() {
+    // 1) Cookie AWIN MasterTag (nombres conocidos)
+    var fromCookie = getAwinMasterTagCookie();
+    if (fromCookie) return { source: 'cookie', awc: fromCookie };
+
+    // 2) Cualquier cookie que contenga el MID y parezca AWC
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var c = cookies[i].trim();
+      var name = c.split('=')[0];
+      if (name && /aw/i.test(name)) {
+        var val = decodeURIComponent(c.substring(name.length + 1));
+        if (val && /^\d+_\d+_[a-f0-9]+$/i.test(val)) {
+          return { source: 'cookie-' + name, awc: val };
+        }
+      }
+    }
+
+    // 3) window.AWIN object (MasterTag expone datos aquí)
+    if (window.AWIN && window.AWIN.Tracking) {
+      var t = window.AWIN.Tracking;
+      if (t.awc) return { source: 'AWIN.Tracking.awc', awc: t.awc };
+      if (t.Sale && t.Sale.cookie) return { source: 'AWIN.Tracking.Sale.cookie', awc: t.Sale.cookie };
+    }
+    if (window.awin && window.awin.awc) {
+      return { source: 'awin.awc', awc: window.awin.awc };
+    }
+
+    return null;
+  }
+
+  // =============================================
+  // HELPER: Procesar AWC encontrado → cookie + dataLayer + arrival
+  // =============================================
+  var _awcAlreadyCaptured = false;
+  function processFoundAwc(result) {
+    if (_awcAlreadyCaptured) return;
+    _awcAlreadyCaptured = true;
+
+    saveAwcCookie(result.awc);
+    console.log('[Replanta] AWC captured from ' + result.source + ':', result.awc);
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'awin_awc_captured',
+      awin_awc: result.awc
+    });
+
+    postAwinEvent({
+      event: 'arrival',
+      awc: result.awc,
+      url: window.location.href
+    });
+  }
+
+  // =============================================
+  // AWIN AWC CAPTURE
+  // Método 1: ?awc= directo en URL
+  // Método 2: ?sn=1 → poll cookie + AWIN object
+  // Método 3: Escuchar consent change (Complianz)
+  // =============================================
+  (function captureAWC() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var isSn1 = urlParams.get('sn') === '1';
+
+    // --- Método 1: AWC explícito en URL ---
+    var awc = urlParams.get('awc');
+    if (isValidAwc(awc)) {
+      processFoundAwc({ source: 'URL', awc: awc });
+      return;
+    }
+
+    if (!isSn1) return; // no es tráfico AWIN
+
+    // --- Método 2: sn=1 → poll para cookie/AWIN object ---
+    console.log('[Replanta] sn=1 detected, waiting for MasterTag...');
+
+    var _sn1FallbackSent = false;
+    function sendSn1Fallback() {
+      if (_sn1FallbackSent || _awcAlreadyCaptured) return;
+      _sn1FallbackSent = true;
+      // Guardar cookie marcando tráfico AWIN sin resolver
+      var expires = new Date();
+      expires.setDate(expires.getDate() + 30);
+      document.cookie = 'replanta_awin_sn1=1'
+        + getSharedCookieFlags(expires);
+      console.warn('[Replanta] sn=1 AWC unresolved (3P cookies blocked). Sending fallback arrival.');
+      postAwinEvent({
+        event: 'arrival_unresolved',
+        awc: null,
+        sn: '1',
+        url: window.location.href,
+        referrer: document.referrer || null,
+        ua: navigator.userAgent
+      });
+    }
+
+    function pollForAwc(label, maxMs, isFinal) {
+      var elapsed = 0;
+      var interval = 250;
+      var poll = setInterval(function() {
+        elapsed += interval;
+        var result = findAwcAnywhere();
+        if (result) {
+          clearInterval(poll);
+          processFoundAwc(result);
+        } else if (elapsed >= maxMs) {
+          clearInterval(poll);
+          var allCookies = document.cookie.split(';').map(function(c) { return c.trim().split('=')[0]; });
+          var awinObj = window.AWIN ? JSON.stringify(Object.keys(window.AWIN)) : 'undefined';
+          console.warn('[Replanta] ' + label + ': AWC not found after ' + (maxMs/1000) + 's. Cookies:', allCookies, 'AWIN obj keys:', awinObj);
+          if (isFinal) sendSn1Fallback();
+        }
+      }, interval);
+      return poll;
+    }
+
+    var initialPoll = pollForAwc('Initial poll', 10000, false);
+
+    // --- Método 3: Escuchar consent de Complianz ---
+    // Cuando el usuario acepta cookies, Complianz dispara estos eventos.
+    // El MasterTag se ejecutó con consent denegado → no resolvió AWC.
+    // Hay que RECARGARLO para que re-ejecute con consent granted.
+    function reloadMasterTag(callback) {
+      // 1) Eliminar TODOS los scripts de dwin1.com (MasterTag + sub-scripts)
+      var scripts = document.querySelectorAll('script[src*="dwin1.com"]');
+      for (var i = 0; i < scripts.length; i++) {
+        scripts[i].parentNode.removeChild(scripts[i]);
+      }
+      // 2) Eliminar iframes de AWIN (tracking pixels)
+      var iframes = document.querySelectorAll('iframe[src*="dwin1.com"], iframe[src*="awin1.com"]');
+      for (var j = 0; j < iframes.length; j++) {
+        iframes[j].parentNode.removeChild(iframes[j]);
+      }
+      // 3) WIPE COMPLETO del objeto AWIN para forzar re-inicialización total
+      try { delete window.AWIN; } catch(e) { window.AWIN = undefined; }
+      try { delete window.awin; } catch(e) { window.awin = undefined; }
+      console.log('[Replanta] Reloading MasterTag after consent (full wipe)...');
+      var s = document.createElement('script');
+      s.src = 'https://www.dwin1.com/' + AWIN_MID + '.js';
+      s.async = true;
+      s.type = 'text/javascript';
+      s.onload = function() {
+        console.log('[Replanta] MasterTag reloaded successfully');
+        // Diagnóstico: que estado creó el MasterTag
+        setTimeout(function() {
+          var awcT = (window.AWIN && window.AWIN.Tracking) ? window.AWIN.Tracking.awc : 'N/A';
+          var awcS = (window.AWIN && window.AWIN.Tracking && window.AWIN.Tracking.Sale) ? window.AWIN.Tracking.Sale.cookie : 'N/A';
+          var awKeys = window.AWIN ? Object.keys(window.AWIN) : [];
+          var awCookies = document.cookie.split(';').filter(function(c) { return /aw/i.test(c.trim().split('=')[0]); }).map(function(c) { return c.trim(); });
+          console.log('[Replanta] Post-reload state — AWIN keys:', awKeys, 'Tracking.awc:', awcT, 'Sale.cookie:', awcS, 'AW cookies:', awCookies);
+        }, 3000);
+        if (callback) callback();
+      };
+      s.onerror = function() {
+        console.warn('[Replanta] MasterTag reload failed');
+        if (callback) callback();
+      };
+      document.body.appendChild(s);
+    }
+
+    function onConsentGranted() {
+      if (_awcAlreadyCaptured) return;
+      console.log('[Replanta] Consent granted, reloading MasterTag...');
+      // Recargar MasterTag, luego esperar a que procese, luego poll
+      reloadMasterTag(function() {
+        setTimeout(function() {
+          if (_awcAlreadyCaptured) return;
+          pollForAwc('Post-consent poll', 15000, true);
+        }, 2000);
+      });
+    }
+
+    // Complianz: evento cuando se aceptan categorías
+    document.addEventListener('cmplz_fire_categories', function(e) {
+      if (e.detail && e.detail.categories && e.detail.categories.indexOf('marketing') !== -1) {
+        onConsentGranted();
+      }
+    });
+    // Complianz: evento genérico de status change
+    document.addEventListener('cmplz_status_change', function(e) {
+      if (e.detail && e.detail.marketing && e.detail.marketing === 'allow') {
+        onConsentGranted();
+      }
+    });
+    // Fallback: escuchar cambio en cookie cmplz_marketing
+    document.addEventListener('cmplz_cookie_warning_loaded', function() {
+      // El banner se ha cargado, observar clicks en aceptar
+    });
+
+    // GTM consent_update: Google Consent Mode
+    if (window.dataLayer) {
+      var origPush = window.dataLayer.push;
+      window.dataLayer.push = function() {
+        var result = origPush.apply(this, arguments);
+        for (var i = 0; i < arguments.length; i++) {
+          var arg = arguments[i];
+          if (arg && ((arg[0] === 'consent' && arg[1] === 'update') || (arg.event === 'consent_update'))) {
+            if (!_awcAlreadyCaptured && isSn1) {
+              onConsentGranted();
+            }
+          }
+        }
+        return result;
+      };
+    }
+  })();
+
+  // =============================================
+  // MAPEO PIDs → PLANES
+  // =============================================
+  const PID_TO_PLAN = {
+    '6d530876-8251-d485-d80a-147e390921e6': 'sauce',
+    'e2e071d9-31d5-e460-555a-646028758396': 'cedro',
+    '280d1639-e237-d439-6dea-54610589e572': 'roble',
+    '2e071d93-1d5e-468e-935c-646028758396': 'sapwoo-setup',
+    '61e50989-73d2-4753-988c-e45e610832d7': 'sapwoo-monthly'
+  };
+
+  // =============================================
+  // HELPER: Leer cookie AWC
+  // =============================================
+  function getAwcFromCookie() {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.indexOf('replanta_awin_awc=') === 0) {
+        return decodeURIComponent(cookie.substring('replanta_awin_awc='.length));
+      }
+    }
+    return null;
+  }
+
+  // Helpers
+  function parseUrl(href) {
+    try { return new URL(href, location.origin); }
+    catch(e){ return null; }
+  }
+  function getQuery(u, key) {
+    if (!u) return null;
+    const v = u.searchParams.get(key);
+    return v === null ? null : v;
+  }
+  function getPid(u) {
+    const pid = getQuery(u, 'pid');
+    if (pid) return pid;
+    return null;
+  }
+  function getBilling() {
+    const y = document.getElementById('bill-y');
+    return (y && y.checked) ? 'yearly' : 'monthly';
+  }
+  function getBcm(u) {
+    const bcm = getQuery(u, 'bcm');
+    if (!bcm) return null;
+    return String(bcm);
+  }
+  function getBillingFromBcm(u) {
+    const bcm = getBcm(u);
+    if (bcm === '12') return 'yearly';
+    if (bcm === '1') return 'monthly';
+    return null;
+  }
+  function getCurrency(u) {
+    const cur = getQuery(u, 'currency');
+    if (cur) return cur.toUpperCase();
+    return null;
+  }
+  function getCoupon(u) {
+    const c = getQuery(u, 'coupons');
+    return c ? c : null;
+  }
+  function getPriceFromCard(btn, billing) {
+    const card = btn.closest('.replanta-pricing-card');
+    if (!card) return null;
+    const priceBox = card.querySelector('.price');
+    if (!priceBox) return null;
+
+    const amountEl = priceBox.querySelector(billing === 'yearly' ? '.amount--y' : '.amount--m');
+    if (!amountEl) return null;
+
+    const raw = amountEl.textContent.trim();
+    const numeric = raw
+      .replace(/[^\d,.\-]/g, '')
+      .replace(/\.(?=\d{3}\b)/g, '')
+      .replace(',', '.');
+    const value = parseFloat(numeric);
+    return { raw, value: isNaN(value) ? null : value };
+  }
+  function planFromPid(pid) {
+    return PID_TO_PLAN[pid] || 'unknown';
+  }
+
+  function pushEvents(payload) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'upmind_begin_checkout',
+      ecommerce: {
+        currency: payload.currency || undefined,
+        value: payload.value || undefined,
+        items: [{
+          item_name: payload.plan,
+          item_id: payload.pid,
+          price: payload.value || undefined
+        }]
+      },
+      upmind: {
+        plan: payload.plan,
+        pid: payload.pid,
+        url: payload.url,
+        currency: payload.currency || null,
+        billing: payload.billing,
+        bcm: payload.bcm || null,
+        coupon: payload.coupon || null,
+        price_label: payload.priceLabel
+      },
+      // ✅ NUEVO: Incluir AWC si existe
+      awin_awc: payload.awc || null
+    });
+
+    // GA4 directo
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'begin_checkout', {
+        currency: payload.currency || undefined,
+        value: payload.value || undefined,
+        coupon: payload.coupon || undefined,
+        items: [{ item_name: payload.plan, item_id: payload.pid, price: payload.value || undefined }],
+        upmind_pid: payload.pid,
+        upmind_plan: payload.plan,
+        upmind_billing: payload.billing,
+        upmind_bcm: payload.bcm || undefined,
+        awin_awc: payload.awc || undefined
+      });
+    }
+
+    // Meta Pixel
+    if (typeof window.fbq === 'function') {
+      window.fbq('trackCustom', 'UpmindBeginCheckout', {
+        plan: payload.plan,
+        pid: payload.pid,
+        currency: payload.currency || undefined,
+        value: payload.value || undefined,
+        billing: payload.billing,
+        bcm: payload.bcm || undefined,
+        coupon: payload.coupon || undefined
+      });
+    }
+
+    postAwinEvent({
+      event: 'begin_checkout',
+      awc: payload.awc || null,
+      pid: payload.pid || null,
+      value: payload.value || null,
+      currency: payload.currency || null,
+      bcm: payload.bcm || null,
+      url: payload.url || null
+    });
+  }
+
+  function handleClick(ev) {
+    const a = ev.currentTarget;
+    const u = parseUrl(a.getAttribute('href') || '');
+    if (!u) return;
+
+    const host = u.host || '';
+    const path = u.pathname || '';
+    
+    // ✅ CORREGIDO: .net en lugar de .dev
+    if (!/clientes\.replanta\.net$/i.test(host)) return;
+    if (!/\/order\/product/i.test(path)) return;
+
+    const pid = getPid(u);
+    const plan = planFromPid(pid);
+    const billing = getBillingFromBcm(u) || getBilling();
+    const bcm = getBcm(u) || (billing === 'yearly' ? '12' : '1');
+    const currency = (getCurrency(u) || '').toUpperCase() || null;
+    const coupon = getCoupon(u);
+    const priceObj = getPriceFromCard(a, billing);
+    
+    // ✅ NUEVO: Obtener AWC de la cookie
+    const awc = getAwcFromCookie();
+    
+    const payload = {
+      plan, pid,
+      url: u.toString(),
+      billing,
+      bcm,
+      currency,
+      coupon,
+      priceLabel: priceObj ? priceObj.raw : null,
+      value: priceObj ? priceObj.value : null,
+      awc: awc  // ✅ NUEVO
+    };
+
+    pushEvents(payload);
+  }
+
+  function bindAll() {
+    document.querySelectorAll('a.plan-card-cta').forEach(function(a){
+      a.removeEventListener('click', handleClick);
+      a.addEventListener('click', handleClick, { passive: true });
+    });
+  }
+
+  bindAll();
+  const mo = new MutationObserver(function(){ bindAll(); });
+  mo.observe(document.documentElement, { childList: true, subtree: true });
+
+  // Public helper for thank-you pages / GTM custom HTML.
+  // Example:
+  // window.replantaTrackAwinPurchase({ order_id: '12345', value: 129, currency: 'EUR', awc: '...' });
+  window.replantaTrackAwinPurchase = function(data) {
+    data = data || {};
+
+    var orderId = data.order_id || data.orderId || data.orderRef || data.order_ref || null;
+    var valueRaw = (typeof data.value !== 'undefined' && data.value !== null) ? data.value : (data.amount || data.total || 0);
+    var valueNum = (typeof valueRaw === 'number' ? valueRaw : parseFloat(String(valueRaw).replace(',', '.'))) || 0;
+    var voucher = data.voucher || data.coupon || data.vc || null;
+
+    postAwinEvent({
+      event: 'purchase',
+      awc: data.awc || getAwcFromCookie() || null,
+      pid: data.pid || null,
+      order_id: orderId,
+      value: valueNum,
+      currency: data.currency || null,
+      voucher: voucher,
+      url: data.url || window.location.href
+    });
+  };
+})();
+</script>

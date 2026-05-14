@@ -1,0 +1,29 @@
+{
+    "name": "replantadev/test-eco-website",
+    "description": "Eco-Performance Snapshot plugin for WordPress",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "brain/monkey": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "TEW\\": "includes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TEW\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    }
+}

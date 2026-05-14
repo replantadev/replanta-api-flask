@@ -1,0 +1,530 @@
+/* ─── SAP Woo Control Center ──────────────────────────────────────────────── */
+
+/* Title */
+.sapwcc-title { display: flex; align-items: center; gap: 8px; }
+.sapwcc-title .dashicons { font-size: 28px; width: 28px; height: 28px; }
+.sapwcc-version { font-size: 12px; color: #999; font-weight: normal; }
+
+/* Tabs */
+.sapwcc-tabs { margin-bottom: 20px; }
+.sapwcc-badge {
+    display: inline-block; min-width: 18px; height: 18px; line-height: 18px;
+    text-align: center; font-size: 11px; font-weight: 600; border-radius: 9px;
+    background: #ddd; color: #50575e; padding: 0 5px; margin-left: 4px;
+}
+.sapwcc-badge--alert { background: #d63638; color: #fff; }
+
+/* ─── Sites Grid ──────────────────────────────────────────────────────────── */
+
+.sapwcc-sites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.sapwcc-toolbar {
+    display: flex; gap: 8px; align-items: center;
+    margin: 4px 0 0;
+}
+.sapwcc-toolbar .dashicons { font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom; }
+
+/* Card */
+.sapwcc-site-card {
+    border-left: 4px solid #c3c4c7;
+    transition: border-color .2s;
+}
+.sapwcc-site-card.sapwcc-status--healthy     { border-left-color: #00a32a; }
+.sapwcc-site-card.sapwcc-status--degraded    { border-left-color: #dba617; }
+.sapwcc-site-card.sapwcc-status--critical    { border-left-color: #d63638; }
+.sapwcc-site-card.sapwcc-status--unreachable { border-left-color: #a7aaad; }
+.sapwcc-site-card.sapwcc-status--error       { border-left-color: #d63638; }
+.sapwcc-site-card.sapwcc-status--unknown     { border-left-color: #c3c4c7; }
+
+.sapwcc-card-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; border-bottom: 1px solid #f0f0f1;
+}
+.sapwcc-card-header h3 { margin: 0; flex: 1; font-size: 14px; }
+
+.sapwcc-status-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; flex-shrink: 0;
+}
+.sapwcc-status--healthy .sapwcc-status-dot     { background: #00a32a; }
+.sapwcc-status--degraded .sapwcc-status-dot    { background: #dba617; }
+.sapwcc-status--critical .sapwcc-status-dot    { background: #d63638; }
+.sapwcc-status--unreachable .sapwcc-status-dot { background: #a7aaad; }
+.sapwcc-status--error .sapwcc-status-dot       { background: #d63638; }
+.sapwcc-status--unknown .sapwcc-status-dot     { background: #c3c4c7; }
+
+.sapwcc-status-label {
+    font-size: 10px; text-transform: uppercase; font-weight: 600;
+    letter-spacing: .5px; color: #50575e;
+}
+
+/* Transient warnings badge */
+.sapwcc-tw-badge {
+    display: inline-flex; align-items: center; gap: 2px;
+    background: #f0f6fc; color: #0a68b4; border-radius: 12px;
+    padding: 2px 8px; margin-left: 6px; font-size: 11px;
+    font-weight: 600; vertical-align: middle;
+    cursor: help; border: 1px solid #c5d9ed;
+}
+.sapwcc-tw-badge .dashicons {
+    font-size: 14px; width: 14px; height: 14px; margin-right: -2px;
+}
+
+.sapwcc-card-body { padding: 12px; }
+
+.sapwcc-card-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 3px 0; font-size: 13px;
+}
+.sapwcc-card-label {
+    font-weight: 600; color: #50575e; min-width: 65px; font-size: 12px;
+}
+
+.sapwcc-card-metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-top: 10px; text-align: center;
+}
+.sapwcc-metric {
+    background: #f6f7f7; border-radius: 4px; padding: 8px 4px;
+}
+.sapwcc-metric-value {
+    display: block; font-size: 20px; font-weight: 700; line-height: 1.2;
+}
+.sapwcc-metric-label { font-size: 10px; color: #50575e; text-transform: uppercase; }
+
+.sapwcc-card-syncs { margin-top: 10px; font-size: 12px; }
+.sapwcc-card-syncs ul { margin: 4px 0 0 0; padding: 0; list-style: none; }
+.sapwcc-card-syncs li { padding: 1px 0; color: #50575e; }
+.sapwcc-card-syncs small { font-weight: 600; }
+
+.sapwcc-card-issues { margin-top: 8px; }
+.sapwcc-issue {
+    background: #fcf0f1; color: #8a2424; padding: 4px 8px;
+    border-radius: 3px; font-size: 12px; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 4px;
+}
+.sapwcc-issue .dashicons { font-size: 14px; width: 14px; height: 14px; flex-shrink: 0; }
+
+.sapwcc-card-error {
+    padding: 8px; background: #f6f7f7; border-radius: 3px;
+    color: #a7aaad; font-size: 12px;
+}
+
+.sapwcc-card-footer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-top: 1px solid #f0f0f1;
+}
+.sapwcc-card-footer .sapwcc-remove-btn { margin-left: auto; color: #b32d2e; }
+.sapwcc-card-footer .dashicons { font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom; }
+
+.sapwcc-outdated { color: #dba617; font-weight: 600; }
+.sapwcc-ok { color: #00a32a; }
+.sapwcc-fail { color: #d63638; font-weight: 600; }
+.sapwcc-muted { color: #a7aaad; font-size: 12px; }
+
+/* ─── Add Site Form ───────────────────────────────────────────────────────── */
+
+.sapwcc-add-form .inside h3 { margin-top: 0; }
+.sapwcc-inline-form {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;
+}
+.sapwcc-inline-form input { min-width: 200px; }
+
+/* ─── Empty State ─────────────────────────────────────────────────────────── */
+
+.sapwcc-empty-state {
+    text-align: center; padding: 40px 20px; color: #a7aaad;
+}
+.sapwcc-empty-state .dashicons {
+    font-size: 48px; width: 48px; height: 48px; display: block; margin: 0 auto 12px;
+}
+
+/* ─── Feature Flags ───────────────────────────────────────────────────────── */
+
+.sapwcc-flags-layout-v2 {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.sapwcc-flags-full { grid-column: 1 / -1; }
+.sapwcc-flags-section .inside h4 {
+    margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #f0f0f1;
+    font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: #646970;
+}
+
+.sapwcc-flag-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 5px 0;
+}
+.sapwcc-flag-label { font-size: 13px; min-width: 140px; }
+.sapwcc-flag-key { font-size: 10px; color: #a7aaad; }
+
+.sapwcc-override-check { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.sapwcc-override-check small { color: #646970; font-size: 11px; }
+
+/* Toggle switch */
+.sapwcc-toggle { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
+.sapwcc-toggle input { opacity: 0; width: 0; height: 0; }
+.sapwcc-toggle-slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background: #c3c4c7; border-radius: 20px; transition: .2s;
+}
+.sapwcc-toggle-slider::before {
+    content: ""; position: absolute; height: 14px; width: 14px;
+    left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .2s;
+}
+.sapwcc-toggle input:checked + .sapwcc-toggle-slider { background: #2271b1; }
+.sapwcc-toggle input:checked + .sapwcc-toggle-slider::before { transform: translateX(16px); }
+.sapwcc-toggle input:disabled + .sapwcc-toggle-slider { opacity: .4; cursor: default; }
+
+/* Flags action bar */
+.sapwcc-flags-actions {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 16px; padding: 16px; background: #f6f7f7; border-radius: 4px;
+}
+.sapwcc-flags-actions .dashicons { vertical-align: text-bottom; }
+.sapwcc-flags-path { margin-left: auto; font-size: 12px; color: #646970; }
+
+/* ─── Notices ─────────────────────────────────────────────────────────────── */
+
+.sapwcc-notice-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px; border-bottom: 1px solid #f0f0f1; font-size: 13px;
+}
+.sapwcc-notice-type {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 3px; letter-spacing: .3px;
+}
+.sapwcc-notice-type--info    { background: #d7e9f7; color: #135e96; }
+.sapwcc-notice-type--warning { background: #fcf0c8; color: #6e4600; }
+.sapwcc-notice-type--error   { background: #fcf0f1; color: #8a2424; }
+.sapwcc-notice-type--success { background: #d1f0d1; color: #0a4b0a; }
+.sapwcc-notice-msg { flex: 1; }
+.sapwcc-remove-notice { color: #b32d2e !important; }
+.sapwcc-remove-notice .dashicons { font-size: 16px; width: 16px; height: 16px; }
+
+.sapwcc-add-notice-form {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.sapwcc-add-notice-form h4 { width: 100%; margin: 0 0 4px; }
+
+/* ─── Actions Table ───────────────────────────────────────────────────────── */
+
+.sapwcc-actions-table .sapwcc-action-icon { width: 30px; text-align: center; }
+.sapwcc-actions-table .sapwcc-action-icon .dashicons { font-size: 18px; width: 18px; height: 18px; }
+.sapwcc-action--error .sapwcc-action-icon .dashicons { color: #d63638; }
+.sapwcc-action--warning .sapwcc-action-icon .dashicons { color: #dba617; }
+.sapwcc-action--info .sapwcc-action-icon .dashicons { color: #2271b1; }
+.sapwcc-action--error td { background: #fcf0f1; }
+.sapwcc-action--warning td { background: #fcf9e8; }
+.sapwcc-action-suggestion {
+    display: inline-block; background: #f0f0f1; padding: 2px 8px;
+    border-radius: 3px; font-size: 12px; color: #50575e;
+}
+
+/* ─── Loading / Spinner ───────────────────────────────────────────────────── */
+
+.sapwcc-loading { opacity: .5; pointer-events: none; }
+.sapwcc-spinner {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid #c3c4c7; border-top-color: #2271b1;
+    border-radius: 50%; animation: sapwcc-spin .6s linear infinite;
+    vertical-align: middle; margin-left: 6px;
+}
+@keyframes sapwcc-spin { to { transform: rotate(360deg); } }
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+    .sapwcc-flags-layout-v2 { grid-template-columns: 1fr; }
+    .sapwcc-sites-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Plan Matrix ─────────────────────────────────────────────────────────── */
+
+.sapwcc-plan-matrix { border-collapse: collapse; }
+.sapwcc-plan-matrix th,
+.sapwcc-plan-matrix td { padding: 8px 10px; vertical-align: middle; }
+.sapwcc-plan-col { text-align: center; width: 100px; }
+.sapwcc-plan-header { font-weight: 700; font-size: 13px; }
+.sapwcc-plan-matrix tbody tr:hover { background: #f6f7f7; }
+.sapwcc-plan-matrix td code { display: block; margin-top: 2px; }
+
+/* ─── Site Configuration ──────────────────────────────────────────────────── */
+
+.sapwcc-site-selector-row { margin-bottom: 16px; }
+.sapwcc-site-selector { min-width: 350px; font-size: 13px; }
+
+.sapwcc-site-plan-box {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    padding: 14px 16px; margin-bottom: 16px;
+    background: #f6f7f7; border-radius: 4px; border: 1px solid #e0e0e0;
+}
+.sapwcc-site-plan-box label { margin: 0; }
+.sapwcc-site-plan-box .description { width: 100%; margin: 4px 0 0; }
+.sapwcc-plan-select { font-size: 14px; font-weight: 600; min-width: 140px; }
+
+.sapwcc-overrides-group { margin-bottom: 16px; }
+.sapwcc-overrides-group h4 {
+    margin: 16px 0 6px; padding-bottom: 4px;
+    border-bottom: 1px solid #f0f0f1;
+    font-size: 12px; text-transform: uppercase;
+    letter-spacing: .5px; color: #646970;
+}
+
+.sapwcc-override-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 5px 0;
+}
+.sapwcc-override-row .sapwcc-override-check {
+    display: flex; align-items: center; gap: 4px;
+    min-width: 90px;
+}
+.sapwcc-override-row .sapwcc-override-check small {
+    color: #646970; font-size: 11px;
+}
+.sapwcc-plan-default {
+    margin-left: auto; font-size: 11px;
+}
+
+/* ─── Git Push Output ─────────────────────────────────────────────────────── */
+
+.sapwcc-git-output {
+    background: #1d2327; color: #a7aaad; padding: 12px 16px;
+    border-radius: 4px; font-size: 12px; line-height: 1.5;
+    max-height: 200px; overflow: auto; margin-top: 12px;
+    font-family: Consolas, Monaco, monospace;
+}
+
+/* ─── Flags Action Bar (update for publish button) ────────────────────────── */
+
+.sapwcc-flags-actions .button-hero {
+    padding: 8px 16px !important; font-size: 13px !important;
+    height: auto !important; line-height: 1.6 !important;
+}
+.sapwcc-flags-actions .button-hero .dashicons {
+    font-size: 16px; width: 16px; height: 16px; vertical-align: text-bottom;
+}
+
+/* ─── Quick Action Buttons ────────────────────────────────────────────────── */
+
+.sapwcc-card-footer .sapwcc-quick-action {
+    padding: 0 6px !important; min-width: 28px; height: 28px;
+    line-height: 26px;
+}
+.sapwcc-card-footer .sapwcc-quick-action .dashicons {
+    font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;
+}
+
+/* ─── Client Metadata (expandable card section) ──────────────────────────── */
+
+.sapwcc-card-meta {
+    padding: 6px 12px 10px; border-top: 1px solid #f0f0f1;
+}
+.sapwcc-toggle-meta {
+    font-size: 12px; color: #646970 !important; text-decoration: none !important;
+}
+.sapwcc-toggle-meta .dashicons {
+    font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom;
+}
+.sapwcc-meta-form { padding: 8px 0 0; }
+.sapwcc-meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 8px;
+}
+.sapwcc-meta-grid label {
+    display: flex; flex-direction: column; gap: 2px;
+}
+.sapwcc-meta-grid small { font-size: 11px; color: #646970; }
+.sapwcc-meta-grid input { font-size: 12px; padding: 4px 6px; }
+
+/* ─── Modal ───────────────────────────────────────────────────────────────── */
+
+.sapwcc-modal {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 100100; background: rgba(0, 0, 0, .5);
+    display: flex; align-items: center; justify-content: center;
+}
+.sapwcc-modal-content {
+    background: #fff; border-radius: 6px; box-shadow: 0 4px 24px rgba(0,0,0,.3);
+    width: 90%; max-width: 900px; max-height: 80vh;
+    display: flex; flex-direction: column;
+}
+.sapwcc-modal-sm { max-width: 500px; }
+.sapwcc-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid #f0f0f1;
+}
+.sapwcc-modal-header h3 {
+    margin: 0; font-size: 15px;
+    display: flex; align-items: center; gap: 6px;
+}
+.sapwcc-modal-header .dashicons { color: #2271b1; }
+.sapwcc-modal-close { color: #50575e !important; padding: 4px !important; }
+.sapwcc-modal-close .dashicons { font-size: 20px; width: 20px; height: 20px; }
+.sapwcc-modal-toolbar {
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 20px; border-bottom: 1px solid #f0f0f1; background: #f6f7f7;
+}
+.sapwcc-modal-toolbar select { font-size: 12px; }
+.sapwcc-modal-body {
+    flex: 1; overflow: auto; padding: 16px 20px;
+}
+
+/* ─── Logs Table (inside modal) ───────────────────────────────────────────── */
+
+.sapwcc-logs-table { font-size: 12px; }
+.sapwcc-logs-table th { font-size: 11px; text-transform: uppercase; letter-spacing: .3px; }
+.sapwcc-logs-table td { vertical-align: top; padding: 5px 8px; }
+.sapwcc-log-msg {
+    max-width: 400px; word-break: break-word; font-size: 11px; color: #50575e;
+}
+
+/* ─── Cron Options ────────────────────────────────────────────────────────── */
+
+.sapwcc-cron-options {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0;
+}
+.sapwcc-cron-options .button { text-align: left; }
+.sapwcc-cron-options .dashicons {
+    font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom; margin-right: 4px;
+}
+
+/* ─── Audit Table ─────────────────────────────────────────────────────────── */
+
+.sapwcc-audit-table { font-size: 12px; }
+.sapwcc-audit-table th {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .3px;
+}
+.sapwcc-audit-table td { vertical-align: top; padding: 5px 8px; }
+.sapwcc-audit-details {
+    max-width: 300px; word-break: break-word; font-size: 11px; color: #50575e;
+}
+
+/* ─── MRR Dashboard ───────────────────────────────────────────────────────── */
+
+.sapwcc-mrr-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+.sapwcc-mrr-card {
+    text-align: center; padding: 16px 8px;
+    background: #f6f7f7; border-radius: 6px; border: 1px solid #e0e0e0;
+}
+.sapwcc-mrr-total {
+    background: #f0f6fc; border-color: #2271b1;
+}
+.sapwcc-mrr-value {
+    display: block; font-size: 22px; font-weight: 700; line-height: 1.2;
+}
+.sapwcc-mrr-total .sapwcc-mrr-value { color: #2271b1; }
+.sapwcc-mrr-label {
+    display: block; font-size: 11px; color: #50575e; text-transform: uppercase;
+    letter-spacing: .3px; margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Vista Toggle y Tabla Condensada
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sapwcc-view-toggle {
+    display: flex; gap: 0; border: 1px solid #2271b1; border-radius: 3px; overflow: hidden;
+}
+.sapwcc-view-btn {
+    margin: 0 !important; padding: 4px 10px; font-size: 13px;
+    border: none; border-radius: 0; background: #fff; color: #2271b1;
+    display: flex; align-items: center; gap: 4px;
+}
+.sapwcc-view-btn:hover { background: #f0f6fc; }
+.sapwcc-view-btn.active { background: #2271b1; color: #fff; }
+.sapwcc-view-btn .dashicons { width: 16px; height: 16px; font-size: 16px; }
+
+/* Plan assignment inline */
+.sapwcc-plan-assign-row {
+    background: #f0f6fc; padding: 6px 12px !important; margin: 6px -12px;
+    border-left: 3px solid #2271b1;
+}
+.sapwcc-plan-assign {
+    flex: 1; max-width: 180px; height: 26px; padding: 2px 6px;
+    font-size: 12px; font-weight: 600;
+}
+.sapwcc-plan-assign option { font-weight: 600; }
+
+/* Tabla condensada */
+.sapwcc-sites-table-container {
+    background: #fff; border: 1px solid #ccd0d4; border-radius: 3px; margin-top: 12px;
+}
+.sapwcc-sites-table {
+    margin: 0 !important; border: none;
+}
+.sapwcc-sites-table th {
+    font-size: 12px; font-weight: 600; text-transform: uppercase; padding: 10px 8px;
+    background: #f6f7f7; border-bottom: 2px solid #ccd0d4;
+}
+.sapwcc-sites-table td {
+    padding: 10px 8px; font-size: 13px; vertical-align: middle;
+}
+.sapwcc-sites-table td.center { text-align: center; }
+.sapwcc-sites-table code { font-size: 11px; padding: 2px 5px; }
+.sapwcc-sites-table .sapwcc-muted { color: #a7aaad; }
+
+/* Status row coloring */
+.sapwcc-table-row-healthy { background: #f0f9f4; }
+.sapwcc-table-row-degraded { background: #fcf9f0; }
+.sapwcc-table-row-critical { background: #fcf0f1; }
+.sapwcc-table-row-unreachable { background: #f6f7f7; }
+
+/* Status dots en tabla */
+.sapwcc-status-dot--healthy { background: #00a32a; }
+.sapwcc-status-dot--degraded { background: #dba617; }
+.sapwcc-status-dot--critical { background: #d63638; }
+.sapwcc-status-dot--unreachable { background: #a7aaad; }
+.sapwcc-status-dot--error { background: #d63638; }
+.sapwcc-status-dot--unknown { background: #c3c4c7; }
+
+/* Plan badges en tabla */
+.sapwcc-plan-badge {
+    display: inline-block; padding: 3px 8px; border-radius: 3px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .3px;
+}
+.sapwcc-plan-badge--starter { background: #f0f6fc; color: #2271b1; }
+.sapwcc-plan-badge--business { background: #f0faf4; color: #00a32a; }
+.sapwcc-plan-badge--enterprise { background: #f7f2f9; color: #8c00b7; }
+
+/* Plan select en tabla (más pequeño) */
+.sapwcc-plan-select-sm {
+    width: 100%; height: 26px; padding: 2px 4px; font-size: 11px;
+    font-weight: 600; border: 1px solid #8c8f94; border-radius: 3px;
+}
+
+/* Warnings badge en tabla (versión small) */
+.sapwcc-tw-badge-sm {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #f0f6fc; color: #0a68b4; border-radius: 10px;
+    padding: 1px 6px; margin-left: 4px; font-size: 10px;
+    font-weight: 700; border: 1px solid #c5d9ed; min-width: 18px;
+    vertical-align: middle;
+}
+
+/* Actions en tabla */
+.sapwcc-table-actions {
+    white-space: nowrap;
+}
+.sapwcc-table-actions .button-small {
+    padding: 2px 6px; height: 24px; line-height: 20px;
+    min-height: 24px; margin-right: 2px;
+}
+.sapwcc-table-actions .dashicons {
+    width: 16px; height: 16px; font-size: 16px; line-height: 20px;
+}
+
+/* Animación spin para loading icon */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.spin { animation: spin 1s linear infinite; }
