@@ -386,7 +386,8 @@ class Dominios_Reseller_Monitoring_Dashboard {
         );
 
         // Longitud de cola
-        $queue_length = $this->worker->get_queue_length();
+        $queue_status = $this->worker->get_queue_status();
+        $queue_length = (int) ( $queue_status['pending_count'] ?? 0 );
 
         return [
             'domains_today' => (int) $domains_today,
@@ -548,7 +549,8 @@ class Dominios_Reseller_Monitoring_Dashboard {
         $alerts = [];
 
         // Verificar cola muy larga
-        $queue_length = $this->worker->get_queue_length();
+        $queue_status = $this->worker->get_queue_status();
+        $queue_length = (int) ( $queue_status['pending_count'] ?? 0 );
         if ($queue_length > 10) {
             $alerts[] = [
                 'type' => 'warning',

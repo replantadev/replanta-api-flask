@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.3
+ * Version:     1.2.4
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 7.4
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.3' );
+define( 'SAPWCC_VERSION', '1.2.4' );
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
 define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.6' );
@@ -278,6 +278,34 @@ add_action( 'wp_ajax_sapwcc_save_settings', function () {
             }
         }
         SAPWCC_Audit::log( 'set_cc_ip', "IP '{$cc_ip}' propagada a {$propagated}/" . count( $sites ) . ' sitios.' );
+    }
+
+    // Propagate the HMAC secret to all registered sites.
+    // Runs every time settings are saved so that sites registered before CC v1.2.3
+    // (when auto-push on add was introduced) also receive the secret.
+    $hmac_secret = function_exists( 'sapwcc_get_flags_hmac_secret' ) ? sapwcc_get_flags_hmac_secret() : '';
+    if ( ! empty( $hmac_secret ) ) {
+        $sites           = SAPWCC_Sites::get_all();
+        $hmac_propagated = 0;
+        foreach ( $sites as $site_key => $site ) {
+            $site_url = rtrim( $site['url'], '/' ) . '/wp-json/sapwc/v1/control/set-flags-hmac-secret';
+            $secret   = SAPWCC_Sites::get_decrypted_secret( $site_key );
+            $r = wp_remote_post( $site_url, [
+                'timeout'   => 10,
+                'sslverify' => ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
+                'headers'   => [
+                    'X-SAPWC-Secret' => $secret,
+                    'Content-Type'   => 'application/json',
+                ],
+                'body' => wp_json_encode( [ 'secret' => $hmac_secret ] ),
+            ] );
+            if ( ! is_wp_error( $r ) && wp_remote_retrieve_response_code( $r ) === 200 ) {
+                $hmac_propagated++;
+            }
+        }
+        if ( $hmac_propagated > 0 ) {
+            SAPWCC_Audit::log( 'set_flags_hmac_secret', "HMAC secret propagado a {$hmac_propagated}/" . count( $sites ) . ' sitios.' );
+        }
     }
 
     $saved_token = SAPWCC_Sites::decrypt( get_option( 'sapwcc_github_token', '' ) );

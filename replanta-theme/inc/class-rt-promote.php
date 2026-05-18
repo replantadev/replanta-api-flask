@@ -727,6 +727,12 @@ final class RT_Promote {
 		delete_post_meta( $rt_page_id, self::META_AT );
 		delete_post_meta( $rt_page_id, self::META_PROMOTED_PAGE_ID );
 
+		// Defensive cleanup: if rt_page still carries mirror metas and its old slug
+		// is different from current, purge any leftover assets folder.
+		if ( $self_old_slug !== '' && get_post_meta( $rt_page_id, RT_Mirror_Importer::META_MIRROR, true ) ) {
+			RT_Mirror_Cleanup::purge_slug( $self_old_slug );
+		}
+
 		return [
 			'ok'             => true,
 			'restored_id'    => $origin_id,

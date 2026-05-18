@@ -360,28 +360,31 @@ class Dominios_Reseller_Upmind_Integration {
 
             // Verificar que no esté ya en proceso
             $existing_state = Dominios_Reseller_Onboarding_DB::get_onboarding_state($domain);
-            if ($existing_state && in_array($existing_state['state'], ['completed', 'in_progress'])) {
+            if ($existing_state && in_array(($existing_state['state'] ?? ''), ['onboarded', 'running', 'pending'])) {
                 $this->log("Dominio ya en proceso: {$domain}");
                 return;
             }
 
-            // Crear entrada de onboarding con metadatos de Upmind
-            Dominios_Reseller_Onboarding_DB::upsert_onboarding_state(
+            // Crear/actualizar entrada de onboarding con metadatos de Upmind
+            Dominios_Reseller_Onboarding_DB::upsert_onboarding(
                 $domain,
-                'queued',
                 [
-                    'source' => 'upmind_welcome_optimization',
-                    'client_id' => $order_data['client_id'] ?? null,
-                    'order_id' => $order_data['id'] ?? null,
-                    'upmind_order_data' => json_encode($order_data),
-                    'upmind_item_data' => json_encode($item_data),
-                    'welcome_optimization' => true,
-                    'auto_discovered' => true
+                    'state'      => 'pending',
+                    'preset_key' => 'wp',
+                    'meta'       => wp_json_encode([
+                        'source'               => 'upmind_welcome_optimization',
+                        'client_id'            => $order_data['client_id'] ?? null,
+                        'order_id'             => $order_data['id']        ?? null,
+                        'upmind_order_data'    => $order_data,
+                        'upmind_item_data'     => $item_data,
+                        'welcome_optimization' => true,
+                        'auto_discovered'      => true,
+                    ]),
                 ]
             );
 
             // Encolar para procesamiento inmediato
-            $this->onboarding_worker->enqueue_domain($domain);
+            $this->onboarding_worker->enqueue($domain, 'wp', false);
 
             // Notificar al cliente sobre la optimización
             $this->send_welcome_optimization_notification($domain, $order_data);
@@ -741,12 +744,16 @@ class Dominios_Reseller_Upmind_Integration {
     }
 
     private function log(string $message, string $level = 'info'): void {
-        Dominios_Reseller_Onboarding_DB::log_onboarding_event(
-            'upmind_integration',
-            $level,
-            $message,
-            ['component' => 'upmind_integration']
-        );
+        if ( method_exists( 'Dominios_Reseller_Onboarding_DB', 'log_activity' ) ) {
+            Dominios_Reseller_Onboarding_DB::log_activity(
+                'upmind_integration',
+                null,
+                $message,
+                [ 'level' => $level, 'component' => 'upmind_integration' ]
+            );
+            return;
+        }
+        error_log( "[DR Upmind] [{$level}] {$message}" );
     }
 
     /**

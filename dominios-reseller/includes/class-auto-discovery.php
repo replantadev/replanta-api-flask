@@ -398,26 +398,29 @@ class Dominios_Reseller_Auto_Discovery {
             // Verificar que no esté ya en proceso
             $existing_state = Dominios_Reseller_Onboarding_DB::get_onboarding_state($domain_data['domain']);
 
-            if ($existing_state && in_array($existing_state['status'], ['completed', 'in_progress'])) {
-                $this->log("Dominio ya en proceso: " . $domain_data['domain']);
+            if ($existing_state && in_array(($existing_state['state'] ?? ''), ['onboarded', 'running', 'pending'])) {
+                $this->log("Dominio ya en proceso/completado: " . $domain_data['domain']);
                 return;
             }
 
-            // Crear entrada de onboarding
-            Dominios_Reseller_Onboarding_DB::upsert_onboarding_state(
+            // Crear/actualizar entrada de onboarding (estado inicial)
+            Dominios_Reseller_Onboarding_DB::upsert_onboarding(
                 $domain_data['domain'],
-                'queued',
                 [
-                    'source' => $domain_data['source'] ?? 'auto_discovery',
-                    'client_id' => $domain_data['client_id'] ?? null,
-                    'order_id' => $domain_data['order_id'] ?? null,
-                    'order_date' => $domain_data['order_date'] ?? current_time('mysql'),
-                    'auto_discovered' => true
+                    'state'      => 'pending',
+                    'preset_key' => 'wp',
+                    'meta'       => wp_json_encode([
+                        'source'          => $domain_data['source']    ?? 'auto_discovery',
+                        'client_id'       => $domain_data['client_id'] ?? null,
+                        'order_id'        => $domain_data['order_id']  ?? null,
+                        'order_date'      => $domain_data['order_date']?? current_time('mysql'),
+                        'auto_discovered' => true,
+                    ]),
                 ]
             );
 
-            // Trigger el worker
-            $this->onboarding_worker->enqueue_domain($domain_data['domain']);
+            // Encolar en el worker con la firma real (domain, preset, auto_ns)
+            $this->onboarding_worker->enqueue($domain_data['domain'], 'wp', false);
 
             $this->log("Onboarding queued para: " . $domain_data['domain']);
 
@@ -430,12 +433,19 @@ class Dominios_Reseller_Auto_Discovery {
      * Logging unificado
      */
     private function log(string $message, string $level = 'info'): void {
-        Dominios_Reseller_Onboarding_DB::log_onboarding_event(
-            'auto_discovery',
-            $level,
-            $message,
-            ['component' => 'auto_discovery']
-        );
+        // Usar log_activity (existe en la BD); el método log() requiere run_id
+        // que aquí no tenemos, y log_onboarding_event() nunca existió.
+        if ( method_exists( 'Dominios_Reseller_Onboarding_DB', 'log_activity' ) ) {
+            Dominios_Reseller_Onboarding_DB::log_activity(
+                'auto_discovery',
+                null,
+                $message,
+                [ 'level' => $level, 'component' => 'auto_discovery' ]
+            );
+            return;
+        }
+        // Fallback defensivo
+        error_log( "[DR Auto-Discovery] [{$level}] {$message}" );
     }
 
     /**
@@ -450,7 +460,7 @@ class Dominios_Reseller_Auto_Discovery {
                 return true; // Placeholder
             })),
             'last_check' => get_option('dr_auto_discovery_last_check', 'never'),
-            'queue_length' => $this->onboarding_worker->get_queue_length(),
+            'queue_length' => (int) ( $this->onboarding_worker->get_queue_status()['pending_count'] ?? 0 ),
             'sources_active' => [
                 'whmcs_api' => !empty(get_option('dr_whmcs_api_url')),
                 'email_scan' => get_option('dr_email_scanning_enabled', false),

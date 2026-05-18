@@ -6,6 +6,13 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
+## [1.2.4] - 2026-05-18
+
+### Corregido
+
+- **HMAC secret no propagado a sitios existentes**: `sapwcc_save_settings` ahora empuja el HMAC secret a todos los sitios registrados al guardar configuración, no solo a los recién añadidos. Soluciona el admin notice persistente en instalaciones registradas antes de la v1.2.3.
+
+---
 ## [1.2.3] - 2026-05-14
 
 ### Seguridad

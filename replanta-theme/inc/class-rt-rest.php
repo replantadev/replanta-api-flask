@@ -102,6 +102,10 @@ final class RT_REST {
 			'methods' => 'POST', 'callback' => [ $this, 'import_mirror' ], 'permission_callback' => $auth,
 		] );
 
+		register_rest_route( self::NAMESPACE, '/import/mirror/refresh', [
+			'methods' => 'POST', 'callback' => [ $this, 'import_mirror_refresh' ], 'permission_callback' => $auth,
+		] );
+
 		register_rest_route( self::NAMESPACE, '/import/sitemap', [
 			'methods' => 'POST', 'callback' => [ $this, 'import_sitemap' ], 'permission_callback' => $auth,
 		] );
@@ -279,6 +283,30 @@ final class RT_REST {
 			isset( $body['slug'] ) ? (string) $body['slug'] : null,
 			(string) ( $body['lang'] ?? 'es' )
 		);
+		return new \WP_REST_Response( $res, ! empty( $res['ok'] ) ? 200 : 400 );
+	}
+
+	public function import_mirror_refresh( \WP_REST_Request $req ): \WP_REST_Response {
+		$body = (array) $req->get_json_params();
+		$id   = (int) ( $body['id'] ?? 0 );
+		if ( $id <= 0 ) {
+			return new \WP_REST_Response( [ 'error' => 'id required' ], 400 );
+		}
+		$post = get_post( $id );
+		if ( ! $post || ! in_array( $post->post_type, [ 'page', RT_CPT_Page::POST_TYPE ], true ) ) {
+			return new \WP_REST_Response( [ 'error' => 'post not found' ], 404 );
+		}
+		$src = (string) get_post_meta( $id, RT_Mirror_Importer::META_SOURCE_URL, true );
+		if ( $src === '' ) {
+			return new \WP_REST_Response( [ 'error' => 'not a mirror' ], 400 );
+		}
+		$lang = (string) get_post_meta( $id, '_rt_lang', true );
+		if ( $lang === '' ) {
+			$lang = 'es';
+		}
+		// Purge previous local assets so the refreshed run is clean.
+		RT_Mirror_Cleanup::purge_slug( (string) $post->post_name );
+		$res = ( new RT_Mirror_Importer() )->import( $src, (string) $post->post_name, $lang );
 		return new \WP_REST_Response( $res, ! empty( $res['ok'] ) ? 200 : 400 );
 	}
 

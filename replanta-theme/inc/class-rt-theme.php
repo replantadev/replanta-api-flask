@@ -38,6 +38,10 @@ final class RT_Theme {
 		( new RT_Promote() )->register();
 		( new RT_Promote_Admin() )->register();
 		( new RT_Mirror_Renderer() )->register();
+		( new RT_Mirror_Cleanup() )->register();
+		( new RT_Mirror_Admin() )->register();
+		( new RT_Schema() )->register();
+		( new RT_Sitemap() )->register();
 
 		// Register footer menu location for the layout footer.
 		add_action( 'after_setup_theme', static function (): void {

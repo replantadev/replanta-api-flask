@@ -26,8 +26,15 @@ final class RT_Mirror_Importer {
 	public const META_CSS_FILES     = '_rt_mirror_css';
 	public const META_INLINE_CSS    = '_rt_mirror_inline_css';
 	public const META_IMPORTED_AT   = '_rt_mirror_imported_at';
+	public const META_ASSETS        = '_rt_mirror_assets';
 
 	public const UPLOAD_DIR = 'replanta-imports';
+
+	/** @var array<string,string> origin absolute URL => local URL */
+	private array $asset_map = [];
+
+	/** @var string Active slug used as destination subdir. */
+	private string $current_slug = '';
 
 	/**
 	 * @return array<string,mixed>
@@ -38,11 +45,7 @@ final class RT_Mirror_Importer {
 			return [ 'ok' => false, 'error' => 'invalid url' ];
 		}
 
-		$resp = wp_remote_get( $url, [
-			'timeout'     => 45,
-			'redirection' => 5,
-			'user-agent'  => 'ReplantaMirror/1.0 (+https://replanta.net)',
-		] );
+		$resp = $this->http_get_retry( $url, 45 );
 		if ( is_wp_error( $resp ) ) {
 			return [ 'ok' => false, 'error' => $resp->get_error_message() ];
 		}
@@ -86,6 +89,9 @@ final class RT_Mirror_Importer {
 			$slug = 'mirror-' . wp_generate_password( 6, false );
 		}
 
+		$this->asset_map    = [];
+		$this->current_slug = $slug;
+
 		// Pick content root.
 		$root = $this->pick_root( $xpath );
 
@@ -94,6 +100,9 @@ final class RT_Mirror_Importer {
 
 		// Rewrite relative URLs in attributes (href, src, srcset, action) to absolute.
 		$this->absolutize_urls( $xpath, $root, $base );
+
+		// Download images and rewrite DOM references to local copies.
+		$this->download_assets_in_dom( $xpath, $root );
 
 		// Render inner HTML.
 		$body_html = $this->inner_html( $root );
@@ -114,9 +123,7 @@ final class RT_Mirror_Importer {
 		}
 
 		// Download CSS files into uploads/replanta-imports/{slug}/.
-		$saved_css = $this->download_css_files( $css_links, $slug );
-
-		// Build/Update rt_page.
+		$saved_css = $this->download_css_files( $css_links, $slug );		// Build/Update rt_page.
 		$post_id = $this->find_or_create_post( $slug, $title );
 		if ( is_wp_error( $post_id ) || ! $post_id ) {
 			return [ 'ok' => false, 'error' => 'wp_insert_post failed' ];
@@ -136,6 +143,7 @@ final class RT_Mirror_Importer {
 		update_post_meta( $post_id, self::META_CSS_FILES, $saved_css );
 		update_post_meta( $post_id, self::META_INLINE_CSS, $inline_css );
 		update_post_meta( $post_id, self::META_IMPORTED_AT, time() );
+		update_post_meta( $post_id, self::META_ASSETS, $this->asset_map );
 		// Compatibility with the rest of the engine.
 		if ( defined( 'RT_Content_Sync::META_SOURCE_URL' ) || class_exists( 'RT_Content_Sync' ) ) {
 			update_post_meta( $post_id, RT_Content_Sync::META_SOURCE_URL, $url );
@@ -149,6 +157,7 @@ final class RT_Mirror_Importer {
 			'edit_url'  => get_edit_post_link( $post_id, 'raw' ),
 			'css_count' => count( $saved_css ),
 			'css_files' => $saved_css,
+			'img_count' => count( $this->asset_map ),
 			'title'     => $title,
 			'slug'      => $slug,
 		];
@@ -337,7 +346,7 @@ final class RT_Mirror_Importer {
 		$i     = 0;
 		foreach ( array_unique( $links ) as $link ) {
 			$i++;
-			$resp = wp_remote_get( $link, [ 'timeout' => 30, 'redirection' => 5 ] );
+			$resp = $this->http_get_retry( $link, 30 );
 			if ( is_wp_error( $resp ) ) {
 				continue;
 			}
@@ -349,6 +358,19 @@ final class RT_Mirror_Importer {
 			$css_base = $this->base_url( $link );
 			// Resolve url() inside the CSS to absolute origin URLs.
 			$css = $this->absolutize_css_urls( $css, $css_base );
+			// Now rewrite url() to point to LOCAL downloaded copies when possible.
+			$css = (string) preg_replace_callback(
+				'/url\(\s*([\'"]?)([^\'")]+)\1\s*\)/i',
+				function ( $m ) {
+					$ref = trim( $m[2] );
+					if ( $ref === '' || str_starts_with( $ref, 'data:' ) ) {
+						return $m[0];
+					}
+					$local = $this->download_one( $ref, '' );
+					return 'url(' . $m[1] . $local . $m[1] . ')';
+				},
+				$css
+			);
 			// Resolve @import url() similarly.
 			$css = (string) preg_replace_callback(
 				'/@import\s+(?:url\()?\s*([\'"]?)([^\'")\s;]+)\1\s*\)?/i',
@@ -384,5 +406,267 @@ final class RT_Mirror_Importer {
 			'post_name'   => $slug,
 		], true );
 		return is_wp_error( $id ) ? 0 : (int) $id;
+	}
+
+	/* --------------------------------------------------------- Image assets */
+
+	/**
+	 * Walk the DOM and download every <img>/srcset/poster/background image to the local
+	 * uploads dir, rewriting attributes to point to the local copies.
+	 */
+	private function download_assets_in_dom( DOMXPath $xpath, DOMNode $root ): void {
+		$nodes = $xpath->query( './/img | .//source | .//video | .//audio | .//*[@poster or @data-src or @data-bg or @data-background or @data-lazy-src or @data-srcset]', $root );
+		if ( $nodes ) {
+			foreach ( $nodes as $el ) {
+				if ( ! $el instanceof DOMElement ) {
+					continue;
+				}
+				foreach ( [ 'src', 'data-src', 'data-bg', 'data-background', 'data-lazy-src', 'poster' ] as $attr ) {
+					if ( ! $el->hasAttribute( $attr ) ) {
+						continue;
+					}
+					$v = $el->getAttribute( $attr );
+					if ( $v === '' ) {
+						continue;
+					}
+					$new = $this->download_one( $v, '' );
+					if ( $new !== $v ) {
+						$el->setAttribute( $attr, $new );
+					}
+				}
+				foreach ( [ 'srcset', 'data-srcset' ] as $attr ) {
+					if ( ! $el->hasAttribute( $attr ) ) {
+						continue;
+					}
+					$el->setAttribute( $attr, $this->rewrite_srcset_to_local( $el->getAttribute( $attr ) ) );
+				}
+			}
+		}
+		// Inline style backgrounds.
+		$styled = $xpath->query( './/*[contains(@style,"url(")]', $root );
+		if ( $styled ) {
+			foreach ( $styled as $el ) {
+				if ( ! $el instanceof DOMElement ) {
+					continue;
+				}
+				$style = $el->getAttribute( 'style' );
+				$new   = (string) preg_replace_callback(
+					'/url\(\s*([\'"]?)([^\'")]+)\1\s*\)/i',
+					function ( $m ) {
+						$ref = trim( $m[2] );
+						if ( $ref === '' || str_starts_with( $ref, 'data:' ) ) {
+							return $m[0];
+						}
+						$local = $this->download_one( $ref, '' );
+						return 'url(' . $m[1] . $local . $m[1] . ')';
+					},
+					$style
+				);
+				if ( $new !== $style ) {
+					$el->setAttribute( 'style', $new );
+				}
+			}
+		}
+	}
+
+	private function rewrite_srcset_to_local( string $srcset ): string {
+		$parts = preg_split( '/\s*,\s*/', $srcset );
+		if ( ! is_array( $parts ) ) {
+			return $srcset;
+		}
+		$out = [];
+		foreach ( $parts as $p ) {
+			$p = trim( $p );
+			if ( $p === '' ) {
+				continue;
+			}
+			$pieces = preg_split( '/\s+/', $p, 2 );
+			if ( ! $pieces ) {
+				continue;
+			}
+			$pieces[0] = $this->download_one( $pieces[0], '' );
+			$out[]     = implode( ' ', $pieces );
+		}
+		return implode( ', ', $out );
+	}
+
+	/**
+	 * Download one remote asset into the slug uploads dir and return the local URL.
+	 * Returns the original (absolute) URL on any failure so the page still works.
+	 */
+	private function download_one( string $remote, string $base ): string {
+		$remote = trim( $remote );
+		if ( $remote === '' || str_starts_with( $remote, 'data:' ) ) {
+			return $remote;
+		}
+		$abs = $this->absolute_url( $remote, $base );
+		if ( ! preg_match( '#^https?://#i', $abs ) ) {
+			return $abs;
+		}
+		if ( isset( $this->asset_map[ $abs ] ) ) {
+			return $this->asset_map[ $abs ];
+		}
+		$path = (string) wp_parse_url( $abs, PHP_URL_PATH );
+		$bn   = sanitize_file_name( basename( $path ) );
+		if ( $bn === '' || strpos( $bn, '.' ) === false ) {
+			$this->asset_map[ $abs ] = $abs;
+			return $abs;
+		}
+		$ext     = strtolower( pathinfo( $bn, PATHINFO_EXTENSION ) );
+		$allowed = [ 'jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'svg', 'bmp', 'ico' ];
+		if ( ! in_array( $ext, $allowed, true ) ) {
+			$this->asset_map[ $abs ] = $abs;
+			return $abs;
+		}
+		$uploads  = wp_upload_dir();
+		$dir      = trailingslashit( $uploads['basedir'] ) . self::UPLOAD_DIR . '/' . $this->current_slug . '/img';
+		$url_base = trailingslashit( $uploads['baseurl'] ) . self::UPLOAD_DIR . '/' . $this->current_slug . '/img';
+		if ( ! wp_mkdir_p( $dir ) ) {
+			$this->asset_map[ $abs ] = $abs;
+			return $abs;
+		}
+		$bn        = substr( md5( $abs ), 0, 8 ) . '-' . $bn;
+		$file      = $dir . '/' . $bn;
+		$local_url = $url_base . '/' . $bn;
+		if ( ! file_exists( $file ) ) {
+			$resp = $this->http_get_retry( $abs, 30 );
+			if ( is_wp_error( $resp ) ) {
+				$this->asset_map[ $abs ] = $abs;
+				return $abs;
+			}
+			$code = (int) wp_remote_retrieve_response_code( $resp );
+			if ( $code < 200 || $code >= 400 ) {
+				$this->asset_map[ $abs ] = $abs;
+				return $abs;
+			}
+			$body = (string) wp_remote_retrieve_body( $resp );
+			if ( $body === '' || file_put_contents( $file, $body ) === false ) {
+				$this->asset_map[ $abs ] = $abs;
+				return $abs;
+			}
+		}
+		$webp = $this->maybe_to_webp( $file );
+		if ( $webp !== null ) {
+			$local_url = $url_base . '/' . basename( $webp );
+		}
+		$this->asset_map[ $abs ] = $local_url;
+		return $local_url;
+	}
+
+	/**
+	 * Convert a JPG/PNG to WebP next to it (quality 82). Returns the webp path or null.
+	 */
+	private function maybe_to_webp( string $file ): ?string {
+		$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $ext, [ 'jpg', 'jpeg', 'png' ], true ) ) {
+			return null;
+		}
+		$webp = (string) preg_replace( '/\.(jpe?g|png)$/i', '.webp', $file );
+		if ( $webp === '' || $webp === $file ) {
+			return null;
+		}
+		if ( file_exists( $webp ) ) {
+			return $webp;
+		}
+		// Imagick path.
+		if ( class_exists( 'Imagick' ) ) {
+			try {
+				$im = new Imagick( $file );
+				$im->setImageFormat( 'webp' );
+				$im->setImageCompressionQuality( 82 );
+				$im->writeImage( $webp );
+				$im->clear();
+				if ( file_exists( $webp ) ) {
+					return $webp;
+				}
+			} catch ( \Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
+				// Fall through to GD.
+			}
+		}
+		// GD path with WebP support.
+		if ( function_exists( 'imagewebp' ) ) {
+			$img = false;
+			if ( $ext === 'png' && function_exists( 'imagecreatefrompng' ) ) {
+				$img = @imagecreatefrompng( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			} elseif ( function_exists( 'imagecreatefromjpeg' ) ) {
+				$img = @imagecreatefromjpeg( $file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			}
+			if ( $img !== false ) {
+				$ok = @imagewebp( $img, $webp, 82 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				imagedestroy( $img );
+				if ( $ok ) {
+					return $webp;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * HTTP GET with ETag/Last-Modified cache and one retry on 5xx/timeout.
+	 *
+	 * Cached responses are stored as transient `rt_mir_http_<md5(url)>` with
+	 * keys: etag, last_modified, body, code, expires. We never re-use the
+	 * cached body if the server doesn't return 304, but ETag/IMS save bandwidth.
+	 *
+	 * @return array<mixed>|WP_Error WordPress HTTP response array, or WP_Error.
+	 */
+	private function http_get_retry( string $url, int $timeout ) {
+		$key   = 'rt_mir_http_' . md5( $url );
+		$cache = get_transient( $key );
+		if ( ! is_array( $cache ) ) {
+			$cache = [];
+		}
+		$headers = [];
+		if ( ! empty( $cache['etag'] ) ) {
+			$headers['If-None-Match'] = (string) $cache['etag'];
+		}
+		if ( ! empty( $cache['last_modified'] ) ) {
+			$headers['If-Modified-Since'] = (string) $cache['last_modified'];
+		}
+		$args = [
+			'timeout'     => $timeout,
+			'redirection' => 5,
+			'user-agent'  => 'ReplantaMirror/1.0 (+https://replanta.net)',
+			'headers'     => $headers,
+		];
+		$resp = wp_remote_get( $url, $args );
+		if ( $this->should_retry( $resp ) ) {
+			usleep( 400000 ); // 400 ms backoff.
+			$resp = wp_remote_get( $url, $args );
+		}
+		if ( is_wp_error( $resp ) ) {
+			return $resp;
+		}
+		$code = (int) wp_remote_retrieve_response_code( $resp );
+		if ( $code === 304 && isset( $cache['body'] ) ) {
+			// Synthesize a 200 with the cached body.
+			$resp['response']['code'] = 200;
+			$resp['body']             = (string) $cache['body'];
+			return $resp;
+		}
+		if ( $code >= 200 && $code < 300 ) {
+			$etag = (string) wp_remote_retrieve_header( $resp, 'etag' );
+			$lm   = (string) wp_remote_retrieve_header( $resp, 'last-modified' );
+			$body = (string) wp_remote_retrieve_body( $resp );
+			// Cap cached body at ~512 KB to avoid blowing up options table.
+			if ( strlen( $body ) <= 524288 ) {
+				set_transient( $key, [
+					'etag'          => $etag,
+					'last_modified' => $lm,
+					'body'          => $body,
+					'code'          => $code,
+				], HOUR_IN_SECONDS );
+			}
+		}
+		return $resp;
+	}
+
+	private function should_retry( $resp ): bool {
+		if ( is_wp_error( $resp ) ) {
+			return true;
+		}
+		$code = (int) wp_remote_retrieve_response_code( $resp );
+		return $code >= 500 && $code < 600;
 	}
 }

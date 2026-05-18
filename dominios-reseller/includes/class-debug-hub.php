@@ -1652,14 +1652,14 @@ class Dominios_Reseller_Debug_Hub {
             // Paso 3: Encolado para onboarding
             $output .= "PASO 3: Encolado para Onboarding\n";
             $worker = Dominios_Reseller_Onboarding_Worker::get_instance();
-            $enqueue_result = $worker->enqueue_domain($domain, $hosting === 'wordpress' ? 'wp' : 'basic');
+            $enqueue_result = $worker->enqueue($domain, $hosting === 'wordpress' ? 'wp' : 'basic', false);
 
-            if ($enqueue_result['success']) {
+            if (!empty($enqueue_result['success'])) {
                 $output .= "✅ Dominio encolado exitosamente\n";
-                $output .= "   Run ID: {$enqueue_result['run_id']}\n";
-                $output .= "   Estado inicial: {$enqueue_result['initial_state']}\n\n";
+                $output .= "   Run ID: " . ($enqueue_result['run_id'] ?? 'n/a') . "\n";
+                $output .= "   Mensaje: " . ($enqueue_result['message'] ?? '') . "\n\n";
             } else {
-                $output .= "❌ Error al encolar dominio: {$enqueue_result['error']}\n\n";
+                $output .= "❌ Error al encolar dominio: " . ($enqueue_result['error'] ?? 'unknown') . "\n\n";
                 wp_send_json_error($output);
                 return;
             }

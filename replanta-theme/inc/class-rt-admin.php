@@ -645,7 +645,7 @@ final class RT_Admin {
 				},function(r){
 					mirBtn.disabled=false;
 					if(r.ok&&r.data.ok){
-						setStatus('rt-mirror-status','Clonado ('+r.data.css_count+' hojas CSS). <a href="'+r.data.edit_url+'">Editar</a> · <a href="'+r.data.url+'" target="_blank" rel="noopener">Ver</a>','ok');
+						setStatus('rt-mirror-status','Clonado ('+r.data.css_count+' hojas CSS, '+(r.data.img_count||0)+' imágenes). <a href="'+r.data.edit_url+'">Editar</a> · <a href="'+r.data.url+'" target="_blank" rel="noopener">Ver</a>','ok');
 						if(typeof refreshAiPages==='function')refreshAiPages();
 					}else{
 						setStatus('rt-mirror-status','Error: '+(r.data.error||'desconocido'),'err');
