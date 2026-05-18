@@ -6,6 +6,13 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
+## [1.2.5] - 2026-05-18
+
+### Actualizado
+
+- **`SAPWCC_LATEST_SUITE_VERSION`**: actualizado a `2.15.11` (fix preview categorías + suprimir aviso HMAC en CC co-ubicado).
+
+---
 ## [1.2.4] - 2026-05-18
 
 ### Corregido
