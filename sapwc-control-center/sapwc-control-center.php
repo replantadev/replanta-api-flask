@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.5
+ * Version:     1.2.6
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 7.4
@@ -13,10 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.5' );
+define( 'SAPWCC_VERSION', '1.2.6' );;
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.11' );
+define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.12' );;
 
 // HMAC secret shared with sap-woo-suite for flags.json integrity.
 // Override in wp-config.php: define( 'SAPWCC_FLAGS_HMAC_SECRET', 'your-secret' );
@@ -29,7 +29,7 @@ add_action( 'admin_notices', function () {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
-    // Only show on SAP Control Center pages — avoid polluting unrelated admin screens.
+    // Only show on SAP Control Center pages â€” avoid polluting unrelated admin screens.
     $screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
     if ( ! $screen || strpos( $screen->id, 'sapwcc' ) === false ) {
         return;
@@ -38,8 +38,8 @@ add_action( 'admin_notices', function () {
          && empty( get_option( 'sapwcc_flags_hmac_secret', '' ) ) ) {
         echo '<div class="notice notice-warning is-dismissible"><p>'
             . '<strong>SAP Woo Control Center:</strong> '
-            . 'El HMAC secret para flags.json usa el valor por defecto público. '
-            . 'Define <code>SAPWCC_FLAGS_HMAC_SECRET</code> en <code>wp-config.php</code> o activa el plugin para generar uno automático.'
+            . 'El HMAC secret para flags.json usa el valor por defecto pÃºblico. '
+            . 'Define <code>SAPWCC_FLAGS_HMAC_SECRET</code> en <code>wp-config.php</code> o activa el plugin para generar uno automÃ¡tico.'
             . '</p></div>';
     }
 } );
@@ -54,7 +54,7 @@ require_once SAPWCC_PATH . 'includes/class-audit.php';
  * Priority:
  *   1. SAPWCC_FLAGS_HMAC_SECRET constant (if overridden in wp-config.php to a custom value).
  *   2. Auto-generated per-CC secret stored encrypted in wp_options.
- *   3. Empty string (signing is skipped — flags.json is published unsigned).
+ *   3. Empty string (signing is skipped â€” flags.json is published unsigned).
  *
  * @return string The HMAC secret, or empty string if not configured.
  */
@@ -81,7 +81,7 @@ add_action( 'plugins_loaded', function () {
     }
 }, 1 );
 
-// ─── Admin Menu ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Admin Menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'admin_menu', function () {
     add_menu_page(
@@ -95,7 +95,7 @@ add_action( 'admin_menu', function () {
     );
 } );
 
-// ─── Enqueue Assets ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Enqueue Assets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'admin_enqueue_scripts', function ( $hook ) {
     if ( $hook !== 'toplevel_page_sapwcc' ) {
@@ -117,12 +117,12 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
             'sapwc_cron_sync_orders'     => 'Sync Pedidos',
             'sapwc_cron_sync_stock'      => 'Sync Stock',
             'sapwc_cron_sync_products'   => 'Sync Productos',
-            'sapwc_cron_sync_categories' => 'Sync Categorías',
+            'sapwc_cron_sync_categories' => 'Sync CategorÃ­as',
         ],
     ] );
 } );
 
-// ─── Dashboard Render ────────────────────────────────────────────────────────
+// â”€â”€â”€ Dashboard Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function sapwcc_render_dashboard() {
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -131,7 +131,7 @@ function sapwcc_render_dashboard() {
     include SAPWCC_PATH . 'templates/page-dashboard.php';
 }
 
-// ─── AJAX: Añadir sitio ─────────────────────────────────────────────────────
+// â”€â”€â”€ AJAX: AÃ±adir sitio â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_add_site', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -148,12 +148,12 @@ add_action( 'wp_ajax_sapwcc_add_site', function () {
     }
 
     if ( 0 !== strpos( $url, 'https://' ) ) {
-        wp_send_json_error( 'La URL del sitio debe usar HTTPS para proteger el X-SAPWC-Secret en tránsito.' );
+        wp_send_json_error( 'La URL del sitio debe usar HTTPS para proteger el X-SAPWC-Secret en trÃ¡nsito.' );
     }
 
     $result = SAPWCC_Sites::add( $label, $url, $secret );
     if ( $result ) {
-        SAPWCC_Audit::log( 'site_added', $label . ' — ' . $url );
+        SAPWCC_Audit::log( 'site_added', $label . ' â€” ' . $url );
 
         // Push HMAC secret to the newly registered site so it can verify flags.json integrity.
         $hmac_secret = function_exists( 'sapwcc_get_flags_hmac_secret' ) ? sapwcc_get_flags_hmac_secret() : '';
@@ -170,10 +170,10 @@ add_action( 'wp_ajax_sapwcc_add_site', function () {
             ] );
         }
     }
-    $result ? wp_send_json_success( 'Sitio añadido.' ) : wp_send_json_error( 'Error al guardar.' );
+    $result ? wp_send_json_success( 'Sitio aÃ±adido.' ) : wp_send_json_error( 'Error al guardar.' );
 } );
 
-// ─── AJAX: Eliminar sitio ───────────────────────────────────────────────────
+// â”€â”€â”€ AJAX: Eliminar sitio â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_remove_site', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -183,7 +183,7 @@ add_action( 'wp_ajax_sapwcc_remove_site', function () {
 
     $key = sanitize_key( wp_unslash( $_POST['site_key'] ?? '' ) );
     if ( empty( $key ) ) {
-        wp_send_json_error( 'Key vacía.' );
+        wp_send_json_error( 'Key vacÃ­a.' );
     }
 
     SAPWCC_Audit::log( 'site_removed', $key );
@@ -191,7 +191,7 @@ add_action( 'wp_ajax_sapwcc_remove_site', function () {
     wp_send_json_success( 'Sitio eliminado.' );
 } );
 
-// ─── AJAX: Health check (un sitio o todos) ──────────────────────────────────
+// â”€â”€â”€ AJAX: Health check (un sitio o todos) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_check_health', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -213,7 +213,7 @@ add_action( 'wp_ajax_sapwcc_check_health', function () {
     wp_send_json_success( [ $key => $health ] );
 } );
 
-// ─── AJAX: Guardar flags.json ───────────────────────────────────────────────
+// â”€â”€â”€ AJAX: Guardar flags.json â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_save_flags', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -225,17 +225,17 @@ add_action( 'wp_ajax_sapwcc_save_flags', function () {
     $data = json_decode( $json, true );
 
     if ( json_last_error() !== JSON_ERROR_NONE ) {
-        wp_send_json_error( 'JSON inválido: ' . json_last_error_msg() );
+        wp_send_json_error( 'JSON invÃ¡lido: ' . json_last_error_msg() );
     }
 
     $result = SAPWCC_Flags::write( $data );
     if ( $result ) {
         SAPWCC_Audit::log( 'flags_saved', 'flags.json actualizado desde Control Center.' );
     }
-    $result ? wp_send_json_success( 'Flags guardados en ' . SAPWCC_Flags::get_path() ) : wp_send_json_error( 'Error al guardar en ' . SAPWCC_Flags::get_path() . ' — verificar permisos del directorio.' );
+    $result ? wp_send_json_success( 'Flags guardados en ' . SAPWCC_Flags::get_path() ) : wp_send_json_error( 'Error al guardar en ' . SAPWCC_Flags::get_path() . ' â€” verificar permisos del directorio.' );
 } );
 
-// ─── AJAX: Guardar settings ─────────────────────────────────────────────────
+// â”€â”€â”€ AJAX: Guardar settings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_save_settings', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -309,11 +309,11 @@ add_action( 'wp_ajax_sapwcc_save_settings', function () {
     }
 
     $saved_token = SAPWCC_Sites::decrypt( get_option( 'sapwcc_github_token', '' ) );
-    $token_info  = $saved_token ? 'Token: ' . substr( $saved_token, 0, 6 ) . '...' : 'Token: (vacío)';
+    $token_info  = $saved_token ? 'Token: ' . substr( $saved_token, 0, 6 ) . '...' : 'Token: (vacÃ­o)';
     wp_send_json_success( 'Settings guardados. ' . $token_info );
 } );
 
-// ─── AJAX: Git push flags.json ──────────────────────────────────────────
+// â”€â”€â”€ AJAX: Git push flags.json â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_git_push_flags', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -324,12 +324,12 @@ add_action( 'wp_ajax_sapwcc_git_push_flags', function () {
     // Read current flags data.
     $flags = SAPWCC_Flags::read();
     if ( empty( $flags ) ) {
-        wp_send_json_error( 'flags.json vacío o no leído.' );
+        wp_send_json_error( 'flags.json vacÃ­o o no leÃ­do.' );
     }
 
     $token = SAPWCC_Sites::decrypt( get_option( 'sapwcc_github_token', '' ) );
     if ( empty( $token ) ) {
-        wp_send_json_error( 'Token de GitHub no configurado. Guárdalo en Configuración > GitHub Token y pulsa Guardar configuración.' );
+        wp_send_json_error( 'Token de GitHub no configurado. GuÃ¡rdalo en ConfiguraciÃ³n > GitHub Token y pulsa Guardar configuraciÃ³n.' );
     }
 
     $repo   = 'replantadev/sapwoo';
@@ -381,7 +381,7 @@ add_action( 'wp_ajax_sapwcc_git_push_flags', function () {
     ] );
 
     if ( is_wp_error( $put ) ) {
-        wp_send_json_error( 'Error de conexión con GitHub: ' . $put->get_error_message() );
+        wp_send_json_error( 'Error de conexiÃ³n con GitHub: ' . $put->get_error_message() );
     }
 
     $code     = wp_remote_retrieve_response_code( $put );
@@ -422,7 +422,7 @@ add_action( 'wp_ajax_sapwcc_git_push_flags', function () {
     }
 } );
 
-// ─── AJAX: Remote action proxy (logs, clear-cache, run-cron, maintenance, update-check) ──
+// â”€â”€â”€ AJAX: Remote action proxy (logs, clear-cache, run-cron, maintenance, update-check) â”€â”€
 
 add_action( 'wp_ajax_sapwcc_remote_action', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -484,7 +484,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
     }
 
     if ( is_wp_error( $response ) ) {
-        wp_send_json_error( 'Error de conexión: ' . $response->get_error_message() );
+        wp_send_json_error( 'Error de conexiÃ³n: ' . $response->get_error_message() );
     }
 
     $code = wp_remote_retrieve_response_code( $response );
@@ -503,7 +503,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/set-flags-hmac-secret'  => 'set_flags_hmac_secret',
     ];
     $audit_action = $audit_map[ $endpoint ] ?? 'remote_action';
-    SAPWCC_Audit::log( $audit_action, "HTTP {$code} — {$endpoint}", $site['label'] );
+    SAPWCC_Audit::log( $audit_action, "HTTP {$code} â€” {$endpoint}", $site['label'] );
 
     if ( $code >= 200 && $code < 300 ) {
         // After a successful secret rotation, persist the new secret in the Control Center.
@@ -521,7 +521,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
     }
 } );
 
-// ─── AJAX: Actualizar metadatos de sitio (client_name, email, MRR) ──────
+// â”€â”€â”€ AJAX: Actualizar metadatos de sitio (client_name, email, MRR) â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_update_site_meta', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -547,7 +547,7 @@ add_action( 'wp_ajax_sapwcc_update_site_meta', function () {
     }
 } );
 
-// ─── AJAX: Obtener audit log ────────────────────────────────────────────
+// â”€â”€â”€ AJAX: Obtener audit log â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 add_action( 'wp_ajax_sapwcc_get_audit', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -560,7 +560,7 @@ add_action( 'wp_ajax_sapwcc_get_audit', function () {
 } );
 
 /**
- * AJAX — Asignar plan a un sitio en flags.json
+ * AJAX â€” Asignar plan a un sitio en flags.json
  */
 add_action( 'wp_ajax_sapwcc_assign_plan', function () {
     check_ajax_referer( 'sapwcc_nonce', 'nonce' );
@@ -578,7 +578,7 @@ add_action( 'wp_ajax_sapwcc_assign_plan', function () {
     // Validate plan
     $valid_plans = [ 'starter', 'business', 'enterprise', '' ]; // empty = remove assignment
     if ( ! in_array( $plan, $valid_plans, true ) ) {
-        wp_send_json_error( 'Plan inválido.' );
+        wp_send_json_error( 'Plan invÃ¡lido.' );
     }
 
     // Read flags.json
