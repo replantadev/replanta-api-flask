@@ -528,3 +528,161 @@
     to { transform: rotate(360deg); }
 }
 .spin { animation: spin 1s linear infinite; }
+
+/* ─── Vigilante ────────────────────────────────────────────────────────────── */
+
+.sapwcc-vig-header .inside { padding: 12px 16px !important; }
+.sapwcc-vig-header-inner {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+}
+.sapwcc-vig-title {
+    display: flex; align-items: center; gap: 14px;
+}
+.sapwcc-vig-title .dashicons {
+    font-size: 36px; width: 36px; height: 36px; color: #2271b1;
+}
+.sapwcc-vig-title h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+.sapwcc-vig-title p  { margin: 2px 0 0; color: #666; font-size: 13px; }
+
+.sapwcc-vig-badge-new {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .5px;
+    background: linear-gradient(135deg,#2271b1,#8c00b7);
+    color: #fff; padding: 2px 7px; border-radius: 10px; vertical-align: middle;
+}
+.sapwcc-vig-status-bar { display: flex; align-items: center; gap: 10px; }
+.sapwcc-vig-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; padding: 4px 10px;
+    border-radius: 12px;
+}
+.sapwcc-vig-pill .dashicons { font-size: 14px; width: 14px; height: 14px; }
+.sapwcc-vig-pill--ok    { background: #f0faf4; color: #00a32a; border: 1px solid #c6e9d0; }
+.sapwcc-vig-pill--muted { background: #f6f7f7; color: #666;    border: 1px solid #ddd; }
+
+/* Overview counters */
+.sapwcc-vig-overview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 16px;
+}
+.sapwcc-vig-counter {
+    background: #fff; border: 1px solid #e0e0e0; border-radius: 6px;
+    padding: 14px 16px; text-align: center;
+    border-top: 3px solid #e0e0e0;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.sapwcc-vig-counter--critical { border-top-color: #d63638; }
+.sapwcc-vig-counter--warning  { border-top-color: #dba617; }
+.sapwcc-vig-counter--ok       { border-top-color: #00a32a; }
+.sapwcc-vig-counter--neutral  { border-top-color: #2271b1; }
+
+.sapwcc-vig-counter-num {
+    font-size: 32px; font-weight: 700; line-height: 1; color: #1e1e1e;
+}
+.sapwcc-vig-counter--critical .sapwcc-vig-counter-num { color: #d63638; }
+.sapwcc-vig-counter--warning  .sapwcc-vig-counter-num { color: #dba617; }
+.sapwcc-vig-counter--ok       .sapwcc-vig-counter-num { color: #00a32a; }
+.sapwcc-vig-counter-label { font-size: 12px; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+
+/* Site cards */
+.sapwcc-vig-card {
+    border-left: 4px solid #c3c4c7; margin-bottom: 12px;
+}
+.sapwcc-vig-card--critical { border-left-color: #d63638; }
+.sapwcc-vig-card--warning  { border-left-color: #dba617; }
+.sapwcc-vig-card--ok       { border-left-color: #00a32a; }
+.sapwcc-vig-card--error    { border-left-color: #d63638; opacity: .85; }
+.sapwcc-vig-card--neutral  { border-left-color: #c3c4c7; }
+
+.sapwcc-vig-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-bottom: 1px solid #f0f0f1; gap: 10px;
+}
+.sapwcc-vig-card-title {
+    display: flex; align-items: center; gap: 8px; font-size: 14px;
+}
+.sapwcc-vig-card-meta {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+
+/* Site card severity badges */
+.sapwcc-vig-badge {
+    font-size: 11px; font-weight: 700; letter-spacing: .4px;
+    padding: 3px 9px; border-radius: 10px;
+}
+.sapwcc-vig-badge--critical { background: #fce8e8; color: #d63638; }
+.sapwcc-vig-badge--warning  { background: #fef9e7; color: #a67c00; }
+.sapwcc-vig-badge--ok       { background: #f0faf4; color: #00a32a; }
+.sapwcc-vig-badge--error    { background: #fce8e8; color: #d63638; }
+.sapwcc-vig-badge--neutral  { background: #f6f7f7; color: #666; }
+
+/* Issue list */
+.sapwcc-vig-card-body { padding: 8px 14px 14px; }
+.sapwcc-vig-all-ok {
+    display: flex; align-items: center; gap: 8px; color: #00a32a;
+    font-size: 13px; padding: 12px 14px;
+}
+
+.sapwcc-vig-issue {
+    border-radius: 4px; margin: 6px 0;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+.sapwcc-vig-issue--critical { border-left: 3px solid #d63638; }
+.sapwcc-vig-issue--warning  { border-left: 3px solid #dba617; }
+.sapwcc-vig-issue--info     { border-left: 3px solid #2271b1; }
+
+.sapwcc-vig-issue-header {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; background: #fafafa;
+}
+.sapwcc-vig-issue--critical .sapwcc-vig-issue-header { background: #fff8f8; }
+.sapwcc-vig-issue--warning  .sapwcc-vig-issue-header { background: #fffdf0; }
+
+.sapwcc-vig-issue-header > .dashicons { margin-top: 2px; flex-shrink: 0; }
+.sapwcc-vig-issue--critical .dashicons-warning { color: #d63638; }
+.sapwcc-vig-issue--warning  .dashicons-info    { color: #dba617; }
+
+.sapwcc-vig-issue-text {
+    flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 13px;
+}
+.sapwcc-vig-issue-text strong { font-size: 13px; }
+.sapwcc-vig-since { font-size: 11px; color: #999; }
+
+/* AI button */
+.sapwcc-vig-ai-btn {
+    flex-shrink: 0; display: flex !important; align-items: center; gap: 3px;
+    font-size: 11px !important; padding: 3px 8px !important; height: auto !important;
+}
+.sapwcc-vig-ai-btn .dashicons { font-size: 13px; width: 13px; height: 13px; }
+
+/* AI explanation panel */
+.sapwcc-vig-ai-panel {
+    padding: 12px 14px; background: #f0f6fc; border-top: 1px solid #cce0f5; font-size: 13px;
+}
+.sapwcc-vig-ai-panel h4 {
+    margin: 0 0 8px; font-size: 12px; text-transform: uppercase;
+    letter-spacing: .4px; color: #2271b1;
+    display: flex; align-items: center; gap: 5px;
+}
+.sapwcc-vig-ai-panel p   { margin: 0 0 8px; }
+.sapwcc-vig-ai-panel ol  { margin: 0 0 8px; padding-left: 18px; }
+.sapwcc-vig-ai-panel li  { margin-bottom: 3px; }
+.sapwcc-vig-ai-prevention {
+    font-size: 12px; color: #555; background: #e8f4fd; border-radius: 3px;
+    padding: 6px 10px; border-left: 2px solid #2271b1;
+}
+.sapwcc-vig-ai-loading {
+    display: flex; align-items: center; gap: 8px; color: #666; padding: 8px 0;
+}
+
+/* Config section */
+.sapwcc-vig-config { margin-top: 20px; }
+.sapwcc-vig-config .hndle .dashicons { margin-right: 6px; }
+
+@media (max-width: 782px) {
+    .sapwcc-vig-overview { grid-template-columns: repeat(2, 1fr); }
+    .sapwcc-vig-header-inner { flex-direction: column; align-items: flex-start; }
+}
+

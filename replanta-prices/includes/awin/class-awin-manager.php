@@ -57,6 +57,7 @@ class Replanta_Awin_Manager {
         require_once $dir . 'class-awin-logger.php';
         require_once $dir . 'class-awin-webhook.php';
         require_once $dir . 'class-awin-s2s.php';
+        require_once $dir . 'class-awin-logs-cleanup.php';
         require_once $dir . 'class-awin-admin.php';
     }
 

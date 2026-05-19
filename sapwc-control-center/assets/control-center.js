@@ -779,4 +779,149 @@
         });
     });
 
+    // ── Vigilante ────────────────────────────────────────────────────────────
+
+    // Scan all sites
+    $('#sapwcc-vig-scan-all').on('click', function () {
+        var $btn = $(this);
+        $btn.prop('disabled', true).find('.dashicons').addClass('spin');
+        $.post(sapwcc.ajax_url, {
+            action: 'sapwcc_vigilante_scan',
+            nonce:  sapwcc.nonce,
+            site_key: 'all'
+        }, function (res) {
+            $btn.prop('disabled', false).find('.dashicons').removeClass('spin');
+            if (res.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (res.data || 'Escaneo fallido'));
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false).find('.dashicons').removeClass('spin');
+            alert('Error de conexión al escanear.');
+        });
+    });
+
+    // Scan single site
+    $(document).on('click', '.sapwcc-vig-scan-single', function () {
+        var $btn     = $(this);
+        var siteKey  = $btn.data('site-key');
+        var $card    = $btn.closest('.sapwcc-vig-card');
+        $btn.prop('disabled', true).find('.dashicons').addClass('spin');
+        $.post(sapwcc.ajax_url, {
+            action:   'sapwcc_vigilante_scan',
+            nonce:    sapwcc.nonce,
+            site_key: siteKey
+        }, function (res) {
+            $btn.prop('disabled', false).find('.dashicons').removeClass('spin');
+            if (res.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (res.data || 'Escaneo fallido'));
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false).find('.dashicons').removeClass('spin');
+        });
+    });
+
+    // AI explanation button
+    $(document).on('click', '.sapwcc-vig-ai-btn', function () {
+        var $btn    = $(this);
+        var $issue  = $btn.closest('.sapwcc-vig-issue');
+        var $panel  = $issue.find('.sapwcc-vig-ai-panel');
+
+        if ($panel.is(':visible')) {
+            $panel.slideUp(150);
+            return;
+        }
+
+        // Show loading
+        $panel.html(
+            '<div class="sapwcc-vig-ai-loading">' +
+            '<span class="dashicons dashicons-update spin"></span>' +
+            '<span>Consultando IA...</span></div>'
+        ).slideDown(150);
+
+        var issueId   = $issue.data('issue-id');
+        var issueType = $issue.data('issue-type');
+        var siteLabel = $issue.data('site-label');
+        var context   = $issue.data('context') || '{}';
+
+        $.post(sapwcc.ajax_url, {
+            action:     'sapwcc_vigilante_ai',
+            nonce:      sapwcc.nonce,
+            issue_id:   issueId,
+            issue_type: issueType,
+            site_label: siteLabel,
+            context:    typeof context === 'string' ? context : JSON.stringify(context)
+        }, function (res) {
+            if (!res.success) {
+                $panel.html('<p style="color:#d63638;margin:0;font-size:13px;">⚠ ' + (res.data || 'Error desconocido') + '</p>');
+                return;
+            }
+            var d = res.data;
+            var stepsHtml = '';
+            if (d.steps && d.steps.length) {
+                stepsHtml = '<ol>' + d.steps.map(function (s) { return '<li>' + escHtml(s) + '</li>'; }).join('') + '</ol>';
+            }
+            var preventHtml = d.prevention
+                ? '<div class="sapwcc-vig-ai-prevention">💡 ' + escHtml(d.prevention) + '</div>'
+                : '';
+            $panel.html(
+                '<h4><span class="dashicons dashicons-superhero-alt"></span> Análisis IA</h4>' +
+                '<p>' + escHtml(d.explanation || '') + '</p>' +
+                stepsHtml +
+                preventHtml
+            );
+        }).fail(function () {
+            $panel.html('<p style="color:#d63638;margin:0;font-size:13px;">⚠ Error de conexión.</p>');
+        });
+    });
+
+    // Save Vigilante config
+    $('#sapwcc-vig-config-form').on('submit', function (e) {
+        e.preventDefault();
+        var $msg     = $('#sapwcc-vig-config-msg');
+        var $btn     = $(this).find('[type=submit]');
+        $btn.prop('disabled', true);
+        $.post(sapwcc.ajax_url, {
+            action:         'sapwcc_vigilante_save_config',
+            nonce:          sapwcc.nonce,
+            alert_email:    $('#vig-alert-email').val(),
+            claude_key:     $('#vig-claude-key').val(),
+            openai_key:     $('#vig-openai-key').val(),
+            digest_enabled: $('[name=digest_enabled]').is(':checked') ? '1' : '0'
+        }, function (res) {
+            $btn.prop('disabled', false);
+            $msg.text(res.success ? '✓ ' + res.data : '✗ ' + res.data)
+                .css('color', res.success ? '#00a32a' : '#d63638')
+                .show();
+            setTimeout(function () { $msg.fadeOut(); }, 3500);
+        });
+    });
+
+    // Test digest
+    $('#sapwcc-vig-test-digest').on('click', function () {
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $.post(sapwcc.ajax_url, {
+            action: 'sapwcc_vigilante_test_digest',
+            nonce:  sapwcc.nonce
+        }, function (res) {
+            $btn.prop('disabled', false);
+            alert(res.success ? '✓ ' + res.data : '✗ ' + res.data);
+        }).fail(function () {
+            $btn.prop('disabled', false);
+            alert('Error de conexión.');
+        });
+    });
+
+    function escHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
 })(jQuery);

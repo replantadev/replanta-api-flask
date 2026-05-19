@@ -96,6 +96,8 @@ class SAPWCC_Audit {
         'rotate_secret'          => 'Secret rotado (remoto)',
         'set_cc_ip'              => 'IP allowlist propagada',
         'set_flags_hmac_secret'  => 'HMAC secret flags actualizado',
+        'vigilante_config'       => 'Configuración Vigilante actualizada',
+        'vigilante_alert'        => 'Alerta crítica Vigilante',
     ];
 
     /**
@@ -124,6 +126,8 @@ class SAPWCC_Audit {
         'rotate_secret'          => 'dashicons-lock',
         'set_cc_ip'              => 'dashicons-shield',
         'set_flags_hmac_secret'  => 'dashicons-admin-network',
+        'vigilante_config'       => 'dashicons-shield-alt',
+        'vigilante_alert'        => 'dashicons-warning',
     ];
 
     /**

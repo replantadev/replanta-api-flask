@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.10
+ * Version:     1.2.11
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 7.4
@@ -13,10 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.10' );;;;;;
+define( 'SAPWCC_VERSION', '1.2.11' );;;;;;;
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.16' );;;;;;
+define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.17' );;;;;;;
 
 // HMAC secret shared with sap-woo-suite for flags.json integrity.
 // Override in wp-config.php: define( 'SAPWCC_FLAGS_HMAC_SECRET', 'your-secret' );
@@ -47,6 +47,14 @@ add_action( 'admin_notices', function () {
 require_once SAPWCC_PATH . 'includes/class-sites.php';
 require_once SAPWCC_PATH . 'includes/class-flags.php';
 require_once SAPWCC_PATH . 'includes/class-audit.php';
+require_once SAPWCC_PATH . 'includes/class-ai.php';
+require_once SAPWCC_PATH . 'includes/class-alerting.php';
+require_once SAPWCC_PATH . 'includes/class-vigilante.php';
+
+// Boot the Vigilante (registers cron callbacks).
+SAPWCC_Vigilante::init();
+
+register_deactivation_hook( __FILE__, [ 'SAPWCC_Vigilante', 'unschedule' ] );
 
 /**
  * Get the effective HMAC secret used to sign flags.json.
@@ -79,6 +87,8 @@ add_action( 'plugins_loaded', function () {
          && empty( get_option( 'sapwcc_flags_hmac_secret', '' ) ) ) {
         update_option( 'sapwcc_flags_hmac_secret', SAPWCC_Sites::encrypt( wp_generate_password( 32, false, false ) ), false );
     }
+    // Schedule Vigilante cron jobs if not already registered.
+    SAPWCC_Vigilante::schedule();
 }, 1 );
 
 // â”€â”€â”€ Admin Menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -445,6 +455,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/rotate-secret',
         'control/set-cc-ip',
         'control/set-flags-hmac-secret',
+        'control/pending-issues',
     ];
 
     if ( ! in_array( $endpoint, $allowed_endpoints, true ) ) {
@@ -610,4 +621,100 @@ add_action( 'wp_ajax_sapwcc_assign_plan', function () {
         'message' => 'Plan asignado correctamente.',
         'plan'    => $plan,
     ] );
+} );
+
+// ─── AJAX: Vigilante — escanear un sitio ─────────────────────────────────────
+
+add_action( 'wp_ajax_sapwcc_vigilante_scan', function () {
+    check_ajax_referer( 'sapwcc_nonce', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( 'No autorizado.' );
+    }
+
+    $site_key = sanitize_key( wp_unslash( $_POST['site_key'] ?? '' ) );
+
+    if ( $site_key === 'all' || empty( $site_key ) ) {
+        SAPWCC_Vigilante::run_scheduled_scan();
+        wp_send_json_success( [
+            'message' => 'Escaneo completado para todos los sitios.',
+            'results' => SAPWCC_Vigilante::get_all_results(),
+        ] );
+    } else {
+        SAPWCC_Vigilante::scan_site( $site_key );
+        wp_send_json_success( [
+            'message' => 'Escaneo completado.',
+            'result'  => SAPWCC_Vigilante::get_site_result( $site_key ),
+        ] );
+    }
+} );
+
+// ─── AJAX: Vigilante — explicación IA de un issue ────────────────────────────
+
+add_action( 'wp_ajax_sapwcc_vigilante_ai', function () {
+    check_ajax_referer( 'sapwcc_nonce', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( 'No autorizado.' );
+    }
+
+    $issue_id   = sanitize_text_field( wp_unslash( $_POST['issue_id']   ?? '' ) );
+    $issue_type = sanitize_text_field( wp_unslash( $_POST['issue_type'] ?? '' ) );
+    $site_label = sanitize_text_field( wp_unslash( $_POST['site_label'] ?? '' ) );
+    $context    = json_decode( wp_unslash( $_POST['context'] ?? '{}' ), true );
+
+    if ( ! SAPWCC_AI::is_configured() ) {
+        wp_send_json_error( 'IA no configurada. Añade una API key en la configuración del Vigilante.' );
+    }
+
+    $explanation = SAPWCC_AI::explain( $issue_type, $context ?: [], $site_label, $issue_id );
+    if ( ! $explanation ) {
+        wp_send_json_error( 'No se pudo obtener respuesta de la IA. Verifica que la API key sea válida.' );
+    }
+
+    wp_send_json_success( $explanation );
+} );
+
+// ─── AJAX: Vigilante — guardar configuración ─────────────────────────────────
+
+add_action( 'wp_ajax_sapwcc_vigilante_save_config', function () {
+    check_ajax_referer( 'sapwcc_nonce', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( 'No autorizado.' );
+    }
+
+    $alert_email    = sanitize_email( wp_unslash( $_POST['alert_email']    ?? '' ) );
+    $claude_key     = trim( wp_unslash( $_POST['claude_key']               ?? '' ) );
+    $openai_key     = trim( wp_unslash( $_POST['openai_key']               ?? '' ) );
+    $digest_enabled = sanitize_text_field( wp_unslash( $_POST['digest_enabled'] ?? '0' ) );
+
+    if ( ! empty( $alert_email ) ) {
+        update_option( 'sapwcc_alert_email', $alert_email, false );
+    }
+
+    if ( ! empty( $claude_key ) && strpos( $claude_key, '•' ) === false ) {
+        SAPWCC_AI::save_claude_key( $claude_key );
+    }
+    if ( ! empty( $openai_key ) && strpos( $openai_key, '•' ) === false ) {
+        SAPWCC_AI::save_openai_key( $openai_key );
+    }
+
+    update_option( 'sapwcc_vig_digest_enabled', $digest_enabled === '1' ? '1' : '0', false );
+
+    SAPWCC_Audit::log( 'vigilante_config', 'Configuración Vigilante actualizada.' );
+    wp_send_json_success( 'Configuración guardada correctamente.' );
+} );
+
+// ─── AJAX: Vigilante — digest de prueba ──────────────────────────────────────
+
+add_action( 'wp_ajax_sapwcc_vigilante_test_digest', function () {
+    check_ajax_referer( 'sapwcc_nonce', 'nonce' );
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( 'No autorizado.' );
+    }
+
+    $sent = SAPWCC_Alerting::send_weekly_digest();
+    $to   = SAPWCC_Alerting::get_alert_email();
+
+    $sent
+        ? wp_send_json_success( "Digest enviado a {$to}." )
+        : wp_send_json_error( 'No se pudo enviar. Verifica el email configurado y que wp_mail funcione.' );
 } );

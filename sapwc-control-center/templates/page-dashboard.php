@@ -11,11 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$sites  = SAPWCC_Sites::get_all();
-$flags  = SAPWCC_Flags::read();
-$labels = SAPWCC_Flags::get_labels();
-$recs   = SAPWCC_Sites::generate_recommendations();
-$active = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'sites';
+$sites          = SAPWCC_Sites::get_all();
+$flags          = SAPWCC_Flags::read();
+$labels         = SAPWCC_Flags::get_labels();
+$recs           = SAPWCC_Sites::generate_recommendations();
+$active         = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'sites';
+$vig_criticals  = class_exists( 'SAPWCC_Vigilante' ) ? SAPWCC_Vigilante::total_critical_across_sites() : 0;
 ?>
 <div class="wrap sapwcc-wrap">
     <h1 class="sapwcc-title">
@@ -40,6 +41,14 @@ $active = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'sites';
         </a>
         <a class="nav-tab <?php echo $active === 'config' ? 'nav-tab-active' : ''; ?>"
            href="#config" data-tab="config">Config</a>
+        <a class="nav-tab <?php echo $active === 'vigilante' ? 'nav-tab-active' : ''; ?>"
+           href="#vigilante" data-tab="vigilante">
+            <span class="dashicons dashicons-shield" style="font-size:14px;width:14px;height:14px;vertical-align:text-bottom;margin-right:3px;"></span>
+            Vigilante
+            <?php if ( $vig_criticals > 0 ) : ?>
+                <span class="sapwcc-badge sapwcc-badge--alert"><?php echo $vig_criticals; ?></span>
+            <?php endif; ?>
+        </a>
     </nav>
 
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -921,6 +930,8 @@ $active = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'sites';
             </div>
         </div>
     </div>
+
+    <?php include SAPWCC_PATH . 'templates/tab-vigilante.php'; ?>
 
     <!-- Remote logs modal -->
     <div id="sapwcc-logs-modal" class="sapwcc-modal" style="display:none;">

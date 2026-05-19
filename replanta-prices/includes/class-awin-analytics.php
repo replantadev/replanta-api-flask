@@ -295,6 +295,12 @@ class Replanta_Prices_Awin_Analytics {
         update_option( self::OPT_STATS, $stats, false );
     }
 
+    public static function clear_analytics_data() {
+        delete_option( self::OPT_STATS );
+        delete_option( self::OPT_S2S_QUEUE );
+        delete_option( self::OPT_S2S_LOG );
+    }
+
     private static function get_s2s_queue() {
         $queue = get_option( self::OPT_S2S_QUEUE, array() );
         if ( ! is_array( $queue ) ) {

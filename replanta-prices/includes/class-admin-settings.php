@@ -1089,6 +1089,17 @@ class Replanta_Prices_Admin {
                 </tbody>
             </table>
         <?php endif; ?>
+
+        <!-- Sección de Limpieza de Logs -->
+        <hr style="margin-top:30px;">
+        <h3><?php esc_html_e( 'Limpieza de Logs AWIN', 'replanta-prices' ); ?></h3>
+        <p class="description"><?php esc_html_e( 'Herramientas para limpiar, visualizar y exportar eventos de logs.', 'replanta-prices' ); ?></p>
+
+        <?php 
+        if ( class_exists( 'Replanta_Awin_Logs_Cleanup' ) ) {
+            Replanta_Awin_Logs_Cleanup::render_cleanup_section();
+        }
+        ?>
         <?php
     }
 
