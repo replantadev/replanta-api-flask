@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.12
+ * Version:     1.2.13
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 7.4
@@ -13,10 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.12' );;;;;;;;
+define( 'SAPWCC_VERSION', '1.2.13' );;;;;;;;;
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.18' );;;;;;;;
+define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.19' );;;;;;;;;
 
 // HMAC secret shared with sap-woo-suite for flags.json integrity.
 // Override in wp-config.php: define( 'SAPWCC_FLAGS_HMAC_SECRET', 'your-secret' );
