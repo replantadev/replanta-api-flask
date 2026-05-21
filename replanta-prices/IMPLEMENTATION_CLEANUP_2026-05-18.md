@@ -160,10 +160,32 @@ Acción: Descargar CSV con estructura:
    - Alerta si queue S2S > 100 items
    - Alerta si cron fails
 
-4. **Dashboard Metrics**
-   - Gráfico histórico de conversiones
-   - Heat map de timestamps (para detectar patrones)
-   - Monthly export automático
+4. **Feed Multicanal (Google Merchant + Meta/Instagram)**
+   - Endpoint XML para Google Merchant: `/wp-json/replanta-prices/v1/feed/google.xml`
+   - Endpoint CSV/JSON para Meta Catalog: `/wp-json/replanta-prices/v1/feed/meta.csv`
+   - Cache de feed (transient 15-30 min) + invalidación al guardar precios
+   - Soporte multi-divisa (EUR/USD/LATAM) y selección por feed
+   - Mapeo de categorías por plan (`hosting`, `mantenimiento`, `sapwoo`)
+   - Validación de campos obligatorios por canal
+
+5. **Modelo de Datos para Catálogo (sin bloquear release)**
+   - Fase 1: generar feed desde el modelo actual (`Replanta_Prices_Cache` + settings)
+   - Fase 2: añadir CPT opcional `replanta_product` para enriquecer marketing metadata
+   - Campos propuestos CPT: `title`, `description`, `image_link`, `brand`, `google_product_category`, `condition`, `availability`, `sale_price`, `landing_url`
+   - Regla de merge: pricing dinámico del plugin prevalece sobre precio manual del CPT
+
+6. **Dashboard Rápido AWIN (tab AWIN Analytics)**
+   - Mini gráfico de 30 días: `arrival`, `begin_checkout`, `purchase_awin`
+   - KPI cards con deltas 7d vs 7d previos
+   - Filtro rápido: 7/30/90 días
+   - Widget “Top días por revenue AWIN”
+   - Export CSV del tramo filtrado
+
+7. **Plan de Implementación (propuesto)**
+   - Sprint 1 (Backend Feed): contrato de datos, endpoints, validadores por canal
+   - Sprint 2 (Admin Feed): preview, health checks y botón de regeneración
+   - Sprint 3 (AWIN Dashboard): endpoint agregado + gráfico ligero en admin
+   - Sprint 4 (Hardening): tests de regresión, performance budget y documentación
 
 ---
 
@@ -171,19 +193,20 @@ Acción: Descargar CSV con estructura:
 
 **Para activar la herramienta:**
 
-1. Ir a: **Ajustes > Awin Tracking** (nueva pestaña: **Mantenimiento**)
+1. Ir a: **Ajustes > Replanta Prices > AWIN Analytics**
 2. Ver estadísticas en tiempo real
 3. Elegir opción de limpieza:
    - **Antigüedad**: Eliminar logs > 30 días (ej.)
    - **Estado**: Eliminar solo errors o pending
    - **Export**: Descargar CSV con filtros personalizados
+   - **Reiniciar analíticas**: Vaciar métricas agregadas + cola/historial S2S
 
 **Ejemplo de uso:**
 ```
 Escenario: "Tengo 5000 eventos de error antiguos, necesito limpiar"
 
 Acción:
-1. Ir a Mantenimiento
+1. Ir a AWIN Analytics
 2. Ver: "5000 total eventos | 234 con estado error"
 3. Clic en "Limpieza por Estado" → Seleccionar "error"
 4. Clic "Ejecutar" → Confirmar
@@ -209,6 +232,6 @@ Acción:
 ---
 
 **Generado por:** GitHub Copilot Audit Agent  
-**Plugin Version:** 1.1.0  
+**Plugin Version:** 1.1.1  
 **PHP Requerido:** 7.4+  
 **WordPress:** 6.0+

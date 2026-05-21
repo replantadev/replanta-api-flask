@@ -2,21 +2,22 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.14
+ * Version:     1.2.15
  * Author:      Replanta
  * Text Domain: sapwcc
- * Requires PHP: 7.4
+ * Requires PHP: 8.0
  * Requires at least: 6.0
+ * Tested up to: 7.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.14' );;;;;;;;;;
+define( 'SAPWCC_VERSION', '1.2.15' );;;;;;;;;;;
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAPWCC_LATEST_SUITE_VERSION', '2.15.20' );;;;;;;;;;
+define( 'SAPWCC_LATEST_SUITE_VERSION', '2.16.0' );;;;;;;;;;;
 
 // HMAC secret shared with sap-woo-suite for flags.json integrity.
 // Override in wp-config.php: define( 'SAPWCC_FLAGS_HMAC_SECRET', 'your-secret' );
@@ -546,6 +547,8 @@ add_action( 'wp_ajax_sapwcc_update_site_meta', function () {
         'client_email'  => sanitize_email( wp_unslash( $_POST['client_email'] ?? '' ) ),
         'contract_date' => sanitize_text_field( wp_unslash( $_POST['contract_date'] ?? '' ) ),
         'monthly_fee'   => floatval( $_POST['monthly_fee'] ?? 0 ),
+        'quiet_from'    => isset( $_POST['quiet_from'] ) && $_POST['quiet_from'] !== '' ? absint( $_POST['quiet_from'] ) : '',
+        'quiet_to'      => isset( $_POST['quiet_to'] )   && $_POST['quiet_to']   !== '' ? absint( $_POST['quiet_to'] )   : '',
     ];
 
     $result = SAPWCC_Sites::update_meta( $key, $meta );

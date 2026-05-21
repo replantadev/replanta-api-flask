@@ -22,6 +22,7 @@ class Replanta_Prices_Admin {
         add_action( 'admin_init', array( __CLASS__, 'handle_price_save' ) );
         add_action( 'admin_init', array( __CLASS__, 'handle_features_save' ) );
         add_action( 'admin_init', array( __CLASS__, 'handle_awin_s2s_queue_process' ) );
+        add_action( 'admin_init', array( __CLASS__, 'handle_feed_actions' ) );
     }
 
     /* ─── Menu ─────────────────────────────────────────────────────── */
@@ -110,12 +111,42 @@ class Replanta_Prices_Admin {
         exit;
     }
 
-    /* ─── Assets ───────────────────────────────────────────────────── */
+    /**
+     * Handle POST actions on the Feeds tab (e.g. regenerate_feeds cache bust).
+     * Hooked to admin_init.
+     */
+    public static function handle_feed_actions() {
+        if ( ! isset( $_POST['replanta_feed_action'] ) ) {
+            return;
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+        check_admin_referer( 'replanta_feed_regenerate', 'replanta_feed_nonce' );
+
+        $action = sanitize_key( $_POST['replanta_feed_action'] );
+
+        if ( 'regenerate_feeds' === $action && class_exists( 'Replanta_Prices_Product_Feed' ) ) {
+            Replanta_Prices_Product_Feed::bust_cache();
+            add_settings_error(
+                'replanta_prices_feeds',
+                'feeds_regenerated',
+                __( 'Caché de feeds eliminado. Los feeds se regenerarán en la próxima petición.', 'replanta-prices' ),
+                'success'
+            );
+        }
+
+        wp_safe_redirect( admin_url( 'options-general.php?page=' . self::PAGE_SLUG . '&tab=feeds' ) );
+        exit;
+    }
+
+
 
     public static function enqueue_assets( $hook ) {
         if ( 'settings_page_' . self::PAGE_SLUG !== $hook ) {
             return;
         }
+        wp_enqueue_media(); // needed for media picker buttons
         wp_enqueue_style(
             'replanta-prices-admin',
             REPLANTA_PRICES_URL . 'assets/css/admin.css',
@@ -125,7 +156,7 @@ class Replanta_Prices_Admin {
         wp_enqueue_script(
             'replanta-prices-admin',
             REPLANTA_PRICES_URL . 'assets/js/admin.js',
-            array( 'jquery' ),
+            array( 'jquery', 'media' ),
             REPLANTA_PRICES_VERSION,
             true
         );
@@ -185,6 +216,12 @@ class Replanta_Prices_Admin {
                 if ( 'sapwoo' === $type ) {
                     $quote_key = "price_{$type}_{$slug}_quote";
                     $plan['quote_request'] = isset( $_POST[ $quote_key ] );
+                }
+
+                // Image URL for feeds — esc_url_raw directly, no sanitize_text_field (that strips URL chars).
+                $key_img = "price_{$type}_{$slug}_image_url";
+                if ( array_key_exists( $key_img, $_POST ) ) {
+                    $plan['image_url'] = esc_url_raw( wp_unslash( $_POST[ $key_img ] ) );
                 }
 
                 // LATAM / USD prices
@@ -364,6 +401,10 @@ class Replanta_Prices_Admin {
                    class="nav-tab <?php echo 'awin-docs' === $active_tab ? 'nav-tab-active' : ''; ?>">
                     <?php esc_html_e( 'AWIN Docs', 'replanta-prices' ); ?>
                 </a>
+                <a href="?page=<?php echo esc_attr( self::PAGE_SLUG ); ?>&tab=feeds"
+                   class="nav-tab <?php echo 'feeds' === $active_tab ? 'nav-tab-active' : ''; ?>">
+                    <?php esc_html_e( 'Feeds', 'replanta-prices' ); ?>
+                </a>
             </nav>
 
             <div class="tab-content" style="margin-top:20px;">
@@ -376,6 +417,8 @@ class Replanta_Prices_Admin {
                     self::render_awin_tab();
                 } elseif ( 'awin-docs' === $active_tab ) {
                     self::render_awin_docs_tab();
+                } elseif ( 'feeds' === $active_tab ) {
+                    self::render_feeds_tab();
                 } else {
                     self::render_config_tab( $settings, $last_sync, $sync_log );
                 }
@@ -643,6 +686,7 @@ class Replanta_Prices_Admin {
                             <th style="width:120px;"><?php esc_html_e( 'Setup (€)', 'replanta-prices' ); ?></th>
                             <?php endif; ?>
                             <th style="width:95px;"><?php esc_html_e( 'Featured', 'replanta-prices' ); ?></th>
+                            <th><?php esc_html_e( 'Imagen feed (URL)', 'replanta-prices' ); ?></th>
                             <?php if ( $supports_quote ) : ?>
                             <th style="width:135px;"><?php esc_html_e( 'Solicitar presupuesto', 'replanta-prices' ); ?></th>
                             <?php endif; ?>
@@ -687,6 +731,28 @@ class Replanta_Prices_Admin {
                                 <?php endif; ?>
                                 <td>
                                     <?php echo $plan['featured'] ? esc_html__( 'Sí', 'replanta-prices' ) : '—'; ?>
+                                </td>
+                <td>
+                                    <?php
+                                    $img_id  = 'rp_img_' . esc_attr( $type . '_' . $slug );
+                                    $img_val = isset( $plan['image_url'] ) ? $plan['image_url'] : '';
+                                    ?>
+                                    <div style="display:flex;align-items:center;gap:6px;">
+                                        <input type="url"
+                                               id="<?php echo $img_id; ?>"
+                                               name="price_<?php echo esc_attr( $type . '_' . $slug ); ?>_image_url"
+                                               value="<?php echo esc_attr( $img_val ); ?>"
+                                               class="regular-text rp-img-url" style="flex:1;min-width:0">
+                                        <button type="button" class="button rp-media-pick"
+                                                data-target="<?php echo $img_id; ?>">
+                                            Elegir
+                                        </button>
+                                        <?php if ( $img_val ) : ?>
+                                            <img src="<?php echo esc_url( $img_val ); ?>"
+                                                 style="height:32px;width:32px;object-fit:cover;border-radius:3px;border:1px solid #ddd;"
+                                                 alt="">
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                                 <?php if ( $supports_quote ) : ?>
                                 <td>
@@ -956,12 +1022,193 @@ class Replanta_Prices_Admin {
 
         settings_errors( 'replanta_prices' );
 
-        $report = Replanta_Prices_Awin_Analytics::get_report( 30 );
+        // Period selector (7 / 30 / 90 days).
+        $period_days = isset( $_GET['days'] ) ? (int) $_GET['days'] : 30; // phpcs:ignore WordPress.Security.NonceVerification
+        $period_days = in_array( $period_days, array( 7, 30, 90 ), true ) ? $period_days : 30;
+
+        $report = Replanta_Prices_Awin_Analytics::get_report( $period_days );
         $totals = $report['totals'];
         $rows   = $report['rows'];
         $s2s    = isset( $report['s2s'] ) && is_array( $report['s2s'] ) ? $report['s2s'] : array();
+
+        // Dashboard data (KPIs + chart series) when class is available.
+        $dash = class_exists( 'Replanta_Prices_Awin_Dashboard' )
+            ? Replanta_Prices_Awin_Dashboard::get_dashboard_data( $period_days )
+            : null;
+
+        $base_url = admin_url( 'options-general.php?page=' . self::PAGE_SLUG . '&tab=awin' );
         ?>
-        <h2><?php esc_html_e( 'AWIN Analytics (últimos 30 días)', 'replanta-prices' ); ?></h2>
+
+        <!-- ── Period picker ────────────────────────────────────────── -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+            <h2 style="margin:0;"><?php esc_html_e( 'AWIN Analytics', 'replanta-prices' ); ?></h2>
+            <div style="display:flex;gap:6px;">
+                <?php foreach ( array( 7, 30, 90 ) as $opt ) : ?>
+                    <a href="<?php echo esc_url( add_query_arg( 'days', $opt, $base_url ) ); ?>"
+                       style="padding:4px 12px;border-radius:4px;text-decoration:none;font-weight:<?php echo $period_days === $opt ? '700' : '400'; ?>;background:<?php echo $period_days === $opt ? '#2271b1' : '#f0f0f1'; ?>;color:<?php echo $period_days === $opt ? '#fff' : '#1d2327'; ?>;border:1px solid <?php echo $period_days === $opt ? '#2271b1' : '#ccd0d4'; ?>;">
+                        <?php echo esc_html( $opt ); ?>d
+                    </a>
+                <?php endforeach; ?>
+            </div>
+            <p class="description" style="margin:0;"><?php esc_html_e( 'Datos desde GTM/snippets frontend. Métricas AWIN cuando llega awc válido.', 'replanta-prices' ); ?></p>
+        </div>
+
+        <?php if ( $dash ) : ?>
+        <!-- ── KPI Cards ─────────────────────────────────────────────── -->
+        <style>
+            .rp-kpi-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; max-width:1100px; margin-bottom:24px; }
+            .rp-kpi-card { background:#fff; border:1px solid #ccd0d4; border-radius:8px; padding:16px 20px; }
+            .rp-kpi-card .rp-kpi-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#646970; margin-bottom:4px; }
+            .rp-kpi-card .rp-kpi-value { font-size:26px; font-weight:700; color:#1d2327; line-height:1.1; }
+            .rp-kpi-card .rp-kpi-delta { font-size:12px; margin-top:4px; }
+            .rp-kpi-delta.up   { color:#00a32a; }
+            .rp-kpi-delta.down { color:#d63638; }
+            .rp-kpi-delta.flat { color:#646970; }
+            .rp-chart-wrap { background:#fff; border:1px solid #ccd0d4; border-radius:8px; padding:16px 20px; max-width:1100px; margin-bottom:24px; }
+            .rp-chart-wrap h3 { margin:0 0 12px; font-size:14px; color:#1d2327; }
+        </style>
+
+        <?php
+        $kpis      = $dash['kpis'];
+        $prev      = $dash['prev_kpis'];
+        $chart     = $dash['chart'];
+        $top_days  = $dash['top_days'];
+
+        $kpi_defs = array(
+            array( 'key' => 'arrivals',        'label' => __( 'Llegadas', 'replanta-prices' ),       'fmt' => 'int' ),
+            array( 'key' => 'checkouts_awin',  'label' => __( 'Checkouts AWIN', 'replanta-prices' ), 'fmt' => 'int' ),
+            array( 'key' => 'purchases_awin',  'label' => __( 'Compras AWIN', 'replanta-prices' ),   'fmt' => 'int' ),
+            array( 'key' => 'revenue_awin',    'label' => __( 'Revenue AWIN', 'replanta-prices' ),   'fmt' => 'eur' ),
+        );
+        ?>
+
+        <div class="rp-kpi-grid">
+        <?php foreach ( $kpi_defs as $def ) :
+            $val      = isset( $kpis[ $def['key'] ] ) ? $kpis[ $def['key'] ] : 0;
+            $prev_val = isset( $prev[ $def['key'] ] ) ? $prev[ $def['key'] ] : 0;
+            $delta    = Replanta_Prices_Awin_Dashboard::delta( $val, $prev_val );
+            $val_str  = ( 'eur' === $def['fmt'] ) ? number_format_i18n( (float) $val, 2 ) . ' €' : number_format_i18n( (int) $val );
+            if ( null === $delta ) {
+                $delta_html = '<span class="rp-kpi-delta flat">— sin período anterior</span>';
+            } elseif ( $delta > 0 ) {
+                $delta_html = '<span class="rp-kpi-delta up">▲ ' . esc_html( number_format_i18n( $delta, 1 ) ) . '% vs período anterior</span>';
+            } elseif ( $delta < 0 ) {
+                $delta_html = '<span class="rp-kpi-delta down">▼ ' . esc_html( number_format_i18n( abs( $delta ), 1 ) ) . '% vs período anterior</span>';
+            } else {
+                $delta_html = '<span class="rp-kpi-delta flat">= sin cambio</span>';
+            }
+            ?>
+            <div class="rp-kpi-card">
+                <div class="rp-kpi-label"><?php echo esc_html( $def['label'] ); ?></div>
+                <div class="rp-kpi-value"><?php echo esc_html( $val_str ); ?></div>
+                <?php echo $delta_html; // phpcs:ignore WordPress.Security.EscapeOutput — content escaped above ?>
+            </div>
+        <?php endforeach; ?>
+        </div>
+
+        <!-- ── Sparkline Chart (Canvas) ─────────────────────────────── -->
+        <div class="rp-chart-wrap">
+            <h3><?php printf( esc_html__( 'Evolución últimos %d días', 'replanta-prices' ), esc_html( (string) $period_days ) ); ?></h3>
+            <canvas id="rp-awin-chart" width="1060" height="200" style="max-width:100%;height:auto;"></canvas>
+        </div>
+
+        <script>
+        (function(){
+            var labels = <?php echo wp_json_encode( $chart['labels'] ); ?>;
+            var arrivals = <?php echo wp_json_encode( $chart['arrivals'] ); ?>;
+            var purchases = <?php echo wp_json_encode( $chart['purchases_awin'] ); ?>;
+
+            var canvas = document.getElementById('rp-awin-chart');
+            if (!canvas || !canvas.getContext) return;
+            var ctx = canvas.getContext('2d');
+
+            var W = canvas.width, H = canvas.height;
+            var padL = 42, padR = 12, padT = 14, padB = 36;
+            var innerW = W - padL - padR, innerH = H - padT - padB;
+
+            var maxVal = Math.max.apply(null, arrivals.concat(purchases)) || 1;
+
+            function xPos(i) { return padL + (i / (labels.length - 1 || 1)) * innerW; }
+            function yPos(v) { return padT + innerH - (v / maxVal) * innerH; }
+
+            // Grid lines.
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (var g = 0; g <= 4; g++) {
+                var gy = padT + (g / 4) * innerH;
+                ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(padL + innerW, gy); ctx.stroke();
+                ctx.fillStyle = '#8c8f94';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(Math.round(maxVal * (1 - g/4)), padL - 6, gy + 4);
+            }
+
+            // X labels (show every N to avoid clutter).
+            var step = Math.ceil(labels.length / 12);
+            ctx.fillStyle = '#8c8f94';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            for (var i = 0; i < labels.length; i += step) {
+                ctx.fillText(labels[i], xPos(i), H - padB + 16);
+            }
+
+            // Series helper.
+            function drawLine(data, color, lineWidth) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lineWidth || 2;
+                ctx.lineJoin = 'round';
+                ctx.beginPath();
+                for (var j = 0; j < data.length; j++) {
+                    var x = xPos(j), y = yPos(data[j]);
+                    if (j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+
+            drawLine(arrivals,  '#2271b1', 2);
+            drawLine(purchases, '#00a32a', 2);
+
+            // Legend.
+            var lx = padL + 8, ly = padT + 16;
+            [[arrivals,'#2271b1','Llegadas'],[purchases,'#00a32a','Compras AWIN']].forEach(function(s, i){
+                ctx.fillStyle = s[1];
+                ctx.fillRect(lx + i*130, ly, 12, 12);
+                ctx.fillStyle = '#1d2327';
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(s[2], lx + i*130 + 16, ly + 10);
+            });
+        })();
+        </script>
+
+        <?php if ( ! empty( $top_days ) ) : ?>
+        <!-- ── Top días por revenue ──────────────────────────────────── -->
+        <div style="max-width:600px;margin-bottom:24px;">
+            <h3 style="font-size:13px;margin-bottom:8px;"><?php esc_html_e( 'Top días por Revenue AWIN', 'replanta-prices' ); ?></h3>
+            <table class="widefat fixed striped">
+                <thead><tr>
+                    <th><?php esc_html_e( 'Fecha', 'replanta-prices' ); ?></th>
+                    <th><?php esc_html_e( 'Revenue AWIN', 'replanta-prices' ); ?></th>
+                    <th><?php esc_html_e( 'Compras AWIN', 'replanta-prices' ); ?></th>
+                </tr></thead>
+                <tbody>
+                <?php foreach ( $top_days as $td ) : ?>
+                    <tr>
+                        <td><?php echo esc_html( $td['day'] ); ?></td>
+                        <td><?php echo esc_html( number_format_i18n( (float) $td['revenue_awin'], 2 ) ); ?> €</td>
+                        <td><?php echo esc_html( (string) $td['purchases_awin'] ); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
+
+        <hr style="max-width:1100px;margin-bottom:20px;">
+        <?php endif; // end $dash ?>
+
+        <!-- ── Totals summary table ──────────────────────────────────── -->
+        <h3 style="margin-top:0;"><?php printf( esc_html__( 'Resumen últimos %d días', 'replanta-prices' ), esc_html( (string) $period_days ) ); ?></h3>
         <p class="description"><?php esc_html_e( 'Datos recibidos por endpoint desde GTM/snippets frontend. Métricas AWIN se calculan cuando el evento llega con awc válido.', 'replanta-prices' ); ?></p>
 
         <table class="widefat fixed striped" style="max-width:1100px;margin-top:12px;">
@@ -1547,6 +1794,138 @@ prod_xxx2:HOSTING
             </table>
         </div>
 
+        <?php
+    }
+
+    /* ─── Feeds Tab ────────────────────────────────────────────────── */
+
+    private static function render_feeds_tab() {
+        if ( ! class_exists( 'Replanta_Prices_Product_Feed' ) ) {
+            echo '<p>' . esc_html__( 'Módulo Feed no disponible.', 'replanta-prices' ) . '</p>';
+            return;
+        }
+
+        settings_errors( 'replanta_prices_feeds' );
+
+        $preview = Replanta_Prices_Product_Feed::get_feed_preview( 'EUR', 'monthly' );
+
+        $google_url = $preview['google_url'];
+        $meta_url   = $preview['meta_url'];
+        $count      = $preview['count'];
+        $items      = $preview['items'];
+        ?>
+        <h2><?php esc_html_e( 'Feeds de productos', 'replanta-prices' ); ?></h2>
+        <p class="description">
+            <?php esc_html_e( 'Exporta el catálogo de productos para Google Merchant Center y Meta/Instagram. Los feeds se cachean 30 minutos. Usa el botón para regenerar.', 'replanta-prices' ); ?>
+        </p>
+
+        <!-- ── Feed URLs ─────────────────────────────────────────────── -->
+        <div style="background:#fff;border:1px solid #ccd0d4;border-radius:8px;padding:20px 24px;max-width:860px;margin-bottom:24px;">
+            <h3 style="margin-top:0;"><?php esc_html_e( 'URLs de los feeds', 'replanta-prices' ); ?></h3>
+
+            <table class="widefat fixed" style="margin-bottom:16px;">
+                <thead>
+                    <tr>
+                        <th style="width:140px;"><?php esc_html_e( 'Canal', 'replanta-prices' ); ?></th>
+                        <th><?php esc_html_e( 'URL del feed', 'replanta-prices' ); ?></th>
+                        <th style="width:80px;"><?php esc_html_e( 'Tipo', 'replanta-prices' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Google Merchant</strong></td>
+                        <td><code style="word-break:break-all;"><?php echo esc_html( $google_url ); ?></code></td>
+                        <td>XML RSS 2.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Meta / Instagram</strong></td>
+                        <td><code style="word-break:break-all;"><?php echo esc_html( $meta_url ); ?></code></td>
+                        <td>CSV</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="description" style="margin-bottom:12px;">
+                <?php esc_html_e( 'Parámetros opcionales: ?currency=USD&period=annual (monthly por defecto, EUR por defecto).', 'replanta-prices' ); ?>
+            </p>
+
+            <!-- Regenerate cache button -->
+            <form method="post" action="">
+                <?php wp_nonce_field( 'replanta_feed_regenerate', 'replanta_feed_nonce' ); ?>
+                <input type="hidden" name="replanta_feed_action" value="regenerate_feeds">
+                <button type="submit" class="button button-secondary">
+                    <?php esc_html_e( '↺ Regenerar caché de feeds', 'replanta-prices' ); ?>
+                </button>
+                <span style="margin-left:10px;" class="description">
+                    <?php esc_html_e( 'Borra el caché y fuerza la regeneración en la próxima petición.', 'replanta-prices' ); ?>
+                </span>
+            </form>
+        </div>
+
+        <!-- ── Google Shopping-style preview ────────────────────────── -->
+        <div style="background:#fff;border:1px solid #ccd0d4;border-radius:8px;padding:20px 24px;max-width:1100px;">
+            <h3 style="margin-top:0;font-size:15px;color:#3c4043;">
+                <?php printf( esc_html__( 'Vista previa Google Shopping — %d productos (EUR, mensual)', 'replanta-prices' ), $count ); ?>
+            </h3>
+            <?php if ( empty( $items ) ) : ?>
+                <p style="color:#666;"><?php esc_html_e( 'Sin productos en el catálogo.', 'replanta-prices' ); ?></p>
+            <?php else : ?>
+            <div style="display:flex;flex-wrap:wrap;gap:16px;">
+                <?php foreach ( $items as $item ) :
+                    $display_url = preg_replace( '#^https?://#', '', rtrim( $item['link'], '/' ) );
+                    $desc_short  = mb_substr( $item['description'], 0, 120 );
+                    if ( mb_strlen( $item['description'] ) > 120 ) {
+                        $desc_short .= '…';
+                    }
+                ?>
+                <div style="width:220px;border:1px solid #dadce0;border-radius:8px;overflow:hidden;font-family:Arial,sans-serif;box-shadow:0 1px 3px rgba(60,64,67,.1);">
+                    <!-- Product image -->
+                    <div style="height:160px;background:#f1f3f4;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                        <?php if ( ! empty( $item['image_link'] ) ) : ?>
+                            <img src="<?php echo esc_url( $item['image_link'] ); ?>"
+                                 alt="<?php echo esc_attr( $item['title'] ); ?>"
+                                 style="max-width:100%;max-height:160px;object-fit:contain;"
+                                 onerror="this.parentNode.innerHTML='<span style=\'color:#aaa;font-size:12px;\'>Sin imagen</span>'">
+                        <?php else : ?>
+                            <span style="color:#aaa;font-size:12px;"><?php esc_html_e( 'Sin imagen', 'replanta-prices' ); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <!-- Card body -->
+                    <div style="padding:10px 12px;">
+                        <!-- Merchant domain (green, Google style) -->
+                        <div style="font-size:11px;color:#137333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;">
+                            <?php echo esc_html( $display_url ); ?>
+                        </div>
+                        <!-- Title (Google blue link) -->
+                        <a href="<?php echo esc_url( $item['link'] ); ?>" target="_blank" rel="noopener noreferrer"
+                           style="display:block;font-size:13px;font-weight:600;color:#1a0dab;text-decoration:none;line-height:1.3;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">
+                            <?php echo esc_html( $item['title'] ); ?>
+                        </a>
+                        <!-- Price (bold, prominent) -->
+                        <div style="font-size:16px;font-weight:700;color:#202124;margin-bottom:4px;">
+                            <?php echo esc_html( $item['price'] ); ?>/mes
+                        </div>
+                        <!-- Description excerpt -->
+                        <div style="font-size:11px;color:#5f6368;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">
+                            <?php echo esc_html( $desc_short ); ?>
+                        </div>
+                        <!-- Brand pill -->
+                        <div style="margin-top:6px;">
+                            <span style="display:inline-block;background:#f1f3f4;border-radius:4px;padding:2px 6px;font-size:10px;color:#5f6368;">
+                                <?php echo esc_html( $item['brand'] ); ?>
+                            </span>
+                            <?php if ( $item['featured'] ) : ?>
+                                <span style="display:inline-block;background:#fef9c3;border:1px solid #fde68a;border-radius:4px;padding:2px 6px;font-size:10px;color:#92400e;margin-left:4px;">
+                                    Destacado
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
         <?php
     }
 }

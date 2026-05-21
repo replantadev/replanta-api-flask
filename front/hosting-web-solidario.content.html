@@ -1,0 +1,1840 @@
+<style>.elementor-8623 .elementor-element.elementor-element-f1a5191{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}.elementor-8623 .elementor-element.elementor-element-7abbc05{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}.elementor-8623 .elementor-element.elementor-element-358042e{--display:flex;}.elementor-8623 .elementor-element.elementor-element-db46404{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}/* Start custom CSS for html, class: .elementor-element-c0e2d8a *//* ────────────────────────────
+   SECCIÓN: Hero
+──────────────────────────── */
+.sol-hero {
+  background: linear-gradient(135deg, #0E1D13 0%, #16291D 60%, #1E3828 100%);
+  padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 5vw, 3rem);
+  position: relative;
+  overflow: hidden;
+}
+.sol-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(147,241,201,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sol-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .sol-hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+.sol-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(147,241,201,.12);
+  border: 1px solid rgba(147,241,201,.3);
+  color: var(--rep-green);
+  border-radius: 999px;
+  padding: .35rem 1rem;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.sol-hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  color: #fff !important;
+  margin-bottom: 1.2rem !important;
+}
+.sol-hero h1 em {
+  color: var(--rep-green);
+  font-style: normal;
+}
+.sol-hero-tagline {
+  color: rgba(255,255,255,.75);
+  font-size: 1.1rem;
+  max-width: 520px;
+  margin-bottom: 2rem;
+}
+.sol-audience-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-bottom: 2.5rem;
+}
+.sol-audience-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  padding: .3rem .9rem;
+  font-size: .82rem;
+  color: rgba(255,255,255,.85);
+}
+.sol-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.sol-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--rep-green);
+  color: var(--rep-forest) !important;
+  font-weight: 700;
+  font-size: .95rem;
+  padding: .85rem 2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: transform .2s, box-shadow .2s;
+}
+.sol-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(147,241,201,.35); }
+.sol-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.25);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: .95rem;
+  padding: .85rem 1.8rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: border-color .2s, background .2s;
+}
+.sol-btn-outline:hover { border-color: var(--rep-green); background: rgba(147,241,201,.08); }
+
+/* Tarjeta descuento heroína — Aurora Card */
+.sol-hero-right {
+  position: relative;
+  perspective: 800px;
+}
+
+/* ── Floating solidarity particles ── */
+.sol-particles {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  z-index: 0;
+}
+.sol-particle {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  font-size: 1.1rem;
+  color: rgba(147,241,201,.3);
+  opacity: 0;
+  animation: sol-drift 7s ease-in-out infinite;
+  animation-delay: calc(var(--d) * 1.2s);
+}
+@keyframes sol-drift {
+  0%   { opacity: 0; transform: translateY(0) scale(.7); }
+  15%  { opacity: .6; }
+  50%  { opacity: .45; transform: translateY(-28px) scale(1); }
+  85%  { opacity: .15; }
+  100% { opacity: 0; transform: translateY(-56px) scale(.7); }
+}
+
+/* ── Aurora animated border ── */
+.sol-aurora-wrap {
+  position: relative;
+  z-index: 1;
+  border-radius: 22px;
+  transform-style: preserve-3d;
+  transition: transform .4s ease;
+}
+.sol-aurora-wrap:hover {
+  transform: rotateX(2deg) rotateY(-2deg) translateY(-4px);
+}
+.sol-aurora-border {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  background: conic-gradient(
+    from var(--sol-angle, 0deg),
+    rgba(147,241,201,.5),
+    rgba(65,153,159,.4),
+    rgba(247,212,80,.25),
+    rgba(147,241,201,.15),
+    rgba(65,153,159,.5),
+    rgba(147,241,201,.5)
+  );
+  animation: sol-aurora-spin 6s linear infinite;
+  filter: blur(1px);
+  z-index: -1;
+}
+@property --sol-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes sol-aurora-spin {
+  to { --sol-angle: 360deg; }
+}
+/* Fallback for browsers without @property */
+@supports not (background: conic-gradient(from 0deg, red, red)) {
+  .sol-aurora-border {
+    background: linear-gradient(135deg,
+      rgba(147,241,201,.4),
+      rgba(65,153,159,.3),
+      rgba(247,212,80,.2),
+      rgba(147,241,201,.4));
+    animation: sol-aurora-fallback 4s ease-in-out infinite alternate;
+  }
+  @keyframes sol-aurora-fallback {
+    from { opacity: .5; }
+    to   { opacity: .9; }
+  }
+}
+
+/* Glow behind the card */
+.sol-aurora-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 28px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(147,241,201,.12) 0%, transparent 60%);
+  filter: blur(20px);
+  z-index: -2;
+  animation: sol-card-breathe 4s ease-in-out infinite;
+}
+@keyframes sol-card-breathe {
+  0%, 100% { opacity: .5; transform: scale(1); }
+  50%      { opacity: .9; transform: scale(1.04); }
+}
+
+.sol-hero-card {
+  position: relative;
+  background: rgba(255,255,255,.06);
+  border-radius: 20px;
+  padding: 2.2rem;
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+/* Shimmer sweep across card */
+.sol-hero-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+  animation: sol-shimmer 5s ease-in-out infinite;
+}
+@keyframes sol-shimmer {
+  0%, 100% { left: -100%; }
+  50%      { left: 150%; }
+}
+
+/* ── Discount badge pulse ── */
+.sol-discount-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--rep-green);
+  color: var(--rep-forest);
+  font-weight: 800;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  padding: .6rem 1.2rem;
+  margin-bottom: 1.5rem;
+  animation: sol-badge-pulse 3s ease-in-out infinite;
+  position: relative;
+}
+.sol-discount-badge::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 16px;
+  background: var(--rep-green);
+  opacity: 0;
+  z-index: -1;
+  animation: sol-badge-ring 3s ease-in-out infinite;
+}
+@keyframes sol-badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(147,241,201,.3); }
+  50%      { box-shadow: 0 4px 20px rgba(147,241,201,.35); }
+}
+@keyframes sol-badge-ring {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50%      { opacity: .18; transform: scale(1.08); }
+}
+.sol-hero-card h3 {
+  color: #fff !important;
+  font-size: 1.15rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* ── Criteria list staggered animation ── */
+.sol-criteria-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+.sol-criteria-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  color: rgba(255,255,255,.8);
+  font-size: .9rem;
+  opacity: 0;
+  transform: translateX(20px);
+  animation: sol-check-in .5s ease forwards;
+}
+.sol-criteria-list li:nth-child(1) { animation-delay: .3s; }
+.sol-criteria-list li:nth-child(2) { animation-delay: .5s; }
+.sol-criteria-list li:nth-child(3) { animation-delay: .7s; }
+.sol-criteria-list li:nth-child(4) { animation-delay: .9s; }
+.sol-criteria-list li:nth-child(5) { animation-delay: 1.1s; }
+@keyframes sol-check-in {
+  to { opacity: 1; transform: translateX(0); }
+}
+.sol-criteria-list li i {
+  color: var(--rep-green);
+  font-size: 1.1rem;
+  margin-top: .05rem;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0);
+  animation: sol-check-pop .35s ease forwards;
+}
+.sol-criteria-list li:nth-child(1) i { animation-delay: .55s; }
+.sol-criteria-list li:nth-child(2) i { animation-delay: .75s; }
+.sol-criteria-list li:nth-child(3) i { animation-delay: .95s; }
+.sol-criteria-list li:nth-child(4) i { animation-delay: 1.15s; }
+.sol-criteria-list li:nth-child(5) i { animation-delay: 1.35s; }
+@keyframes sol-check-pop {
+  0%   { opacity: 0; transform: scale(0) rotate(-20deg); }
+  60%  { transform: scale(1.3) rotate(5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* ── Card footer with impact counter ── */
+.sol-hero-card-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.sol-impact-counter {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  margin-bottom: .6rem;
+}
+.sol-counter-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--rep-green);
+  line-height: 1;
+}
+.sol-counter-label {
+  font-size: .82rem;
+  color: rgba(255,255,255,.6);
+}
+.sol-hero-card-note {
+  color: rgba(255,255,255,.55);
+  font-size: .78rem;
+  margin: 0;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Beneficios
+──────────────────────────── */
+.sol-benefits {
+  background: #fff;
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-benefits-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.sol-section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.sol-section-eyebrow {
+  display: inline-block;
+  color: var(--rep-teal);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: .8rem;
+}
+.sol-section-header h2 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: .8rem !important;
+}
+.sol-section-header p {
+  color: var(--rep-muted);
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: 1rem;
+}
+.sol-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+}
+@media (max-width: 768px) {
+  .sol-benefits-grid { grid-template-columns: 1fr; }
+}
+.sol-benefit-card {
+  background: var(--rep-bg-light);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: transform .25s, box-shadow .25s;
+}
+.sol-benefit-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(30,47,35,.1); }
+.sol-benefit-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+.sol-benefit-icon.green  { background: rgba(147,241,201,.18); color: #2ecc71; }
+.sol-benefit-icon.teal   { background: rgba(65,153,159,.14);  color: var(--rep-teal); }
+.sol-benefit-icon.sun    { background: rgba(247,212,80,.18);  color: #c89b00; }
+.sol-benefit-card h3 {
+  color: var(--rep-forest) !important;
+  font-size: 1.1rem !important;
+  margin-bottom: .6rem !important;
+}
+.sol-benefit-card p {
+  color: var(--rep-muted);
+  font-size: .92rem;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Elegibilidad
+──────────────────────────── */
+.sol-eligibility {
+  background: var(--rep-bg-light);
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-eligibility-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .sol-eligibility-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+.sol-eligibility h2 {
+  font-size: clamp(1.6rem, 2.8vw, 2.1rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: 1rem !important;
+}
+.sol-eligibility > .sol-eligibility-inner > div > p {
+  color: var(--rep-muted);
+  margin-bottom: 1.8rem;
+}
+.sol-check-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+.sol-check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .8rem;
+  font-size: .95rem;
+  color: var(--rep-text);
+}
+.sol-check-list li i {
+  font-size: 1.15rem;
+  color: var(--rep-teal);
+  flex-shrink: 0;
+  margin-top: .1rem;
+}
+.sol-elig-visual {
+  background: linear-gradient(135deg, var(--rep-forest) 0%, #254030 100%);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+}
+.sol-elig-visual h3 {
+  color: #fff !important;
+  font-size: 1.2rem !important;
+  margin-bottom: .5rem !important;
+}
+.sol-elig-visual p {
+  color: rgba(255,255,255,.65);
+  font-size: .9rem;
+  margin-bottom: 2rem;
+}
+.sol-discount-number {
+  font-family: 'Sora', sans-serif;
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--rep-green);
+  line-height: 1;
+  margin-bottom: .25rem;
+}
+.sol-discount-label {
+  color: rgba(255,255,255,.7);
+  font-size: .95rem;
+  margin-bottom: 1.8rem;
+}
+.sol-process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  text-align: left;
+}
+.sol-process-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: rgba(255,255,255,.8);
+  font-size: .88rem;
+}
+.sol-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(147,241,201,.2);
+  border: 1px solid rgba(147,241,201,.4);
+  color: var(--rep-green);
+  font-weight: 700;
+  font-size: .77rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ────────────────────────────
+   SECCIÓN: 6 Pilares
+──────────────────────────── */
+.sol-pillars {
+  background: linear-gradient(160deg, #0E1D13 0%, #1A2F20 100%);
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-pillars-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.sol-pillars .sol-section-header h2 {
+  color: #fff !important;
+}
+.sol-pillars .sol-section-header p {
+  color: rgba(255,255,255,.8);
+}
+.sol-pillars .sol-section-eyebrow {
+  color: var(--rep-green);
+}
+.sol-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+@media (max-width: 900px) {
+  .sol-pillars-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .sol-pillars-grid { grid-template-columns: 1fr; }
+}
+.sol-pillar {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(147,241,201,.12);
+  border-radius: 14px;
+  padding: 1.6rem;
+  transition: background .25s, border-color .25s;
+}
+.sol-pillar:hover {
+  background: rgba(147,241,201,.07);
+  border-color: rgba(147,241,201,.28);
+}
+.sol-pillar-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
+  background: rgba(147,241,201,.12);
+  color: var(--rep-green);
+  flex-shrink: 0;
+}
+.sol-pillar h4 {
+  color: var(--rep-green) !important;
+  font-size: .95rem !important;
+  margin-bottom: .4rem !important;
+}
+.sol-pillar p {
+  color: rgba(255,255,255,.8);
+  font-size: .85rem;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Planes
+──────────────────────────── */
+.sol-planes {
+  background: #fff;
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-planes-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+/* Callout de descuento solidario */
+.sol-discount-callout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  background: rgba(147,241,201,.13);
+  border: 1px solid rgba(30,47,35,.13);
+  border-radius: 50px;
+  padding: .7rem 1.8rem;
+  font-size: .92rem;
+  font-weight: 500;
+  color: var(--rep-forest);
+  margin: 0 auto 2.8rem;
+  max-width: 520px;
+}
+.sol-discount-callout i { color: var(--rep-teal); font-size: 1.15rem; flex-shrink: 0; }
+/* Shortcode pricing dentro de esta sección */
+.sol-planes .replanta-plans  { max-width: none !important; padding: 0 !important; }
+.sol-planes .plans-bar        { display: none !important; }
+
+/* ── Reveal animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .sol-aurora-wrap::before,
+  .sol-particles i,
+  .sol-hero-card::after,
+  .sol-badge::after {
+    animation: none !important;
+  }
+  .sol-glow { display: none; }
+  .sol-criteria li { opacity: 1; transform: none; }
+}/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-0fe5603 *//* ────────────────────────────
+   SECCIÓN: Testimonial
+──────────────────────────── */
+.sol-testimonial {
+  background: var(--rep-bg-light);
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-testimonial-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+}
+.sol-stars {
+  color: var(--rep-sun);
+  font-size: 1.4rem;
+  letter-spacing: .1em;
+  margin-bottom: 1.5rem;
+}
+.sol-quote {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--rep-forest);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  position: relative;
+  padding: 0 1rem;
+}
+.sol-quote::before {
+  content: '\201C';
+  font-size: 4rem;
+  color: var(--rep-teal);
+  opacity: .3;
+  position: absolute;
+  top: -1.2rem;
+  left: -0.5rem;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+.sol-testimonial-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.sol-author-photo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--rep-green);
+}
+.sol-author-name {
+  font-weight: 700;
+  color: var(--rep-forest);
+  font-size: .95rem;
+}
+.sol-author-role {
+  color: var(--rep-muted);
+  font-size: .82rem;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Formulario
+──────────────────────────── */
+.sol-section-eyebrow {
+  display: inline-block;
+  color: var(--rep-teal);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: .8rem;
+}
+.sol-form-section {
+  background: linear-gradient(135deg, #0E1D13 0%, #16291D 100%);
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-form-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+.sol-form-inner h2 {
+  color: #fff !important;
+  font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+  margin-bottom: .9rem !important;
+}
+.sol-form-inner > p {
+  color: rgba(255,255,255,.85);
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+  
+}
+.sol-form-box {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(147,241,201,.18);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: left;
+}
+.sol-form-group {
+  margin-bottom: 1.3rem;
+}
+.sol-form-group label {
+  display: block;
+  color: rgba(255,255,255,.75);
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: .45rem;
+}
+.sol-form-group input,
+.sol-form-group select,
+.sol-form-group textarea {
+  width: 100%;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  padding: .8rem 1rem;
+  color: #fff;
+  font-size: .92rem;
+  font-family: 'Inter', sans-serif;
+  transition: border-color .2s;
+  outline: none;
+  appearance: none;
+}
+.sol-form-group input::placeholder,
+.sol-form-group textarea::placeholder { color: rgba(255,255,255,.3); }
+.sol-form-group input:focus,
+.sol-form-group select:focus,
+.sol-form-group textarea:focus { border-color: var(--rep-green); }
+.sol-form-group select option { background: #1E2F23; color: #fff; }
+.sol-form-note {
+  text-align: center;
+  margin-top: 1.2rem;
+  color: rgba(255,255,255,.62);
+  font-size: .78rem;
+}
+.sol-submit-btn {
+  width: 100%;
+  background: var(--rep-green);
+  color: var(--rep-forest);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: opacity .2s, transform .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.sol-submit-btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+.sol-submit-btn:disabled { opacity: .55; cursor: not-allowed; }
+.sol-msg {
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  font-size: .9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+.sol-msg--success {
+  background: rgba(147,241,201,.15);
+  border: 1px solid rgba(147,241,201,.35);
+  color: var(--rep-green);
+}
+.sol-msg--error {
+  background: rgba(255,100,80,.12);
+  border: 1px solid rgba(255,100,80,.3);
+  color: #ff8a7a;
+}
+.sol-hp { position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+@keyframes sol-spin { to { transform: rotate(360deg); } }
+
+/* ────────────────────────────
+   SECCIÓN: CTA Final
+──────────────────────────── */
+.sol-final-cta {
+  background: #fff;
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.sol-final-cta-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+.sol-final-cta h2 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: .8rem !important;
+}
+.sol-final-cta p {
+  color: var(--rep-muted);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+.sol-cta-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.sol-btn-green {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--rep-green);
+  color: var(--rep-forest) !important;
+  font-weight: 700;
+  font-size: .95rem;
+  padding: .9rem 2.2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: transform .2s, box-shadow .2s;
+}
+.sol-btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(147,241,201,.35); }
+.sol-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: 2px solid var(--rep-teal);
+  color: var(--rep-teal) !important;
+  font-weight: 600;
+  font-size: .95rem;
+  padding: .9rem 2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: background .2s, color .2s;
+}
+.sol-btn-ghost:hover { background: var(--rep-teal); color: #fff !important; }
+
+/* ── Reveal animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}/* End custom CSS */</style>		<div data-elementor-type="wp-page" data-elementor-id="8623" class="elementor elementor-8623" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-f1a5191 e-con-full e-flex e-con e-parent" data-id="f1a5191" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-c0e2d8a elementor-widget elementor-widget-html" data-id="c0e2d8a" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<div class="rpl">
+
+  <!-- ── HERO ── -->
+  <section class="sol-hero">
+    <div class="sol-hero-inner">
+      <div class="reveal">
+        <div class="sol-hero-badge">
+          <i class="ph-bold ph-hand-heart"></i>
+          Hosting Solidario
+        </div>
+        <h1>El alojamiento web que<br><em>impulsa tu causa</em></h1>
+        <p class="sol-hero-tagline">
+          Tu proyecto transforma vidas. Nosotros nos aseguramos de que también lo haga tu web:
+          rápida, verde y alojada con energía 100% renovable.
+        </p>
+        <div class="sol-audience-row">
+          <span class="sol-audience-chip"><i class="ph-bold ph-buildings"></i> ONGs</span>
+          <span class="sol-audience-chip"><i class="ph-bold ph-heart"></i> Fundaciones</span>
+          <span class="sol-audience-chip"><i class="ph-bold ph-handshake"></i> Cooperativas</span>
+          <span class="sol-audience-chip"><i class="ph-bold ph-leaf"></i> Empresas con propósito</span>
+        </div>
+        <div class="sol-hero-ctas">
+          <a href="#form-solidario" class="sol-btn-primary">
+            <i class="ph-bold ph-paper-plane-tilt"></i>
+            Solicitar mi descuento
+          </a>
+          <a href="/hosting-wordpress/" class="sol-btn-outline">
+            <i class="ph-bold ph-list"></i>
+            Ver todos los planes
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <div class="sol-hero-card">
+          <div class="sol-discount-badge">
+            <i class="ph-bold ph-percent"></i>
+            10% Descuento Solidario Permanente
+          </div>
+          <h3>¿Tu proyecto cualifica?</h3>
+          <ul class="sol-criteria-list">
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              Organización sin ánimo de lucro registrada
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              Proyecto de impacto medioambiental verificable
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              Cooperativa o empresa de economía social
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              Fundación o entidad de bien público
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              Empresa B Corp u otras certificaciones éticas
+            </li>
+          </ul>
+          <p class="sol-hero-card-note">
+            Revisamos cada solicitud individualmente. El descuento se aplica de forma permanente mientras se mantenga la actividad social.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BENEFICIOS ── -->
+  <section class="sol-benefits">
+    <div class="sol-benefits-inner">
+      <div class="sol-section-header reveal">
+        <span class="sol-section-eyebrow">Por qué elegirnos</span>
+        <h2>Hosting diseñado para proyectos de impacto</h2>
+        <p>Combinamos rendimiento técnico de primer nivel con un compromiso real con el planeta y la sociedad.</p>
+      </div>
+      <div class="sol-benefits-grid">
+        <div class="sol-benefit-card reveal">
+          <div class="sol-benefit-icon green">
+            <i class="ph-bold ph-leaf"></i>
+          </div>
+          <h3>Energía 100% renovable</h3>
+          <p>Tus servidores funcionan con energía limpia certificada. Además, compensamos el doble de las emisiones generadas y plantamos un árbol por cada plan activo.</p>
+        </div>
+        <div class="sol-benefit-card reveal">
+          <div class="sol-benefit-icon teal">
+            <i class="ph-bold ph-rocket-launch"></i>
+          </div>
+          <h3>Rendimiento optimizado</h3>
+          <p>LiteSpeed + Redis Cache, Cloudflare CDN y almacenamiento NVMe. Tu web cargará en fracciones de segundo, mejorando la experiencia de tus visitantes y tu posicionamiento SEO.</p>
+        </div>
+        <div class="sol-benefit-card reveal">
+          <div class="sol-benefit-icon sun">
+            <i class="ph-bold ph-users-three"></i>
+          </div>
+          <h3>Compromiso social activo</h3>
+          <p>No somos solo un proveedor de hosting. Participamos activamente en la comunidad, apoyamos proyectos de accesibilidad web (WCAG 2.1) y colaboramos con redes de impacto social.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ELEGIBILIDAD ── -->
+  <section class="sol-eligibility">
+    <div class="sol-eligibility-inner">
+      <div class="reveal-left">
+        <span class="sol-section-eyebrow">Cómo funciona</span>
+        <h2>Descuento permanente del 10%,<br>sin condiciones ocultas</h2>
+        <p style="color:var(--rep-muted);margin-bottom:1.8rem;font-size:.97rem;">
+          Creemos que los proyectos con propósito merecen apoyo real. Por eso nuestro descuento solidario no caduca, no tiene letra pequeña y se aplica directamente en tu factura.
+        </p>
+        <ul class="sol-check-list">
+          <li>
+            <i class="ph-bold ph-number-circle-one"></i>
+            <span><strong>Solicita</strong> tu plan a través del formulario indicando tu proyecto y organización</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-number-circle-two"></i>
+            <span><strong>Verificamos</strong> la naturaleza social o medioambiental de tu proyecto en 24–48h</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-number-circle-three"></i>
+            <span><strong>Activamos</strong> el descuento en tu cuenta de forma permanente y retroactiva desde el inicio</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-number-circle-four"></i>
+            <span><strong>Disfrutas</strong> del 10% de descuento en todas tus renovaciones mientras mantengas tu actividad</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="reveal-right">
+        <div class="sol-elig-visual">
+          <h3>Tu descuento solidario</h3>
+          <p>Aplicado directamente cada mes</p>
+          <div class="sol-discount-number">10%</div>
+          <div class="sol-discount-label">de descuento permanente</div>
+          <div class="sol-process-steps">
+            <div class="sol-process-step">
+              <span class="sol-step-num">1</span>
+              <span>Solicitas por formulario</span>
+            </div>
+            <div class="sol-process-step">
+              <span class="sol-step-num">2</span>
+              <span>Revisamos tu proyecto (24–48h)</span>
+            </div>
+            <div class="sol-process-step">
+              <span class="sol-step-num">3</span>
+              <span>Descuento activo para siempre</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6 PILARES ── -->
+  <section class="sol-pillars">
+    <div class="sol-pillars-inner">
+      <div class="sol-section-header reveal">
+        <span class="sol-section-eyebrow">Nuestros compromisos</span>
+        <h2>Lo que incluye el Hosting Solidario</h2>
+        <p>Mucho más que un descuento. Un ecosistema de valores y herramientas para proyectos que importan.</p>
+      </div>
+      <div class="sol-pillars-grid">
+        <div class="sol-pillar reveal">
+          <div class="sol-pillar-icon"><i class="ph-bold ph-tree"></i></div>
+          <h4>Árbol por plan activo</h4>
+          <p>Cada plan genera la plantación de un árbol en proyectos de reforestación verificados a nivel global.</p>
+        </div>
+        <div class="sol-pillar reveal">
+          <div class="sol-pillar-icon"><i class="ph-bold ph-lightning"></i></div>
+          <h4>Energía 100% verde</h4>
+          <p>Servidores alimentados por fuentes renovables certificadas. Compensamos el 2× de las emisiones generadas.</p>
+        </div>
+        <div class="sol-pillar reveal">
+          <div class="sol-pillar-icon"><i class="ph-bold ph-wheelchair"></i></div>
+          <h4>Accesibilidad WCAG 2.1</h4>
+          <p>Te asesoramos para que tu web sea accesible para todas las personas, cumpliendo los estándares WCAG 2.1.</p>
+        </div>
+        <div class="sol-pillar reveal">
+          <div class="sol-pillar-icon"><i class="ph-bold ph-handshake"></i></div>
+          <h4>Red de ONGs y asociaciones</h4>
+          <p>Acceso a nuestra comunidad de proyectos solidarios para conectar, colaborar y amplificar vuestro impacto.</p>
+        </div>
+        <div class="sol-pillar reveal">
+          <div class="sol-pillar-icon"><i class="ph-bold ph-globe-hemisphere-east"></i></div>
+          <h4>Datos en la Unión Europea</h4>
+          <p>Tus datos y los de tus usuarios se almacenan en servidores europeos bajo el marco legal del RGPD.</p>
+        </div>
+        <div class="sol-pillar reveal">
+          <div class="sol-pillar-icon"><i class="ph-bold ph-chart-bar"></i></div>
+          <h4>Auditoría de huella digital</h4>
+          <p>Analizamos el impacto ambiental de tu web y te ofrecemos recomendaciones para reducirlo al mínimo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+<script>
+(function(){
+  /* ── Scroll reveal ── */
+  var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  if ('IntersectionObserver' in window) {
+    var revObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el) { revObs.observe(el); });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('visible'); });
+  }
+
+  /* ── Impact counter animation ── */
+  var counters = document.querySelectorAll('.sol-counter-num[data-count]');
+  if (counters.length && 'IntersectionObserver' in window) {
+    var cObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        var target = parseInt(el.getAttribute('data-count'), 10);
+        var start = 0;
+        var duration = 1800;
+        var startTime = null;
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3); /* ease-out cubic */
+          var current = Math.floor(eased * target);
+          el.textContent = current + '+';
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+        cObs.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function(el) { cObs.observe(el); });
+  }
+
+  /* ── Tilt effect on aurora card ── */
+  var card = document.querySelector('.sol-aurora-wrap');
+  if (card && window.matchMedia('(hover: hover)').matches) {
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = 'rotateY(' + (x * 6) + 'deg) rotateX(' + (-y * 6) + 'deg) translateY(-4px)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = '';
+    });
+  }
+})();
+</script>				</div>
+				</div>
+		<div class="elementor-element elementor-element-7abbc05 e-con-full pricing sol-planes-inner e-flex e-con e-parent" data-id="7abbc05" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-358042e e-flex e-con-boxed e-con e-child" data-id="358042e" data-element_type="container" data-e-type="container">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-7474d36 elementor-widget elementor-widget-shortcode" data-id="7474d36" data-element_type="widget" data-e-type="widget" data-widget_type="shortcode.default">
+							<div class="elementor-shortcode"><section class="replanta-plans replanta-plans--hosting replanta-plans--discount">
+
+    <!-- Plans bar -->
+    <div class="plans-bar">
+        <div class="left">
+            <h2 class="elementor-heading-title rep-heading-2 rep-text-forest">Elige tu plan</h2>
+            <div class="rep-text-body">Los 3 incluyen la base técnica. Escalas por <em>recursos</em>, <em>automatización</em> y <em>seguridad reforzada</em>.</div>
+        </div>
+        <div class="right">
+            <div class="billing-toggle" role="tablist" aria-label="Facturación">
+                <input type="radio" name="billing" id="bill-m" checked>
+                <label for="bill-m" role="tab" aria-selected="true">Mensual</label>
+                <input type="radio" name="billing" id="bill-y">
+                <label for="bill-y" role="tab" aria-selected="false">Anual <span class="rep-text-small">(-2 meses)</span></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="plans-grid">
+                <div class="replanta-pricing-card" data-plan="sauce">
+            <span class="rep-discount-tag">-10% solidario</span>            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <div>
+                    <div class="rep-heading-3">Sauce</div>
+                    <div class="plan-subtitle">Personal</div>
+                </div>
+                <div class="rep-heading-3 price" data-plan="sauce">
+                    <span class="original">12<span class="rep-text-small">,99</span>€</span>
+                    <span class="discount-original-y">129€</span>                    <span class="amount amount--m">11<span class="rep-text-small">,69</span>€</span><span class="rep-text-small period period--m">/mes</span>
+                    <span class="amount amount--y">116<span class="rep-text-small">,10</span>€</span><span class="rep-text-small period period--y">/año</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="rep-text-body" style="margin-top:10px">
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>1 sitio (1 dominio)</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span><b>50 GB NVMe</b></span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>5 cuentas de email</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Redis Object Cache (habilitado)</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>LiteSpeed &bull; HTTP/3 &bull; Brotli</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Cloudflare + reglas optimizadas</span></li>
+                            </ul>
+
+            <!-- Extra features (expandable) -->
+                        <details>
+                <summary class="toggle">
+                    <span class="more"><strong>Ver más</strong></span>
+                    <span class="less"><strong>Ver menos</strong></span>
+                </summary>
+                <ul class="rep-text-body">
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Staging 1‑click</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates (según plan)</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Imunify360 &bull; Backups externos</span></li>
+                                    </ul>
+            </details>
+            
+            <!-- CTA -->
+            <div class="plan-cta-wrap" style="margin-top:auto;padding-top:16px">
+                <a href="https://clientes.replanta.net/order/product?pid=6d530876-8251-d485-d80a-147e390921e6&#038;currency=EUR&#038;bcm=1"
+                   class="elementor-button rep-btn-accent plan-card-cta" style="width:100%;justify-content:center">Comenzar ahora</a>
+            </div>
+        </div>
+                <div class="replanta-pricing-card replanta-pricing-featured" data-plan="roble">
+            <span class="rep-discount-tag">-10% solidario</span>            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <div>
+                    <div class="rep-heading-3">Roble</div>
+                    <div class="plan-subtitle">Corporativo</div>
+                </div>
+                <div class="rep-heading-3 price" data-plan="roble">
+                    <span class="original">19<span class="rep-text-small">,99</span>€</span>
+                    <span class="discount-original-y">199€</span>                    <span class="amount amount--m">17<span class="rep-text-small">,99</span>€</span><span class="rep-text-small period period--m">/mes</span>
+                    <span class="amount amount--y">179<span class="rep-text-small">,10</span>€</span><span class="rep-text-small period period--y">/año</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="rep-text-body" style="margin-top:10px">
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Sitios y dominios ilimitados</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span><b>100 GB NVMe</b> — Email ilimitado</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Redis Object Cache (tuning básico)</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>2 vCPU / 2 GB RAM</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates programadas</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Soporte prioritario</span></li>
+                            </ul>
+
+            <!-- Extra features (expandable) -->
+                        <details>
+                <summary class="toggle">
+                    <span class="more"><strong>Ver más</strong></span>
+                    <span class="less"><strong>Ver menos</strong></span>
+                </summary>
+                <ul class="rep-text-body">
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Staging 1‑click &bull; WP‑CLI / SSH</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates (según plan)</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Imunify360 &bull; Backups externos</span></li>
+                                    </ul>
+            </details>
+            
+            <!-- CTA -->
+            <div class="plan-cta-wrap" style="margin-top:auto;padding-top:16px">
+                <a href="https://clientes.replanta.net/order/product?pid=280d1639-e237-d439-6dea-54610589e572&#038;currency=EUR&#038;bcm=1"
+                   class="elementor-button rep-btn-accent plan-card-cta" style="width:100%;justify-content:center">Comenzar ahora</a>
+            </div>
+        </div>
+                <div class="replanta-pricing-card" data-plan="cedro">
+            <span class="rep-discount-tag">-10% solidario</span>            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <div>
+                    <div class="rep-heading-3">Cedro</div>
+                    <div class="plan-subtitle">WooCommerce</div>
+                </div>
+                <div class="rep-heading-3 price" data-plan="cedro">
+                    <span class="original">29<span class="rep-text-small">,99</span>€</span>
+                    <span class="discount-original-y">299€</span>                    <span class="amount amount--m">26<span class="rep-text-small">,99</span>€</span><span class="rep-text-small period period--m">/mes</span>
+                    <span class="amount amount--y">269<span class="rep-text-small">,10</span>€</span><span class="rep-text-small period period--y">/año</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="rep-text-body" style="margin-top:10px">
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>WooCommerce y sitios ilimitados</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span><b>200 GB NVMe</b> — Email ilimitado</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Redis optimizado Woo</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>2 vCPU / 4 GB RAM</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Turnstile + WPO inicial</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>WAF opcional (CF Pro)</span></li>
+                            </ul>
+
+            <!-- Extra features (expandable) -->
+                        <details>
+                <summary class="toggle">
+                    <span class="more"><strong>Ver más</strong></span>
+                    <span class="less"><strong>Ver menos</strong></span>
+                </summary>
+                <ul class="rep-text-body">
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Staging 1‑click &bull; WP‑CLI / SSH</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates (según plan)</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Imunify360 &bull; Backups externos</span></li>
+                                    </ul>
+            </details>
+            
+            <!-- CTA -->
+            <div class="plan-cta-wrap" style="margin-top:auto;padding-top:16px">
+                <a href="https://clientes.replanta.net/order/product?pid=e2e071d9-31d5-e460-555a-646028758396&#038;currency=EUR&#038;bcm=1"
+                   class="elementor-button rep-btn-accent plan-card-cta" style="width:100%;justify-content:center">Comenzar ahora</a>
+            </div>
+        </div>
+            </div>
+</section>
+<script>
+(function() {
+    var sections = document.querySelectorAll('.replanta-plans--hosting');
+    if (!sections.length) return;
+
+    sections.forEach(function(section) {
+        var billM = section.querySelector('#bill-m');
+        var billY = section.querySelector('#bill-y');
+        if (!billM && !billY) return;
+
+        function syncBcm() {
+            var bcm = (billY && billY.checked) ? '12' : '1';
+            section.querySelectorAll('a.plan-card-cta[href]').forEach(function(a) {
+                try {
+                    var u = new URL(a.getAttribute('href'), window.location.origin);
+                    u.searchParams.set('bcm', bcm);
+                    a.setAttribute('href', u.toString());
+                    a.setAttribute('data-bcm', bcm);
+                } catch (e) {
+                    // Ignore malformed URLs and keep current href.
+                }
+            });
+        }
+
+        if (billM) billM.addEventListener('change', syncBcm);
+        if (billY) billY.addEventListener('change', syncBcm);
+        syncBcm();
+    });
+})();
+</script>
+
+<!-- Replanta Prices - Schema.org Product (SEO) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Hosting WordPress Sauce",
+    "description": "Personal. 1 sitio (1 dominio). 50 GB NVMe. 5 cuentas de email. Redis Object Cache (habilitado)",
+    "sku": "sauce",
+    "brand": {
+        "@type": "Brand",
+        "name": "Replanta"
+    },
+    "category": "Web Hosting Services",
+    "image": "https://replanta.net/wp-content/uploads/2026/04/replantav3ico-verde-forest.svg",
+    "url": "https://replanta.net/#sauce",
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "11.69",
+        "highPrice": "116.10",
+        "priceCurrency": "EUR",
+        "offerCount": 2,
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Suscripción Mensual",
+                "price": "11.69",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#sauce",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "11.69",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                }
+            },
+            {
+                "@type": "Offer",
+                "name": "Suscripción Anual",
+                "price": "116.10",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#sauce",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "116.10",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                }
+            }
+        ]
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Hosting WordPress Roble",
+    "description": "Corporativo. Sitios y dominios ilimitados. 100 GB NVMe — Email ilimitado. Redis Object Cache (tuning básico). 2 vCPU / 2 GB RAM",
+    "sku": "roble",
+    "brand": {
+        "@type": "Brand",
+        "name": "Replanta"
+    },
+    "category": "Web Hosting Services",
+    "image": "https://replanta.net/wp-content/uploads/2026/04/replantav3ico-verde-forest.svg",
+    "url": "https://replanta.net/#roble",
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "17.99",
+        "highPrice": "179.10",
+        "priceCurrency": "EUR",
+        "offerCount": 2,
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Suscripción Mensual",
+                "price": "17.99",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#roble",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "17.99",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                }
+            },
+            {
+                "@type": "Offer",
+                "name": "Suscripción Anual",
+                "price": "179.10",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#roble",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "179.10",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                }
+            }
+        ]
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Hosting WordPress Cedro",
+    "description": "WooCommerce. WooCommerce y sitios ilimitados. 200 GB NVMe — Email ilimitado. Redis optimizado Woo. 2 vCPU / 4 GB RAM",
+    "sku": "cedro",
+    "brand": {
+        "@type": "Brand",
+        "name": "Replanta"
+    },
+    "category": "Web Hosting Services",
+    "image": "https://replanta.net/wp-content/uploads/2026/04/replantav3ico-verde-forest.svg",
+    "url": "https://replanta.net/#cedro",
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "26.99",
+        "highPrice": "269.10",
+        "priceCurrency": "EUR",
+        "offerCount": 2,
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Suscripción Mensual",
+                "price": "26.99",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#cedro",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "26.99",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                }
+            },
+            {
+                "@type": "Offer",
+                "name": "Suscripción Anual",
+                "price": "269.10",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#cedro",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "269.10",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                }
+            }
+        ]
+    }
+}
+</script>
+</div>
+						</div>
+					</div>
+				</div>
+				</div>
+		<div class="elementor-element elementor-element-db46404 e-con-full e-flex e-con e-parent" data-id="db46404" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-0fe5603 elementor-widget elementor-widget-html" data-id="0fe5603" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					
+<!-- ═══════════════════════════════════════
+     WIDGET MARKUP — Parte 2
+════════════════════════════════════════ -->
+<div class="rpl">
+
+  <!-- ── TESTIMONIAL ── -->
+  <section class="sol-testimonial">
+    <div class="sol-testimonial-inner reveal">
+      <div class="sol-stars">★★★★★</div>
+      <p class="sol-quote">
+        Cuando fundé La Web Verde, necesitaba un hosting que compartiera mis valores. Con Replanta encontré exactamente eso: tecnología de alto rendimiento, energía limpia y un equipo que realmente entiende lo que significa trabajar por el planeta. El descuento solidario fue la guinda del pastel, pero lo que me quedé fue la filosofía de empresa.
+      </p>
+      <div class="sol-testimonial-author">
+        <img
+          src="https://replanta.net/wp-content/uploads/2025/10/catabn.png"
+          alt="Catalina Zapata"
+          class="sol-author-photo"
+          width="56"
+          height="56"
+          loading="lazy"
+        />
+        <div>
+          <div class="sol-author-name">Catalina Zapata</div>
+          <div class="sol-author-role">
+            <a href="https://lawebverde.es" target="_blank" rel="noopener"
+               style="color:inherit;text-decoration:underline;text-decoration-color:rgba(147,241,201,.3);text-underline-offset:.2em;">La Web Verde</a>
+            &nbsp;·&nbsp;Eco diseño web
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FORMULARIO ── -->
+  <section class="sol-form-section" id="form-solidario">
+    <div class="sol-form-inner">
+      <div class="reveal">
+        <span class="sol-section-eyebrow" style="color:var(--rep-green);">¿Listo para unirte?</span>
+        <h2>Solicita tu plan solidario</h2>
+        <p>
+          Cuéntanos brevemente tu proyecto. Nuestro equipo revisará tu solicitud en 24–48h y te contactará para confirmar el descuento y ayudarte con la migración si la necesitas.
+        </p>
+      </div>
+      <form id="sol-solicitud-form" class="sol-form-box reveal" novalidate>
+        <!-- Honeypot anti-spam, debe estar vacío -->
+        <div class="sol-hp" aria-hidden="true">
+          <input type="text" name="fax_number" tabindex="-1" autocomplete="off" value="" />
+        </div>
+        <div class="sol-form-group">
+          <label for="sol-nombre">Nombre / Organización <span style="color:#ff8a7a">*</span></label>
+          <input type="text" id="sol-nombre" name="entity_name" placeholder="Tu nombre y nombre de la organización" autocomplete="organization" required />
+        </div>
+        <div class="sol-form-group">
+          <label for="sol-email">Email de contacto <span style="color:#ff8a7a">*</span></label>
+          <input type="email" id="sol-email" name="email" placeholder="hola@tuorganizacion.org" autocomplete="email" required />
+        </div>
+        <div class="sol-form-group">
+          <label for="sol-tipo">Tipo de proyecto <span style="color:#ff8a7a">*</span></label>
+          <select id="sol-tipo" name="entity_type" required>
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="ong">ONG / Asociación sin ánimo de lucro</option>
+            <option value="fundacion">Fundación</option>
+            <option value="cooperativa">Cooperativa</option>
+            <option value="empresa-social">Empresa social / Impacto positivo</option>
+            <option value="bcorp">Empresa B Corp</option>
+            <option value="medioambiental">Proyecto medioambiental</option>
+            <option value="otro">Otro — lo explico abajo</option>
+          </select>
+        </div>
+        <div class="sol-form-group">
+          <label for="sol-web">URL de tu web actual (si tienes)</label>
+          <input type="url" id="sol-web" name="website" placeholder="https://tuorganizacion.org" autocomplete="url" />
+        </div>
+        <div class="sol-form-group">
+          <label for="sol-mensaje">Cuéntanos brevemente tu proyecto</label>
+          <textarea id="sol-mensaje" name="message" rows="4" placeholder="¿Qué hace tu organización? ¿Qué impacto genera? ¿Estás migrando o empezando desde cero?"></textarea>
+        </div>
+        <!-- Cloudflare Turnstile -->
+        <div class="sol-form-group">
+          <div id="sol-turnstile-widget" style="min-height:65px;"></div>
+        </div>
+        <div id="sol-form-msg" class="sol-msg" role="alert" style="display:none;"></div>
+        <button type="submit" class="sol-submit-btn">
+          <i class="ph-bold ph-paper-plane-tilt"></i>
+          Enviar solicitud solidaria
+        </button>
+        <p class="sol-form-note">
+          Campos con <span style="color:#ff8a7a">*</span> obligatorios.
+          Tus datos se procesan bajo el RGPD y solo se usan para gestionar tu solicitud.
+          <a href="/politica-de-privacidad/" style="color:rgba(255,255,255,.55);text-decoration:underline;">Política de privacidad</a>
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ── -->
+  <section class="sol-final-cta">
+    <div class="sol-final-cta-inner reveal">
+      <h2>Tu causa merece la mejor tecnología</h2>
+      <p>
+        Explora todos nuestros planes o solicita directamente el descuento solidario para tu proyecto.
+        El planeta y la sociedad también necesitan webs rápidas y sostenibles.
+      </p>
+      <div class="sol-cta-row">
+        <a href="/hosting-wordpress/" class="sol-btn-green">
+          <i class="ph-bold ph-rocket-launch"></i>
+          Ver todos los planes
+        </a>
+        <a href="#form-solidario" class="sol-btn-ghost">
+          <i class="ph-bold ph-hand-heart"></i>
+          Solicitar descuento solidario
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /.rpl -->
+
+<!-- ── Scripts: reveal + form handler + Turnstile (Widget 2 de 2) ── -->
+<script>
+(function(){
+  /* ── Reveal animations ── */
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){
+    obs.observe(el);
+  });
+
+  /* ── Solidario form ── */
+  var tsToken = '';
+  var tsRendered = false;
+
+  function renderTurnstile() {
+    if (tsRendered) return;
+    var container = document.getElementById('sol-turnstile-widget');
+    if (!container || !window.turnstile) return;
+    var sitekey = (window.replantaContactNonce && window.replantaContactNonce.sitekey) || '';
+    if (!sitekey) return;
+    tsRendered = true;
+    window.turnstile.render(container, {
+      sitekey: sitekey,
+      theme: 'light',
+      size: 'flexible',
+      callback: function(token) { tsToken = token; },
+      'expired-callback': function() { tsToken = ''; },
+      'error-callback': function() { tsToken = ''; }
+    });
+  }
+
+  function loadTurnstileScript(cb) {
+    if (window.turnstile) { cb(); return; }
+    if (document.getElementById('cf-turnstile-js')) {
+      var wait = setInterval(function() {
+        if (window.turnstile) { clearInterval(wait); cb(); }
+      }, 80);
+      return;
+    }
+    var s = document.createElement('script');
+    s.id  = 'cf-turnstile-js';
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    s.async = true;
+    s.onload = cb;
+    document.body.appendChild(s);
+  }
+
+  /* Lazy-load Turnstile cuando el form entra en viewport */
+  var formSection = document.getElementById('form-solidario');
+  if (formSection) {
+    var formObs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        formObs.disconnect();
+        loadTurnstileScript(renderTurnstile);
+      }
+    }, {rootMargin: '300px'});
+    formObs.observe(formSection);
+  }
+
+  /* Submit handler */
+  var form = document.getElementById('sol-solicitud-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var btn   = form.querySelector('.sol-submit-btn');
+      var msgEl = document.getElementById('sol-form-msg');
+
+      function showMsg(text, type) {
+        msgEl.textContent = text;
+        msgEl.className = 'sol-msg sol-msg--' + type;
+        msgEl.style.display = 'block';
+        msgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }
+
+      /* Honeypot guard */
+      if (form.fax_number && form.fax_number.value) return;
+
+      var entityName = form.entity_name.value.trim();
+      var email      = form.email.value.trim();
+      var entityType = form.entity_type.value;
+
+      if (!entityName) { showMsg('Por favor indica el nombre de tu organización.', 'error'); form.entity_name.focus(); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMsg('Por favor introduce un email válido.', 'error'); form.email.focus(); return; }
+      if (!entityType) { showMsg('Por favor selecciona el tipo de proyecto.', 'error'); form.entity_type.focus(); return; }
+
+      var sitekey = (window.replantaContactNonce && window.replantaContactNonce.sitekey) || '';
+      if (sitekey && !tsToken) {
+        showMsg('Por favor completa la verificación de seguridad.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ph-bold ph-circle-notch" style="display:inline-block;animation:sol-spin .8s linear infinite"></i>&nbsp;Enviando…';
+      msgEl.style.display = 'none';
+
+      var nonce = (window.replantaContactNonce && window.replantaContactNonce.nonce) || '';
+      var headers = {'Content-Type': 'application/json'};
+      if (nonce) headers['X-WP-Nonce'] = nonce;
+
+      fetch('/wp-json/replanta/v1/contact/solidario', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          entity_name: entityName,
+          email:       email,
+          entity_type: entityType,
+          website:     form.website.value.trim(),
+          message:     form.message.value.trim(),
+          token:       tsToken,
+          fax_number:  ''
+        })
+      })
+      .then(function(r) { return r.json().then(function(d) { return {ok: r.ok, data: d}; }); })
+      .then(function(res) {
+        if (res.ok && (res.data.success || res.data.ok)) {
+          form.innerHTML = '<div class="sol-msg sol-msg--success" style="display:block;font-size:1rem;text-align:center;">&#10003;&nbsp;¡Solicitud recibida! Nuestro equipo revisará tu proyecto en 24–48&nbsp;h y te contactaremos por email.</div>';
+        } else {
+          var err = (res.data && res.data.message) ? res.data.message : 'Error al enviar. Por favor inténtalo de nuevo.';
+          showMsg(err, 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Enviar solicitud solidaria';
+          if (window.turnstile) { window.turnstile.reset(); tsToken = ''; }
+        }
+      })
+      .catch(function() {
+        showMsg('Error de conexión. Por favor revisa tu conexión e inténtalo de nuevo.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Enviar solicitud solidaria';
+        if (window.turnstile) { window.turnstile.reset(); tsToken = ''; }
+      });
+    });
+  }
+})();
+</script>
+				</div>
+				</div>
+				</div>
+		

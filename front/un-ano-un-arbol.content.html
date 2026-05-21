@@ -1,0 +1,1048 @@
+<style>.elementor-544 .elementor-element.elementor-element-f218081{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}.elementor-544 .elementor-element.elementor-element-adc1c76{padding:0px 0px 0px 0px;}:root{--page-title-display:none;}/* Start custom CSS for html, class: .elementor-element-adc1c76 *//* ── Reset base ── */
+.rpl *,
+.rpl *::before,
+.rpl *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Tokens ── */
+.rpl {
+  --rep-green:   #93F1C9;
+  --rep-forest:  #1E2F23;
+  --rep-teal:    #41999F;
+  --rep-sun:     #F7D450;
+  --rep-dark:    #0E1D13;
+  --rep-bg-light:#F4F9F6;
+  --rep-text:    #1A2B1F;
+  --rep-muted:   #5A7063;
+  font-family: 'Inter', sans-serif;
+  color: var(--rep-text);
+  line-height: 1.6;
+}
+
+/* ── Typography reset ── */
+.rpl h1,
+.rpl h2,
+.rpl h3,
+.rpl h4 {
+  font-family: 'Sora', sans-serif !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Hero
+──────────────────────────── */
+.arb-hero {
+  background: linear-gradient(160deg, #071209 0%, #0E1D13 50%, #183020 100%);
+  padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 5vw, 3rem);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.arb-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(147,241,201,.10) 0%, transparent 65%);
+  pointer-events: none;
+}
+.arb-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, rgba(244,249,246,.06));
+  pointer-events: none;
+}
+.arb-hero-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+}
+.arb-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(147,241,201,.12);
+  border: 1px solid rgba(147,241,201,.3);
+  color: var(--rep-green);
+  border-radius: 999px;
+  padding: .35rem 1rem;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+.arb-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.5rem) !important;
+  color: #fff !important;
+  margin-bottom: 1.2rem !important;
+}
+.arb-hero h1 em {
+  font-style: normal;
+}
+.arb-hero-sub {
+  color: rgba(255,255,255,.7);
+  font-size: 1.15rem;
+  max-width: 640px;
+  margin: 0 auto 3rem;
+}
+/* Big tree counter */
+.arb-counter-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(147,241,201,.07);
+  border: 1px solid rgba(147,241,201,.22);
+  border-radius: 24px;
+  padding: 2.5rem 4rem;
+  margin-bottom: 3rem;
+}
+@media (max-width: 480px) {
+  .arb-counter-wrap { padding: 2rem 2.5rem; }
+}
+.arb-tree-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(147,241,201,.12);
+  border: 1px solid rgba(147,241,201,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  color: var(--rep-green);
+  margin: 0 auto .8rem;
+}
+.arb-counter-number {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 900;
+  color: var(--rep-green);
+  line-height: 1;
+}
+.arb-counter-label {
+  color: rgba(255,255,255,.65);
+  font-size: 1rem;
+  margin-top: .4rem;
+}
+.arb-hero-cta-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.arb-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--rep-green);
+  color: var(--rep-forest) !important;
+  font-weight: 700;
+  font-size: .95rem;
+  padding: .9rem 2.2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: transform .2s, box-shadow .2s;
+}
+.arb-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(147,241,201,.35); }
+.arb-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.25);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: .95rem;
+  padding: .9rem 2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: border-color .2s, background .2s;
+}
+.arb-btn-outline:hover { border-color: var(--rep-green); background: rgba(147,241,201,.08); }
+
+/* ────────────────────────────
+   SECCIÓN: Cómo funciona
+──────────────────────────── */
+.arb-how {
+  background: #fff;
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.arb-how-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.arb-section-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.arb-section-eyebrow {
+  display: inline-block;
+  color: var(--rep-teal);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: .8rem;
+}
+.arb-section-header h2 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: .8rem !important;
+}
+.arb-section-header p {
+  color: var(--rep-muted);
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: 1rem;
+}
+.arb-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  position: relative;
+}
+.arb-steps::before {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: calc(16.66% + 1rem);
+  right: calc(16.66% + 1rem);
+  height: 2px;
+  background: linear-gradient(to right, var(--rep-teal), var(--rep-green));
+  opacity: .3;
+}
+@media (max-width: 768px) {
+  .arb-steps { grid-template-columns: 1fr; gap: 1.5rem; }
+  .arb-steps::before { display: none; }
+}
+.arb-step {
+  text-align: center;
+  padding: 0 1rem;
+}
+.arb-step-num {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rep-teal) 0%, #2c7a7f 100%);
+  color: #fff;
+  font-family: 'Sora', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.4rem;
+  position: relative;
+  z-index: 1;
+}
+.arb-step h3 {
+  color: var(--rep-forest) !important;
+  font-size: 1.05rem !important;
+  margin-bottom: .5rem !important;
+}
+.arb-step p {
+  color: var(--rep-muted);
+  font-size: .9rem;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Proyectos
+──────────────────────────── */
+.arb-projects {
+  background: var(--rep-bg-light);
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.arb-projects-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.arb-projects .arb-section-eyebrow { color: var(--rep-teal); }
+.arb-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.8rem;
+}
+@media (max-width: 768px) {
+  .arb-projects-grid { grid-template-columns: 1fr; }
+}
+.arb-project-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(30,47,35,.07);
+  transition: transform .25s, box-shadow .25s;
+}
+.arb-project-card:hover { transform: translateY(-5px); box-shadow: 0 14px 40px rgba(30,47,35,.13); }
+.arb-project-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+.arb-project-img-placeholder {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #1E3828 0%, #2A4F38 100%);
+  color: var(--rep-green);
+}
+.arb-project-img--ni {
+  background: linear-gradient(135deg, #0D2B1C 0%, #174232 100%);
+  color: #52BF90;
+}
+.arb-project-img--sc {
+  background: linear-gradient(135deg, #1A3535 0%, #224040 100%);
+  color: var(--rep-teal);
+}
+.arb-project-body {
+  padding: 1.6rem;
+}
+.arb-project-flag {
+  font-size: .85rem;
+  color: var(--rep-muted);
+  margin-bottom: .4rem;
+}
+.arb-project-body h3 {
+  color: var(--rep-forest) !important;
+  font-size: 1.05rem !important;
+  margin-bottom: .6rem !important;
+}
+.arb-project-body p {
+  color: var(--rep-muted);
+  font-size: .88rem;
+  margin-bottom: 1rem;
+}
+.arb-project-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: rgba(65,153,159,.1);
+  color: var(--rep-teal);
+  border-radius: 999px;
+  padding: .22rem .75rem;
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Estadísticas
+──────────────────────────── */
+.arb-stats {
+  background: linear-gradient(135deg, #0E1D13 0%, #16291D 60%, #1E3828 100%);
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+  position: relative;
+  overflow: hidden;
+}
+.arb-stats::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(147,241,201,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.arb-stats-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.arb-stats .arb-section-header h2 { color: #fff !important; }
+.arb-stats .arb-section-header p { color: rgba(255,255,255,.8); }
+.arb-stats .arb-section-eyebrow { color: var(--rep-green); }
+.arb-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 900px) {
+  .arb-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .arb-stats-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+}
+.arb-stat-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(147,241,201,.14);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: background .25s, border-color .25s;
+}
+.arb-stat-card:hover {
+  background: rgba(147,241,201,.08);
+  border-color: rgba(147,241,201,.28);
+}
+.arb-stat-icon {
+  font-size: 2rem;
+  margin-bottom: .8rem;
+  color: var(--rep-green);
+}
+.arb-stat-number {
+  font-family: 'Sora', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--rep-green);
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+.arb-stat-label {
+  color: rgba(255,255,255,.65);
+  font-size: .85rem;
+}
+
+/* Certifications row */
+.arb-certs-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+.arb-cert-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 999px;
+  padding: .45rem 1.1rem;
+  color: rgba(255,255,255,.75);
+  font-size: .82rem;
+  font-weight: 600;
+}
+.arb-cert-chip i { color: var(--rep-green); }
+
+/* ────────────────────────────
+   SECCIÓN: ¿Por qué más árboles?
+──────────────────────────── */
+.arb-why {
+  background: #fff;
+  padding: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.arb-why-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .arb-why-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+.arb-why h2 {
+  font-size: clamp(1.7rem, 3vw, 2.3rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: 1rem !important;
+}
+.arb-why-intro {
+  color: var(--rep-muted);
+  margin-bottom: 2rem;
+  font-size: .97rem;
+}
+.arb-why-points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.arb-why-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: .8rem;
+}
+.arb-why-points li i {
+  font-size: 1.2rem;
+  color: var(--rep-teal);
+  flex-shrink: 0;
+  margin-top: .05rem;
+}
+.arb-why-points li span {
+  font-size: .93rem;
+  color: var(--rep-text);
+}
+.arb-why-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.arb-fact-box {
+  background: var(--rep-bg-light);
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: center;
+}
+.arb-fact-box:first-child {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, var(--rep-forest) 0%, #254030 100%);
+}
+.arb-fact-emoji { font-size: 2.2rem; margin-bottom: .6rem; color: var(--rep-green); }
+.arb-fact-box:not(:first-child) .arb-fact-emoji { color: var(--rep-teal); }
+.arb-fact-number {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--rep-green);
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+.arb-fact-box:not(:first-child) .arb-fact-number { color: var(--rep-forest); }
+.arb-fact-text {
+  font-size: .8rem;
+  color: rgba(255,255,255,.8);
+}
+.arb-fact-box:not(:first-child) .arb-fact-text { color: var(--rep-muted); }
+
+/* ────────────────────────────
+   SECCIÓN: Partners
+──────────────────────────── */
+.arb-partners {
+  background: var(--rep-bg-light);
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.arb-partners-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+.arb-partners h2 {
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: .8rem !important;
+}
+.arb-partners > .arb-partners-inner > p {
+  color: var(--rep-muted);
+  margin-bottom: 2.5rem;
+  font-size: .97rem;
+}
+.arb-partners-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.4rem;
+  margin-bottom: 2.5rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.arb-partner-tile {
+  background: #fff;
+  border: 1px solid rgba(30,47,35,.1);
+  border-radius: 14px;
+  padding: 1.6rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  transition: box-shadow .25s, transform .25s;
+}
+.arb-partner-tile:hover { box-shadow: 0 8px 28px rgba(30,47,35,.1); transform: translateY(-3px); }
+.arb-partner-name {
+  font-weight: 700;
+  color: var(--rep-forest);
+  font-size: .92rem;
+}
+.arb-partner-type {
+  color: var(--rep-muted);
+  font-size: .77rem;
+}
+.arb-partners-note {
+  color: var(--rep-muted);
+  font-size: .85rem;
+  font-style: italic;
+}
+
+/* ────────────────────────────
+   SECCIÓN: Tree Nation Widget
+──────────────────────────── */
+.arb-widget-section {
+  background: #fff;
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1.5rem, 5vw, 3rem);
+}
+.arb-widget-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+.arb-widget-inner h2 {
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem) !important;
+  color: var(--rep-forest) !important;
+  margin-bottom: .8rem !important;
+}
+.arb-widget-inner > p {
+  color: var(--rep-muted);
+  margin-bottom: 2rem;
+}
+.arb-tn-wrapper {
+  background: var(--rep-bg-light);
+  border-radius: 16px;
+  padding: 2rem;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ────────────────────────────
+   SECCIÓN: CTA Final
+──────────────────────────── */
+.arb-final-cta {
+  background: linear-gradient(160deg, #0E1D13 0%, #183020 100%);
+  padding: clamp(4rem, 7vw, 6rem) clamp(1.5rem, 5vw, 3rem);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.arb-final-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(147,241,201,.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.arb-final-cta-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+}
+.arb-final-cta h2 {
+  color: #fff !important;
+  font-size: clamp(1.7rem, 3.5vw, 2.5rem) !important;
+  margin-bottom: 1rem !important;
+}
+.arb-final-cta p {
+  color: rgba(255,255,255,.82);
+  font-size: 1.05rem;
+  margin-bottom: 2.5rem;
+}
+.arb-final-cta-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.arb-btn-green {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: var(--rep-green);
+  color: var(--rep-forest) !important;
+  font-weight: 700;
+  font-size: .95rem;
+  padding: .9rem 2.2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: transform .2s, box-shadow .2s;
+}
+.arb-btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(147,241,201,.35); }
+.arb-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.25);
+  color: #fff !important;
+  font-weight: 600;
+  font-size: .95rem;
+  padding: .9rem 2rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  transition: border-color .2s, background .2s;
+}
+.arb-btn-ghost:hover { border-color: var(--rep-green); background: rgba(147,241,201,.08); }
+
+/* ── Reveal animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }/* End custom CSS */</style>		<div data-elementor-type="wp-page" data-elementor-id="544" class="elementor elementor-544" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-f218081 e-con-full e-flex e-con e-parent" data-id="f218081" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-adc1c76 elementor-widget elementor-widget-html" data-id="adc1c76" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<!-- ═══════════════════════════════════════
+     WIDGET MARKUP
+════════════════════════════════════════ -->
+<div class="rpl">
+
+  <!-- ── HERO ── -->
+  <section class="arb-hero">
+    <div class="arb-hero-inner reveal">
+      <div class="arb-hero-badge">
+        <i class="ph-bold ph-tree"></i>
+        Un Año · Un Árbol
+      </div>
+      <h1>Cada plan que contratas,<br><em class="grad-text">un árbol que crece</em></h1>
+      <p class="arb-hero-sub">
+        Por cada plan de hosting activo en Replanta, plantamos un árbol en proyectos de reforestación verificados.
+        Porque la web más rápida del mundo no sirve de nada si no hay planeta donde hospedarla.
+      </p>
+      <div class="arb-counter-wrap">
+        <div class="arb-tree-icon"><i class="ph-bold ph-tree"></i></div>
+        <div class="arb-counter-number" id="arb-count" data-target="163">0</div>
+        <div class="arb-counter-label">árboles plantados y contando</div>
+      </div>
+      <div class="arb-hero-cta-row">
+        <a href="/hosting-wordpress/" class="arb-btn-primary">
+          <i class="ph-bold ph-rocket-launch"></i>
+          Planta tu árbol hoy
+        </a>
+        <a href="#arb-proyectos" class="arb-btn-outline">
+          <i class="ph-bold ph-map-pin"></i>
+          Ver proyectos de reforestación
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CÓMO FUNCIONA ── -->
+  <section class="arb-how">
+    <div class="arb-how-inner">
+      <div class="arb-section-header reveal">
+        <span class="arb-section-eyebrow">El proceso</span>
+        <h2>Así de simple: contratas, plantamos</h2>
+        <p>Sin formularios extra, sin donaciones opcionales. El árbol está incluido en cada plan desde el primer día.</p>
+      </div>
+      <div class="arb-steps">
+        <div class="arb-step reveal">
+          <div class="arb-step-num">1</div>
+          <h3>Contratas un plan de hosting</h3>
+          <p>Elige Sauce, Roble o Cedro. Desde el primer mes de tu plan activo, se genera un árbol a tu nombre.</p>
+        </div>
+        <div class="arb-step reveal">
+          <div class="arb-step-num">2</div>
+          <h3>Elegimos el proyecto</h3>
+          <p>En coordinación con nuestros partners de reforestación verificada — Tree Nation y Ecologi — seleccionamos el terreno y la especie más adecuada para cada proyecto.</p>
+        </div>
+        <div class="arb-step reveal">
+          <div class="arb-step-num">3</div>
+          <h3>El árbol crece</h3>
+          <p>Los proyectos son monitorizados y certificados. Puedes ver el impacto acumulado en tiempo real en nuestro perfil de Tree Nation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROYECTOS ── -->
+  <section class="arb-projects" id="arb-proyectos">
+    <div class="arb-projects-inner">
+      <div class="arb-section-header reveal">
+        <span class="arb-section-eyebrow">Proyectos activos</span>
+        <h2>Reforestando el planeta, un árbol a la vez</h2>
+        <p>Trabajamos con proyectos verificados en tres continentes. Cada árbol está documentado y monitorizado.</p>
+      </div>
+      <div class="arb-projects-grid">
+
+        <!-- Australia -->
+        <div class="arb-project-card reveal">
+          <div class="arb-project-img-placeholder"><i class="ph-bold ph-tree"></i></div>
+          <div class="arb-project-body">
+            <div class="arb-project-flag">Australia · OneTreePlanted</div>
+            <h3>Protección del hábitat del koala</h3>
+            <p>
+              Restauración de eucaliptos autóctonos en regiones devastadas por los incendios de 2019–2020. Cada árbol plantado es hábitat directo para la fauna endémica australiana.
+            </p>
+            <span class="arb-project-tag"><i class="ph-bold ph-seal-check"></i> Verificado · OneTreePlanted</span>
+          </div>
+        </div>
+
+        <!-- Nicaragua -->
+        <div class="arb-project-card reveal">
+          <div class="arb-project-img-placeholder arb-project-img--ni"><i class="ph-bold ph-leaf"></i></div>
+          <div class="arb-project-body">
+            <div class="arb-project-flag">Nicaragua · Eden Reforestation</div>
+            <h3>Reforestación comunitaria</h3>
+            <p>
+              Proyecto de reforestación masiva en zonas costeras degradadas. Genera empleo local para comunidades vulnerables mientras restaura ecosistemas de manglar y bosque tropical.
+            </p>
+            <span class="arb-project-tag"><i class="ph-bold ph-seal-check"></i> Verificado · Eden Projects</span>
+          </div>
+        </div>
+
+        <!-- Escocia -->
+        <div class="arb-project-card reveal">
+          <div class="arb-project-img-placeholder arb-project-img--sc"><i class="ph-bold ph-mountains"></i></div>
+          <div class="arb-project-body">
+            <div class="arb-project-flag">Escocia · Future Forest Company</div>
+            <h3>Bosques nativos en las Highlands</h3>
+            <p>
+              Plantación de robles, alisos y hayas autóctonos en las Highlands escocesas. Contribuye a recuperar el Great Wood of Caledon, el bosque nativo más antiguo de Europa.
+            </p>
+            <span class="arb-project-tag"><i class="ph-bold ph-seal-check"></i> Verificado · Future Forest Co.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ESTADÍSTICAS ── -->
+  <section class="arb-stats">
+    <div class="arb-stats-inner">
+      <div class="arb-section-header reveal">
+        <span class="arb-section-eyebrow">Nuestro impacto</span>
+        <h2>Números que importan</h2>
+        <p>Cada stat es real, medible y verificado por terceros independientes.</p>
+      </div>
+      <div class="arb-stats-grid">
+        <div class="arb-stat-card reveal">
+          <div class="arb-stat-icon"><i class="ph-bold ph-tree"></i></div>
+          <div class="arb-stat-number">163+</div>
+          <div class="arb-stat-label">Árboles plantados</div>
+        </div>
+        <div class="arb-stat-card reveal">
+          <div class="arb-stat-icon"><i class="ph-bold ph-cloud"></i></div>
+          <div class="arb-stat-number">2×</div>
+          <div class="arb-stat-label">Compensación CO₂</div>
+        </div>
+        <div class="arb-stat-card reveal">
+          <div class="arb-stat-icon"><i class="ph-bold ph-sun"></i></div>
+          <div class="arb-stat-number">100%</div>
+          <div class="arb-stat-label">Energía renovable</div>
+        </div>
+        <div class="arb-stat-card reveal">
+          <div class="arb-stat-icon"><i class="ph-bold ph-gauge"></i></div>
+          <div class="arb-stat-number">1.1</div>
+          <div class="arb-stat-label">PUE centros de datos</div>
+        </div>
+      </div>
+      <div class="arb-certs-row reveal">
+        <span class="arb-cert-chip"><i class="ph-bold ph-certificate"></i> ISO 14001</span>
+        <span class="arb-cert-chip"><i class="ph-bold ph-building-office"></i> LEED Certified</span>
+        <span class="arb-cert-chip"><i class="ph-bold ph-leaf"></i> Green Web Foundation</span>
+        <span class="arb-cert-chip"><i class="ph-bold ph-tree"></i> Tree Nation Member</span>
+        <span class="arb-cert-chip"><i class="ph-bold ph-globe"></i> Ecologi Partner</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ¿POR QUÉ MÁS ÁRBOLES? ── -->
+  <section class="arb-why">
+    <div class="arb-why-inner">
+      <div class="reveal-left">
+        <span class="arb-section-eyebrow">El contexto</span>
+        <h2>¿Por qué más árboles?</h2>
+        <p class="arb-why-intro">
+          La deforestación es una de las principales causas del cambio climático. Cada año se pierden 15.000 millones de árboles en el planeta — más que lo que plantamos colectivamente. La tecnología tiene un papel relevante: internet genera más CO₂ que la industria aérea. Nosotros queremos cambiar esa ecuación.
+        </p>
+        <ul class="arb-why-points">
+          <li>
+            <i class="ph-bold ph-thermometer"></i>
+            <span>Los bosques absorben el <strong>30% de las emisiones globales de CO₂</strong> cada año, regulando el clima del planeta.</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-drop"></i>
+            <span>Las raíces de los árboles <strong>retienen y purifican el agua</strong>, reduciendo inundaciones y mejorando los suministros locales.</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-butterfly"></i>
+            <span>Cada hectárea de bosque restaurado <strong>alberga hasta 1.000 especies</strong> de insectos, aves y mamíferos.</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-users"></i>
+            <span>Los proyectos de reforestación <strong>generan empleo local</strong> en comunidades vulnerables, con impacto social directo.</span>
+          </li>
+          <li>
+            <i class="ph-bold ph-trend-down"></i>
+            <span>Un árbol adulto capta entre <strong>10 y 40 kg de CO₂ al año</strong>, dependiendo de la especie y el entorno.</span>
+          </li>
+        </ul>
+      </div>
+      <div class="reveal-right">
+        <div class="arb-why-visual">
+          <div class="arb-fact-box">
+            <div class="arb-fact-emoji"><i class="ph-bold ph-globe-hemisphere-west"></i></div>
+            <div class="arb-fact-number">15 B</div>
+            <div class="arb-fact-text">árboles talados al año en el planeta</div>
+          </div>
+          <div class="arb-fact-box">
+            <div class="arb-fact-emoji"><i class="ph-bold ph-broadcast"></i></div>
+            <div class="arb-fact-number">4%</div>
+            <div class="arb-fact-text">emisiones globales de CO₂ generadas por internet</div>
+          </div>
+          <div class="arb-fact-box">
+            <div class="arb-fact-emoji"><i class="ph-bold ph-check-circle"></i></div>
+            <div class="arb-fact-number">163+</div>
+            <div class="arb-fact-text">árboles plantados por Replanta y contando</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PARTNERS ── -->
+  <section class="arb-partners">
+    <div class="arb-partners-inner">
+      <div class="reveal">
+        <span class="arb-section-eyebrow">Colaboradores</span>
+        <h2>Nuestras alianzas de reforestación</h2>
+        <p style="color:var(--rep-muted);margin-bottom:2.5rem;">
+          Trabajamos exclusivamente con organizaciones de reforestación auditadas y certificadas, que garantizan la plantación, el seguimiento y la supervivencia de cada árbol.
+        </p>
+      </div>
+      <div class="arb-partners-grid reveal">
+        <div class="arb-partner-tile">
+          <div class="arb-partner-name">Tree Nation</div>
+          <div class="arb-partner-type">Red internacional de reforestación</div>
+          <a href="https://tree-nation.com" target="_blank" rel="noopener"
+             style="margin-top:.5rem;font-size:.75rem;color:var(--rep-teal);text-decoration:none;">tree-nation.com&nbsp;↗</a>
+        </div>
+        <div class="arb-partner-tile">
+          <div class="arb-partner-name">Ecologi</div>
+          <div class="arb-partner-type">Plataforma global de compensación</div>
+          <a href="https://ecologi.com" target="_blank" rel="noopener"
+             style="margin-top:.5rem;font-size:.75rem;color:var(--rep-teal);text-decoration:none;">ecologi.com&nbsp;↗</a>
+        </div>
+      </div>
+      <p class="arb-partners-note reveal">
+        + Colaboraciones con organizaciones locales de reforestación en España y Latinoamérica.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── TREE NATION WIDGET ── -->
+  <section class="arb-widget-section">
+    <div class="arb-widget-inner reveal">
+      <span class="arb-section-eyebrow">Impacto en tiempo real</span>
+      <h2>Nuestro contador de árboles</h2>
+      <p style="color:var(--rep-muted);">
+        Este contador se actualiza en tiempo real con los datos de Tree Nation, nuestra plataforma de seguimiento principal.
+      </p>
+      <div class="arb-tn-wrapper" id="arb-tn-widget">
+        <!-- Tree Nation widget loaded via script below -->
+        <p style="color:var(--rep-muted);font-size:.9rem;">Cargando contador de árboles…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ── -->
+  <section class="arb-final-cta">
+    <div class="arb-final-cta-inner reveal">
+      <h2>Únete a la web que<br>hace crecer el planeta</h2>
+      <p>
+        Cada plan de hosting que contratas en Replanta contribuye a la reforestación global. 
+        Tecnología de alto rendimiento, energía limpia y un árbol más en el mundo.
+      </p>
+      <div class="arb-final-cta-row">
+        <a href="/hosting-wordpress/" class="arb-btn-green">
+          <i class="ph-bold ph-tree"></i>
+          Contratar mi plan
+        </a>
+        <a href="/nosotros/" class="arb-btn-ghost">
+          <i class="ph-bold ph-users"></i>
+          Conocer más sobre Replanta
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /.rpl -->
+
+<!-- ── Scripts ── -->
+<script>
+(function(){
+  /* ── IntersectionObserver reveal ── */
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(function(el){
+    obs.observe(el);
+  });
+
+  /* ── Animated counter ── */
+  var counterEl = document.getElementById('arb-count');
+  if(counterEl){
+    var fallback = parseInt(counterEl.getAttribute('data-target'), 10);
+    var started  = false;
+
+    function runCounter(target){
+      if(started) return;
+      started = true;
+      var start    = 0;
+      var duration = 1800;
+      var step     = Math.ceil(target / (duration / 16));
+      var timer    = setInterval(function(){
+        start += step;
+        if(start >= target){ start = target; clearInterval(timer); }
+        counterEl.textContent = start + '+';
+      }, 16);
+    }
+
+    // Try live endpoint first (WordPress REST API)
+    var apiBase = (typeof replantaApiRoot !== 'undefined')
+      ? replantaApiRoot
+      : (window.location.origin + '/wp-json/dr/v1/trees');
+
+    fetch(apiBase, { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if(data && data.trees > 0){
+          counterEl.setAttribute('data-target', data.trees);
+          // Update stat card with same number
+          document.querySelectorAll('.arb-stat-number').forEach(function(el){
+            if(el.textContent.indexOf('163') !== -1) el.textContent = data.trees + '+';
+          });
+          // Update fact box
+          document.querySelectorAll('.arb-fact-number').forEach(function(el){
+            if(el.textContent.indexOf('163') !== -1) el.textContent = data.trees + '+';
+          });
+        }
+      })
+      .catch(function(){})
+      .finally(function(){
+        var target = parseInt(counterEl.getAttribute('data-target'), 10) || fallback;
+        var counterObs = new IntersectionObserver(function(entries){
+          if(entries[0].isIntersecting) runCounter(target);
+        },{threshold:0.3});
+        counterObs.observe(counterEl);
+      });
+  }
+
+  /* ── Tree Nation widget ── */
+  var tnContainer = document.getElementById('arb-tn-widget');
+  if(tnContainer){
+    var tnObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        tnObs.disconnect();
+        var s = document.createElement('script');
+        s.src = 'https://tree-nation.com/js/widget/widget.js';
+        s.onload = function(){
+          if(typeof TreeNationOffsetWebsite === 'function'){
+            tnContainer.innerHTML = '';
+            TreeNationOffsetWebsite({code:'66c0cf5ba284d', lang:'es', theme:'light'});
+          }
+        };
+        document.body.appendChild(s);
+      }
+    },{threshold:0.1});
+    tnObs.observe(tnContainer);
+  }
+})();
+</script>				</div>
+				</div>
+				</div>
+		

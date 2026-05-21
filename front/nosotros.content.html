@@ -1,0 +1,529 @@
+<style>.elementor-1115 .elementor-element.elementor-element-97b6cbf{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}.elementor-1115 .elementor-element.elementor-element-aa49427{padding:0px 0px 0px 0px;}:root{--page-title-display:none;}/* Start custom CSS for html, class: .elementor-element-aa49427 */*,*::before,*::after{box-sizing:border-box;}
+img{max-width:100%;height:auto;display:block;}
+.rpl ul,.rpl ol{list-style:none;margin:0;padding:0;}
+.rpl a{text-decoration:none;color:inherit;}
+.rpl{font-family:var(--rep-font-body);color:var(--rep-text-secondary);line-height:1.6;}
+.rpl h1,.rpl h2,.rpl h3,.rpl h4{font-family:var(--rep-font-display)!important;line-height:1.15!important;margin:0;}
+.rpl h1{font-size:clamp(2.2rem,5vw,3.6rem)!important;font-weight:700!important;color:#fff!important;}
+.rpl h2{font-size:clamp(1.7rem,3.2vw,2.4rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl h3{font-size:clamp(1.05rem,1.8vw,1.3rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl h4{font-size:clamp(.9rem,1.4vw,1.1rem)!important;font-weight:600!important;color:var(--rep-forest);}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+.kicker{display:inline-flex;align-items:center;gap:6px;font:600 .78rem/1 var(--rep-font-body);text-transform:uppercase;letter-spacing:.1em;color:var(--rep-teal);margin-bottom:12px;}
+.kicker--light{color:var(--rep-green);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--rep-radius-md);font:600 .95rem/1 var(--rep-font-body);transition:all .25s ease;min-height:48px;white-space:nowrap;text-decoration:none;}
+.btn-primary{background:var(--rep-teal);color:#fff!important;}
+.btn-primary:hover{background:#368F95;transform:translateY(-2px);box-shadow:var(--rep-shadow-md);}
+.btn-outline-dark{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:#fff!important;}
+.btn-outline-dark:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.55);}
+.btn-green{background:var(--rep-green);color:var(--rep-forest);}
+.btn-green:hover{background:#7de5b5;transform:translateY(-2px);}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.is-visible{opacity:1;transform:translateY(0);}
+.reveal[data-delay="1"]{transition-delay:.1s!important;}
+.reveal[data-delay="2"]{transition-delay:.2s!important;}
+.reveal[data-delay="3"]{transition-delay:.3s!important;}
+.reveal[data-delay="4"]{transition-delay:.4s!important;}
+
+/* ===== 1. HERO ===== */
+.nos-hero{
+  min-height:85vh;display:flex;align-items:center;
+  background:linear-gradient(155deg,#0E1D13 0%,#16291D 45%,#0B1910 100%);
+  position:relative;overflow:hidden;padding:100px 0 80px;
+}
+.nos-hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 25% 50%,rgba(65,153,159,.14) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 20%,rgba(147,241,201,.07) 0%,transparent 55%);
+  pointer-events:none;
+}
+.nos-hero::after{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(147,241,201,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(147,241,201,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+}
+.nos-hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.nos-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border:1px solid rgba(147,241,201,.2);border-radius:var(--rep-radius-full);
+  font:600 .75rem/1 var(--rep-font-body);color:var(--rep-green);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:22px;background:rgba(147,241,201,.05);
+}
+.nos-hero-content h1{margin-bottom:20px;}
+.nos-hero-content h1 span{color:var(--rep-green);}
+.nos-hero-sub{font-size:1.1rem;color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:30px;max-width:520px;}
+.nos-hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:34px;}
+.nos-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:var(--rep-radius-full);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  font:500 .78rem/1 var(--rep-font-body);color:rgba(255,255,255,.7);
+}
+.nos-badge i{color:var(--rep-green);font-size:13px;}
+.nos-hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+
+/* Hero visual — ilustración de equipo */
+.nos-hero-visual{display:flex;flex-direction:column;gap:20px;}
+.nos-stat-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--rep-radius-xl);padding:28px;backdrop-filter:blur(4px);
+}
+.nos-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.nos-stat{text-align:center;padding:20px 16px;}
+.nos-stat .value{font:700 2.2rem/1 var(--rep-font-display);color:var(--rep-green);margin-bottom:6px;}
+.nos-stat .label{font-size:.82rem;color:rgba(255,255,255,.5);letter-spacing:.05em;}
+.nos-quote{
+  background:rgba(147,241,201,.06);border-left:3px solid var(--rep-green);
+  border-radius:0 var(--rep-radius-md) var(--rep-radius-md) 0;
+  padding:18px 20px;
+}
+.nos-quote p{font-size:.9rem;color:rgba(255,255,255,.65);font-style:italic;line-height:1.6;margin:0;}
+.nos-quote cite{display:block;font-size:.78rem;color:var(--rep-green);margin-top:8px;font-style:normal;}
+
+/* ===== 2. PILARES ===== */
+.nos-pillars{padding:96px 0;background:#fff;}
+.nos-pillars-head{text-align:center;max-width:680px;margin:0 auto 60px;}
+.nos-pillars-head h2{margin-bottom:16px;}
+.nos-pillars-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+.nos-pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+.nos-pillar{
+  background:var(--rep-bg-light);border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-xl);padding:36px 28px;
+  transition:transform .25s,box-shadow .25s;
+}
+.nos-pillar:hover{transform:translateY(-4px);box-shadow:var(--rep-shadow-lg);}
+.nos-pillar-ico{
+  width:52px;height:52px;border-radius:var(--rep-radius-lg);
+  background:rgba(65,153,159,.12);color:var(--rep-teal);
+  display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;
+}
+.nos-pillar h3{margin-bottom:12px;}
+.nos-pillar p{font-size:.92rem;color:var(--rep-text-tertiary);line-height:1.7;}
+
+/* ===== 3. COMPROMISO VERDE ===== */
+.nos-green{
+  padding:96px 0;
+  background:linear-gradient(160deg,var(--rep-forest) 0%,#0E1D13 100%);
+  position:relative;overflow:hidden;
+}
+.nos-green::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 60% at 75% 50%,rgba(147,241,201,.08) 0%,transparent 60%);
+  pointer-events:none;
+}
+.nos-green-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.nos-green-content h2{color:#fff!important;margin-bottom:20px;}
+.nos-green-content h2 span{color:var(--rep-green);}
+.nos-green-content p{color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:24px;}
+.nos-green-list{list-style:none!important;padding:0!important;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+.nos-green-list li{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:.93rem;color:rgba(255,255,255,.7);
+}
+.nos-green-list li::before{
+  content:"";flex-shrink:0;margin-top:6px;
+  width:8px;height:8px;border-radius:2px;
+  background:var(--rep-sun);transform:rotate(45deg);
+}
+/* Badges de certificación */
+.nos-cert-badges{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;}
+.nos-cert{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:var(--rep-radius-md);
+  background:rgba(147,241,201,.08);border:1px solid rgba(147,241,201,.15);
+  font:600 .8rem/1 var(--rep-font-body);color:var(--rep-green);
+}
+.nos-cert i{font-size:16px;}
+/* Visual */
+.nos-green-visual{display:flex;flex-direction:column;gap:20px;}
+.nos-impact-card{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--rep-radius-xl);padding:30px;backdrop-filter:blur(4px);
+}
+.nos-impact-card h3{color:#fff!important;margin-bottom:6px;font-size:1.1rem!important;}
+.nos-impact-card p{color:rgba(255,255,255,.55);font-size:.88rem;margin:0;}
+.nos-impact-num{
+  font:700 3rem/1 var(--rep-font-display);
+  background:var(--rep-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:8px;
+}
+.nos-impact-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* ===== 4. EQUIPO ===== */
+.nos-team{padding:96px 0;background:var(--rep-bg-light);}
+.nos-team-head{text-align:center;max-width:620px;margin:0 auto 56px;}
+.nos-team-head h2{margin-bottom:16px;}
+.nos-team-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+.nos-team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;}
+.nos-member{
+  background:#fff;border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-xl);padding:28px 16px 24px;
+  text-align:center;transition:transform .25s,box-shadow .25s;
+}
+.nos-member:hover{transform:translateY(-4px);box-shadow:var(--rep-shadow-lg);}
+.nos-member-avatar{
+  width:88px;height:88px;border-radius:50%;
+  overflow:hidden;margin:0 auto 16px;
+  border:3px solid var(--rep-border);
+  background:var(--rep-bg-light);
+}
+.nos-member-avatar img{width:100%;height:100%;object-fit:cover;}
+.nos-member-avatar .initials{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font:700 1.5rem/1 var(--rep-font-display);color:var(--rep-teal);
+}
+.nos-member h4{margin-bottom:4px;}
+.nos-member .role{
+  font-size:.8rem;color:var(--rep-text-muted);
+  background:rgba(65,153,159,.1);color:var(--rep-teal);
+  padding:3px 10px;border-radius:var(--rep-radius-full);
+  display:inline-block;margin-top:4px;
+}
+.nos-founder-badge{
+  display:flex;align-items:center;gap:5px;justify-content:center;
+  font:600 .72rem/1 var(--rep-font-body);color:var(--rep-sun);
+  margin-top:8px;
+}
+.nos-founder-badge i{font-size:12px;}
+
+/* ===== 5. TRUST ===== */
+.nos-trust{padding:72px 0;background:#fff;}
+.nos-trust-inner{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.nos-trust-content h2{margin-bottom:16px;}
+.nos-trust-content p{color:var(--rep-text-tertiary);line-height:1.75;margin-bottom:24px;}
+.nos-trust-items{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.nos-trust-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:16px;background:var(--rep-bg-light);border-radius:var(--rep-radius-md);
+}
+.nos-trust-item i{font-size:20px;color:var(--rep-teal);margin-top:2px;flex-shrink:0;}
+.nos-trust-item p{font-size:.88rem;color:var(--rep-text-tertiary);margin:0;line-height:1.5;}
+.nos-trust-item strong{display:block;font-size:.9rem;color:var(--rep-forest);margin-bottom:2px;}
+/* Review card */
+.nos-review{
+  background:var(--rep-forest);border-radius:var(--rep-radius-xl);padding:36px;
+  display:flex;flex-direction:column;justify-content:space-between;gap:20px;
+}
+.nos-review-stars{display:flex;gap:4px;}
+.nos-review-stars i{color:var(--rep-sun);font-size:20px;}
+.nos-review-text{font-size:1rem;color:rgba(255,255,255,.8);line-height:1.7;font-style:italic;}
+.nos-review-author{display:flex;align-items:center;gap:12px;}
+.nos-review-ava{
+  width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:rgba(147,241,201,.15);display:flex;align-items:center;justify-content:center;
+  font:700 1rem/1 var(--rep-font-display);color:var(--rep-green);
+  border:2px solid rgba(147,241,201,.2);
+}
+.nos-review-ava img{width:100%;height:100%;object-fit:cover;}
+.nos-review-name{font:600 .9rem/1.3 var(--rep-font-body);color:#fff;}
+.nos-review-company{font-size:.8rem;color:rgba(255,255,255,.45);}
+
+/* ===== 6. FINAL CTA ===== */
+.nos-cta{
+  padding:96px 0;text-align:center;
+  background:linear-gradient(135deg,#0E1D13 0%,#1E2F23 100%);
+  position:relative;overflow:hidden;
+}
+.nos-cta::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(65,153,159,.1) 0%,transparent 60%);
+  pointer-events:none;
+}
+.nos-cta-inner{position:relative;z-index:1;max-width:680px;margin:0 auto;}
+.nos-cta h2{color:#fff!important;margin-bottom:16px;}
+.nos-cta p{color:rgba(255,255,255,.6);font-size:1.05rem;line-height:1.7;margin-bottom:36px;}
+.nos-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .nos-hero-inner,.nos-green-inner,.nos-trust-inner{grid-template-columns:1fr;gap:48px;}
+  .nos-hero-visual,.nos-review{order:-1;}
+  .nos-review{order:0;}
+  .nos-pillars-grid{grid-template-columns:1fr;}
+  .nos-team-grid{grid-template-columns:repeat(2,1fr);}
+  .nos-trust-items{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .nos-hero{padding:80px 0 60px;}
+  .nos-stat-grid{grid-template-columns:1fr 1fr;}
+  .nos-team-grid{grid-template-columns:1fr 1fr;}
+  .nos-impact-row{grid-template-columns:1fr;}
+}
+</st/* End custom CSS */</style>		<div data-elementor-type="wp-page" data-elementor-id="1115" class="elementor elementor-1115" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-97b6cbf e-con-full e-flex e-con e-parent" data-id="97b6cbf" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-aa49427 elementor-widget elementor-widget-html" data-id="aa49427" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<div class="rpl">
+
+  <!-- ── 1. HERO ────────────────────────────────────────────── -->
+  <section class="nos-hero">
+    <div class="wrap">
+      <div class="nos-hero-inner">
+
+        <div class="nos-hero-content reveal">
+          <div class="nos-eyebrow"><i class="ph-bold ph-users-three"></i> Quiénes somos</div>
+          <h1>Tecnología web <span>con conciencia</span> ambiental</h1>
+          <p class="nos-hero-sub">Somos Replanta: una startup formada por programadores y diseñadores apasionados por la tecnología y el medio ambiente. Nuestra misión es ayudarte a triunfar digitalmente mientras contribuimos juntos a un futuro más verde.</p>
+          <div class="nos-hero-badges">
+            <span class="nos-badge"><i class="ph-bold ph-map-pin"></i> Galicia, España</span>
+            <span class="nos-badge"><i class="ph-bold ph-leaf"></i> 100% energía renovable</span>
+            <span class="nos-badge"><i class="ph-bold ph-tree"></i> Un árbol por plan</span>
+            <span class="nos-badge"><i class="ph-bold ph-shield-check"></i> Desde 2021</span>
+          </div>
+          <div class="nos-hero-btns">
+            <a href="/hosting-wordpress/" class="btn btn-primary"><i class="ph-bold ph-rocket-launch"></i> Ver planes de hosting</a>
+            <a href="/infraestructura/" class="btn btn-outline-dark"><i class="ph-bold ph-database"></i> Nuestra infraestructura</a>
+          </div>
+        </div>
+
+        <div class="nos-hero-visual reveal" data-delay="2">
+          <div class="nos-stat-card">
+            <div class="nos-stat-grid">
+              <div class="nos-stat">
+                <div class="value">+500</div>
+                <div class="label">Clientes activos</div>
+              </div>
+              <div class="nos-stat">
+                <div class="value">163+</div>
+                <div class="label">Árboles plantados</div>
+              </div>
+              <div class="nos-stat">
+                <div class="value">4.5★</div>
+                <div class="label">Valoración media</div>
+              </div>
+              <div class="nos-stat">
+                <div class="value">2×</div>
+                <div class="label">CO₂ compensado</div>
+              </div>
+            </div>
+          </div>
+          <div class="nos-quote">
+            <p>"Replanta no es solo mi hosting. Es el equipo detrás de mi web, que entiende tanto de WordPress como de por qué el planeta importa."</p>
+            <cite>— Catalina Zapata, La Web Verde</cite>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. TRES PILARES ─────────────────────────────────────── -->
+  <section class="nos-pillars">
+    <div class="wrap">
+      <div class="nos-pillars-head reveal">
+        <span class="kicker"><i class="ph-bold ph-star"></i> Nuestros valores</span>
+        <h2>Lo que nos define como empresa</h2>
+        <p>En Replanta todo es personal. Construimos tecnología que tiene impacto positivo, y lo hacemos con transparencia y compromiso real.</p>
+      </div>
+      <div class="nos-pillars-grid">
+        <div class="nos-pillar reveal" data-delay="1">
+          <div class="nos-pillar-ico"><i class="ph-bold ph-lightning"></i></div>
+          <h3>Innovación y compromiso</h3>
+          <p>Somos ingenieros y diseñadores que amamos lo que hacemos. Nos enfocamos en servicios de alojamiento web fiables, fáciles de usar, sostenibles y respetuosos con el planeta. Tu éxito impulsa el nuestro — y juntos avanzamos hacia un futuro más verde.</p>
+        </div>
+        <div class="nos-pillar reveal" data-delay="2">
+          <div class="nos-pillar-ico"><i class="ph-bold ph-code"></i></div>
+          <h3>De la programación a la sostenibilidad</h3>
+          <p>Nuestro camino comenzó uniendo la pasión por la tecnología con un fuerte compromiso medioambiental. Aprovechando las últimas innovaciones cloud y con raíces en el noroeste de España, aspiramos a preservar los bosques locales y fomentar la biodiversidad.</p>
+        </div>
+        <div class="nos-pillar reveal" data-delay="3">
+          <div class="nos-pillar-ico"><i class="ph-bold ph-lightbulb"></i></div>
+          <h3>Más que un hosting</h3>
+          <p>Replanta va más allá del alojamiento tradicional. Nuestra infraestructura se basa en la nube pública alimentada por energía 100% renovable. Para nosotros, "eco hosting" significa minimizar nuestro impacto ambiental y compensar más carbono del que producimos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. COMPROMISO VERDE ─────────────────────────────────── -->
+  <section class="nos-green">
+    <div class="wrap">
+      <div class="nos-green-inner">
+
+        <div class="nos-green-content reveal">
+          <span class="kicker kicker--light"><i class="ph-bold ph-leaf"></i> Compromiso ambiental</span>
+          <h2>Alojamiento Web <span>Consciente y Sostenible</span></h2>
+          <p>Nuestro compromiso con el planeta va más allá de las palabras. Cada sitio web alojado con nosotros contribuye activamente a la reforestación global y a la compensación de emisiones.</p>
+          <ul class="nos-green-list">
+            <li>Un árbol plantado por cada plan activo, en colaboración con Tree Nation y otros proyectos de reforestación verificados</li>
+            <li>Servidores alimentados con energía 100% renovable certificada — sin greenwashing</li>
+            <li>Compensación activa de la huella de carbono de nuestras operaciones</li>
+            <li>Infraestructura cloud con centros de datos con certificación ambiental ISO 14001 y LEED</li>
+            <li>Transparencia total sobre nuestra red y proveedores de infraestructura</li>
+          </ul>
+          <div class="nos-cert-badges">
+            <span class="nos-cert"><i class="ph-bold ph-seal-check"></i> Green Web Foundation</span>
+            <span class="nos-cert"><i class="ph-bold ph-tree"></i> Tree Nation Partner</span>
+            <span class="nos-cert"><i class="ph-bold ph-recycle"></i> ISO 14001</span>
+          </div>
+        </div>
+
+        <div class="nos-green-visual reveal" data-delay="2">
+          <div class="nos-impact-row">
+            <div class="nos-impact-card">
+              <div class="nos-impact-num">163+</div>
+              <h3>Árboles plantados</h3>
+              <p>En diferentes proyectos de reforestación globales verificados</p>
+            </div>
+            <div class="nos-impact-card">
+              <div class="nos-impact-num">2×</div>
+              <h3>CO₂ compensado</h3>
+              <p>Compensamos el doble de las emisiones generadas por nuestras operaciones</p>
+            </div>
+          </div>
+          <div class="nos-impact-card">
+            <div class="nos-impact-num">100%</div>
+            <h3>Energía renovable certificada</h3>
+            <p>Todos nuestros centros de datos operan con energía limpia verificada por terceros independientes. Sin compensaciones contables — energía verde real.</p>
+          </div>
+          <a href="/un-ano-un-arbol/" class="btn btn-green" style="align-self:flex-start;"><i class="ph-bold ph-tree"></i> Descubre nuestra iniciativa Un Año, Un Árbol</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. EL EQUIPO ────────────────────────────────────────── -->
+  <section class="nos-team">
+    <div class="wrap">
+      <div class="nos-team-head reveal">
+        <span class="kicker"><i class="ph-bold ph-users-three"></i> El equipo</span>
+        <h2>Compactos, ágiles y apasionados</h2>
+        <p>Somos una red de profesionales independientes unidos por la sostenibilidad digital y el amor a la tecnología.</p>
+      </div>
+      <div class="nos-team-grid">
+
+        <div class="nos-member reveal" data-delay="1">
+          <div class="nos-member-avatar">
+            <img src="https://replanta.net/wp-content/uploads/2024/03/javi-1.webp" alt="Javier Gil - Fundador Replanta" loading="lazy">
+          </div>
+          <h4>Javier Gil</h4>
+          <span class="role">Fundador</span>
+          
+        </div>
+
+        <div class="nos-member reveal" data-delay="2">
+          <div class="nos-member-avatar">
+            <img src="https://replanta.net/wp-content/uploads/2025/10/catabn.png" alt="Catalina Zapata - Manager Replanta" loading="lazy">
+          </div>
+          <h4>Catalina Zapata</h4>
+          <span class="role">Manager</span>
+        </div>
+
+        <div class="nos-member reveal" data-delay="3">
+          <div class="nos-member-avatar">
+            <img src="https://replanta.net/wp-content/uploads/2024/03/alvaro.webp" alt="Alvaro Gara - Diseño gráfico Replanta" loading="lazy">
+          </div>
+          <h4>Alvaro Gara</h4>
+          <span class="role">Diseño gráfico</span>
+        </div>
+
+        <div class="nos-member reveal" data-delay="4">
+          <div class="nos-member-avatar">
+            <img src="https://replanta.net/wp-content/uploads/2024/03/diana.webp" alt="Diana Benavides - Contenido y Soporte Replanta" loading="lazy">
+          </div>
+          <h4>Diana Benavides</h4>
+          <span class="role">Contenido &amp; Soporte</span>
+        </div>
+
+        <div class="nos-member reveal" data-delay="4">
+          <div class="nos-member-avatar">
+            <img src="https://replanta.net/wp-content/uploads/2024/03/miguel-1.webp" alt="Miguel Gil - Legal y Soporte Replanta" loading="lazy">
+          </div>
+          <h4>Miguel Gil</h4>
+          <span class="role">Legal &amp; Soporte</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. CONFIANZA ────────────────────────────────────────── -->
+  <section class="nos-trust">
+    <div class="wrap">
+      <div class="nos-trust-inner">
+
+        <div class="nos-trust-content reveal">
+          <span class="kicker"><i class="ph-bold ph-shield-check"></i> Por qué confiar en Replanta</span>
+          <h2>Transparentes por principio, confiables por práctica</h2>
+          <p>No somos un gran proveedor anónimo. Somos un equipo que conoces por su nombre y que responde con la cara descubierta cuando necesitas ayuda.</p>
+          <div class="nos-trust-items">
+            <div class="nos-trust-item">
+              <i class="ph-bold ph-chat-circle-text"></i>
+              <div>
+                <strong>Soporte en español</strong>
+                <p>Equipo real, respuestas humanas, sin bots ni plantillas genéricas</p>
+              </div>
+            </div>
+            <div class="nos-trust-item">
+              <i class="ph-bold ph-arrows-merge"></i>
+              <div>
+                <strong>Migración gratuita</strong>
+                <p>Nos encargamos de todo — archivos, base de datos, DNS — sin cortes</p>
+              </div>
+            </div>
+            <div class="nos-trust-item">
+              <i class="ph-bold ph-certificate"></i>
+              <div>
+                <strong>Certificaciones verdes</strong>
+                <p>Verificados por Green Web Foundation y Tree Nation con datos reales</p>
+              </div>
+            </div>
+            <div class="nos-trust-item">
+              <i class="ph-bold ph-clock-countdown"></i>
+              <div>
+                <strong>Uptime garantizado</strong>
+                <p>Infraestructura redundante en la nube pública con SLA empresarial</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" data-delay="2">
+          <div class="nos-review">
+            <div>
+              <div class="nos-review-stars">
+                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+              </div>
+              <p class="nos-review-text" style="margin-top:16px;">"Replanta me migró la web en menos de 3 horas, sin ningún corte. El soporte es increíble — respuestas rápidas, personales y siempre con solución. Encima, sé que mi web planta árboles: eso marca la diferencia."</p>
+            </div>
+            <div class="nos-review-author">
+              <div class="nos-review-ava">
+                <img src="https://replanta.net/wp-content/uploads/2025/10/catabn.png" alt="Catalina Zapata" loading="lazy">
+              </div>
+              <div>
+                <div class="nos-review-name">Catalina Zapata</div>
+                <div class="nos-review-company">La Web Verde · Cliente Roble</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. FINAL CTA ────────────────────────────────────────── -->
+  <section class="nos-cta">
+    <div class="wrap">
+      <div class="nos-cta-inner reveal">
+        <span class="kicker kicker--light"><i class="ph-bold ph-rocket-launch"></i> Únete a Replanta</span>
+        <h2>Hosting que cuida tu negocio <span style="color:var(--rep-green)">y el planeta</span></h2>
+        <p>Empieza con migración gratuita, soporte humano en español y la tranquilidad de saber que tu web contribuye activamente a la reforestación global.</p>
+        <div class="nos-cta-btns">
+          <a href="/hosting-wordpress/" class="btn btn-green"><i class="ph-bold ph-rocket-launch"></i> Ver planes y precios</a>
+          <a href="/eco-hosting/" class="btn btn-outline-dark"><i class="ph-bold ph-leaf"></i> ECO Hosting Web</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>				</div>
+				</div>
+				</div>
+		

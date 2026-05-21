@@ -153,11 +153,21 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
             <div class="sapwcc-vig-card-title">
                 <span class="sapwcc-status-dot"></span>
                 <strong><?php echo esc_html( $site_label ); ?></strong>
+                <?php if ( ! empty( $result['sap_contact_email'] ) ) : ?>
+                    <span class="sapwcc-muted" style="font-size:11px;font-weight:400;">
+                        · <span class="dashicons dashicons-email" style="font-size:12px;width:12px;height:12px;vertical-align:middle;"></span> <?php echo esc_html( $result['sap_contact_email'] ); ?>
+                    </span>
+                <?php endif; ?>
             </div>
             <div class="sapwcc-vig-card-meta">
                 <?php if ( $scanned_at ) : ?>
                     <span class="sapwcc-muted" style="font-size:12px;">
                         Escaneado: <?php echo esc_html( $scanned_at ); ?>
+                    </span>
+                <?php endif; ?>
+                <?php if ( ! empty( $result['in_quiet_window'] ) ) : ?>
+                    <span class="sapwcc-vig-pill sapwcc-vig-pill--muted" title="Ventana de silencio activa — cron_gap suprimido">
+                        <span class="dashicons dashicons-clock"></span> Ventana silencio
                     </span>
                 <?php endif; ?>
                 <span class="sapwcc-vig-badge <?php echo esc_attr( $badge_class ); ?>"><?php echo esc_html( $badge_text ); ?></span>
@@ -180,10 +190,17 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
         <?php elseif ( ! empty( $issues ) ) : ?>
         <div class="sapwcc-vig-card-body">
             <?php foreach ( $issues as $issue ) :
-                $sev_class = 'sapwcc-vig-issue--' . $issue['severity'];
-                $icon      = $issue['severity'] === SAPWCC_Vigilante::SEV_CRITICAL ? 'warning' : 'info';
+                $sev_class  = 'sapwcc-vig-issue--' . $issue['severity'];
+                $icon       = $issue['severity'] === SAPWCC_Vigilante::SEV_CRITICAL ? 'warning' : 'info';
+                $audience   = $issue['audience'] ?? 'admin';
+                $is_resolved = in_array( $issue['id'], array_keys( $result['resolved_tasks'] ?? [] ), true );
+                $auto_res    = ! empty( $issue['auto_resolved'] );
             ?>
-            <div class="sapwcc-vig-issue <?php echo esc_attr( $sev_class ); ?>" data-issue-id="<?php echo esc_attr( $issue['id'] ); ?>" data-issue-type="<?php echo esc_attr( $issue['type'] ); ?>" data-site-label="<?php echo esc_attr( $site_label ); ?>" data-context="<?php echo esc_attr( wp_json_encode( $issue['context'] ?? [] ) ); ?>">
+            <div class="sapwcc-vig-issue <?php echo esc_attr( $sev_class ); ?><?php echo $is_resolved ? ' sapwcc-vig-issue--resolved' : ''; ?>"
+                 data-issue-id="<?php echo esc_attr( $issue['id'] ); ?>"
+                 data-issue-type="<?php echo esc_attr( $issue['type'] ); ?>"
+                 data-site-label="<?php echo esc_attr( $site_label ); ?>"
+                 data-context="<?php echo esc_attr( wp_json_encode( $issue['context'] ?? [] ) ); ?>">
                 <div class="sapwcc-vig-issue-header">
                     <span class="dashicons dashicons-<?php echo esc_attr( $icon ); ?>"></span>
                     <div class="sapwcc-vig-issue-text">
@@ -193,11 +210,24 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
                             <span class="sapwcc-vig-since">Desde: <?php echo esc_html( $issue['since'] ); ?></span>
                         <?php endif; ?>
                     </div>
-                    <?php if ( $ai_configured ) : ?>
-                    <button class="button button-small sapwcc-vig-ai-btn" title="Análisis IA">
-                        <span class="dashicons dashicons-superhero-alt"></span> IA
-                    </button>
-                    <?php endif; ?>
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                        <?php if ( $audience === 'sap_user' ) : ?>
+                            <span class="sapwcc-vig-pill sapwcc-vig-pill--info" title="Requiere acción manual en SAP Business One">Tarea SAP</span>
+                        <?php else : ?>
+                            <span class="sapwcc-vig-pill sapwcc-vig-pill--muted" title="Problema técnico — gestionado por el administrador">Sistema</span>
+                        <?php endif; ?>
+                        <?php if ( $auto_res ) : ?>
+                            <span class="sapwcc-vig-pill sapwcc-vig-pill--ok" title="El Vigilante relanzó el cron automáticamente">Auto-fix</span>
+                        <?php endif; ?>
+                        <?php if ( $is_resolved ) : ?>
+                            <span class="sapwcc-vig-pill sapwcc-vig-pill--ok" title="Marcada como resuelta por el equipo SAP">✓ Resuelta</span>
+                        <?php endif; ?>
+                        <?php if ( $ai_configured ) : ?>
+                        <button class="button button-small sapwcc-vig-ai-btn" title="Análisis IA">
+                            <span class="dashicons dashicons-superhero-alt"></span> IA
+                        </button>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <?php if ( $ai_configured ) : ?>
                 <div class="sapwcc-vig-ai-panel" style="display:none;"></div>

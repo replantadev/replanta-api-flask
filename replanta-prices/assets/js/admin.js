@@ -90,4 +90,36 @@
         });
 
     });
+
+    /* ── Media picker for product image_url fields ── */
+    $(document).on('click', '.rp-media-pick', function(e) {
+        e.preventDefault();
+        var targetId = $(this).data('target');
+        var $input   = $('#' + targetId);
+        var $btn     = $(this);
+
+        var frame = wp.media({
+            title:    'Seleccionar imagen para el feed',
+            button:   { text: 'Usar esta imagen' },
+            library:  { type: 'image' },
+            multiple: false
+        });
+
+        frame.on('select', function() {
+            var att = frame.state().get('selection').first().toJSON();
+            var url = att.sizes && att.sizes.large ? att.sizes.large.url : att.url;
+            $input.val(url);
+
+            // Update or add thumbnail preview next to the button
+            var $thumb = $btn.siblings('img');
+            if ($thumb.length) {
+                $thumb.attr('src', url);
+            } else {
+                $btn.after('<img src="' + url + '" style="height:32px;width:32px;object-fit:cover;border-radius:3px;border:1px solid #ddd;" alt="">');
+            }
+        });
+
+        frame.open();
+    });
+
 })(jQuery);

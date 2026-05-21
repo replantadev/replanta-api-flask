@@ -1,0 +1,205 @@
+{
+    "generated_at": "2026-05-21T07:28:54+00:00",
+    "site": "https://replanta.net/",
+    "count": 22,
+    "pages": [
+        {
+            "id": 10816,
+            "slug": "afiliados",
+            "title": "Afiliados",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/afiliados/",
+            "elementor": true
+        },
+        {
+            "id": 6635,
+            "slug": "calculadora-huella",
+            "title": "Calcula la huella digital de tu Website",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/calculadora-huella/",
+            "elementor": true
+        },
+        {
+            "id": 7842,
+            "slug": "casos-de-exito",
+            "title": "Casos de éxito de sostenibilidad web",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/casos-de-exito/",
+            "elementor": true
+        },
+        {
+            "id": 6582,
+            "slug": "conector-sap-woocommerce",
+            "title": "Conector SAP Woocommerce",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/conector-sap-woocommerce/",
+            "elementor": true
+        },
+        {
+            "id": 3885,
+            "slug": "contacto",
+            "title": "Contacto",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/contacto/",
+            "elementor": true
+        },
+        {
+            "id": 3479,
+            "slug": "diseno-web-sostenible",
+            "title": "Diseño y desarrollo web",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/diseno-web-sostenible/",
+            "elementor": true
+        },
+        {
+            "id": 397,
+            "slug": "dominios",
+            "title": "Dominios",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/dominios/",
+            "elementor": true
+        },
+        {
+            "id": 395,
+            "slug": "eco-hosting",
+            "title": "ECO Hosting web",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/eco-hosting/",
+            "elementor": true
+        },
+        {
+            "id": 3317,
+            "slug": "estado-del-servicio",
+            "title": "Estado del servicio",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/estado-del-servicio/",
+            "elementor": true
+        },
+        {
+            "id": 6190,
+            "slug": "hosting-joomla",
+            "title": "Hosting Joomla!",
+            "status": "draft",
+            "type": "page",
+            "url": "https://replanta.net/?page_id=6190",
+            "elementor": true
+        },
+        {
+            "id": 8623,
+            "slug": "hosting-web-solidario",
+            "title": "Hosting solidario y sostenible para ONGs y empresas con propósito",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/hosting-web-solidario/",
+            "elementor": true
+        },
+        {
+            "id": 5431,
+            "slug": "hosting-wordpress",
+            "title": "Hosting WordPress",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/hosting-wordpress/",
+            "elementor": true
+        },
+        {
+            "id": 1903,
+            "slug": "web-hosting-ecologico",
+            "title": "Huella digital",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/web-hosting-ecologico/",
+            "elementor": true
+        },
+        {
+            "id": 2304,
+            "slug": "infraestructura",
+            "title": "Infraestructura",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/infraestructura/",
+            "elementor": true
+        },
+        {
+            "id": 7020,
+            "slug": "mantenimiento-wordpress",
+            "title": "Mantenimiento WordPress",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/mantenimiento-wordpress/",
+            "elementor": true
+        },
+        {
+            "id": 9811,
+            "slug": "migrar-eco-hosting",
+            "title": "Migrar a un eco hosting",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/migrar-eco-hosting/",
+            "elementor": true
+        },
+        {
+            "id": 7297,
+            "slug": "wordpress-plugins",
+            "title": "Plugins para WordPress",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/wordpress-plugins/",
+            "elementor": true
+        },
+        {
+            "id": 3329,
+            "slug": "politicas-energeticas-de-nuestros-proveedores",
+            "title": "Políticas energéticas de nuestros proveedores",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/politicas-energeticas-de-nuestros-proveedores/",
+            "elementor": true
+        },
+        {
+            "id": 2,
+            "slug": "replanta-alojamiento-web-ecologico",
+            "title": "Replanta. Hosting verde para WordPress.",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/",
+            "elementor": true
+        },
+        {
+            "id": 1115,
+            "slug": "nosotros",
+            "title": "Sobre nosotros",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/nosotros/",
+            "elementor": true
+        },
+        {
+            "id": 419,
+            "slug": "transfiere-tu-dominio",
+            "title": "Transfiere tu dominio",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/transfiere-tu-dominio/",
+            "elementor": true
+        },
+        {
+            "id": 544,
+            "slug": "un-ano-un-arbol",
+            "title": "Un año, un árbol",
+            "status": "publish",
+            "type": "page",
+            "url": "https://replanta.net/un-ano-un-arbol/",
+            "elementor": true
+        }
+    ]
+}

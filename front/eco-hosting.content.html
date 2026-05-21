@@ -1,0 +1,2012 @@
+<style>.elementor-395 .elementor-element.elementor-element-a9ec8d4{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}.elementor-395 .elementor-element.elementor-element-7c40f9b{--display:flex;}.elementor-395 .elementor-element.elementor-element-7c40f9b:not(.elementor-motion-effects-element-type-background), .elementor-395 .elementor-element.elementor-element-7c40f9b > .elementor-motion-effects-container > .elementor-motion-effects-layer{background-color:#F7F7F7;}.elementor-395 .elementor-element.elementor-element-0e4adce{--display:flex;}.elementor-395 .elementor-element.elementor-element-7672387b{--display:flex;--flex-direction:row;--container-widget-width:calc( ( 1 - var( --container-widget-flex-grow ) ) * 100% );--container-widget-height:100%;--container-widget-flex-grow:1;--container-widget-align-self:stretch;--flex-wrap-mobile:wrap;--align-items:stretch;--gap:10px 10px;--row-gap:10px;--column-gap:10px;--overlay-opacity:0.5;--margin-top:0px;--margin-bottom:0px;--margin-left:0px;--margin-right:0px;--padding-top:72px;--padding-bottom:72px;--padding-left:0px;--padding-right:0px;}.elementor-395 .elementor-element.elementor-element-7672387b::before, .elementor-395 .elementor-element.elementor-element-7672387b > .elementor-background-video-container::before, .elementor-395 .elementor-element.elementor-element-7672387b > .e-con-inner > .elementor-background-video-container::before, .elementor-395 .elementor-element.elementor-element-7672387b > .elementor-background-slideshow::before, .elementor-395 .elementor-element.elementor-element-7672387b > .e-con-inner > .elementor-background-slideshow::before, .elementor-395 .elementor-element.elementor-element-7672387b > .elementor-motion-effects-container > .elementor-motion-effects-layer::before{background-color:#FAFAFA;--background-overlay:'';}.elementor-395 .elementor-element.elementor-element-7672387b > .elementor-shape-top .elementor-shape-fill, .elementor-395 .elementor-element.elementor-element-7672387b > .e-con-inner > .elementor-shape-top .elementor-shape-fill{fill:#FAFAFA;}.elementor-395 .elementor-element.elementor-element-e3fbed8{--display:flex;}.elementor-395 .elementor-element.elementor-element-30a0088{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}:root{--page-title-display:none;}/* Start custom CSS for html, class: .elementor-element-7c17ead *//* ── FALLBACK tokens ── */
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;--rep-sun:#F7D450;
+  --rep-mint:#92F1CB;--rep-white:#FFFFFF;--rep-bg-light:#F7FBF9;
+  --rep-text-secondary:#3B4B45;--rep-text-tertiary:#547065;--rep-text-muted:#6B7D76;
+  --rep-border:#E6F3EF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px 0 rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 6px -1px rgba(30,47,35,.10),0 2px 4px -1px rgba(30,47,35,.06);
+  --rep-shadow-lg:0 10px 15px -3px rgba(30,47,35,.10),0 4px 6px -2px rgba(30,47,35,.05);
+  --rep-font-display:'Sora',system-ui,-apple-system,sans-serif;
+  --rep-font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --rep-radius-sm:8px;--rep-radius-md:12px;--rep-radius-lg:16px;
+  --rep-radius-xl:24px;--rep-radius-full:999px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap');
+*,*::before,*::after{box-sizing:border-box;}
+img{max-width:100%;height:auto;display:block;}
+.rpl ul,.rpl ol{list-style:none;margin:0;padding:0;}
+.rpl a{text-decoration:none;color:inherit;}
+.rpl{font-family:var(--rep-font-body);color:var(--rep-text-secondary);line-height:1.6;}
+.rpl h1,.rpl h2,.rpl h3,.rpl h4{font-family:var(--rep-font-display)!important;line-height:1.15!important;margin:0;}
+.rpl h1{font-size:clamp(2.2rem,5vw,3.6rem)!important;font-weight:700!important;color:#fff!important;}
+.rpl h2{font-size:clamp(1.7rem,3.2vw,2.4rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl h3{font-size:clamp(1.05rem,1.8vw,1.3rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl h4{font-size:clamp(.9rem,1.4vw,1.1rem)!important;font-weight:600!important;color:var(--rep-forest);}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+.kicker{display:inline-flex;align-items:center;gap:6px;font:600 .78rem/1 var(--rep-font-body);text-transform:uppercase;letter-spacing:.1em;color:var(--rep-teal);margin-bottom:12px;}
+.kicker--light{color:var(--rep-green);}
+.kicker--dark{color:var(--rep-teal);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--rep-radius-md);font:600 .95rem/1 var(--rep-font-body);transition:all .25s ease;min-height:48px;white-space:nowrap;text-decoration:none;}
+.btn-primary{background:var(--rep-teal);color:#fff;}
+.btn-primary:hover{background:#368F95;transform:translateY(-2px);box-shadow:var(--rep-shadow-md);}
+.btn-outline-dark{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:#fff!important;}
+.btn-outline-dark:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.55);}
+.btn-green{background:var(--rep-green);color:var(--rep-forest);}
+.btn-green:hover{background:#7de5b5;transform:translateY(-2px);}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.is-visible{opacity:1;transform:translateY(0);}
+.reveal[data-delay="1"]{transition-delay:.1s!important;}
+.reveal[data-delay="2"]{transition-delay:.2s!important;}
+.reveal[data-delay="3"]{transition-delay:.3s!important;}
+.reveal[data-delay="4"]{transition-delay:.4s!important;}
+
+/* ===== 1. HERO ===== */
+.eh-hero{
+  min-height:88vh;display:flex;align-items:center;
+  background:linear-gradient(155deg,#0E1D13 0%,#16291D 45%,#0B1910 100%);
+  position:relative;overflow:hidden;padding:90px 0 70px;
+}
+.eh-hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 30% 40%,rgba(65,153,159,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 20%,rgba(147,241,201,.06) 0%,transparent 55%);
+  pointer-events:none;
+}
+/* Grid particles */
+.eh-hero::after{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(147,241,201,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(147,241,201,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+}
+.eh-hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.eh-hero-content{}
+.eh-hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border:1px solid rgba(147,241,201,.2);border-radius:var(--rep-radius-full);
+  font:600 .75rem/1 var(--rep-font-body);color:var(--rep-green);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:22px;background:rgba(147,241,201,.05);
+}
+.eh-hero-eyebrow i{font-size:14px;}
+.eh-hero-content h1{margin-bottom:20px;}
+.eh-hero-content h1 span{color:var(--rep-green);}
+.eh-hero-sub{font-size:1.1rem;color:rgba(255,255,255,.6);line-height:1.75;margin-bottom:30px;max-width:520px;}
+.eh-hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:34px;}
+.eh-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:var(--rep-radius-full);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  font:500 .78rem/1 var(--rep-font-body);color:rgba(255,255,255,.7);
+}
+.eh-badge i{color:var(--rep-green);font-size:13px;}
+.eh-hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+/* Hero visual */
+.eh-hero-visual{display:flex;flex-direction:column;gap:16px;position:relative;}
+.eh-server-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--rep-radius-xl);padding:28px;
+  backdrop-filter:blur(4px);
+}
+.eh-server-card .sc-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.eh-server-card .sc-icon{
+  width:44px;height:44px;border-radius:var(--rep-radius-md);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.eh-server-card .sc-icon.green{background:rgba(147,241,201,.15);color:var(--rep-green);}
+.eh-server-card .sc-icon.teal{background:rgba(65,153,159,.15);color:var(--rep-teal);}
+.eh-server-card .sc-icon.sun{background:rgba(247,212,80,.12);color:var(--rep-sun);}
+.eh-server-card .sc-label{font:600 .85rem/1 var(--rep-font-display);color:rgba(255,255,255,.8);}
+.eh-server-card .sc-sub{font:400 .75rem/1 var(--rep-font-body);color:rgba(255,255,255,.35);margin-top:2px;}
+.eh-server-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.eh-metric{
+  text-align:center;padding:14px 10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--rep-radius-lg);
+}
+.eh-metric .val{font:700 1.4rem/1 var(--rep-font-display);color:var(--rep-green);margin-bottom:4px;}
+.eh-metric .lab{font:400 .7rem/1 var(--rep-font-body);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;}
+/* Floating pulse dot */
+.eh-hero-pulse{
+  position:absolute;top:-10px;right:-10px;
+  width:14px;height:14px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 0 0 rgba(34,197,94,.4);
+  animation:eco-pulse 2.5s infinite;
+}
+@keyframes eco-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4);}
+  70%{box-shadow:0 0 0 12px rgba(34,197,94,0);}
+}
+.eh-renewable{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 18px;border-radius:var(--rep-radius-lg);
+  background:rgba(147,241,201,.08);border:1px solid rgba(147,241,201,.15);
+}
+.eh-renewable i{font-size:22px;color:var(--rep-green);flex-shrink:0;}
+.eh-renewable .rb-text{font:400 .82rem/1.5 var(--rep-font-body);color:rgba(255,255,255,.55);}
+.eh-renewable .rb-text strong{color:var(--rep-green);}
+
+/* ===== 2. FILOSOFÍA ===== */
+.eh-philosophy{padding:96px 0;background:var(--rep-bg-light);}
+.eh-phil-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+.eh-phil-content .kicker{display:block;margin-bottom:12px;}
+.eh-phil-content h2{margin-bottom:20px;}
+.eh-phil-content p{color:var(--rep-text-secondary);line-height:1.8;margin-bottom:16px;font-size:.98rem;}
+.eh-phil-content p:last-of-type{margin-bottom:28px;}
+.eh-phil-content .src-note{
+  font:400 .78rem/1 var(--rep-font-body);color:var(--rep-text-muted);
+  display:inline-flex;align-items:center;gap:4px;
+}
+.eh-phil-stats{display:flex;flex-direction:column;gap:16px;}
+.eh-stat-card{
+  border:1px solid var(--rep-border);border-radius:var(--rep-radius-xl);
+  background:#fff;padding:28px 32px;
+  display:flex;align-items:center;gap:22px;
+  transition:var(--rep-shadow-md) .25s;
+}
+.eh-stat-card:hover{box-shadow:var(--rep-shadow-md);}
+.eh-stat-val{font:800 2rem/1 var(--rep-font-display);flex-shrink:0;min-width:68px;}
+.eh-stat-val.v-teal{color:var(--rep-teal);}
+.eh-stat-val.v-forest{color:var(--rep-forest);}
+.eh-stat-val.v-green{color:#1a854a;}
+.eh-stat-info dt{font:600 .88rem/1.2 var(--rep-font-body);color:var(--rep-forest);margin-bottom:4px;}
+.eh-stat-info dd{font:400 .78rem/1.5 var(--rep-font-body);color:var(--rep-text-muted);}
+/* vertical divider */
+.eh-stat-card .vdivider{width:1px;align-self:stretch;background:var(--rep-border);flex-shrink:0;}
+
+/* ===== 3. STACK TÉCNICO ===== */
+.eh-stack{padding:90px 0;background:var(--rep-forest);overflow:hidden;position:relative;}
+.eh-stack::before{
+  content:"";position:absolute;top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 30%,rgba(65,153,159,.1) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 70%,rgba(147,241,201,.05) 0%,transparent 55%);
+  pointer-events:none;
+}
+.eh-stack .wrap{position:relative;z-index:1;}
+.eh-stack-head{text-align:center;margin-bottom:60px;}
+.eh-stack-head h2{color:#fff;margin-bottom:12px;}
+.eh-stack-head p{color:rgba(255,255,255,.5);max-width:540px;margin:0 auto;font-size:.98rem;}
+.eh-stack-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-bottom:40px;}
+.eh-stack-card{
+  border:1px solid rgba(255,255,255,.08);border-radius:var(--rep-radius-xl);
+  background:rgba(255,255,255,.04);padding:32px;
+  transition:background .2s,box-shadow .2s;
+}
+.eh-stack-card:hover{background:rgba(255,255,255,.07);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.eh-stack-card .sc-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.eh-stack-card .sc-badge{
+  font:700 .75rem/1 var(--rep-font-body);padding:4px 9px;
+  border-radius:4px;background:rgba(65,153,159,.25);color:var(--rep-teal);
+  letter-spacing:.04em;flex-shrink:0;
+}
+.eh-stack-card h3{font-size:1.15rem!important;color:#fff!important;}
+.eh-stack-card p{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:14px;}
+.eh-stack-metric{
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.eh-stack-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:var(--rep-radius-full);
+  border:1px solid rgba(255,255,255,.1);
+  font:500 .75rem/1 var(--rep-font-body);color:rgba(255,255,255,.5);
+}
+.eh-stack-chip.highlight{border-color:rgba(147,241,201,.3);color:var(--rep-green);}
+/* CDN world strip */
+.eh-cloudflare-strip{
+  border:1px solid rgba(255,255,255,.07);border-radius:var(--rep-radius-xl);
+  background:rgba(255,255,255,.03);padding:28px 32px;
+  display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+}
+.eh-cf-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.eh-cf-logo i{font-size:28px;color:#F6821F;}
+.eh-cf-logo span{font:700 1.1rem/1 var(--rep-font-display);color:rgba(255,255,255,.6);}
+.eh-cf-nodes{flex:1;min-width:200px;}
+.eh-cf-nodes .cf-label{font:400 .78rem/1 var(--rep-font-body);color:rgba(255,255,255,.35);margin-bottom:6px;}
+.eh-cf-nodes .cf-val{font:700 1.6rem/1 var(--rep-font-display);color:#fff;}
+.eh-cf-nodes .cf-sub{font:400 .72rem/1 var(--rep-font-body);color:rgba(255,255,255,.3);}
+.eh-cf-chips{display:flex;gap:8px;flex-wrap:wrap;}
+.eh-cf-chips span{
+  padding:5px 10px;border-radius:var(--rep-radius-full);
+  border:1px solid rgba(246,130,31,.2);font:500 .73rem/1 var(--rep-font-body);
+  color:rgba(246,130,31,.7);
+}
+
+/* ===== 4. SOSTENIBILIDAD CERTIFICADA ===== */
+.eh-certified{padding:88px 0;background:#fff;}
+.eh-cert-inner{display:grid;grid-template-columns:5fr 4fr;gap:64px;align-items:center;}
+.eh-cert-content .kicker{display:block;margin-bottom:12px;}
+.eh-cert-content h2{margin-bottom:20px;}
+.eh-cert-content p{font-size:.98rem;color:var(--rep-text-secondary);line-height:1.8;margin-bottom:16px;}
+.eh-cert-checklist{display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+.eh-cert-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 18px;border-radius:var(--rep-radius-lg);
+  border:1px solid var(--rep-border);background:var(--rep-bg-light);
+}
+.eh-cert-item .ci-icon{font-size:20px;color:var(--rep-teal);flex-shrink:0;margin-top:1px;}
+.eh-cert-item .ci-text dt{font:600 .88rem/1.2 var(--rep-font-body);color:var(--rep-forest);margin-bottom:3px;}
+.eh-cert-item .ci-text dd{font:400 .78rem/1.5 var(--rep-font-body);color:var(--rep-text-muted);}
+/* Digital footprint calculator teaser */
+.eh-cert-widget{
+  border:1px solid var(--rep-border);border-radius:var(--rep-radius-xl);
+  overflow:hidden;background:#fff;box-shadow:var(--rep-shadow-md);
+}
+.eh-cert-widget .widget-head{
+  background:var(--rep-forest);padding:18px 24px;
+  display:flex;align-items:center;gap:10px;
+}
+.eh-cert-widget .widget-head i{font-size:22px;color:var(--rep-green);}
+.eh-cert-widget .widget-head span{font:600 .9rem/1 var(--rep-font-display);color:#fff;}
+.eh-cert-widget .widget-body{padding:24px;}
+.eh-footprint-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;
+}
+.eh-footprint-row:not(:last-child){border-bottom:1px solid var(--rep-border);}
+.eh-footprint-row .label{font:500 .85rem/1 var(--rep-font-body);color:var(--rep-text-secondary);}
+.eh-footprint-row .val-bad{font:700 .9rem/1 var(--rep-font-body);color:#b0443a;}
+.eh-footprint-row .val-good{font:700 .9rem/1 var(--rep-font-body);color:#1a854a;}
+.eh-footprint-note{
+  margin-top:16px;padding:12px 16px;
+  background:rgba(147,241,201,.08);border:1px solid rgba(147,241,201,.2);
+  border-radius:var(--rep-radius-md);
+  font:400 .78rem/1.5 var(--rep-font-body);color:var(--rep-teal);
+}
+.eh-footprint-note strong{color:var(--rep-forest);}
+
+/* ===== 5. FEATURES GRID ===== */
+.eh-features{padding:88px 0;background:var(--rep-bg-light);}
+.eh-features-head{text-align:center;margin-bottom:52px;}
+.eh-features-head h2{margin-bottom:12px;}
+.eh-features-head p{color:var(--rep-text-muted);max-width:520px;margin:0 auto;}
+.eh-feat-tabs{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;
+}
+.eh-tab{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 18px;border-radius:var(--rep-radius-full);
+  border:1.5px solid var(--rep-border);
+  font:500 .85rem/1 var(--rep-font-body);color:var(--rep-text-muted);
+  background:#fff;cursor:default;
+}
+.eh-tab.active{background:var(--rep-forest);color:var(--rep-green);border-color:var(--rep-forest);}
+.eh-tab i{font-size:15px;}
+.eh-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.eh-feat-card{
+  background:#fff;border:1px solid var(--rep-border);border-radius:var(--rep-radius-xl);
+  padding:28px;transition:all .25s;
+}
+.eh-feat-card:hover{box-shadow:var(--rep-shadow-md);transform:translateY(-3px);border-color:rgba(65,153,159,.2);}
+.eh-feat-card .fc-icon{
+  width:48px;height:48px;border-radius:var(--rep-radius-md);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  background:var(--rep-bg-light);color:var(--rep-teal);margin-bottom:16px;
+}
+.eh-feat-card h3{margin-bottom:8px;}
+.eh-feat-card p{font-size:.88rem;color:var(--rep-text-muted);line-height:1.7;margin-bottom:14px;}
+.eh-feat-card .fc-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:var(--rep-radius-full);
+  border:1px solid var(--rep-border);
+  font:500 .73rem/1 var(--rep-font-body);color:var(--rep-teal);background:var(--rep-bg-light);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .eh-hero-inner{grid-template-columns:1fr;gap:48px;}
+  .eh-hero-visual{display:none;}
+  .eh-phil-inner{grid-template-columns:1fr;}
+  .eh-cert-inner{grid-template-columns:1fr;}
+  .eh-stack-grid{grid-template-columns:1fr;}
+  .eh-feat-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:640px){
+  .eh-hero{min-height:auto;padding:60px 0 50px;}
+  .eh-server-metrics{grid-template-columns:1fr 1fr;}
+  .eh-feat-grid{grid-template-columns:1fr;}
+  .eh-feat-tabs{gap:6px;}
+}/* End custom CSS */
+/* Start custom CSS for shortcode, class: .elementor-element-0348825 */.elementor-395 .elementor-element.elementor-element-0348825 { --check-w:12px; --check-h:7px; --check-t:3px; }
+
+.elementor-395 .elementor-element.elementor-element-0348825 ul { list-style:none; margin:0; padding:0; }
+.elementor-395 .elementor-element.elementor-element-0348825 ul li{
+  position:relative;
+  padding-left:22px;
+  margin:6px 0;
+}
+
+.elementor-395 .elementor-element.elementor-element-0348825 ul li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0.9em;
+  width:var(--check-w);
+  height:var(--check-h);
+  border-left:var(--check-t) solid var(--rep-sun);
+  border-bottom:var(--check-t) solid var(--rep-sun);
+  transform:translateY(-50%) rotate(-45deg); /* orientación correcta del check */
+  border-radius:1px;
+  box-shadow:none; /* chato */
+}
+/* Botones compactos en línea dentro de .replanta-pricing-card */
+.replanta-pricing-card > div:last-of-type{
+  gap:8px !important;
+  flex-wrap:nowrap !important;   /* en una sola línea */
+}
+
+.replanta-pricing-card .elementor-button.rep-btn-accent,
+.replanta-pricing-card .elementor-button.rep-btn-secondary{
+  display:inline-flex !important;
+  align-items:center;
+  text-decoration: none;
+  justify-content:center;
+  padding:8px 12px !important;   /* más pequeños */
+  font-size:14px !important;
+  line-height:1.2 !important;
+  border-radius:10px !important;
+  min-height:auto !important;
+  min-width:0 !important;
+  white-space:nowrap;            /* evita saltos */
+  box-shadow:none !important;
+  margin:0 !important;
+  flex:0 0 auto;                 /* no crecen */
+}
+
+/* botón principal un pelín más marcado si quieres */
+.replanta-pricing-card .plan-card-cta{
+  font-weight:600 !important;
+}
+
+/* En móviles, permite wrap y aún más compacto */
+@media (max-width:480px){
+  .replanta-pricing-card > div:last-of-type{
+    flex-wrap:wrap !important;
+  }
+  .replanta-pricing-card .elementor-button.rep-btn-accent,
+  .replanta-pricing-card .elementor-button.rep-btn-secondary{
+    padding:7px 10px !important;
+    font-size:13px !important;
+  }
+}/* End custom CSS */
+/* Start custom CSS for container, class: .elementor-element-0e4adce */#bill-y:checked + label .rep-text-small{
+  color: #fff !important;
+}
+.elementor-395 .elementor-element.elementor-element-0e4adce .rep-heading-3{font-family:'Fraunces', serif}
+/* Toggle mensual/anual con :has dentro de la sección */
+.elementor-395 .elementor-element.elementor-element-0e4adce .amount--y, .elementor-395 .elementor-element.elementor-element-0e4adce .period--y, .elementor-395 .elementor-element.elementor-element-0e4adce .original { display:none; }
+.elementor-395 .elementor-element.elementor-element-0e4adce:has(#bill-y:checked) .amount--m,
+.elementor-395 .elementor-element.elementor-element-0e4adce:has(#bill-y:checked) .period--m { display:none; }
+.elementor-395 .elementor-element.elementor-element-0e4adce:has(#bill-y:checked) .amount--y,
+.elementor-395 .elementor-element.elementor-element-0e4adce:has(#bill-y:checked) .period--y,
+.elementor-395 .elementor-element.elementor-element-0e4adce:has(#bill-y:checked) .original { display:inline; }
+
+/* Precio tachado (PVP anual) */
+.elementor-395 .elementor-element.elementor-element-0e4adce .original{
+  text-decoration: line-through;
+  opacity:.6;
+  font-weight:600;
+  margin-right:6px;
+}
+
+/* Barra superior */
+.elementor-395 .elementor-element.elementor-element-0e4adce .plans-bar{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.elementor-395 .elementor-element.elementor-element-0e4adce .plans-bar .right{display:flex;gap:10px;align-items:center}
+
+/* Segmented control */
+.elementor-395 .elementor-element.elementor-element-0e4adce .billing-toggle{display:inline-grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid var(--rep-border);border-radius:999px;padding:4px;gap:4px;box-shadow:var(--rep-shadow-sm)}
+.elementor-395 .elementor-element.elementor-element-0e4adce .billing-toggle input{position:absolute;inset:0;opacity:0;pointer-events:none}
+.elementor-395 .elementor-element.elementor-element-0e4adce .billing-toggle label{padding:8px 16px;border-radius:999px;cursor:pointer;font-family:var(--rep-font-body);font-weight:700;line-height:1;color:var(--rep-forest)}
+.elementor-395 .elementor-element.elementor-element-0e4adce .billing-toggle input:checked+label{background:var(--rep-teal);color:#fff;box-shadow:var(--rep-shadow-sm)}
+@media (max-width:600px){ .elementor-395 .elementor-element.elementor-element-0e4adce .billing-toggle label{padding:8px 12px;font-weight:600} }
+
+/* Cards */
+.elementor-395 .elementor-element.elementor-element-0e4adce .replanta-pricing-card{background:#fff;border:1px solid var(--rep-border);border-radius:16px;padding:24px;box-shadow:var(--rep-shadow-sm);transition:all .2s ease;display:flex;flex-direction:column;height:100%}
+.elementor-395 .elementor-element.elementor-element-0e4adce .replanta-pricing-card:hover{box-shadow:var(--rep-shadow-lg);transform:translateY(-2px)}
+.elementor-395 .elementor-element.elementor-element-0e4adce .replanta-pricing-featured{border-width:2px;border-color:var(--rep-teal);position:relative}
+.elementor-395 .elementor-element.elementor-element-0e4adce .replanta-pricing-featured::before{content:'Recomendado';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--rep-sun);color:var(--rep-forest);padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700}
+.elementor-395 .elementor-element.elementor-element-0e4adce .plan-subtitle{font-size:.9rem;color:var(--rep-text-tertiary);margin-top:2px}
+.elementor-395 .elementor-element.elementor-element-0e4adce .price{display:flex;align-items:baseline;gap:6px}
+.elementor-395 .elementor-element.elementor-element-0e4adce .amount{font-family:var(--rep-font-display);font-size:2rem;line-height:1;color:var(--rep-forest)}
+.elementor-395 .elementor-element.elementor-element-0e4adce .period{color:var(--rep-text-muted)}
+
+/* details / ver más */
+.elementor-395 .elementor-element.elementor-element-0e4adce details{ border-top:1px solid var(--rep-border); margin-top:12px; padding-top:12px }
+.elementor-395 .elementor-element.elementor-element-0e4adce summary.toggle{cursor:pointer;list-style:none;position:relative;padding-right:22px;display:inline-flex;align-items:center;gap:8px}
+.elementor-395 .elementor-element.elementor-element-0e4adce summary.toggle::-webkit-details-marker{display:none}
+.elementor-395 .elementor-element.elementor-element-0e4adce summary.toggle:after{content:"▾";position:absolute;right:0;top:0;opacity:.7;transition:transform .2s ease}
+.elementor-395 .elementor-element.elementor-element-0e4adce details[open] summary.toggle:after{transform:rotate(-180deg)}
+.elementor-395 .elementor-element.elementor-element-0e4adce summary.toggle .less{display:none}
+.elementor-395 .elementor-element.elementor-element-0e4adce details[open] summary.toggle .more{display:none}
+.elementor-395 .elementor-element.elementor-element-0e4adce details[open] summary.toggle .less{display:inline}/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-6b48e41e *//* ====== Comparativa Replanta ====== */
+.rep-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--rep-border);border-radius:14px;overflow:hidden;background:#fff}
+.rep-table thead th{background:#fff;border-bottom:2px solid var(--rep-border);padding:12px 14px;position:sticky;top:0;z-index:2}
+.rep-table tbody td,.rep-table tbody th{padding:12px 14px;border-bottom:1px solid var(--rep-border);vertical-align:top}
+.rep-table tbody tr:nth-child(even){background:#F7FBF9}
+.rep-table .c{text-align:center}
+.rep-table .tick{color:var(--rep-green);font-weight:700}
+.rep-table .rep-section th{
+  background:#F7FBF9; color:var(--rep-forest);
+  padding:10px 14px; text-align:left; font-family: var(--rep-font-display);
+  font-weight:600; font-size:1.05rem; border-top:1px solid var(--rep-border);
+  position:sticky; left:0; z-index:1;
+}
+
+/* Layout: mostrar tabla en ≥ 860px, acordeón en móviles */
+.rep-compare--desktop{ display:block }
+.rep-compare--mobile{ display:none }
+
+@media (max-width: 860px){
+  .rep-compare--desktop{ display:none }
+  .rep-compare--mobile{ display:block; margin-top:12px }
+}
+
+/* Acordeón móvil */
+.rep-compare--mobile details{
+  border:1px solid var(--rep-border); border-radius:12px; background:#fff; padding:12px 14px; margin-top:10px;
+}
+.rep-compare--mobile summary{ cursor:pointer; list-style:none; font-family: var(--rep-font-display); font-weight:600; color:var(--rep-forest); position:relative; padding-right:18px }
+.rep-compare--mobile summary::-webkit-details-marker{ display:none }
+.rep-compare--mobile summary::after{ content:"▾"; position:absolute; right:0; top:0; opacity:.6; transition: transform .2s ease }
+.rep-compare--mobile details[open] summary::after{ transform: rotate(-180deg) }
+
+.rep-compare--mobile .rep-cards{ list-style:none; margin:10px 0 0; padding:0; display:grid; gap:8px }
+.rep-compare--mobile .rep-cards li{
+  background:#F7FBF9; border:1px solid var(--rep-border); border-radius:10px; padding:10px 12px; color:var(--rep-text-secondary)
+}
+.rep-compare--mobile .rep-cards li strong{ color:var(--rep-forest) }
+.rep-compare--mobile .rep-cards li span{ color:var(--rep-text-tertiary) }
+/* Tooltips accesibles Replanta (sin JS) */
+.rep-tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--rep-border,#E6F3EF);background:#fff;color:var(--rep-text-tertiary,#547065);font-size:12px;line-height:1;cursor:help;margin-left:6px}
+.rep-tip:focus{outline:2px solid var(--rep-teal,#41999F);outline-offset:2px}
+.rep-tooltip{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%) translateY(6px);min-width:220px;max-width:320px;background:#fff;color:var(--rep-text-secondary,#3B4B45);border:1px solid var(--rep-border,#E6F3EF);border-radius:10px;padding:10px 12px;box-shadow:0 10px 18px rgba(30,47,35,.12);opacity:0;pointer-events:none;transition:all .15s ease;z-index:5}
+.rep-tip:hover + .rep-tooltip,.rep-tip:focus + .rep-tooltip{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+@media (max-width:480px){.rep-tooltip{left:auto;right:0;transform:none}}
+/* Tabla bonita */
+.rep-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--rep-border,#E6F3EF);border-radius:14px;overflow:hidden;background:#fff}
+.rep-table thead th{background:#fff;border-bottom:2px solid var(--rep-border,#E6F3EF);padding:12px 14px}
+.rep-table td,.rep-table th{padding:12px 14px;border-bottom:1px solid var(--rep-border,#E6F3EF)}
+.rep-table tbody tr:nth-child(even){background:#F7FBF9}
+.rep-section th{background:#F7FBF9;color:var(--rep-forest,#1E2F23);font-family:var(--rep-font-display,'Fraunces',serif);font-weight:600;text-align:left}
+.c{text-align:center}.tick{color:var(--rep-green,#93F1C9);font-weight:700}
+
+/* Comparativa: sin zebra y cabeceras en gris suave */
+#comparativa .rep-table tbody tr:nth-child(even),
+#comparativa .rep-table tbody tr:nth-child(odd){
+  background: transparent !important;
+}
+
+#comparativa .rep-table thead th{
+  background: #FAFAFA !important; /* gris muy suave */
+}
+
+#comparativa .rep-table .rep-section th{
+  background: #FAFAFA !important; /* gris muy suave en cabeceras de sección */
+}/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-8f253a6 *//* ===== 6. COMPARATIVA ===== */
+.eh2-compare{padding:88px 0;background:#fff;}
+.eh2-compare-head{text-align:center;margin-bottom:52px;}
+.eh2-compare-head h2{margin-bottom:12px;}
+.eh2-compare-head p{color:var(--rep-text-muted);max-width:540px;margin:0 auto;}
+/* Comparison cards */
+.eh2-hosts-intro{
+  display:grid;grid-template-columns:1fr 3fr 1fr;gap:0;
+  border-radius:var(--rep-radius-xl);overflow:hidden;
+  border:1px solid var(--rep-border);margin-bottom:8px;
+  background:#fff;
+}
+.eh2-compare-table{
+  width:100%;border-radius:var(--rep-radius-xl);overflow:hidden;
+  border:1px solid var(--rep-border);background:#fff;
+  box-shadow:var(--rep-shadow-sm);
+}
+.eh2-compare-table thead th{
+  padding:18px 20px;font:600 .8rem/1 var(--rep-font-body);
+  text-transform:uppercase;letter-spacing:.07em;text-align:left;
+}
+.eh2-compare-table thead th:first-child{color:var(--rep-text-muted);background:#fafafa;width:38%;}
+.eh2-compare-table thead th:nth-child(2){background:#fef9ef;color:#6C5E1A;border-left:1px solid #e8e0c8;text-align:center;}
+.eh2-compare-table thead th:nth-child(3){background:#f0f9f2;color:#6C5E1A;border-left:1px solid #cde5d2;text-align:center;}
+.eh2-compare-table thead th:nth-child(4){background:rgba(65,153,159,.08);color:var(--rep-teal);border-left:1px solid rgba(65,153,159,.15);text-align:center;}
+.eh2-compare-table tbody tr:not(:last-child){border-bottom:1px solid var(--rep-border);}
+.eh2-compare-table tbody tr:hover td{background-color:rgba(147,241,201,.03);}
+.eh2-compare-table tbody td{padding:14px 20px;font-size:.87rem;color:var(--rep-text-secondary);}
+.eh2-compare-table tbody td:first-child{font-weight:500;color:var(--rep-forest);}
+.eh2-compare-table tbody td:nth-child(2){background:#fffdf5;border-left:1px solid #e8e0c8;text-align:center;color:#7A6A2A;}
+.eh2-compare-table tbody td:nth-child(3){background:#f7fdf9;border-left:1px solid #cde5d2;text-align:center;color:#2d6b46;}
+.eh2-compare-table tbody td:nth-child(4){background:rgba(65,153,159,.02);border-left:1px solid rgba(65,153,159,.12);text-align:center;font-weight:600;color:var(--rep-teal);}
+.cell-yes{color:#1a854a!important;font-weight:600!important;}
+.cell-no{color:#b0443a!important;}
+.cell-partial{color:#92660a!important;}
+
+/* ===== 7. TESTIMONIOS ===== */
+.eh2-reviews{padding:88px 0;background:var(--rep-forest);overflow:hidden;position:relative;}
+.eh2-reviews::before{
+  content:"";position:absolute;top:-20%;right:-8%;width:50%;height:70%;
+  background:radial-gradient(ellipse,rgba(65,153,159,.1) 0%,transparent 60%);
+  pointer-events:none;
+}
+.eh2-reviews-head{text-align:center;margin-bottom:48px;position:relative;z-index:1;}
+.eh2-reviews-head h2{color:#fff;}
+.eh2-reviews-head p{color:rgba(255,255,255,.5);max-width:500px;margin:10px auto 0;}
+#eh2-reviews-reel{position:relative;z-index:1;}
+#eh2-reviews-reel .container{max-width:1140px;margin:0 auto;padding:0 24px;}
+#eh2-reviews-reel .cta-tp{display:flex;justify-content:flex-end;margin-bottom:32px;}
+#eh2-reviews-reel .cta-tp a{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 18px;border-radius:var(--rep-radius-full);
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.55);font:.82rem/1 var(--rep-font-body);
+  transition:all .18s;
+}
+#eh2-reviews-reel .cta-tp a:hover{background:rgba(255,255,255,.07);color:#fff;}
+.reel2{width:100%;overflow:hidden;margin-bottom:18px;}
+.track2{display:flex;gap:16px;width:max-content;animation:eh2scroll 30s linear infinite;}
+.track2:hover{animation-play-state:paused;}
+.track2.rev{animation-direction:reverse;}
+@keyframes eh2scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.chunk2{display:flex;gap:16px;}
+.rv2{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--rep-radius-lg);padding:22px;width:300px;flex-shrink:0;
+}
+.rv2 .rt{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.rv2 .stars{color:var(--rep-sun);font-size:.9rem;}
+.rv2 .src{font:500 .7rem/1 var(--rep-font-body);color:rgba(255,255,255,.3);text-transform:uppercase;}
+.rv2 blockquote{font-size:.88rem;color:rgba(255,255,255,.7);line-height:1.65;margin:0 0 14px;}
+.rv2 blockquote strong{color:#fff;}
+.rv2 .rb{display:flex;gap:10px;align-items:center;}
+.rv2 .av{width:30px;height:30px;border-radius:50%;background:var(--rep-teal);display:flex;align-items:center;justify-content:center;font:700 .72rem/1 var(--rep-font-body);color:#fff;flex-shrink:0;}
+.rv2 .nm{font:600 .8rem/1.2 var(--rep-font-body);color:rgba(255,255,255,.75);}
+.rv2 .dt{font:400 .7rem/1 var(--rep-font-body);color:rgba(255,255,255,.3);}
+
+/* ===== 8. ECOSISTEMA / CROSSLINKS ===== */
+.eh2-ecosystem{padding:90px 0;background:var(--rep-bg-light);}
+.eh2-eco-head{text-align:center;margin-bottom:52px;}
+.eh2-eco-head h2{margin-bottom:12px;}
+.eh2-eco-head p{color:var(--rep-text-muted);max-width:560px;margin:0 auto;}
+.eh2-eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.eh2-eco-card{
+  border:1px solid var(--rep-border);border-radius:var(--rep-radius-xl);
+  background:#fff;padding:30px;transition:all .25s;
+}
+.eh2-eco-card:hover{box-shadow:var(--rep-shadow-lg);transform:translateY(-4px);border-color:rgba(65,153,159,.2);}
+.eh2-eco-card .ec-icon{
+  width:50px;height:50px;border-radius:var(--rep-radius-md);
+  background:var(--rep-bg-light);display:flex;align-items:center;justify-content:center;
+  font-size:26px;color:var(--rep-teal);margin-bottom:16px;
+}
+.eh2-eco-card h3{margin-bottom:8px;}
+.eh2-eco-card p{font-size:.87rem;color:var(--rep-text-muted);line-height:1.7;margin-bottom:18px;}
+.eh2-eco-card ul{display:flex;flex-direction:column;gap:5px;margin-bottom:20px;}
+.eh2-eco-card ul li{display:flex;align-items:center;gap:7px;font-size:.83rem;color:var(--rep-text-secondary);}
+.eh2-eco-card ul li::before{content:'✓';color:var(--rep-teal);font-weight:700;flex-shrink:0;}
+.eh2-eco-link{display:inline-flex;align-items:center;gap:5px;font:600 .85rem/1 var(--rep-font-body);color:var(--rep-teal);transition:gap .15s;}
+.eh2-eco-link:hover{gap:9px;}
+
+/* ===== 9. FAQs ===== */
+.eh2-faqs{padding:88px 0;background:#fff;}
+.eh2-faqs-head{text-align:center;margin-bottom:52px;}
+.eh2-faqs-head h2{margin-bottom:12px;}
+.eh2-faqs-head p{color:var(--rep-text-muted);max-width:500px;margin:0 auto;}
+.eh2-faq-list{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+.eh2-faq{
+  border:1px solid var(--rep-border);border-radius:var(--rep-radius-lg);
+  background:#fff;overflow:hidden;
+}
+.eh2-faq summary{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 26px;cursor:pointer;
+  font:600 .97rem/1.35 var(--rep-font-display);color:var(--rep-forest);
+  list-style:none;gap:14px;transition:background .15s;
+}
+.eh2-faq summary::-webkit-details-marker{display:none;}
+.eh2-faq summary:hover,.eh2-faq[open] summary{background:var(--rep-bg-light);}
+.eh2-faq .fi{
+  width:26px;height:26px;border-radius:50%;background:var(--rep-bg-light);
+  border:1.5px solid var(--rep-border);display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--rep-teal);flex-shrink:0;transition:transform .22s;
+}
+.eh2-faq[open] .fi{transform:rotate(45deg);}
+.eh2-faq .fb{padding:0 26px 22px;border-top:1px solid var(--rep-border);}
+.eh2-faq .fb p{font-size:.93rem;line-height:1.75;color:var(--rep-text-secondary);padding-top:16px;margin:0;}
+.eh2-faq .fb p strong{color:var(--rep-forest);}
+.eh2-faq .fb p a{color:var(--rep-teal);font-weight:600;}
+
+/* ===== 10. CTA FINAL ===== */
+.eh2-cta{
+  padding:100px 0;
+    background:linear-gradient(180deg,#0A1810 0%,#0E1E15 50%,#1E2F23 100%);
+
+  position:relative;overflow:hidden;
+}
+.eh2-cta::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 55% 60% at 50% 50%,rgba(65,153,159,.07) 0%,transparent 65%),
+    radial-gradient(ellipse 30% 30% at 10% 80%,rgba(147,241,201,.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+.eh2-cta .wrap{position:relative;z-index:1;text-align:center;}
+.eh2-cta h2{color:#fff;margin-bottom:16px;max-width:600px;margin-left:auto;margin-right:auto;}
+.eh2-cta p{color:rgba(255,255,255,.55);max-width:520px;margin:0 auto 34px;font-size:1.05rem;line-height:1.75;}
+.eh2-cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:26px;}
+.eh2-trust-strip{
+  display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
+  font:400 .78rem/1 var(--rep-font-body);color:rgba(255,255,255,.32);
+}
+.eh2-trust-strip span{display:flex;align-items:center;gap:5px;}
+.eh2-trust-strip i{font-size:13px;color:var(--rep-green);}
+.btn.btn-ghost, .btn.btn-primary{color:white}
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .eh2-eco-grid{grid-template-columns:1fr 1fr;}
+  .eh2-compare-table{overflow-x:auto;display:block;}
+}
+@media(max-width:640px){
+  .eh2-eco-grid{grid-template-columns:1fr;}
+  .eh2-faq summary{padding:16px 18px;font-size:.88rem;}
+  .eh2-faq .fb{padding:0 18px 18px;}
+}/* End custom CSS */</style>		<div data-elementor-type="wp-page" data-elementor-id="395" class="elementor elementor-395" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-a9ec8d4 e-con-full e-flex e-con e-parent" data-id="a9ec8d4" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-7c17ead elementor-widget elementor-widget-html" data-id="7c17ead" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<div class="rpl">
+
+<!-- ===== SECCIÓN 1 · HERO ===== -->
+<section class="eh-hero" aria-labelledby="eco-h1">
+  <div class="wrap">
+    <div class="eh-hero-inner">
+
+      <div class="eh-hero-content">
+        <div class="eh-hero-eyebrow reveal">
+          <i class="ph ph-leaf"></i>
+          ECO Hosting · Replanta
+        </div>
+        <h1 id="eco-h1" class="reveal" data-delay="1">
+          <span>ECO Hosting</span><br>para tu web
+        </h1>
+        <p class="eh-hero-sub reveal" data-delay="2">
+          Infraestructura de alto rendimiento con energía 100% renovable certificada.
+          LiteSpeed + Redis + Cloudflare CDN el día uno. El servidor que tu WordPress merece.
+        </p>
+        <div class="eh-hero-badges reveal" data-delay="3">
+          <span class="eh-badge"><i class="ph ph-lightning"></i> LiteSpeed Cache</span>
+          <span class="eh-badge"><i class="ph ph-database"></i> Redis Object Cache</span>
+          <span class="eh-badge"><i class="ph ph-cloud-arrow-up"></i> Cloudflare CDN</span>
+          <span class="eh-badge"><i class="ph ph-leaf"></i> Energía 100% renovable</span>
+        </div>
+        <div class="eh-hero-btns reveal" data-delay="4">
+          <a href="#planes" class="btn btn-primary"><i class="ph ph-list-bullets"></i> Ver planes</a>
+          <a href="https://replanta.net/contacto/" class="btn btn-outline-dark"><i class="ph ph-arrows-merge"></i> Migración gratuita</a>
+        </div>
+      </div>
+
+      <div class="eh-hero-visual reveal" data-delay="2">
+        <div class="eh-server-card" style="position:relative;">
+          <div class="eh-hero-pulse"></div>
+          <div class="sc-head">
+            <div class="sc-icon green"><i class="ph ph-lightning"></i></div>
+            <div>
+              <div class="sc-label">LiteSpeed + Redis</div>
+              <div class="sc-sub">EU · LATAM</div>
+            </div>
+          </div>
+          <div class="eh-server-metrics">
+            <div class="eh-metric">
+              <div class="val">&lt;200ms</div>
+              <div class="lab">TTFB objetivo</div>
+            </div>
+            <div class="eh-metric">
+              <div class="val">99.9%</div>
+              <div class="lab">Uptime SLA</div>
+            </div>
+            <div class="eh-metric">
+              <div class="val">95+</div>
+              <div class="lab">PageSpeed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eh-renewable">
+          <i class="ph ph-sun"></i>
+          <div class="rb-text">
+            <strong>Energía 100% renovable certificada.</strong>
+            Cada byte que servimos viene de fuentes limpias. Sin compensación de carbono — energía real.
+          </div>
+        </div>
+
+        <div class="eh-server-card">
+          <div class="sc-head">
+            <div class="sc-icon teal"><i class="ph ph-shield-check"></i></div>
+            <div>
+              <div class="sc-label">Seguridad activa</div>
+              <div class="sc-sub">WAF · SSL · HTTP/3 · Imunify360</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="eh-badge" style="font-size:.72rem;">Let's Encrypt SSL</span>
+            <span class="eh-badge" style="font-size:.72rem;">HTTP/3 QUIC</span>
+            <span class="eh-badge" style="font-size:.72rem;">Firewall WAF</span>
+            <span class="eh-badge" style="font-size:.72rem;">DDoS protection</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 2 · POR QUÉ IMPORTA EL HOSTING ===== -->
+<section class="eh-philosophy">
+  <div class="wrap">
+    <div class="eh-phil-inner">
+      <div class="eh-phil-content reveal">
+        <span class="kicker"><i class="ph ph-globe"></i> La huella digital importa</span>
+        <h2>El servidor también contamina.<br>O no.</h2>
+        <p>
+          Internet genera ya el <strong>4% de las emisiones globales de CO₂</strong> (más que la industria
+          de la aviación). De ese total, los centros de datos son responsables de entre el 15% y el 20%.
+          Cada solicitud a tu web implica un servidor encendido, consumiendo electricidad.
+        </p>
+        <p>
+          La diferencia entre un hosting con energía fósil y uno con energía renovable certificada
+          es real y medible. Con Replanta ECO Hosting, la huella de carbono de tu presencia digital
+          cae a prácticamente cero no mediante compensaciones o créditos, sino usando
+          <strong>electricidad limpia de verdad</strong>.
+        </p>
+        <p>
+          Y la eficiencia energética no está reñida con el rendimiento, al contrario.
+          LiteSpeed consume significativamente menos CPU por petición que Apache.
+          Menos energía procesada, más velocidad entregada.
+        </p>
+        <div class="src-note">
+          <i class="ph ph-info"></i>
+          Fuente: IEA Data Centers & Data Transmission Networks 2024
+        </div>
+      </div>
+      <div class="eh-phil-stats">
+        <div class="eh-stat-card reveal" data-delay="1">
+          <div class="eh-stat-val v-teal">4%</div>
+          <div class="vdivider"></div>
+          <dl class="eh-stat-info">
+            <dt>De las emisiones globales</dt>
+            <dd>Las generadas por toda la industria digital — incluida tu web.</dd>
+          </dl>
+        </div>
+        <div class="eh-stat-card reveal" data-delay="2">
+          <div class="eh-stat-val v-forest">20%</div>
+          <div class="vdivider"></div>
+          <dl class="eh-stat-info">
+            <dt>Atribuible a data centers</dt>
+            <dd>Un quinto de la huella digital viene de los servidores.</dd>
+          </dl>
+        </div>
+        <div class="eh-stat-card reveal" data-delay="3">
+          <div class="eh-stat-val v-green">100%</div>
+          <div class="vdivider"></div>
+          <dl class="eh-stat-info">
+            <dt>Energía renovable en Replanta</dt>
+            <dd>Certificada. No compensada. Electricidad limpia en origen.</dd>
+          </dl>
+        </div>
+        <div class="eh-stat-card reveal" data-delay="4">
+          <div class="eh-stat-val v-teal">9×</div>
+          <div class="vdivider"></div>
+          <dl class="eh-stat-info">
+            <dt>Más eficiente que Apache</dt>
+            <dd>LiteSpeed procesa hasta 9× más solicitudes concurrentes con el mismo hardware.</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 3 · STACK TÉCNICO ===== -->
+<section class="eh-stack">
+  <div class="wrap">
+    <div class="eh-stack-head reveal">
+      <span class="kicker kicker--light"><i class="ph ph-stack"></i> Stack técnico</span>
+      <h2>Tecnología que trabaja menos, rinde más</h2>
+      <p>Cada componente del stack fue elegido por ser el mejor en su función y el más eficiente energéticamente.</p>
+    </div>
+
+    <div class="eh-stack-grid">
+      <div class="eh-stack-card reveal" data-delay="1">
+        <div class="sc-header">
+          <span class="sc-badge">Servidor web</span>
+          <h3>LiteSpeed Web Server</h3>
+        </div>
+        <p>
+          El servidor web más rápido para PHP y WordPress disponible en hosting compartido.
+          Maneja carga concurrente con un tercio de los recursos de Apache,
+          tiene su propio sistema de caché integrado y es compatible 100% con configuraciones .htaccess.
+        </p>
+        <div class="eh-stack-metric">
+          <span class="eh-stack-chip highlight"><i class="ph ph-rocket"></i> 9× más rápido que Apache</span>
+          <span class="eh-stack-chip highlight"><i class="ph ph-lightning"></i> HTTP/3 + QUIC</span>
+          <span class="eh-stack-chip"><i class="ph ph-code"></i> LSCache nativo para WP</span>
+        </div>
+      </div>
+
+      <div class="eh-stack-card reveal" data-delay="2">
+        <div class="sc-header">
+          <span class="sc-badge">Caché objetos</span>
+          <h3>Redis Object Cache</h3>
+        </div>
+        <p>
+          WordPress hace cientos de consultas a la base de datos en cada carga de página.
+          Redis mantiene los resultados en memoria RAM, eliminando hasta el 90% de esas consultas.
+          El resultado: respuestas de base de datos en microsegundos, no milisegundos.
+        </p>
+        <div class="eh-stack-metric">
+          <span class="eh-stack-chip highlight"><i class="ph ph-database"></i> Hasta 90% menos DB queries</span>
+          <span class="eh-stack-chip highlight"><i class="ph ph-timer"></i> Respuesta en µs</span>
+          <span class="eh-stack-chip"><i class="ph ph-arrows-counter-clockwise"></i> Persistencia en RAM</span>
+        </div>
+      </div>
+
+      <div class="eh-stack-card reveal" data-delay="1">
+        <div class="sc-header">
+          <span class="sc-badge">CDN global</span>
+          <h3>Cloudflare CDN</h3>
+        </div>
+        <p>
+          Los assets estáticos (imágenes, CSS, JS) se sirven desde el nodo de Cloudflare
+          más cercano al visitante. Latencia mínima independientemente de su ubicación.
+          Con protección DDoS Layer 7 y WAF incluidos, sin configuración adicional.
+        </p>
+        <div class="eh-stack-metric">
+          <span class="eh-stack-chip highlight"><i class="ph ph-globe"></i> +300 nodos globales</span>
+          <span class="eh-stack-chip highlight"><i class="ph ph-shield-check"></i> WAF + DDoS L7</span>
+          <span class="eh-stack-chip"><i class="ph ph-certificate"></i> SSL gratis</span>
+        </div>
+      </div>
+
+      <div class="eh-stack-card reveal" data-delay="2">
+        <div class="sc-header">
+          <span class="sc-badge">Base de datos</span>
+          <h3>MariaDB + MySQL optimizado</h3>
+        </div>
+        <p>
+          Instancias de MariaDB con configuración específica para WordPress: buffer pools
+          ajustados, query cache activo, y control de tablas wp_options para evitar el
+          autoload inflado, que es uno de los mayores cuellos de botella en WordPress de alto tráfico.
+        </p>
+        <div class="eh-stack-metric">
+          <span class="eh-stack-chip highlight"><i class="ph ph-wrench"></i> Tuning WP incluido</span>
+          <span class="eh-stack-chip"><i class="ph ph-list-magnifying-glass"></i> Query cache activo</span>
+          <span class="eh-stack-chip"><i class="ph ph-table"></i> Control de autoload</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cloudflare strip -->
+    <div class="eh-cloudflare-strip reveal">
+      <div class="eh-cf-logo">
+        <i class="ph ph-cloud"></i>
+        <span>Cloudflare CDN</span>
+      </div>
+      <div class="eh-cf-nodes">
+        <div class="cf-label">Nodos de entrega</div>
+        <div class="cf-val">300+</div>
+        <div class="cf-sub">presencia global · activado desde el día uno</div>
+      </div>
+      <div class="eh-cf-chips">
+        <span>EU · LATAM</span>
+        <span>Anycast routing</span>
+        <span>Edge cache</span>
+        <span>Brotli compression</span>
+        <span>Smart HTTP/3</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 4 · CERTIFICACIÓN VERDE ===== -->
+<section class="eh-certified">
+  <div class="wrap">
+    <div class="eh-cert-inner">
+      <div class="eh-cert-content reveal">
+        <span class="kicker"><i class="ph ph-certificate"></i> Sostenibilidad certificada</span>
+        <h2>Energía renovable real,<br>no créditos de carbono</h2>
+        <p>
+          Muchos hostings se declaran "verdes" comprando créditos de compensación de carbono (básicamente pagar a alguien más para plantar árboles) Replanta usa directamente
+          energía renovable certificada en origen para sus servidores.
+        </p>
+        <p>
+          La diferencia es importante: los créditos de carbono son un mecanismo contable.
+          La energía renovable en origen significa que el kilowatio que consume tu servidor
+          viene de sol, viento o hidráulica, y punto.
+        </p>
+
+        <div class="eh-cert-checklist">
+          <div class="eh-cert-item">
+            <i class="ph ph-sun eh-cert-item ci-icon"></i>
+            <dl class="ci-text">
+              <dt>Electricidad de fuente renovable verificada</dt>
+              <dd>Nuestros centros de datos operan con contratos de compra de energía renovable (GOs) verificados.</dd>
+            </dl>
+          </div>
+          <div class="eh-cert-item">
+            <i class="ph ph-map-pin eh-cert-item ci-icon"></i>
+            <dl class="ci-text">
+              <dt>Dos centros de datos: Londres (EU) y Florida (LATAM)</dt>
+              <dd>Clientes europeos en el nodo de Londres (GDPR). Clientes latinoamericanos en el de Florida. Energía renovable en ambos.</dd>
+            </dl>
+          </div>
+          <div class="eh-cert-item">
+            <i class="ph ph-recycle eh-cert-item ci-icon"></i>
+            <dl class="ci-text">
+              <dt>Hardware de bajo consumo</dt>
+              <dd>Nuestro stack LiteSpeed + Redis procesa más solicitudes con menos watts: eficiencia operacional directa.</dd>
+            </dl>
+          </div>
+          <div class="eh-cert-item">
+            <i class="ph ph-tree eh-cert-item ci-icon"></i>
+            <dl class="ci-text">
+              <dt>Etiqueta Replanta: hosting verificado</dt>
+              <dd>Todos los sitios alojados con nosotros pueden mostrar su sello de "carbon negative" con verificación de compensación.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" data-delay="2">
+        <div class="eh-cert-widget">
+          <div class="widget-head">
+            <i class="ph ph-calculator"></i>
+            <span>Huella digital estimada por visita</span>
+          </div>
+          <div class="widget-body">
+            <div class="eh-footprint-row">
+              <span class="label">Hosting convencional (Europa)</span>
+              <span class="val-bad">~0.8g CO₂</span>
+            </div>
+            <div class="eh-footprint-row">
+              <span class="label">Hosting renovable sin optimizar</span>
+              <span class="val-bad">~0.4g CO₂</span>
+            </div>
+            <div class="eh-footprint-row">
+              <span class="label">ECO Hosting Replanta</span>
+              <span class="val-good">&lt;0.05g CO₂</span>
+            </div>
+            <div class="eh-footprint-row">
+              <span class="label">ECO Hosting + Diseño Sostenible</span>
+              <span class="val-good">&lt;0.03g CO₂ ✓</span>
+            </div>
+            <p class="eh-footprint-note">
+              Estimación con <strong>Website Carbon Calculator</strong> (websitecarbon.com).
+              Tu web con Replanta puede estar en el <strong>top 10% más limpio</strong> de internet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 5 · FEATURES ===== -->
+<section class="eh-features">
+  <div class="wrap">
+    <div class="eh-features-head reveal">
+      <span class="kicker"><i class="ph ph-check-circle"></i> Todo incluido</span>
+      <h2>Lo que viene en cada plan</h2>
+      <p>Sin extras ocultos. Lo que ves es lo que viene activado desde el día uno.</p>
+    </div>
+
+    <div class="eh-feat-tabs">
+      <div class="eh-tab active"><i class="ph ph-lightning"></i> Velocidad</div>
+      <div class="eh-tab"><i class="ph ph-shield-check"></i> Seguridad</div>
+      <div class="eh-tab"><i class="ph ph-gear"></i> Operaciones</div>
+    </div>
+
+    <div class="eh-feat-grid">
+      <div class="eh-feat-card reveal" data-delay="1">
+        <div class="fc-icon"><i class="ph ph-lightning"></i></div>
+        <h3>LiteSpeed + LSCache</h3>
+        <p>El caché más eficiente para WordPress. Compatible con WooCommerce, WPML y los plugins más exigentes.</p>
+        <span class="fc-chip"><i class="ph ph-check"></i> Activado por defecto</span>
+      </div>
+      <div class="eh-feat-card reveal" data-delay="2">
+        <div class="fc-icon"><i class="ph ph-database"></i></div>
+        <h3>Redis Object Cache</h3>
+        <p>Elimina hasta el 90% de las consultas a base de datos. Imprescindible para sites con tráfico elevado.</p>
+        <span class="fc-chip"><i class="ph ph-check"></i> Incluido en todos los planes</span>
+      </div>
+      <div class="eh-feat-card reveal" data-delay="3">
+        <div class="fc-icon"><i class="ph ph-cloud-arrow-up"></i></div>
+        <h3>Cloudflare CDN</h3>
+        <p>Entrega de assets desde el nodo más cercano al visitante. 300+ localizaciones globales.</p>
+        <span class="fc-chip"><i class="ph ph-check"></i> Configurado por nosotros</span>
+      </div>
+      <div class="eh-feat-card reveal" data-delay="1">
+        <div class="fc-icon"><i class="ph ph-lock"></i></div>
+        <h3>SSL automático + HTTPS forzado</h3>
+        <p>Let's Encrypt con renovación automática. Encabezados de seguridad HSTS, X-Frame-Options y CSP básico.</p>
+        <span class="fc-chip"><i class="ph ph-check"></i> Sin configuración extra</span>
+      </div>
+      <div class="eh-feat-card reveal" data-delay="2">
+        <div class="fc-icon"><i class="ph ph-download"></i></div>
+        <h3>Backups diarios externos</h3>
+        <p>Copia completa del site (archivos + base de datos) en ubicación externa. Retención de 30 días.</p>
+        <span class="fc-chip"><i class="ph ph-check"></i> Restauración bajo demanda</span>
+      </div>
+      <div class="eh-feat-card reveal" data-delay="3">
+        <div class="fc-icon"><i class="ph ph-arrows-merge"></i></div>
+        <h3>Migración gratuita</h3>
+        <p>Transferimos tu WordPress, WooCommerce o sitio estático sin tiempo de inactividad. Sin coste añadido.</p>
+        <span class="fc-chip"><i class="ph ph-check"></i> Gestionamos nosotros el DNS</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Widget 2 continúa en eco-hosting-2.html -->
+</div><!-- /.rpl -->
+				</div>
+				</div>
+		<div class="elementor-element elementor-element-7c40f9b rep-bg-light e-flex e-con-boxed e-con e-parent" data-id="7c40f9b" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-0e4adce e-con-full e-flex e-con e-child" data-id="0e4adce" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-c6723d5 elementor-widget elementor-widget-menu-anchor" data-id="c6723d5" data-element_type="widget" data-e-type="widget" data-widget_type="menu-anchor.default">
+							<div class="elementor-menu-anchor" id="planes"></div>
+						</div>
+				<div class="elementor-element elementor-element-0348825 elementor-widget elementor-widget-shortcode" data-id="0348825" data-element_type="widget" data-e-type="widget" data-widget_type="shortcode.default">
+							<div class="elementor-shortcode"><section class="replanta-plans replanta-plans--hosting">
+
+    <!-- Plans bar -->
+    <div class="plans-bar">
+        <div class="left">
+            <h2 class="elementor-heading-title rep-heading-2 rep-text-forest">Elige tu plan</h2>
+            <div class="rep-text-body">Los 3 incluyen la base técnica. Escalas por <em>recursos</em>, <em>automatización</em> y <em>seguridad reforzada</em>.</div>
+        </div>
+        <div class="right">
+            <div class="billing-toggle" role="tablist" aria-label="Facturación">
+                <input type="radio" name="billing" id="bill-m" checked>
+                <label for="bill-m" role="tab" aria-selected="true">Mensual</label>
+                <input type="radio" name="billing" id="bill-y">
+                <label for="bill-y" role="tab" aria-selected="false">Anual <span class="rep-text-small">(-2 meses)</span></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="plans-grid">
+                <div class="replanta-pricing-card" data-plan="sauce">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <div>
+                    <div class="rep-heading-3">Sauce</div>
+                    <div class="plan-subtitle">Personal</div>
+                </div>
+                <div class="rep-heading-3 price" data-plan="sauce">
+                    <span class="original"></span>
+                                        <span class="amount amount--m">12<span class="rep-text-small">,99</span>€</span><span class="rep-text-small period period--m">/mes</span>
+                    <span class="amount amount--y">129€</span><span class="rep-text-small period period--y">/año</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="rep-text-body" style="margin-top:10px">
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>1 sitio (1 dominio)</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span><b>50 GB NVMe</b></span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>5 cuentas de email</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Redis Object Cache (habilitado)</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>LiteSpeed &bull; HTTP/3 &bull; Brotli</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Cloudflare + reglas optimizadas</span></li>
+                            </ul>
+
+            <!-- Extra features (expandable) -->
+                        <details>
+                <summary class="toggle">
+                    <span class="more"><strong>Ver más</strong></span>
+                    <span class="less"><strong>Ver menos</strong></span>
+                </summary>
+                <ul class="rep-text-body">
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Staging 1‑click</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates (según plan)</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Imunify360 &bull; Backups externos</span></li>
+                                    </ul>
+            </details>
+            
+            <!-- CTA -->
+            <div class="plan-cta-wrap" style="margin-top:auto;padding-top:16px">
+                <a href="https://clientes.replanta.net/order/product?pid=6d530876-8251-d485-d80a-147e390921e6&#038;currency=EUR&#038;bcm=1"
+                   class="elementor-button rep-btn-accent plan-card-cta" style="width:100%;justify-content:center">Comenzar ahora</a>
+            </div>
+        </div>
+                <div class="replanta-pricing-card replanta-pricing-featured" data-plan="roble">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <div>
+                    <div class="rep-heading-3">Roble</div>
+                    <div class="plan-subtitle">Corporativo</div>
+                </div>
+                <div class="rep-heading-3 price" data-plan="roble">
+                    <span class="original"></span>
+                                        <span class="amount amount--m">19<span class="rep-text-small">,99</span>€</span><span class="rep-text-small period period--m">/mes</span>
+                    <span class="amount amount--y">199€</span><span class="rep-text-small period period--y">/año</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="rep-text-body" style="margin-top:10px">
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Sitios y dominios ilimitados</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span><b>100 GB NVMe</b> — Email ilimitado</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Redis Object Cache (tuning básico)</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>2 vCPU / 2 GB RAM</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates programadas</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Soporte prioritario</span></li>
+                            </ul>
+
+            <!-- Extra features (expandable) -->
+                        <details>
+                <summary class="toggle">
+                    <span class="more"><strong>Ver más</strong></span>
+                    <span class="less"><strong>Ver menos</strong></span>
+                </summary>
+                <ul class="rep-text-body">
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Staging 1‑click &bull; WP‑CLI / SSH</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates (según plan)</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Imunify360 &bull; Backups externos</span></li>
+                                    </ul>
+            </details>
+            
+            <!-- CTA -->
+            <div class="plan-cta-wrap" style="margin-top:auto;padding-top:16px">
+                <a href="https://clientes.replanta.net/order/product?pid=280d1639-e237-d439-6dea-54610589e572&#038;currency=EUR&#038;bcm=1"
+                   class="elementor-button rep-btn-accent plan-card-cta" style="width:100%;justify-content:center">Comenzar ahora</a>
+            </div>
+        </div>
+                <div class="replanta-pricing-card" data-plan="cedro">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                <div>
+                    <div class="rep-heading-3">Cedro</div>
+                    <div class="plan-subtitle">WooCommerce</div>
+                </div>
+                <div class="rep-heading-3 price" data-plan="cedro">
+                    <span class="original"></span>
+                                        <span class="amount amount--m">29<span class="rep-text-small">,99</span>€</span><span class="rep-text-small period period--m">/mes</span>
+                    <span class="amount amount--y">299€</span><span class="rep-text-small period period--y">/año</span>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="rep-text-body" style="margin-top:10px">
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>WooCommerce y sitios ilimitados</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span><b>200 GB NVMe</b> — Email ilimitado</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Redis optimizado Woo</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>2 vCPU / 4 GB RAM</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Turnstile + WPO inicial</span></li>
+                                    <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>WAF opcional (CF Pro)</span></li>
+                            </ul>
+
+            <!-- Extra features (expandable) -->
+                        <details>
+                <summary class="toggle">
+                    <span class="more"><strong>Ver más</strong></span>
+                    <span class="less"><strong>Ver menos</strong></span>
+                </summary>
+                <ul class="rep-text-body">
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Staging 1‑click &bull; WP‑CLI / SSH</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Smart Updates (según plan)</span></li>
+                                            <li><svg class="tick" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg><span>Imunify360 &bull; Backups externos</span></li>
+                                    </ul>
+            </details>
+            
+            <!-- CTA -->
+            <div class="plan-cta-wrap" style="margin-top:auto;padding-top:16px">
+                <a href="https://clientes.replanta.net/order/product?pid=e2e071d9-31d5-e460-555a-646028758396&#038;currency=EUR&#038;bcm=1"
+                   class="elementor-button rep-btn-accent plan-card-cta" style="width:100%;justify-content:center">Comenzar ahora</a>
+            </div>
+        </div>
+            </div>
+</section>
+<script>
+(function() {
+    var sections = document.querySelectorAll('.replanta-plans--hosting');
+    if (!sections.length) return;
+
+    sections.forEach(function(section) {
+        var billM = section.querySelector('#bill-m');
+        var billY = section.querySelector('#bill-y');
+        if (!billM && !billY) return;
+
+        function syncBcm() {
+            var bcm = (billY && billY.checked) ? '12' : '1';
+            section.querySelectorAll('a.plan-card-cta[href]').forEach(function(a) {
+                try {
+                    var u = new URL(a.getAttribute('href'), window.location.origin);
+                    u.searchParams.set('bcm', bcm);
+                    a.setAttribute('href', u.toString());
+                    a.setAttribute('data-bcm', bcm);
+                } catch (e) {
+                    // Ignore malformed URLs and keep current href.
+                }
+            });
+        }
+
+        if (billM) billM.addEventListener('change', syncBcm);
+        if (billY) billY.addEventListener('change', syncBcm);
+        syncBcm();
+    });
+})();
+</script>
+
+<!-- Replanta Prices - Schema.org Product (SEO) -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Hosting WordPress Sauce",
+    "description": "Personal. 1 sitio (1 dominio). 50 GB NVMe. 5 cuentas de email. Redis Object Cache (habilitado)",
+    "sku": "sauce",
+    "brand": {
+        "@type": "Brand",
+        "name": "Replanta"
+    },
+    "category": "Web Hosting Services",
+    "image": "https://replanta.net/wp-content/uploads/2026/04/replantav3ico-verde-forest.svg",
+    "url": "https://replanta.net/#sauce",
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "12.99",
+        "highPrice": "129.00",
+        "priceCurrency": "EUR",
+        "offerCount": 2,
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Suscripción Mensual",
+                "price": "12.99",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#sauce",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "12.99",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                }
+            },
+            {
+                "@type": "Offer",
+                "name": "Suscripción Anual",
+                "price": "129.00",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#sauce",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "129.00",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                }
+            }
+        ]
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Hosting WordPress Roble",
+    "description": "Corporativo. Sitios y dominios ilimitados. 100 GB NVMe — Email ilimitado. Redis Object Cache (tuning básico). 2 vCPU / 2 GB RAM",
+    "sku": "roble",
+    "brand": {
+        "@type": "Brand",
+        "name": "Replanta"
+    },
+    "category": "Web Hosting Services",
+    "image": "https://replanta.net/wp-content/uploads/2026/04/replantav3ico-verde-forest.svg",
+    "url": "https://replanta.net/#roble",
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "19.99",
+        "highPrice": "199.00",
+        "priceCurrency": "EUR",
+        "offerCount": 2,
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Suscripción Mensual",
+                "price": "19.99",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#roble",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "19.99",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                }
+            },
+            {
+                "@type": "Offer",
+                "name": "Suscripción Anual",
+                "price": "199.00",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#roble",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "199.00",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                }
+            }
+        ]
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Hosting WordPress Cedro",
+    "description": "WooCommerce. WooCommerce y sitios ilimitados. 200 GB NVMe — Email ilimitado. Redis optimizado Woo. 2 vCPU / 4 GB RAM",
+    "sku": "cedro",
+    "brand": {
+        "@type": "Brand",
+        "name": "Replanta"
+    },
+    "category": "Web Hosting Services",
+    "image": "https://replanta.net/wp-content/uploads/2026/04/replantav3ico-verde-forest.svg",
+    "url": "https://replanta.net/#cedro",
+    "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "29.99",
+        "highPrice": "299.00",
+        "priceCurrency": "EUR",
+        "offerCount": 2,
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Suscripción Mensual",
+                "price": "29.99",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#cedro",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "29.99",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                }
+            },
+            {
+                "@type": "Offer",
+                "name": "Suscripción Anual",
+                "price": "299.00",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": "https://replanta.net/#cedro",
+                "priceValidUntil": "2027-05-21",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "Replanta",
+                    "url": "https://replanta.net/"
+                },
+                "priceSpecification": {
+                    "@type": "UnitPriceSpecification",
+                    "price": "299.00",
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                }
+            }
+        ]
+    }
+}
+</script>
+</div>
+						</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-7672387b e-flex e-con-boxed e-con e-parent" data-id="7672387b" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;shape_divider_top&quot;:&quot;waves&quot;}">
+					<div class="e-con-inner">
+				<div class="elementor-shape elementor-shape-top" aria-hidden="true" data-negative="false">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+	<path class="elementor-shape-fill" d="M421.9,6.5c22.6-2.5,51.5,0.4,75.5,5.3c23.6,4.9,70.9,23.5,100.5,35.7c75.8,32.2,133.7,44.5,192.6,49.7
+	c23.6,2.1,48.7,3.5,103.4-2.5c54.7-6,106.2-25.6,106.2-25.6V0H0v30.3c0,0,72,32.6,158.4,30.5c39.2-0.7,92.8-6.7,134-22.4
+	c21.2-8.1,52.2-18.2,79.7-24.2C399.3,7.9,411.6,7.5,421.9,6.5z"/>
+</svg>		</div>
+		<div class="elementor-element elementor-element-e3fbed8 e-con-full e-flex e-con e-child" data-id="e3fbed8" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-6b48e41e elementor-widget elementor-widget-html" data-id="6b48e41e" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<section id="comparativa">
+  <div class="container">
+    <h2 class="elementor-heading-title rep-heading-2 rep-text-forest">Comparativa de características</h2>
+    <p class="muted">Base común en todos los planes; cambias recursos, automatización y seguridad avanzada.</p>
+
+    <!-- Escritorio / tablet -->
+    <div class="rep-compare rep-compare--desktop" style="margin-top:16px">
+      <div style="overflow-x:auto">
+        <table class="rep-table">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th class="c">Sauce</th>
+              <th class="c">Roble</th>
+              <th class="c">Cedro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- RECURSOS -->
+            <tr class="rep-section"><th colspan="4">Recursos</th></tr>
+            <tr>
+              <td>
+                Dominios (sitios)
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-dom" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-dom" role="tooltip">Sauce incluye 1 dominio. Roble y Cedro: sitios/dominios ilimitados.</span>
+                </span>
+              </td>
+              <td class="c">1</td><td class="c">Ilimitados</td><td class="c">Ilimitados</td>
+            </tr>
+            <tr>
+              <td>
+                Direcciones de Correo
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-mail" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-mail" role="tooltip">Direcciones de correo para tus dominios. Sauce: 5; Roble/Cedro: ilimitadas.</span>
+                </span>
+              </td>
+              <td class="c">5</td><td class="c">Ilimitados</td><td class="c">Ilimitados</td>
+            </tr>
+            <tr>
+              <td>
+                Almacenamiento SSD NVMe
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-nvme" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-nvme" role="tooltip">Discos NVMe ultrarrápidos. Un WP típico ocupa ~300 MB; hay margen de sobra.</span>
+                </span>
+              </td>
+              <td class="c">50 GB</td><td class="c">100 GB</td><td class="c">200 GB</td>
+            </tr>
+            <tr>
+              <td>
+                Recursos dedicados (vCPU / RAM)
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-ram" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-ram" role="tooltip">Valores asignados a tu cuenta: justos y estables por plan.</span>
+                </span>
+              </td>
+              <td class="c">2 vCPU / 2 GB</td><td class="c">2 vCPU / 2 GB</td><td class="c">2 vCPU / 4 GB</td>
+            </tr>
+
+            <!-- RENDIMIENTO -->
+            <tr class="rep-section"><th colspan="4">Rendimiento</th></tr>
+            <tr><td>LiteSpeed Web Server</td><td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td></tr>
+            <tr><td>HTTP/3 + Brotli</td><td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td></tr>
+            <tr>
+              <td>
+                Redis Object Cache
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-redis" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-redis" role="tooltip">Acelera consultas y reduce TTFB. Roble/Cedro añaden tuning; Cedro incluye exclusiones Woo.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓ (tuning)</td><td class="c tick">✓ (Woo)</td>
+            </tr>
+            <tr>
+              <td>
+                Cloudflare + reglas optimizadas
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-cf" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-cf" role="tooltip">Configuración manual del plan Free: caché estática, exclusiones WP/Woo y security headers.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+
+            <!-- SEGURIDAD -->
+            <tr class="rep-section"><th colspan="4">Seguridad</th></tr>
+            <tr>
+              <td>
+                Imunify360 (AV / Malware)
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-imun" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-imun" role="tooltip">Detección proactiva y limpieza guiada. Tranquilidad 24/7.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+            <tr><td>SSL Let’s Encrypt automático</td><td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td></tr>
+            <tr>
+              <td>
+                Backups diarios externos (Backuply)
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-bk" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-bk" role="tooltip">Copias en repos externos; restaura archivos/BD/correo en 1 clic.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+            <tr>
+              <td>
+                Turnstile (anti-bot)
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-turn" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-turn" role="tooltip">CAPTCHA ligero de Cloudflare: login, comentarios y checkout, con mínima fricción.</span>
+                </span>
+              </td>
+              <td class="c">—</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+            <tr>
+              <td>
+                WAF perimetral (Cloudflare Pro)
+                <span class="rep-tipwrap" data-align="left" data-dir="up">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-waf" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-waf" role="tooltip">Add-on opcional. No incluido por defecto; CF Free + headers dan capa base.</span>
+                </span>
+              </td>
+              <td class="c">Add-on</td><td class="c">Add-on</td><td class="c">Add-on</td>
+            </tr>
+
+            <!-- OPERACIONES -->
+            <tr class="rep-section"><th colspan="4">Operaciones</th></tr>
+            <tr><td>Staging 1-click</td><td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td></tr>
+            <tr><td>WP-CLI / SSH</td><td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td></tr>
+            <tr>
+              <td>
+                Actualizaciones automáticas de WP
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-su" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-su" role="tooltip">Sauce: a petición. Roble: programado. Cedro: con clon y validación.</span>
+                </span>
+              </td>
+              <td class="c">Bajo demanda</td><td class="c">Programado</td><td class="c">Clon + validación</td>
+            </tr>
+            <tr>
+              <td>
+                Site Monitoring / SEO
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-seo" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-seo" role="tooltip">Vigilancia de disponibilidad/rendimiento y checks SEO técnicos.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+            <tr>
+              <td>
+                Sitejet (constructor)
+                <span class="rep-tipwrap" data-align="left">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-sitejet" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-sitejet" role="tooltip">Creador visual sin código. Actívalo si lo necesitas, no es obligatorio.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+
+            <!-- IMPACTO -->
+            <tr class="rep-section"><th colspan="4">Impacto</th></tr>
+            <tr>
+              <td>
+                Árboles plantados
+                <span class="rep-tipwrap" data-align="left" data-dir="up">
+                  <button class="rep-tip rep-tip--mini rep-tip--sup" aria-describedby="tt-tree" aria-label="Más información">i</button>
+                  <span class="rep-tooltip" id="tt-tree" role="tooltip">Compensación de huella por visitas y servicios de terceros no neutrales.</span>
+                </span>
+              </td>
+              <td class="c tick">✓</td><td class="c tick">✓</td><td class="c tick">✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Móvil -->
+    <div class="rep-compare rep-compare--mobile" aria-label="Comparativa por secciones">
+      <details>
+        <summary><span>Recursos</span></summary>
+        <ul class="rep-cards">
+          <li><strong>Dominios (sitios)</strong> · Sauce: 1 · Roble: Ilimitados · Cedro: Ilimitados</li>
+          <li><strong>Correos</strong> · Sauce: 2 · Roble: Ilimitados · Cedro: Ilimitados</li>
+          <li><strong>NVMe</strong> · Sauce: 50 GB · Roble: 100 GB · Cedro: 200 GB</li>
+          <li><strong>vCPU/RAM</strong> · Sauce: 2/2 GB · Roble: 2/2 GB · Cedro: 2/4 GB</li>
+        </ul>
+      </details>
+      <details>
+        <summary><span>Rendimiento</span></summary>
+        <ul class="rep-cards">
+          <li><strong>LiteSpeed</strong> · ✓ ✓ ✓</li>
+          <li><strong>HTTP/3 + Brotli</strong> · ✓ ✓ ✓</li>
+          <li><strong>Cloudflare + reglas</strong> · ✓ ✓ ✓</li>
+          <li><strong>Redis</strong> · ✓ · ✓(tuning) · ✓(Woo)</li>
+        </ul>
+      </details>
+      <details>
+        <summary><span>Seguridad</span></summary>
+        <ul class="rep-cards">
+          <li><strong>Imunify360</strong> · ✓ ✓ ✓</li>
+          <li><strong>SSL</strong> · ✓ ✓ ✓</li>
+          <li><strong>Backups externos</strong> · ✓ ✓ ✓</li>
+          <li><strong>Turnstile</strong> · — · ✓ · ✓</li>
+          <li><strong>WAF (CF Pro)</strong> · Add-on</li>
+        </ul>
+      </details>
+      <details>
+        <summary><span>Operaciones</span></summary>
+        <ul class="rep-cards">
+          <li><strong>Staging</strong> · ✓ ✓ ✓</li>
+          <li><strong>WP-CLI / SSH</strong> · ✓ ✓ ✓</li>
+          <li><strong>Smart Updates</strong> · Bajo demanda · Programado · Clon + validación</li>
+          <li><strong>Monitoring / SEO</strong> · ✓ ✓ ✓</li>
+          <li><strong>Sitejet</strong> · ✓ ✓ ✓</li>
+        </ul>
+      </details>
+      <details>
+        <summary><span>Impacto</span></summary>
+        <ul class="rep-cards">
+          <li><strong>Árboles plantados</strong> · ✓ ✓ ✓</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</section>
+				</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-30a0088 e-con-full e-flex e-con e-parent" data-id="30a0088" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-8f253a6 elementor-widget elementor-widget-html" data-id="8f253a6" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<div class="rpl">
+
+<!-- ===== SECCIÓN 6 · COMPARATIVA ===== -->
+<section class="eh2-compare">
+  <div class="wrap">
+    <div class="eh2-compare-head reveal">
+      <span class="kicker"><i class="ph ph-arrows-left-right"></i> Comparativa técnica</span>
+      <h2>Replanta vs hosting convencional</h2>
+      <p>Las diferencias técnicas más relevantes frente a los hostings más usados en España.</p>
+    </div>
+
+    <div class="reveal">
+      <table class="eh2-compare-table">
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Hostings genéricos</th>
+            <th>Hostings WordPress</th>
+            <th>ECO Hosting Replanta ✓</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Servidor web</td>
+            <td>Apache (la mayoría)</td>
+            <td>Nginx o Apache</td>
+            <td class="cell-yes">LiteSpeed</td>
+          </tr>
+          <tr>
+            <td>Caché de objetos</td>
+            <td class="cell-no">No incluido</td>
+            <td class="cell-partial">Opcional (de pago)</td>
+            <td class="cell-yes">Redis incluido</td>
+          </tr>
+          <tr>
+            <td>CDN global</td>
+            <td class="cell-no">No / extra</td>
+            <td class="cell-partial">Básico</td>
+            <td class="cell-yes">Cloudflare CDN configurado</td>
+          </tr>
+          <tr>
+            <td>HTTP/3 + QUIC</td>
+            <td class="cell-no">No</td>
+            <td class="cell-partial">Parcial</td>
+            <td class="cell-yes">Activado</td>
+          </tr>
+          <tr>
+            <td>Energía renovable</td>
+            <td class="cell-no">No</td>
+            <td class="cell-partial">Compensaciones CO₂</td>
+            <td class="cell-yes">100% certificada en origen</td>
+          </tr>
+          <tr>
+            <td>Backups</td>
+            <td class="cell-partial">Internos / no verificados</td>
+            <td class="cell-partial">Internos diarios</td>
+            <td class="cell-yes">Externos · 30 días</td>
+          </tr>
+          <tr>
+            <td>Migración</td>
+            <td class="cell-partial">Con cargo / DIY</td>
+            <td class="cell-partial">Con cargo</td>
+            <td class="cell-yes">Gratuita y gestionada</td>
+          </tr>
+          <tr>
+            <td>Soporte</td>
+            <td>Ticket, tiempos variables</td>
+            <td>Chat/ticket</td>
+            <td class="cell-yes">24/7 · respuesta &lt;4h</td>
+          </tr>
+          <tr>
+            <td>Localización servidores</td>
+            <td class="cell-partial">Varios países</td>
+            <td class="cell-partial">EU parcial</td>
+            <td class="cell-yes">Londres (EU) + Florida (LATAM)</td>
+          </tr>
+          <tr>
+            <td>TTFB objetivo</td>
+            <td>400–900ms</td>
+            <td>200–400ms</td>
+            <td class="cell-yes">&lt;150ms</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 7 · TESTIMONIOS ===== -->
+<section class="eh2-reviews">
+  <div class="eh2-reviews-head">
+    <div class="wrap">
+      <span class="kicker kicker--light"><i class="ph ph-star"></i> Reseñas verificadas</span>
+      <h2>Lo que dicen los que ya migraron</h2>
+      <p>Clientes reales que cambiaron de hosting. Nos lo cuentan ellos.</p>
+    </div>
+  </div>
+
+  <section id="eh2-reviews-reel">
+    <div class="container">
+      <div class="cta-tp">
+        <a href="https://es.trustpilot.com/review/replanta.es" rel="noreferrer noopener" target="_blank">
+          Ver todas en Trustpilot <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Fila 1 -->
+      <div class="reel2">
+        <div class="track2">
+          <div class="chunk2">
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Velocidad y estabilidad excelentes. Soporte rápido y efectivo. <strong>Herramientas completas</strong> y seguridad que da tranquilidad."</blockquote><div class="rb"><div class="av">BL</div><div><div class="nm">Beatriz Londoño · ES</div><div class="dt">20 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Un <strong>hosting verde estupendo</strong>. WordPress va súper rápido."</blockquote><div class="rb"><div class="av">DP</div><div><div class="nm">Damián Physique · ES</div><div class="dt">18 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Excelente servicio y acompañamiento del soporte. <strong>Sin inconvenientes</strong> en todo este tiempo."</blockquote><div class="rb"><div class="av">FH</div><div><div class="nm">Francisco Herrera · CO</div><div class="dt">21 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"<strong>Muy profesionales</strong>. Lo recomiendo al 100%."</blockquote><div class="rb"><div class="av">FJ</div><div><div class="nm">Fco. Javier Bobillo · ES</div><div class="dt">18 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Buscábamos sostenibilidad y obtuvimos <strong>rendimiento + soporte que se involucra</strong>. Migración impecable."</blockquote><div class="rb"><div class="av">OM</div><div><div class="nm">Oscar Martínez · ES</div><div class="dt">9 may 2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Excelente servicio. <strong>Resuelven rápido</strong> cualquier inquietud, 24/7. Recomendado."</blockquote><div class="rb"><div class="av">JU</div><div><div class="nm">Juan · CO</div><div class="dt">24 ago 2024</div></div></div></article>
+          </div>
+          <div class="chunk2" aria-hidden="true">
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Velocidad y estabilidad excelentes. Soporte rápido y efectivo. <strong>Herramientas completas</strong>."</blockquote><div class="rb"><div class="av">BL</div><div><div class="nm">Beatriz Londoño · ES</div><div class="dt">20 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Un <strong>hosting verde estupendo</strong>. WordPress va súper rápido."</blockquote><div class="rb"><div class="av">DP</div><div><div class="nm">Damián Physique · ES</div><div class="dt">18 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Excelente servicio y acompañamiento. <strong>Sin inconvenientes</strong>."</blockquote><div class="rb"><div class="av">FH</div><div><div class="nm">Francisco Herrera · CO</div><div class="dt">21 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"<strong>Muy profesionales</strong>. Lo recomiendo al 100%."</blockquote><div class="rb"><div class="av">FJ</div><div><div class="nm">Fco. Javier Bobillo · ES</div><div class="dt">18 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Buscábamos sostenibilidad y obtuvimos <strong>rendimiento + soporte</strong>."</blockquote><div class="rb"><div class="av">OM</div><div><div class="nm">Oscar Martínez · ES</div><div class="dt">9 may 2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Excelente servicio. <strong>Resuelven rápido</strong> cualquier duda."</blockquote><div class="rb"><div class="av">JU</div><div><div class="nm">Juan · CO</div><div class="dt">24 ago 2024</div></div></div></article>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila 2 -->
+      <div class="reel2">
+        <div class="track2 rev">
+          <div class="chunk2">
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Caso cliente</div></div><blockquote>"Una apuesta por la sostenibilidad, y un <strong>gran servicio personalizado</strong>. Superó todas las expectativas."</blockquote><div class="rb"><div class="av">JT</div><div><div class="nm">Josep M. Torres · CEO Ediciones Mayo</div><div class="dt">2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Muy satisfecha. <strong>Trato excelente</strong>. Volveré a contar con ustedes."</blockquote><div class="rb"><div class="av">ST</div><div><div class="nm">Sonia Tomás · ES</div><div class="dt">21 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Caso cliente</div></div><blockquote>"Excelente servicio, dedicación de tiempo completo al cliente y <strong>amplio conocimiento en desarrollo</strong>."</blockquote><div class="rb"><div class="av">CC</div><div><div class="nm">Cesar Cabana · CEO Cabana &amp; Carreño</div><div class="dt">2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"<strong>Muy profesionales</strong> y gran atención. Muy recomendable."</blockquote><div class="rb"><div class="av">LT</div><div><div class="nm">Luis Tejerina · ES</div><div class="dt">19 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Nos hicieron un <strong>plugin a medida</strong>. Código limpio, documentado y soporte impecable."</blockquote><div class="rb"><div class="av">JL</div><div><div class="nm">José Luis Álamo · ES</div><div class="dt">9 may 2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"El equipo es muy ágil. El <strong>servicio impecable</strong> desde la migración."</blockquote><div class="rb"><div class="av">MR</div><div><div class="nm">Marta R. · ES</div><div class="dt">2024</div></div></div></article>
+          </div>
+          <div class="chunk2" aria-hidden="true">
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Caso cliente</div></div><blockquote>"Una apuesta por la sostenibilidad, y un <strong>gran servicio</strong>."</blockquote><div class="rb"><div class="av">JT</div><div><div class="nm">Josep M. Torres · CEO Ediciones Mayo</div><div class="dt">2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"Muy satisfecha. <strong>Trato excelente</strong>."</blockquote><div class="rb"><div class="av">ST</div><div><div class="nm">Sonia Tomás · ES</div><div class="dt">21 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Caso cliente</div></div><blockquote>"Excelente servicio y <strong>amplio conocimiento en desarrollo</strong>."</blockquote><div class="rb"><div class="av">CC</div><div><div class="nm">Cesar Cabana · CEO Cabana &amp; Carreño</div><div class="dt">2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"<strong>Muy profesionales</strong> y gran atención."</blockquote><div class="rb"><div class="av">LT</div><div><div class="nm">Luis Tejerina · ES</div><div class="dt">19 ago 2024</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"<strong>Plugin a medida</strong> impecable."</blockquote><div class="rb"><div class="av">JL</div><div><div class="nm">José Luis Álamo · ES</div><div class="dt">9 may 2025</div></div></div></article>
+            <article class="rv2"><div class="rt"><div class="stars">★★★★★</div><div class="src">Trustpilot</div></div><blockquote>"<strong>Servicio impecable</strong> desde la migración."</blockquote><div class="rb"><div class="av">MR</div><div><div class="nm">Marta R. · ES</div><div class="dt">2024</div></div></div></article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ===== SECCIÓN 8 · ECOSISTEMA ===== -->
+<section class="eh2-ecosystem">
+  <div class="wrap">
+    <div class="eh2-eco-head reveal">
+      <span class="kicker"><i class="ph ph-intersect-three"></i> Más allá del hosting</span>
+      <h2>El hosting es el suelo (necesitas también la planta)</h2>
+      <p>El mejor servidor del mundo no salva un sitio con código pesado o sin mantenimiento. Estos son los siguientes pasos naturales.</p>
+    </div>
+
+    <div class="eh2-eco-grid">
+      <div class="eh2-eco-card reveal" data-delay="1">
+        <div class="ec-icon"><i class="ph ph-paint-brush"></i></div>
+        <h3>Diseño Web Sostenible</h3>
+        <p>Tu web necesita estar optimizada para aprovechar el stack que le damos. Código limpio, imágenes correctas y sin bloat desde el primer día.</p>
+        <ul>
+          <li>WebP/AVIF + lazy load nativo</li>
+          <li>CSS/JS mínimo y diferido</li>
+          <li>Core Web Vitals objetivo: LCP &lt; 2.5s</li>
+          <li>Diseño mobile-first desde base</li>
+        </ul>
+        <a href="https://replanta.net/diseno-web-sostenible/" class="eh2-eco-link">
+          Ver diseño web sostenible <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="eh2-eco-card reveal" data-delay="2">
+               <div class="ec-icon" style="color:var(--rep-forest)"><svg viewBox="0 0 122.52 122.523" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#1E2F23" aria-hidden="true"><path d="m8.708 61.26c0 20.802 12.089 38.779 29.619 47.298l-25.069-68.686c-2.916 6.536-4.55 13.769-4.55 21.388z"/><path d="m96.74 58.608c0-6.495-2.333-10.993-4.334-14.494-2.664-4.329-5.161-7.995-5.161-12.324 0-4.831 3.664-9.328 8.825-9.328.233 0 .454.029.681.042-9.35-8.566-21.807-13.796-35.489-13.796-18.36 0-34.513 9.42-43.91 23.688 1.233.037 2.395.063 3.382.063 5.497 0 14.006-.667 14.006-.667 2.833-.167 3.167 3.994.337 4.329 0 0-2.847.335-6.015.501l19.138 56.925 11.501-34.493-8.188-22.434c-2.83-.166-5.511-.501-5.511-.501-2.832-.166-2.5-4.496.332-4.329 0 0 8.679.667 13.843.667 5.496 0 14.006-.667 14.006-.667 2.835-.167 3.168 3.994.337 4.329 0 0-2.853.335-6.015.501l18.992 56.494 5.242-17.517c2.272-7.269 4.001-12.49 4.001-16.989z"/><path d="m62.184 65.857-15.768 45.819c4.708 1.384 9.687 2.141 14.846 2.141 6.12 0 11.989-1.058 17.452-2.979-.141-.225-.269-.464-.374-.724z"/><path d="m107.376 36.046c.226 1.674.354 3.471.354 5.404 0 5.333-.996 11.328-3.996 18.824l-16.053 46.413c15.624-9.111 26.133-26.038 26.133-45.426.001-9.137-2.333-17.729-6.438-25.215z"/><path d="m61.262 0c-33.779 0-61.262 27.481-61.262 61.26 0 33.783 27.483 61.263 61.262 61.263 33.778 0 61.265-27.48 61.265-61.263-.001-33.779-27.487-61.26-61.265-61.26zm0 119.715c-32.23 0-58.453-26.223-58.453-58.455 0-32.23 26.222-58.451 58.453-58.451 32.229 0 58.45 26.221 58.45 58.451 0 32.232-26.221 58.455-58.45 58.455z"/></svg></div>
+
+        <h3>Hosting WordPress Especializado</h3>
+        <p>Si tu proyecto es exclusivamente WordPress o WooCommerce, consulta también nuestro plan Hosting WP con configuraciones específicas para tiendas online de alto tráfico.</p>
+        <ul>
+          <li>Tuning WooCommerce incluido</li>
+          <li>Configuración PHP-FPM para WP</li>
+          <li>Redis + LiteSpeed WP optimizado</li>
+          <li>Staging environment en todos los planes</li>
+        </ul>
+        <a href="https://replanta.net/hosting-wordpress/" class="eh2-eco-link">
+          Ver Hosting WordPress <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="eh2-eco-card reveal" data-delay="3">
+        <div class="ec-icon"><i class="ph ph-shield-check"></i></div>
+        <h3>Mantenimiento WordPress</h3>
+        <p>El hosting lo mantiene encendido. El mantenimiento lo mantiene seguro. Actualizaciones, backups verificados, monitorización y soporte técnico mensual.</p>
+        <ul>
+          <li>Actualizaciones con staging previo</li>
+          <li>Backups externos verificados</li>
+          <li>Monitorización 24/7 + alertas</li>
+          <li>Soporte técnico incluido</li>
+        </ul>
+        <a href="https://replanta.net/mantenimiento-wordpress/" class="eh2-eco-link">
+          Ver mantenimiento WP <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 9 · FAQs ===== -->
+<section class="eh2-faqs">
+  <div class="wrap">
+    <div class="eh2-faqs-head reveal">
+      <span class="kicker"><i class="ph ph-question"></i> Preguntas frecuentes</span>
+      <h2>Lo que nos preguntan sobre hosting</h2>
+      <p>Respuestas directas sobre planes, migración y rendimiento.</p>
+    </div>
+
+    <div class="eh2-faq-list">
+      <details class="eh2-faq reveal">
+        <summary>¿Qué es el ECO Hosting de Replanta?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Un servicio de alojamiento web de alto rendimiento con energía 100% renovable certificada. Usa <strong>LiteSpeed</strong> como servidor web, <strong>Redis</strong> como caché de objetos y <strong>Cloudflare CDN</strong> para la entrega de contenido desde el nodo más cercano al visitante. Combina máximo rendimiento con mínima huella ambiental — sin compromisos entre uno y otro.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="1">
+        <summary>¿El hosting de Replanta funciona bien para WordPress?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Está <strong>optimizado específicamente para WordPress y WooCommerce</strong>. LiteSpeed incluye un plugin de caché propio extremadamente eficiente (LSCache), Redis gestiona la caché de objetos de WordPress y Cloudflare CDN entrega los assets desde el nodo más cercano. Muchos clientes consiguen <strong>TTFB inferior a 150ms</strong> y PageSpeed por encima de 95 en móvil y escritorio.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="2">
+        <summary>¿La migración está incluida?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Sí. Realizamos la migración completa — archivos, base de datos, configuración de DNS — <strong>sin coste adicional</strong> y sin tiempo de inactividad. El proceso habitual dura entre 2 y 4 horas. Solo necesitas darnos acceso a tu hosting actual (cPanel, SFTP o similar) y nosotros nos encargamos del resto.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="1">
+        <summary>¿Puedo alojar varios WordPress en un mismo plan?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>El <strong>Plan Sauce</strong> soporta 1 sitio e incluye 5 cuentas de email. Los planes <strong>Roble y Cedro</strong> admiten sitios ilimitados. El Plan Cedro es ideal para agencias o carteras de proyectos — y podemos configurar paneles de cliente individuales. Todos los planes incluyen staging.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="2">
+        <summary>¿Dónde están los servidores?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Contamos con <strong>dos centros de datos</strong>: <strong>Londres (Europa)</strong> para clientes de la UE, y <strong>Florida (EE.UU.)</strong> para clientes de Latinoamérica. Cloudflare CDN distribuye el contenido desde más de 300 nodos globales para minimizar la latencia en cualquier región. Energía renovable certificada en ambos.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="1">
+        <summary>¿Qué incluyen los backups?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Backups diarios automáticos gestionados por <strong>Backuply</strong>, almacenados en ubicación externa (no en el mismo servidor). Los backups incluyen archivos y base de datos completa. Puedes solicitar una restauración a cualquier punto disponible abriendo un ticket de soporte.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="2">
+        <summary>¿El hosting incluye certificado SSL?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Sí. <strong>Let's Encrypt SSL automático</strong> en todos los planes, con renovación automática sin coste. También habilitamos el forzado de HTTPS y los encabezados de seguridad recomendados (HSTS, X-Frame-Options, X-Content-Type-Options) en todos los sitios desde el primer día.</p></div>
+      </details>
+
+      <details class="eh2-faq reveal" data-delay="1">
+        <summary>¿Qué pasa si mi web crece en tráfico?<span class="fi"><i class="ph ph-plus"></i></span></summary>
+        <div class="fb"><p>Puedes <strong>escalar de plan</strong> sin perder configuración ni datos. El cambio de plan se realiza en pocas horas, sin tiempo de inactividad. Para proyectos con picos de tráfico imprevisibles o con requisitos de alta disponibilidad, también ofrecemos infraestructura <strong>VPS gestionada</strong> — consúltanos.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECCIÓN 10 · CTA FINAL ===== -->
+<section class="eh2-cta">
+  <div class="wrap">
+    <span class="kicker kicker--light reveal"><i class="ph ph-leaf"></i> &nbsp;Empieza hoy</span>
+    <h2 class="reveal" data-delay="1">Una web más rápida y<br>más sostenible en 48h</h2>
+    <p class="reveal" data-delay="2">
+      Migración gratuita, configuramos el stack completo y
+      tu web estará operativa con el rendimiento que merece.
+    </p>
+
+    <div class="eh2-cta-btns reveal" data-delay="3">
+      <a href="#planes" class="btn btn-primary">
+        <i class="ph ph-list-bullets"></i> Ver planes y precios
+      </a>
+      <a href="https://replanta.net/contacto/" class="btn btn-ghost">
+        <i class="ph ph-envelope-simple"></i> Consulta sin compromiso
+      </a>
+    </div>
+
+    <div class="eh2-trust-strip reveal" data-delay="4">
+      <span><i class="ph ph-check-circle"></i> Migración gratuita</span>
+      <span><i class="ph ph-check-circle"></i> Energía 100% renovable</span>
+      <span><i class="ph ph-check-circle"></i> Soporte 24/7</span>
+      <span><i class="ph ph-check-circle"></i> EU + LATAM · 2 data centers</span>
+      <span><i class="ph ph-check-circle"></i> Sin permanencia</span>
+    </div>
+  </div>
+</section>
+
+</div>				</div>
+				</div>
+				</div>
+		

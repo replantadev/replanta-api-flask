@@ -1,0 +1,383 @@
+<style>.elementor-6635 .elementor-element.elementor-element-427c404{--display:flex;--flex-direction:column;--container-widget-width:calc( ( 1 - var( --container-widget-flex-grow ) ) * 100% );--container-widget-height:initial;--container-widget-flex-grow:0;--container-widget-align-self:initial;--flex-wrap-mobile:wrap;--align-items:center;--gap:0px 0px;--row-gap:0px;--column-gap:0px;}.elementor-6635 .elementor-element.elementor-element-8bccce0{--display:flex;--flex-direction:column;--container-widget-width:100%;--container-widget-height:initial;--container-widget-flex-grow:0;--container-widget-align-self:initial;--flex-wrap-mobile:wrap;}.elementor-6635 .elementor-element.elementor-element-7d8ebf6{--display:flex;--flex-direction:column;--container-widget-width:100%;--container-widget-height:initial;--container-widget-flex-grow:0;--container-widget-align-self:initial;--flex-wrap-mobile:wrap;}.elementor-6635 .elementor-element.elementor-element-e6604bd{--display:flex;--padding-top:40px;--padding-bottom:40px;--padding-left:0px;--padding-right:0px;}.elementor-6635 .elementor-element.elementor-element-74c0ed7{--display:flex;--padding-top:40px;--padding-bottom:40px;--padding-left:0px;--padding-right:0px;}.elementor-6635 .elementor-element.elementor-element-89a3d5e{--display:flex;--flex-direction:column;--container-widget-width:100%;--container-widget-height:initial;--container-widget-flex-grow:0;--container-widget-align-self:initial;--flex-wrap-mobile:wrap;--padding-top:40px;--padding-bottom:40px;--padding-left:0px;--padding-right:0px;}.elementor-6635 .elementor-element.elementor-element-9541b63{padding:40px 0px 0px 0px;}@media(min-width:768px){.elementor-6635 .elementor-element.elementor-element-8bccce0{--width:100%;}.elementor-6635 .elementor-element.elementor-element-7d8ebf6{--width:100%;}}/* Start custom CSS for shortcode, class: .elementor-element-2997ebd */.elementor-6635 .elementor-element.elementor-element-2997ebd .tew-snapshot__input{flex:auto;}
+.elementor-6635 .elementor-element.elementor-element-2997ebd button{font-size:14px;}/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-654857f *//* ===== Calc Metodología (scoped) ===== */
+#calc-metodo .metodo-grid{ display:grid; gap:16px; }
+#calc-metodo .rep-cards-grid{ margin-top:8px; }
+#calc-metodo .rep-card p{ margin:.3rem 0 .5rem; }/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-4a2ab8c */#calc-informe > .container{ 
+  display:grid; grid-template-columns: 460px 1fr; gap:20px; align-items:start;
+}
+/* Columna izquierda: figura centrada y sticky suave (affix) */
+#calc-informe .result-banner.result-banner--contained{ 
+  grid-column:1; grid-row:1 / span 4; 
+  position:sticky; top:24px; 
+  margin:0 auto; /* centra dentro de su columna */
+  border:1px solid var(--rep-border); border-radius:16px; box-shadow:var(--rep-shadow-sm);
+  background:#fff; overflow:visible; isolation:isolate;
+  max-width:340px; width:100%;
+}
+/* Imagen: sin recorte lateral (contain) */
+#calc-informe .result-banner.result-banner--contained img.result-banner{
+  display:block; width:100%; height:auto; 
+  object-fit:contain; /* evita cortes */
+  /* sin aspect-ratio forzado */
+}
+/* Halo mint sutil que no invade el texto */
+#calc-informe .result-banner.result-banner--contained::before{
+  content:""; position:absolute; inset:-6% -4% -10% -4%; z-index:-1;
+  background:radial-gradient(40% 28% at 20% 15%, rgba(146,241,203,.22), transparent 60%),
+             radial-gradient(28% 22% at 85% 12%, rgba(65,153,159,.16), transparent 60%);
+  filter:blur(16px); opacity:.9; pointer-events:none;
+}
+/* Columna derecha: compacidad y ancho legible */
+#calc-informe > .container > h2,
+#calc-informe > .container > p,
+#calc-informe > .container > .metrics-3,
+#calc-informe > .container > .rep-text-center{
+  grid-column:2; max-width:680px; margin-left:auto; margin-right:auto;
+}
+/* Ajustes de ritmo vertical para que no se vea "separado" */
+#calc-informe h2{ margin:0 0 8px; }
+#calc-informe > .container > p{ margin:0 0 10px; }
+#calc-informe .metrics-3{ margin-top:8px; }
+#calc-informe .metric{ align-items:flex-start; }
+#calc-informe figcaption{ text-align:center; margin-top:6px; color:var(--rep-text-muted); }
+
+/* Responsive tablet/móvil */
+@media (max-width:980px){
+  #calc-informe > .container{ grid-template-columns:1fr; gap:14px; }
+  #calc-informe .result-banner.result-banner--contained{ 
+    position:relative; top:auto; order:-1; 
+    max-width:520px; width:100%; margin:0 auto; 
+  }
+  #calc-informe > .container > h2,
+  #calc-informe > .container > p,
+  #calc-informe > .container > .metrics-3,
+  #calc-informe > .container > .rep-text-center{ grid-column:1; max-width:680px; }
+}
+@media (max-width:600px){
+  #calc-informe .result-banner.result-banner--contained{ max-width:100%; border-radius:14px; }
+  #calc-informe .result-banner.result-banner--contained::before{ inset:-10% -6% -12% -6%; filter:blur(14px); opacity:.8; }
+  #calc-informe .metrics-3{ grid-template-columns:1fr; }
+}
+/* Seguridad: nada debe empujar de ancho en móvil */
+#calc-informe .result-banner.result-banner--contained,
+#calc-informe .result-banner.result-banner--contained *{ max-width:100%; box-sizing:border-box; }
+
+.elementor-6635 .elementor-element.elementor-element-4a2ab8c a{font-size:14px}
+/* ===== #calc-informe · Métricas con icono arriba ===== */
+
+/* Fuerza layout vertical dentro de cada tarjeta */
+#calc-informe .metrics-3 .metric{
+  display:flex;              /* sobreescribe el display:flex horizontal global */
+  flex-direction:column;     /* icono arriba, texto debajo */
+  align-items:left;        /* centra icono y bloque de texto */
+  text-align:left;         /* títulos y copy centrados */
+  gap:8px;                   /* respiro entre icono y texto */
+}
+
+/* Contenedor del icono sin dimensiones rígidas del global */
+#calc-informe .metrics-3 .metric .img{
+  flex:0 0 auto;
+  width:65px; height:65px;   
+  padding:0;                 /* por si el global añade padding */
+  margin:0 0 4px 0;
+  border:0;                  /* quita borde si lo hereda; elimina esta línea si lo quieres */
+  background:transparent;    /* limpia fondo heredado */
+  display:flex; align-items:center; justify-content:start;
+}
+
+/* Icono escalable y controlado */
+#calc-informe .metrics-3 .metric .img img{
+  display:block;
+  max-height:64px;           /* tamaño cómodo */
+  width:auto; height:auto;
+}
+
+/* Texto ocupa ancho completo de la card */
+#calc-informe .metrics-3 .metric .txt{
+  width:100%;
+}
+
+/* Opcional: ajusta los headings para compacidad */
+#calc-informe .metrics-3 .metric .txt .rep-heading-3{
+  margin:0 0 4px;
+}
+
+/* Responsivo (si quieres forzar 1 columna antes) */
+@media (max-width:900px){
+  #calc-informe .metrics-3{ grid-template-columns:1fr 1fr; }
+}
+@media (max-width:640px){
+  #calc-informe .metrics-3{ grid-template-columns:1fr; }
+}
+
+/* === Mobile fix === */
+@media (max-width: 900px) {
+  #calc-informe .ctas {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  #calc-informe .ctas a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    white-space: normal; /* permite saltos de línea */
+    line-height: 1.2;
+  }
+}/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-f899fa0 *//* === Mobile fix === */
+@media (max-width: 900px) {
+  .elementor-6635 .elementor-element.elementor-element-f899fa0 .ctas {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .elementor-6635 .elementor-element.elementor-element-f899fa0 .ctas a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    white-space: normal; /* permite saltos de línea */
+    line-height: 1.2;
+  }
+}/* End custom CSS */
+/* Start custom CSS for html, class: .elementor-element-9541b63 *//* ===== Calc FAQ (scoped) ===== */
+#calc-faq details summary{ cursor:pointer; list-style:none; position:relative; padding-right:18px; }
+#calc-faq details summary::after{ content:"▾"; position:absolute; right:0; top:0; opacity:.6; transition:transform .2s ease; }
+#calc-faq details[open] summary::after{ transform:rotate(-180deg); }/* End custom CSS */</style>		<div data-elementor-type="wp-page" data-elementor-id="6635" class="elementor elementor-6635" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-427c404 e-flex e-con-boxed e-con e-parent" data-id="427c404" data-element_type="container" data-e-type="container">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-8bccce0 e-con-full e-flex e-con e-child" data-id="8bccce0" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-2997ebd elementor-widget elementor-widget-shortcode" data-id="2997ebd" data-element_type="widget" data-e-type="widget" data-widget_type="shortcode.default">
+							<div class="elementor-shortcode">        <section class="tew-snapshot" data-tew-snapshot  >
+            <div class="tew-snapshot__intro">
+                <h1>Análisis de Sostenibilidad Web</h1>
+                <p>Descubre el impacto ambiental y la salud técnica de tu sitio en cuestión de minutos.</p>
+            </div>
+
+            <form class="tew-snapshot__form" novalidate  >
+                <label for="tew-snapshot-url" class="screen-reader-text">URL del sitio</label>
+                <div class="tew-snapshot__input">
+                    <i class="ph-bold ph-globe" aria-hidden="true"></i>
+                    <input type="url" id="tew-snapshot-url" name="tew-url" placeholder="https://tu-sitio.org" value="" required />
+                </div>
+                
+                                <div class="tew-turnstile-wrapper">
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAAB9AM8TVibxJ797V" data-theme="light"></div>
+                </div>
+                                
+                <button type="submit" class="tew-snapshot__submit">
+                    <i class="ph-bold ph-lightning" aria-hidden="true"></i>
+                    Generar informe                </button>
+            </form>
+
+            <div class="tew-snapshot__feedback" hidden>
+                <div class="tew-snapshot__spinner"></div>
+                <p>Recopilando datos de rendimiento y huella de carbono...</p>
+            </div>
+
+            <div class="tew-snapshot__results" hidden>
+                <div class="tew-snapshot__summary" data-tew-summary></div>
+                <div class="tew-snapshot__metrics" data-tew-metrics></div>
+                <div class="tew-snapshot__gallery" data-tew-gallery hidden></div>
+                <div class="tew-snapshot__actions" data-tew-actions></div>
+                                <div class="tew-snapshot__email-capture" data-tew-email-capture></div>
+                            </div>
+        </section>
+        </div>
+						</div>
+		<div class="elementor-element elementor-element-7d8ebf6 e-con-full e-flex e-con e-child" data-id="7d8ebf6" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-cc17774 elementor-widget elementor-widget-html" data-id="cc17774" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<section class="row-split row-split--light" id="calc-intro">
+  <div class="container grid">
+    <div class="copy">
+      <h2 class="rep-heading-2 rep-text-forest">Calcula la huella digital de tu website</h2>
+      <p class="rep-text-body">Analiza en segundos el impacto ambiental y el rendimiento de tu sitio web. Nuestra calculadora combina los datos de <strong>PageSpeed Insights</strong>, <strong>CO2.js</strong> y <strong>Website Carbon</strong> para estimar el consumo energético y las emisiones por visita.</p>
+      <ul class="rep-list rep-text-small">
+        <li>Identifica cuánto <strong>CO₂ genera tu web</strong> por cada visita.</li>
+        <li>Evalúa la eficiencia de tu hosting y de tus recursos digitales.</li>
+        <li>Recibe un <strong>informe de auditoría ecológica</strong> con consejos para optimizarlo.</li>
+      </ul>
+      
+    </div>
+   
+  </div>
+</section>
+				</div>
+				</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-e6604bd e-flex e-con-boxed e-con e-parent" data-id="e6604bd" data-element_type="container" data-e-type="container">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-654857f elementor-widget elementor-widget-html" data-id="654857f" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<section id="calc-metodo" aria-labelledby="metodo-heading">
+  <div class="container metodo-grid">
+    <div>
+      <h2 id="metodo-heading" class="rep-heading-2 rep-text-forest">Cómo calculamos tu huella digital</h2>
+      <p class="rep-text-body">Usamos el modelo de <strong>Web Sostenible</strong> (Green Web Foundation) para estimar <em>CO₂/visita</em> y energía por carga, incorporando datos de <strong>PageSpeed Insights</strong> para rendimiento y de <strong>Website Carbon</strong> como referencia externa.</p>
+    </div>
+
+    <div class="rep-cards-grid">
+      <article class="rep-card">
+        <h3 class="rep-heading-3">CO2.js (modelo SWD)</h3>
+        <p class="rep-text-small">Estimación de emisiones por página con factores de intensidad eléctrica y tamaño de transferencia.</p>
+        <a class="link-inline" href="https://developers.thegreenwebfoundation.org/co2js/overview/">Metodología CO2.js</a>
+      </article>
+
+      <article class="rep-card">
+        <h3 class="rep-heading-3">PageSpeed / Lighthouse</h3>
+        <p class="rep-text-small">Métricas de rendimiento, accesibilidad y SEO técnico para priorizar acciones con impacto.</p>
+        <a class="link-inline" href="https://replanta.net/mantenimiento-wordpress/">Mejorar puntuaciones</a>
+      </article>
+
+      <article class="rep-card">
+        <h3 class="rep-heading-3">Website Carbon (referencia)</h3>
+        <p class="rep-text-small">Contrastamos resultados con el índice público de Website Carbon para coherencia.</p>
+        <a class="link-inline" href="https://api.websitecarbon.com/">API Website Carbon</a>
+      </article>
+    </div>
+
+    <div class="metodo-links rep-text-small" style="margin-top:10px">
+      <a class="link-inline" href="https://replanta.net/diseno-web-sostenible/">Guía de diseño web sostenible</a> ·
+      <a class="link-inline" href="https://replanta.net/hosting-wordpress/">Hosting WordPress ecológico</a> ·
+      <a class="link-inline" href="https://replanta.net/casos-de-exito/">Informes públicos</a>
+    </div>
+  </div>
+</section>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-74c0ed7 e-flex e-con-boxed e-con e-parent" data-id="74c0ed7" data-element_type="container" data-e-type="container">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-4a2ab8c elementor-widget elementor-widget-html" data-id="4a2ab8c" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<section id="calc-informe" class="row-split row-split--light" aria-labelledby="informe-heading">
+  <div class="container">
+    <h2 id="informe-heading" class="rep-heading-2 rep-text-forest">Informe ecológico en un clic</h2>
+    <p class="rep-text-body">Recibirás un informe con los <strong>indicadores clave</strong> de sostenibilidad y rendimiento, más recomendaciones priorizadas para reducir emisiones y mejorar Core Web Vitals.</p>
+
+    <div class="metrics-3" style="margin-top:12px">
+      <div class="metric">
+        <div class="img"><img src="https://replanta.net/wp-content/uploads/2025/10/eco-hosting.svg" width="100" alt="CO2 por visita" loading="lazy"></div>
+        <div class="txt">
+          <h3 class="rep-heading-3" style="margin:0">CO₂ por visita</h3>
+          <p class="rep-text-small" style="margin:2px 0 0">Estimación con CO2.js y contraste Website Carbon. Equivalencias para entender el impacto.</p>
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="img"><img src="https://replanta.net/wp-content/uploads/2025/10/energia-hosting.svg" width="100" alt="Energía por carga" loading="lazy"></div>
+        <div class="txt">
+          <h3 class="rep-heading-3" style="margin:0">Energía por carga</h3>
+          <p class="rep-text-small" style="margin:2px 0 0">kWh estimados por página y ahorro potencial tras las optimizaciones sugeridas.</p>
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="img"><img src="https://replanta.net/wp-content/uploads/2025/10/lighthouse.svg" width="100" alt="Puntuaciones Lighthouse" loading="lazy"></div>
+        <div class="txt">
+          <h3 class="rep-heading-3" style="margin:0">Lighthouse</h3>
+          <p class="rep-text-small" style="margin:2px 0 0">Performance, Accesibilidad, SEO y Best Practices para priorizar qué arreglar primero.</p>
+        </div>
+      </div>
+    </div>
+
+    <figure class="result-banner result-banner--contained">
+      <img class="result-banner" src="https://replanta.net/wp-content/uploads/2025/10/informe-web-sostenible-min.png" alt="Ejemplo de Eco Report con emisiones y métricas de rendimiento" loading="lazy">
+      <figcaption class="rep-text-small rep-text-muted" style="text-align:center;margin-top:6px">Ejemplo de informe generado automáticamente tras analizar tu URL.</figcaption>
+    </figure>
+
+    <div class="rep-text-center ctas" style="margin-top:10px">
+      <a href="#" class=" rep-btn-accent">Generar mi informe</a>
+      <a href="https://replanta.net/#precios" class="rep-btn rep-btn rep-btn-secondary">Replanta tu website en un Hosting Verde</a>
+    </div>
+  </div>
+</section>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-89a3d5e e-flex e-con-boxed e-con e-parent" data-id="89a3d5e" data-element_type="container" data-e-type="container">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-f899fa0 elementor-widget elementor-widget-html" data-id="f899fa0" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<section id="calc-mejora" aria-labelledby="mejora-heading">
+  <div class="container">
+    <h2 id="mejora-heading" class="rep-heading-2 rep-text-forest">Plan de mejora: de diagnóstico a resultados</h2>
+    <p class="rep-text-body">Te proponemos un itinerario claro para reducir la huella digital y mejorar tu posicionamiento orgánico, con entregables y métricas comparables mes a mes.</p>
+
+    <div class="rep-cards-grid waterfall" style="margin-top:10px">
+      <article class="rep-card">
+        <h3 class="rep-heading-3">Optimización WPO</h3>
+        <p class="rep-text-body">Minimiza transferencias, comprime imágenes y estabiliza el TTFB.</p>
+        <ul class="rep-list rep-text-small">
+          <li><a class="link-inline" href="https://replanta.net/mantenimiento-wordpress/">Mantenimiento WordPress</a> (actualizaciones seguras).</li>
+          <li><a class="link-inline" href="https://replanta.net/hosting-wordpress/">Hosting WordPress</a> con LiteSpeed + Redis.</li>
+        </ul>
+      </article>
+
+      <article class="rep-card">
+        <h3 class="rep-heading-3">Diseño web sostenible</h3>
+        <p class="rep-text-body">Arquitectura de la información y UI eficientes que cargan menos y convierten más.</p>
+        <ul class="rep-list rep-text-small">
+          <li>Patrones de baja huella y <a class="link-inline" href="https://replanta.net/diseno-web-sostenible/">buenas prácticas</a>.</li>
+          <li>Medición continua con Eco Report.</li>
+        </ul>
+      </article>
+
+      <article class="rep-card">
+        <h3 class="rep-heading-3">Seguimiento y reporting</h3>
+        <p class="rep-text-body">Compara emisiones y Core Web Vitals antes/después con informes periódicos.</p>
+        <ul class="rep-list rep-text-small">
+          <li>Alertas y priorización por impacto.</li>
+          <li><a class="link-inline" href="https://replanta.net/casos-de-exito/">Histórico de informes</a>.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="rep-text-center ctas" style="margin-top:12px">
+      <a href="https://replanta.net/calculadora-huella/" class="rep-btn-primary">Empezar ahora</a>
+      <a href="https://replanta.net/mantenimiento-wordpress/" class="rep-btn-secondary">Quiero acompañamiento</a>
+    </div>
+  </div>
+</section>
+				</div>
+				<div class="elementor-element elementor-element-9541b63 elementor-widget elementor-widget-html" data-id="9541b63" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<section id="calc-faq" aria-labelledby="faq-heading">
+  <div class="container">
+    <h2 id="faq-heading" class="rep-heading-2 rep-text-forest">Preguntas frecuentes sobre huella digital y web sostenible</h2>
+
+    <div class="faq-list" style="margin-top:10px; display:grid; gap:10px">
+      <details class="rep-card">
+        <summary class="rep-heading-3">¿Qué es la “huella digital” de una web?</summary>
+        <div class="rep-text-body" style="margin-top:6px">
+          Es la <strong>emisión de CO₂ y el consumo energético</strong> derivados de cargar una página. Se estima a partir del tamaño transferido, la electricidad usada en transmisión/servidor y la <em>intensidad de carbono</em> de la red eléctrica. <a class="link-inline" href="https://developers.thegreenwebfoundation.org/">Metodología</a>.
+        </div>
+      </details>
+
+      <details class="rep-card">
+        <summary class="rep-heading-3">¿Qué datos usa la calculadora?</summary>
+        <div class="rep-text-body" style="margin-top:6px">
+          Resultados de <strong>PageSpeed/Lighthouse</strong> y estimaciones de <strong>CO2.js</strong> contrastadas con <strong>Website Carbon</strong>. Así priorizamos acciones con impacto real en rendimiento y emisiones.
+        </div>
+      </details>
+
+      <details class="rep-card">
+        <summary class="rep-heading-3">¿Cómo reduzco rápido mi huella?</summary>
+        <div class="rep-text-body" style="margin-top:6px">
+          Empieza por <a class="link-inline" href="https://replanta.net/hosting-wordpress/">hosting WordPress ecológico</a>, <a class="link-inline" href="https://replanta.net/mantenimiento-wordpress/">mantenimiento</a> y <a class="link-inline" href="https://replanta.net/diseno-web-sostenible/">diseño web sostenible</a>. Verás mejoras en CO₂ por visita y en Core Web Vitals.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+				</div>
+					</div>
+				</div>
+				</div>
+		

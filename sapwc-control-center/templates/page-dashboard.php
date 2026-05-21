@@ -313,6 +313,28 @@ $vig_criticals  = class_exists( 'SAPWCC_Vigilante' ) ? SAPWCC_Vigilante::total_c
                                            value="<?php echo esc_attr( $site['monthly_fee'] ?? 0 ); ?>" placeholder="0.00" />
                                 </label>
                             </div>
+                            <div class="sapwcc-meta-grid" style="margin-top:8px;border-top:1px solid #f0f0f1;padding-top:8px;">
+                                <label>
+                                    <small>SAP offline desde (h, 0–23)</small>
+                                    <input type="number" min="0" max="23" class="sapwcc-meta-field" data-field="quiet_from"
+                                           value="<?php echo esc_attr( $site['quiet_from'] ?? '' ); ?>" placeholder="22" />
+                                </label>
+                                <label>
+                                    <small>SAP offline hasta (h, 0–23)</small>
+                                    <input type="number" min="0" max="23" class="sapwcc-meta-field" data-field="quiet_to"
+                                           value="<?php echo esc_attr( $site['quiet_to'] ?? '' ); ?>" placeholder="7" />
+                                </label>
+                            </div>
+                            <?php
+                            $qw = SAPWCC_Vigilante::detect_quiet_window( $key );
+                            if ( $qw ) :
+                            ?>
+                            <p style="font-size:11px;color:#666;margin:4px 0 0;">
+                                <span class="dashicons dashicons-chart-bar" style="font-size:12px;width:12px;height:12px;vertical-align:middle;"></span>
+                                Patron detectado: ~<?php echo $qw['from']; ?>h–<?php echo $qw['to']; ?>h
+                                (<?php echo round( $qw['confidence'] * 100 ); ?>% confianza, <?php echo $qw['events']; ?> eventos)
+                            </p>
+                            <?php endif; ?>
                             <button class="button button-small sapwcc-save-meta" data-key="<?php echo esc_attr( $key ); ?>">Guardar datos</button>
                         </div>
                     </div>

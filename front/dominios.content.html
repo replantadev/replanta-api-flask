@@ -1,0 +1,766 @@
+<style>.elementor-397 .elementor-element.elementor-element-72bb8af{--display:flex;--padding-top:0px;--padding-bottom:0px;--padding-left:0px;--padding-right:0px;}:root{--page-title-display:none;}/* Start custom CSS for html, class: .elementor-element-3a02e52 *//* ===========================================================================
+   Replanta Dominios v4 · All styles scoped to .rpl
+   =========================================================================== */
+
+/* ── Fallback tokens (replanta-kit.css carga los definitivos) ── */
+:root{
+  --rep-green:#93F1C9;--rep-forest:#1E2F23;--rep-teal:#41999F;--rep-sun:#F7D450;
+  --rep-bg-light:#F7FBF9;--rep-text-secondary:#3B4B45;--rep-text-tertiary:#547065;
+  --rep-text-muted:#6B7D76;--rep-border:#E6F3EF;
+  --rep-grad:linear-gradient(135deg,#93F1C9 0%,#41999F 50%,#2A6B70 100%);
+  --rep-shadow-sm:0 1px 2px 0 rgba(30,47,35,.05);
+  --rep-shadow-md:0 4px 6px -1px rgba(30,47,35,.10),0 2px 4px -1px rgba(30,47,35,.06);
+  --rep-shadow-lg:0 10px 15px -3px rgba(30,47,35,.10),0 4px 6px -2px rgba(30,47,35,.05);
+  --rep-font-display:'Sora',system-ui,-apple-system,sans-serif;
+  --rep-font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --rep-radius-sm:8px;--rep-radius-md:12px;--rep-radius-lg:16px;
+  --rep-radius-xl:24px;--rep-radius-full:999px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Sora:wght@300..800&display=swap');
+
+/* ── Base atoms ── */
+.rpl *,.rpl *::before,.rpl *::after{box-sizing:border-box;}
+.rpl img{max-width:100%;height:auto;display:block;}
+.rpl ul,.rpl ol{list-style:none;margin:0;padding:0;}
+.rpl a{text-decoration:none;color:inherit;}
+.rpl{font-family:var(--rep-font-body);color:var(--rep-text-secondary);line-height:1.6;}
+.rpl h1,.rpl h2,.rpl h3,.rpl h4{font-family:var(--rep-font-display)!important;line-height:1.15!important;margin:0;}
+.rpl h1{font-size:clamp(2.2rem,5vw,3.4rem)!important;font-weight:700!important;color:#fff!important;}
+.rpl h2{font-size:clamp(1.7rem,3.2vw,2.4rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl h3{font-size:clamp(1.05rem,1.8vw,1.25rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl h4{font-size:clamp(.9rem,1.4vw,1.05rem)!important;font-weight:600!important;color:var(--rep-forest);}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+.kicker{display:inline-flex;align-items:center;gap:6px;font:600 .78rem/1 var(--rep-font-body);text-transform:uppercase;letter-spacing:.1em;color:var(--rep-teal);margin-bottom:12px;}
+.kicker--light{color:var(--rep-green);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--rep-radius-md);font:600 .95rem/1 var(--rep-font-body);transition:all .25s ease;min-height:48px;white-space:nowrap;text-decoration:none;}
+.btn-primary{background:var(--rep-teal);color:#fff!important;}
+.btn-primary:hover{background:#368F95;transform:translateY(-2px);box-shadow:var(--rep-shadow-md);}
+.btn-outline-dark{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:#fff!important;}
+.btn-outline-dark:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.55);}
+.btn-green{background:var(--rep-green);color:var(--rep-forest);}
+.btn-green:hover{background:#7de5b5;transform:translateY(-2px);}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.is-visible{opacity:1;transform:translateY(0);}
+.reveal[data-delay="1"]{transition-delay:.1s;}
+.reveal[data-delay="2"]{transition-delay:.2s;}
+.reveal[data-delay="3"]{transition-delay:.3s;}
+.reveal[data-delay="4"]{transition-delay:.4s;}
+
+/* ===========================================================================
+   1. HERO
+   =========================================================================== */
+.dom-hero{
+  min-height:90vh;display:flex;align-items:center;
+  background:linear-gradient(155deg,#0D1C11 0%,#152419 45%,#0B1910 100%);
+  position:relative;overflow:hidden;padding:120px 0 80px;
+}
+.dom-hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 65% 55% at 25% 45%,rgba(65,153,159,.13) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 85% 20%,rgba(147,241,201,.06) 0%,transparent 55%);
+  pointer-events:none;
+}
+.dom-hero::after{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(147,241,201,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(147,241,201,.02) 1px,transparent 1px);
+  background-size:52px 52px;pointer-events:none;
+}
+.dom-hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+.dom-hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border:1px solid rgba(147,241,201,.2);border-radius:var(--rep-radius-full);
+  font:600 .75rem/1 var(--rep-font-body);color:var(--rep-green);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:22px;background:rgba(147,241,201,.05);
+}
+.dom-hero-eyebrow i{font-size:14px;}
+.dom-hero-content h1{margin-bottom:20px;}
+.dom-hero-sub{font-size:1.05rem;color:rgba(255,255,255,.58);line-height:1.8;margin-bottom:30px;max-width:500px;}
+.dom-hero-sub strong{color:var(--rep-green);}
+.dom-hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:34px;}
+.dom-hbadge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:var(--rep-radius-full);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  font:500 .78rem/1 var(--rep-font-body);color:rgba(255,255,255,.65);
+}
+.dom-hbadge i{color:var(--rep-green);font-size:13px;}
+.dom-hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+
+/* ── Hero visual: domain ecosystem card ── */
+.dom-hero-visual{position:relative;}
+.dom-globe-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--rep-radius-xl);padding:28px 28px 24px;
+  backdrop-filter:blur(6px);position:relative;
+}
+.dom-globe-card::before{
+  content:"";position:absolute;inset:-1px;border-radius:var(--rep-radius-xl);
+  background:linear-gradient(135deg,rgba(147,241,201,.14),rgba(65,153,159,.07),transparent 65%);
+  z-index:-1;pointer-events:none;
+}
+/* Globe icon center */
+.dgc-globe-wrap{text-align:center;margin-bottom:20px;}
+.dgc-globe-icon{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(147,241,201,.1);border:1px solid rgba(147,241,201,.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;color:var(--rep-green);margin:0 auto 10px;
+  animation:dom-globe-breathe 4s ease-in-out infinite;
+}
+@keyframes dom-globe-breathe{
+  0%,100%{box-shadow:0 0 0 0 rgba(147,241,201,.12);}
+  50%{box-shadow:0 0 0 12px rgba(147,241,201,0);}
+}
+.dgc-globe-label{font:600 .75rem/1 var(--rep-font-body);color:rgba(255,255,255,.35);letter-spacing:.06em;text-transform:uppercase;}
+/* Extension chips cloud */
+.dgc-ext-cloud{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:22px;
+}
+.dgc-ext{
+  padding:5px 14px;border-radius:var(--rep-radius-full);
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);
+  font:700 .9rem/1 var(--rep-font-display);color:rgba(255,255,255,.7);
+  transition:background .2s;
+}
+.dgc-ext.prime{background:rgba(147,241,201,.1);border-color:rgba(147,241,201,.25);color:var(--rep-green);}
+.dgc-ext.eco{background:rgba(247,212,80,.07);border-color:rgba(247,212,80,.2);color:var(--rep-sun);}
+/* Feature checklist */
+.dgc-features{
+  display:flex;flex-direction:column;gap:9px;
+  padding:18px 0 18px;border-top:1px solid rgba(255,255,255,.07);
+  margin-bottom:18px;
+}
+.dgc-feat{
+  display:flex;align-items:center;gap:10px;
+  font:400 .84rem/1.3 var(--rep-font-body);color:rgba(255,255,255,.58);
+}
+.dgc-feat i{color:var(--rep-green);font-size:15px;flex-shrink:0;}
+/* Footer stats */
+.dsc-footer{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:rgba(255,255,255,.07);border-radius:var(--rep-radius-md);
+  overflow:hidden;
+}
+.dsc-stat{
+  background:rgba(255,255,255,.04);padding:12px 8px;text-align:center;
+}
+.dsc-stat .val{font:700 1.1rem/1 var(--rep-font-display);color:var(--rep-green);}
+.dsc-stat .lab{font:400 .68rem/1.3 var(--rep-font-body);color:rgba(255,255,255,.3);margin-top:3px;}
+
+/* Floating pulse dot */
+.dom-pulse{
+  position:absolute;top:18px;right:18px;
+  width:10px;height:10px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 0 0 rgba(34,197,94,.4);
+  animation:dom-pulse 2.8s infinite;
+}
+@keyframes dom-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4);}
+  70%{box-shadow:0 0 0 10px rgba(34,197,94,0);}
+}
+
+/* Mobile hero layout */
+@media(max-width:860px){
+  .dom-hero-inner{grid-template-columns:1fr;gap:48px;}
+  .dom-hero-content h1,.dom-hero-sub{text-align:center;}
+  .dom-hero-badges,.dom-hero-btns,.dom-hero-eyebrow{justify-content:center;}
+}
+
+/* ===========================================================================
+   2. WIDGET UPMIND DAC (dark section)
+   =========================================================================== */
+.dom-widget{
+  background:linear-gradient(180deg,#0D1C11 0%,#12221A 100%);
+  padding:80px 0;position:relative;
+}
+.dom-widget::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(147,241,201,.2),transparent);
+}
+.dom-widget-head{text-align:center;margin-bottom:40px;}
+.dom-widget-head .kicker{color:var(--rep-green);}
+.dom-widget-head h2{color:#fff;margin-bottom:10px;}
+.dom-widget-head p{color:rgba(255,255,255,.5);max-width:500px;margin:0 auto;font-size:.98rem;}
+.dom-widget-inner{max-width:760px;margin:0 auto;}
+.rep-domain-search{width:100%;}
+
+/* ===========================================================================
+   3. EXTENSIONES POPULARES
+   =========================================================================== */
+.dom-tlds{padding:88px 0;background:#fff;}
+.dom-tlds .wrap{max-width:940px;}
+.dom-tlds-head{text-align:center;margin-bottom:44px;}
+.dom-tlds-head h2{margin-bottom:10px;}
+.dom-tlds-head p{color:var(--rep-text-muted);max-width:480px;margin:0 auto;font-size:.97rem;}
+.tld-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.tld-card{
+  background:var(--rep-bg-light);border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-lg);padding:22px 18px;text-align:center;
+  transition:all .25s ease;cursor:default;
+}
+.tld-card:hover{box-shadow:var(--rep-shadow-md);transform:translateY(-3px);border-color:rgba(65,153,159,.25);}
+.tld-ext{font:700 1.5rem/1 var(--rep-font-display);color:var(--rep-forest);margin-bottom:8px;}
+.tld-ext span{color:var(--rep-teal);}
+.tld-price{font:600 .82rem/1 var(--rep-font-body);color:var(--rep-teal);margin-bottom:5px;}
+.tld-desc{font-size:.76rem;color:var(--rep-text-muted);}
+.tld-eco-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font:600 .66rem/1 var(--rep-font-body);padding:3px 8px;
+  border-radius:var(--rep-radius-full);background:rgba(147,241,201,.12);
+  color:var(--rep-teal);border:1px solid rgba(147,241,201,.25);margin-top:6px;
+}
+@media(max-width:640px){.tld-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ===========================================================================
+   4. INCLUIDO CON TU DOMINIO (dark, diagonal clip)
+   =========================================================================== */
+.dom-features{
+  --angle:clamp(32px,3.5vw,64px);
+  padding:calc(80px + var(--angle)) 0 80px;
+  background:var(--rep-forest);color:#fff;
+  position:relative;z-index:2;
+  clip-path:polygon(0 var(--angle),100% 0,100% 100%,0 100%);
+  margin-top:calc(-1 * var(--angle));
+}
+.dom-features .wrap{max-width:1000px;}
+.dom-feat-head{text-align:center;margin-bottom:52px;}
+.dom-feat-head h2{color:#fff;margin-bottom:10px;}
+.dom-feat-head p{color:rgba(255,255,255,.5);max-width:500px;margin:0 auto;font-size:.97rem;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.feat-card{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--rep-radius-lg);padding:28px;text-align:center;
+  transition:all .25s ease;
+}
+.feat-card:hover{background:rgba(255,255,255,.09);transform:translateY(-4px);}
+.feat-card i{font-size:36px;color:var(--rep-green);margin-bottom:14px;display:block;}
+.feat-card h3{color:#fff!important;font-size:1.05rem;margin-bottom:8px;}
+.feat-card p{font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.7;}
+@media(max-width:640px){.feat-grid{grid-template-columns:1fr;}}
+
+/* ===========================================================================
+   5. TRANSFERIR DOMINIO
+   =========================================================================== */
+.dom-transfer{padding:88px 0;background:#fff;}
+.dom-transfer .wrap{max-width:860px;}
+.dom-transfer-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.dom-transfer-copy{display:block;} /* left column */
+.dom-transfer-copy .kicker{display:block;margin-bottom:12px;}
+.dom-transfer-copy h2{margin-bottom:14px;}
+.dom-transfer-copy p{font-size:.97rem;line-height:1.8;margin-bottom:20px;}
+.dom-steps{display:flex;flex-direction:column;gap:16px;}
+.dom-step{display:flex;gap:16px;align-items:flex-start;}
+.dom-step-num{
+  width:38px;height:38px;flex-shrink:0;border-radius:50%;
+  background:var(--rep-green);color:var(--rep-forest);
+  display:grid;place-items:center;font:700 .88rem/1 var(--rep-font-display);
+}
+.dom-step-body h4{font-size:.95rem;margin-bottom:3px;color:var(--rep-forest);}
+.dom-step-body p{font-size:.84rem;color:var(--rep-text-muted);margin:0;}
+@media(max-width:640px){.dom-transfer-inner{grid-template-columns:1fr;gap:40px;}}
+
+/* ===========================================================================
+   6. FAQ
+   =========================================================================== */
+.dom-faqs{padding:88px 0;background:var(--rep-bg-light);}
+.dom-faqs .wrap{max-width:720px;}
+.dom-faqs-head{text-align:center;margin-bottom:44px;}
+.dom-faqs-head h2{margin-bottom:10px;}
+.dom-faqs-head p{color:var(--rep-text-muted);font-size:.97rem;}
+.dom-faq{
+  border:1px solid var(--rep-border);border-radius:var(--rep-radius-md);
+  background:#fff;margin-bottom:10px;overflow:hidden;transition:box-shadow .25s;
+}
+.dom-faq:hover{box-shadow:var(--rep-shadow-sm);}
+.dom-faq summary{
+  padding:18px 22px;cursor:pointer;list-style:none;display:flex;align-items:center;
+  justify-content:space-between;font:600 .95rem/1.45 var(--rep-font-display);color:var(--rep-forest);
+}
+.dom-faq summary::-webkit-details-marker{display:none;}
+.dom-faq summary i{font-size:16px;color:var(--rep-teal);transition:transform .22s;flex-shrink:0;margin-left:12px;}
+.dom-faq[open] summary i{transform:rotate(180deg);}
+.dom-faq .answer{padding:0 22px 18px;font-size:.9rem;line-height:1.75;color:var(--rep-text-secondary);}
+.dom-faq .answer a{color:var(--rep-teal);text-decoration:underline;}
+
+/* ===========================================================================
+   7. CTA FINAL
+   =========================================================================== */
+.dom-cta{
+  padding:88px 0;
+  background:linear-gradient(135deg,#1E2F23 0%,#2A4A35 50%,#1A3828 100%);
+  text-align:center;position:relative;overflow:hidden;
+}
+.dom-cta::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(65,153,159,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.dom-cta .wrap{position:relative;z-index:1;}
+.dom-cta h2{color:#fff;margin-bottom:12px;}
+.dom-cta p{color:rgba(255,255,255,.6);max-width:460px;margin:0 auto 32px;font-size:1.05rem;}
+.dom-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}/* End custom CSS */</style>		<div data-elementor-type="wp-page" data-elementor-id="397" class="elementor elementor-397" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-72bb8af e-con-full e-flex e-con e-parent" data-id="72bb8af" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-3a02e52 elementor-widget elementor-widget-html" data-id="3a02e52" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					
+<div class="rpl">
+
+<!-- ===========================================================================
+     1. HERO
+     =========================================================================== -->
+<section class="dom-hero">
+  <div class="wrap">
+    <div class="dom-hero-inner">
+
+      <!-- Contenido izquierdo -->
+      <div class="dom-hero-content">
+        <div class="dom-hero-eyebrow">
+          <i class="ph-bold ph-globe-hemisphere-west"></i> Dominios web
+        </div>
+        <h1>Registra o transfiere<br>tu <span style="color:var(--rep-green);">dominio web en verde</span></h1>
+        <p class="dom-hero-sub">
+          Mueve tu dominio a una infraestructura <strong>100% energía renovable</strong>.
+          SSL, protección WHOIS y DNS Cloudflare incluidos —todo desde un solo panel.
+        </p>
+        <div class="dom-hero-badges">
+          <span class="dom-hbadge"><i class="ph-bold ph-lock-key"></i> SSL gratuito</span>
+          <span class="dom-hbadge"><i class="ph-bold ph-shield-check"></i> WHOIS privado</span>
+          <span class="dom-hbadge"><i class="ph-bold ph-cloud"></i> DNS Cloudflare</span>
+          <span class="dom-hbadge"><i class="ph-bold ph-tree"></i> Hosting verde</span>
+        </div>
+        <div class="dom-hero-btns">
+          <a href="#dom-widget" class="btn btn-green" onclick="document.getElementById('dom-widget').scrollIntoView({behavior:'smooth',block:'start'});return false;">
+            <i class="ph-bold ph-magnifying-glass"></i> Buscar mi dominio
+          </a>
+          <a href="/eco-hosting/" class="btn btn-outline-dark">
+            <i class="ph-bold ph-rocket-launch"></i> Ver hosting
+          </a>
+        </div>
+      </div>
+
+      <!-- Visual derecho: ecosistema de extensiones -->
+      <div class="dom-hero-visual reveal">
+        <div class="dom-globe-card">
+          <div class="dom-pulse" aria-hidden="true"></div>
+
+          <!-- Globe center -->
+          <div class="dgc-globe-wrap">
+            <div class="dgc-globe-icon" aria-hidden="true">
+              <i class="ph-bold ph-globe-hemisphere-west"></i>
+            </div>
+            <div class="dgc-globe-label">Registra · Transfiere · Gestiona</div>
+          </div>
+
+          <!-- Extension cloud (sin precios — salen en el widget) -->
+          <div class="dgc-ext-cloud" aria-label="Extensiones disponibles">
+            <span class="dgc-ext prime">.com</span>
+            <span class="dgc-ext prime">.es</span>
+            <span class="dgc-ext eco">.eco</span>
+            <span class="dgc-ext eco">.green</span>
+            <span class="dgc-ext">.net</span>
+            <span class="dgc-ext">.org</span>
+            <span class="dgc-ext">.shop</span>
+            <span class="dgc-ext">.dev</span>
+            <span class="dgc-ext">.io</span>
+            <span class="dgc-ext" style="font-size:.78rem;color:rgba(255,255,255,.3);">+500 más</span>
+          </div>
+
+          <!-- Todo incluido -->
+          <div class="dgc-features">
+            <div class="dgc-feat"><i class="ph-bold ph-lock-key"></i>SSL gratuito incluido</div>
+            <div class="dgc-feat"><i class="ph-bold ph-shield-check"></i>Privacidad WHOIS gratis</div>
+            <div class="dgc-feat"><i class="ph-bold ph-cloud"></i>DNS Cloudflare activado</div>
+            <div class="dgc-feat"><i class="ph-bold ph-envelope-simple"></i>Correo profesional incluido</div>
+          </div>
+
+          <!-- Stats -->
+          <div class="dsc-footer">
+            <div class="dsc-stat"><div class="val">500+</div><div class="lab">Extensiones</div></div>
+            <div class="dsc-stat"><div class="val">24h</div><div class="lab">Activación</div></div>
+            <div class="dsc-stat"><div class="val">100%</div><div class="lab">Verde</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.dom-hero-inner -->
+  </div><!-- /.wrap -->
+</section>
+
+
+<!-- ===========================================================================
+     2. WIDGET UPMIND DAC
+     =========================================================================== -->
+<section class="dom-widget" id="dom-widget">
+  <div class="wrap">
+    <div class="dom-widget-head reveal">
+      <span class="kicker kicker--light"><i class="ph-bold ph-magnifying-glass"></i> Buscador</span>
+      <h2>Comprueba la disponibilidad</h2>
+      <p>Escribe el nombre que deseas y te mostramos precios y extensiones disponibles al instante.</p>
+    </div>
+    <div class="dom-widget-inner">
+      <div class="rep-domain-search">
+        <upm-dac
+          order-config-url="https://clientes.replanta.net/order/"
+          currency-code="EUR"
+        ></upm-dac>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================================================================
+     3. EXTENSIONES POPULARES
+     =========================================================================== -->
+<section class="dom-tlds">
+  <div class="wrap">
+    <div class="dom-tlds-head reveal">
+      <span class="kicker">Extensiones</span>
+      <h2>Las más populares</h2>
+      <p>Desde las universales hasta las ecológicas. Elige la que mejor represente tu proyecto —precios reales en el buscador.</p>
+    </div>
+    <div class="tld-grid">
+      <div class="tld-card reveal" data-delay="1">
+        <div class="tld-ext"><span>.</span>com</div>
+        <div class="tld-desc">La extensión universal</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+      <div class="tld-card reveal" data-delay="2">
+        <div class="tld-ext"><span>.</span>es</div>
+        <div class="tld-desc">Presencia en España</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+      <div class="tld-card reveal" data-delay="3">
+        <div class="tld-ext"><span>.</span>net</div>
+        <div class="tld-desc">Tecnología y redes</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+      <div class="tld-card reveal" data-delay="4">
+        <div class="tld-ext"><span>.</span>org</div>
+        <div class="tld-desc">ONGs y comunidades</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+      <div class="tld-card reveal" data-delay="1">
+        <div class="tld-ext"><span>.</span>eco</div>
+        <div class="tld-desc">Compromiso ecológico</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+        <div class="tld-eco-badge"><i class="ph-bold ph-leaf"></i> Eco</div>
+      </div>
+      <div class="tld-card reveal" data-delay="2">
+        <div class="tld-ext"><span>.</span>green</div>
+        <div class="tld-desc">Marcas sostenibles</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+        <div class="tld-eco-badge"><i class="ph-bold ph-leaf"></i> Eco</div>
+      </div>
+      <div class="tld-card reveal" data-delay="3">
+        <div class="tld-ext"><span>.</span>shop</div>
+        <div class="tld-desc">Tu tienda online</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+      <div class="tld-card reveal" data-delay="4">
+        <div class="tld-ext"><span>.</span>dev</div>
+        <div class="tld-desc">Desarrolladores</div>
+        <a href="#dom-widget" class="tld-price">Ver precio <i class="ph ph-arrow-right" style="font-size:11px;"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================================================================
+     4. TODO INCLUIDO CON TU DOMINIO
+     =========================================================================== -->
+<section class="dom-features">
+  <div class="wrap">
+    <div class="dom-feat-head reveal">
+      <span class="kicker kicker--light">Incluido gratis</span>
+      <h2>Todo lo que necesitas desde el día 1</h2>
+      <p>Sin costes ocultos. Cada dominio viene completo con la infraestructura esencial para arrancar seguro.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal" data-delay="1">
+        <i class="ph-duotone ph-lock-key"></i>
+        <h3>SSL gratuito</h3>
+        <p>Certificado Let's Encrypt auto-renovable. HTTPS activo desde el primer día sin configuración manual.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="2">
+        <i class="ph-duotone ph-shield-check"></i>
+        <h3>Protección WHOIS</h3>
+        <p>Tus datos personales ocultos en el registro público. Privacidad incluida sin coste extra.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="3">
+        <i class="ph-duotone ph-cloud"></i>
+        <h3>DNS Cloudflare</h3>
+        <p>Resolución ultrarrápida con CDN global y reglas de seguridad optimizadas para WordPress.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="1">
+        <i class="ph-duotone ph-envelope-simple"></i>
+        <h3>Correo profesional</h3>
+        <p>Crea cuentas con tu propio dominio: info@tudominio.com. Imagen profesional desde el primer día.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="2">
+        <i class="ph-duotone ph-arrows-clockwise"></i>
+        <h3>Transferencia fácil</h3>
+        <p>¿Ya tienes dominio? Lo trasladamos sin caídas, sin coste de migración y en menos de 48 horas.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="3">
+        <i class="ph-duotone ph-tree"></i>
+        <h3>100% energía verde</h3>
+        <p>Tu dominio gestionado en infraestructura con energía renovable certificada. Hosting que planta árboles.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================================================================
+     5. TRANSFERIR DOMINIO
+     =========================================================================== -->
+<section class="dom-transfer">
+  <div class="wrap">
+    <div class="dom-transfer-inner">
+      <div class="dom-transfer-copy reveal">
+        <span class="kicker"><i class="ph-bold ph-arrows-clockwise"></i> Transferencia</span>
+        <h2>Trae tu dominio a Replanta</h2>
+        <p>Mueve tu dominio existente a un hosting que cuida tu web y el planeta. Sin caídas, sin complicaciones y con soporte humano durante todo el proceso.</p>
+        <a href="https://clientes.replanta.net/order/" class="btn btn-primary" target="_blank" rel="noopener">
+          <i class="ph-bold ph-arrow-right"></i> Iniciar transferencia
+        </a>
+      </div>
+      <div class="dom-steps reveal" data-delay="1">
+        <div class="dom-step">
+          <div class="dom-step-num">1</div>
+          <div class="dom-step-body">
+            <h4>Desbloquea tu dominio</h4>
+            <p>En tu registrador actual, desactiva el bloqueo de transferencia.</p>
+          </div>
+        </div>
+        <div class="dom-step">
+          <div class="dom-step-num">2</div>
+          <div class="dom-step-body">
+            <h4>Obtén el código EPP</h4>
+            <p>Tu registrador te dará un código de autorización (auth code).</p>
+          </div>
+        </div>
+        <div class="dom-step">
+          <div class="dom-step-num">3</div>
+          <div class="dom-step-body">
+            <h4>Inicia la transferencia</h4>
+            <p>Introduce tu dominio arriba y pega el código EPP en el proceso de pago.</p>
+          </div>
+        </div>
+        <div class="dom-step">
+          <div class="dom-step-num">4</div>
+          <div class="dom-step-body">
+            <h4>Listo en 24–48 h</h4>
+            <p>La transferencia se completa automáticamente. Tu web no sufre ninguna caída.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===========================================================================
+     6. FAQ
+     =========================================================================== -->
+<section class="dom-faqs" itemscope itemtype="https://schema.org/FAQPage">
+  <div class="wrap">
+    <div class="dom-faqs-head reveal">
+      <span class="kicker">Preguntas frecuentes</span>
+      <h2>Todo sobre dominios</h2>
+      <p>Resolvemos las dudas más habituales antes de que las tengas.</p>
+    </div>
+
+    <details class="dom-faq reveal" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary itemprop="name">¿Puedo registrar un dominio sin contratar hosting? <i class="ph ph-caret-down"></i></summary>
+      <div class="answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <p itemprop="text">Sí, puedes registrar solo el dominio. Pero si lo combinas con un <a href="/eco-hosting/">plan de hosting</a>, configuramos DNS, SSL y correo por ti sin coste adicional.</p>
+      </div>
+    </details>
+
+    <details class="dom-faq reveal" data-delay="1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary itemprop="name">¿Cuánto tarda una transferencia de dominio? <i class="ph ph-caret-down"></i></summary>
+      <div class="answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <p itemprop="text">Normalmente entre <strong>24 y 48 horas</strong> para .com/.net/.org. Los dominios .es suelen ser inmediatos. Tu web sigue funcionando sin interrupciones durante todo el proceso.</p>
+      </div>
+    </details>
+
+    <details class="dom-faq reveal" data-delay="2" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary itemprop="name">¿Qué es la protección WHOIS? <i class="ph ph-caret-down"></i></summary>
+      <div class="answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <p itemprop="text">La base de datos WHOIS muestra los datos del propietario de un dominio. Con la protección WHOIS (incluida gratis), tus datos personales quedan ocultos al público.</p>
+      </div>
+    </details>
+
+    <details class="dom-faq reveal" data-delay="3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary itemprop="name">¿Puedo apuntar mi dominio a otro hosting? <i class="ph ph-caret-down"></i></summary>
+      <div class="answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <p itemprop="text">Sí, tienes control total de los DNS. Puedes apuntar el dominio donde quieras, aunque te recomendamos combinarlo con nuestro <a href="/eco-hosting/">eco-hosting</a> para máximo rendimiento.</p>
+      </div>
+    </details>
+
+    <details class="dom-faq reveal" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary itemprop="name">¿Se renueva automáticamente? <i class="ph ph-caret-down"></i></summary>
+      <div class="answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <p itemprop="text">Sí, la renovación automática está activa por defecto para que no pierdas tu dominio. Puedes desactivarla en cualquier momento desde el <a href="https://clientes.replanta.net" target="_blank" rel="noopener">panel de clientes</a>.</p>
+      </div>
+    </details>
+
+    <details class="dom-faq reveal" data-delay="1" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary itemprop="name">¿Qué extensión me conviene? <i class="ph ph-caret-down"></i></summary>
+      <div class="answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <p itemprop="text"><strong>.com</strong> es la opción universal. <strong>.es</strong> si tu público principal está en España. <strong>.eco</strong> o <strong>.green</strong> si quieres reforzar tu compromiso sostenible. <strong>.shop</strong> para tiendas online.</p>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+
+<!-- ===========================================================================
+     7. CTA FINAL
+     =========================================================================== -->
+<section class="dom-cta">
+  <div class="wrap reveal">
+    <h2>Tu dominio verde te espera</h2>
+    <p>Registra tu nombre, combínalo con hosting ecológico y tu WordPress vuela desde el día 1.</p>
+    <div class="dom-cta-btns">
+      <a href="#dom-widget" class="btn btn-green"
+         onclick="document.getElementById('dom-widget').scrollIntoView({behavior:'smooth',block:'start'});return false;">
+        <i class="ph-bold ph-magnifying-glass"></i> Buscar dominio
+      </a>
+      <a href="/eco-hosting/" class="btn btn-outline-dark">
+        <i class="ph-bold ph-rocket-launch"></i> Ver planes hosting
+      </a>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.rpl -->
+
+<!-- ===========================================================================
+     SCRIPTS
+     =========================================================================== -->
+<!-- upm-dac se encola vía WordPress (replanta-prices plugin).
+     Este HTML widget no carga el script directamente — así evitamos
+     cualquier doble-registro del custom element. -->
+
+<!-- Inyecta tema oscuro en upm-dac vía adoptedStyleSheets (cosmético, no afecta visibilidad) -->
+<script>
+(function(){
+  'use strict';
+
+  /* ── Dark skin para upm-dac (mismo override que home page) ── */
+  var C=[
+    ".field.is-grouped{display:flex!important;gap:0;align-items:stretch}",
+    ".control.is-expanded{flex:1 1 auto}",
+    ".field.is-grouped>.control:not(:last-child){margin-right:0!important}",
+    ".input{height:52px!important;padding:0 18px!important;border:2px solid rgba(255,255,255,.18)!important;border-right:0!important;border-radius:8px 0 0 8px!important;background:rgba(255,255,255,.1)!important;color:#fff!important;box-shadow:none!important;transition:border-color .2s,background .2s}",
+    ".input::placeholder{color:rgba(255,255,255,.45)}",
+    ".input:focus{border-color:#93f1c9!important;background:rgba(255,255,255,.15)!important;box-shadow:none!important}",
+    ".button.is-dark{height:52px!important;padding:0 28px!important;border:2px solid #93f1c9!important;border-radius:0 8px 8px 0!important;background:#93f1c9!important;color:#1e2f23!important;font-weight:400!important;cursor:pointer;transition:background .2s,border-color .2s}",
+    ".button.is-dark:hover{background:#f7d450!important;border-color:#f7d450!important}",
+    ".upm-dac-results{margin-top:20px!important}",
+    ".dac-domain-row{display:flex!important;flex-wrap:wrap;align-items:center!important;gap:12px;background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:8px!important;padding:14px 18px!important;margin-bottom:8px!important;grid-template-columns:unset!important;transition:background .2s}",
+    ".dac-domain-row:hover{background:rgba(255,255,255,.12)!important}",
+    ".dac-domain-icon{flex-shrink:0;width:20px}",
+    ".dac-domain-icon.has-text-success{color:#93f1c9!important}",
+    ".dac-domain-icon.has-text-danger{color:#ff7373!important}",
+    ".dac-domain-name{flex:1 1 auto;min-width:0;overflow:hidden}",
+    ".dac-domain-fqdn{margin:0!important;font-size:1.05rem!important;color:#fff!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+    ".has-opacity-75{opacity:.65!important}",
+    ".dac-domain-fqdn strong{color:#fff!important;font-weight:700!important}",
+    ".dac-domain-status{margin:0!important;font-size:.78rem!important;font-weight:600!important}",
+    ".dac-domain-status.has-text-success{color:#93f1c9!important}",
+    ".dac-domain-status.has-text-danger{color:#ff9999!important}",
+    ".dac-domain-price{margin:0!important;font-weight:700!important;color:#fff!important;white-space:nowrap}",
+    ".dac-domain-term{margin:0!important;font-size:.75rem!important;color:rgba(255,255,255,.5)!important;white-space:nowrap;text-align:right!important}",
+    ".dac-domain-cta.button.is-success{background:#93f1c9!important;border-color:#93f1c9!important;color:#1e2f23!important;font-weight:700!important;border-radius:8px!important;padding:0 16px!important;height:36px!important;white-space:nowrap;flex-shrink:0;transition:background .2s}",
+    ".dac-domain-cta.button.is-success:hover{background:#f7d450!important;border-color:#f7d450!important}",
+    ".button.is-outlined.is-rounded.is-fullwidth{background:transparent!important;border:2px solid rgba(255,255,255,.25)!important;color:rgba(255,255,255,.7)!important;border-radius:999px!important;height:44px!important;margin-top:16px!important;transition:border-color .2s,color .2s}",
+    ".button.is-outlined.is-rounded.is-fullwidth:hover{border-color:#93f1c9!important;color:#93f1c9!important}",
+    "@media(max-width:640px){.dac-domain-price,.dac-domain-term{display:none!important}}"
+  ].join("");
+
+  /* Polling: espera a que el shadow DOM de upm-dac exista Y tenga contenido.
+     El widget monta Vue de forma asíncrona — los 3 setTimeout fijos no
+     son suficientes en contextos Elementor. Reintentamos cada 100ms hasta 10s. */
+  var done=false;
+  var dacTries=0;
+  var dacPoll=setInterval(function(){
+    dacTries++;
+    if(done || dacTries>100){ clearInterval(dacPoll); return; }
+
+    var el=document.querySelector('upm-dac');
+    if(!el) return;
+
+    var root=el.shadowRoot;
+    /* Shadow root debe existir Y tener hijos (Vue montado) */
+    if(!root || !root.children.length) return;
+
+    clearInterval(dacPoll);
+
+    if(window.CSSStyleSheet && 'replaceSync' in CSSStyleSheet.prototype){
+      try{
+        var sh=new CSSStyleSheet();
+        sh.replaceSync(C);
+        root.adoptedStyleSheets=[sh];
+        done=true;
+        return;
+      }catch(e){}
+    }
+    /* Fallback light-DOM (safari antiguo, etc.) */
+    if(!document.getElementById('rep-dac-theme')){
+      var s=document.createElement('style');
+      s.id='rep-dac-theme'; s.textContent=C;
+      document.head.appendChild(s);
+    }
+    done=true;
+  },100);
+
+  /* ── Scroll Reveal ── */
+  var reveals=document.querySelectorAll('.rpl .reveal');
+  if(reveals.length){
+    var io=new IntersectionObserver(function(entries,obs){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+    reveals.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ── Pre-fill DAC desde ?q= param (redirect desde home) ── */
+  var params=new URLSearchParams(window.location.search);
+  var q=params.get('q');
+  if(q){
+    var tries=0;
+    var fill=setInterval(function(){
+      var dac=document.querySelector('upm-dac');
+      if(!dac){ clearInterval(fill); return; }
+      var shadow=dac.shadowRoot;
+      if(shadow){
+        var input=shadow.querySelector('input[type="text"],input[type="search"]');
+        if(input){
+          input.value=q;
+          input.dispatchEvent(new Event('input',{bubbles:true}));
+          var btn=shadow.querySelector('button[type="submit"],button');
+          if(btn) btn.click();
+          clearInterval(fill);
+          return;
+        }
+      }
+      tries++;
+      if(tries>30) clearInterval(fill);
+    },100);
+  }
+
+}());
+</script>				</div>
+				</div>
+				</div>
+		

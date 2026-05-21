@@ -97,7 +97,9 @@ class SAPWCC_Audit {
         'set_cc_ip'              => 'IP allowlist propagada',
         'set_flags_hmac_secret'  => 'HMAC secret flags actualizado',
         'vigilante_config'       => 'Configuración Vigilante actualizada',
-        'vigilante_alert'        => 'Alerta crítica Vigilante',
+        'vigilante_alert'        => 'Alerta crítica Vigilante (admin)',
+        'vigilante_alert_sap'    => 'Alerta Vigilante enviada al equipo SAP',
+        'vigilante_auto_cron'    => 'Cron auto-relanzado por Vigilante',
     ];
 
     /**
@@ -128,6 +130,8 @@ class SAPWCC_Audit {
         'set_flags_hmac_secret'  => 'dashicons-admin-network',
         'vigilante_config'       => 'dashicons-shield-alt',
         'vigilante_alert'        => 'dashicons-warning',
+        'vigilante_alert_sap'    => 'dashicons-email-alt',
+        'vigilante_auto_cron'    => 'dashicons-update',
     ];
 
     /**

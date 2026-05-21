@@ -3,7 +3,7 @@
  * Plugin Name: Replanta Prices
  * Plugin URI:  https://github.com/replantadev/replantaprices
  * Description: Precios dinámicos de hosting, mantenimiento y SAP WooCommerce sincronizados con Upmind. Shortcodes con detección geográfica multi-divisa.
- * Version:     1.1.1
+ * Version:     1.1.2
  * Author:      Replanta
  * Author URI:  https://replanta.net
  * License:     GPL-2.0-or-later
@@ -15,7 +15,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /* ─── Constants ────────────────────────────────────────────────────── */
-define( 'REPLANTA_PRICES_VERSION', '1.1.1' );
+define( 'REPLANTA_PRICES_VERSION', '1.1.2' );
 define( 'REPLANTA_PRICES_FILE',    __FILE__ );
 define( 'REPLANTA_PRICES_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'REPLANTA_PRICES_URL',     plugin_dir_url( __FILE__ ) );
@@ -26,6 +26,8 @@ require_once REPLANTA_PRICES_DIR . 'includes/class-geo.php';
 require_once REPLANTA_PRICES_DIR . 'includes/class-upmind-api.php';
 require_once REPLANTA_PRICES_DIR . 'includes/class-price-cache.php';
 require_once REPLANTA_PRICES_DIR . 'includes/class-awin-analytics.php';
+require_once REPLANTA_PRICES_DIR . 'includes/class-awin-dashboard.php';
+require_once REPLANTA_PRICES_DIR . 'includes/class-product-feed.php';
 require_once REPLANTA_PRICES_DIR . 'includes/awin/class-awin-logger.php';
 require_once REPLANTA_PRICES_DIR . 'includes/awin/class-awin-logs-cleanup.php';
 require_once REPLANTA_PRICES_DIR . 'includes/class-admin-settings.php';
@@ -41,6 +43,7 @@ function replanta_prices_init() {
     Replanta_Prices_Cache::init();
     Replanta_Prices_Awin_Analytics::init();
     Replanta_Prices_Admin::init();
+    Replanta_Prices_Product_Feed::init();
     Replanta_Prices_Shortcodes::init();
 }
 

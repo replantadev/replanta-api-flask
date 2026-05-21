@@ -63,7 +63,7 @@ class SAPWCC_Sites {
             return false;
         }
 
-        $allowed = [ 'client_name', 'client_email', 'contract_date', 'monthly_fee' ];
+        $allowed = [ 'client_name', 'client_email', 'contract_date', 'monthly_fee', 'quiet_from', 'quiet_to' ];
 
         foreach ( $meta as $field => $value ) {
             if ( in_array( $field, $allowed, true ) ) {
