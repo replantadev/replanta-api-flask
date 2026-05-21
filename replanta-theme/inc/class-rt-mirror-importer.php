@@ -24,9 +24,11 @@ final class RT_Mirror_Importer {
 	public const META_MIRROR        = '_rt_mirror';
 	public const META_SOURCE_URL    = '_rt_mirror_source_url';
 	public const META_CSS_FILES     = '_rt_mirror_css';
+	public const META_CSS_BUNDLE    = '_rt_mirror_css_bundle';
 	public const META_INLINE_CSS    = '_rt_mirror_inline_css';
 	public const META_IMPORTED_AT   = '_rt_mirror_imported_at';
 	public const META_ASSETS        = '_rt_mirror_assets';
+	public const META_FONTS         = '_rt_mirror_fonts';
 
 	public const UPLOAD_DIR = 'replanta-imports';
 
@@ -104,8 +106,13 @@ final class RT_Mirror_Importer {
 		// Download images and rewrite DOM references to local copies.
 		$this->download_assets_in_dom( $xpath, $root );
 
+		// Perf: add loading/decoding/dims, mark hero with fetchpriority=high.
+		$this->enhance_images_in_dom( $xpath, $root );
+
 		// Render inner HTML.
 		$body_html = $this->inner_html( $root );
+		// HTML minify (whitespace collapse outside pre/textarea/script/style).
+		$body_html = $this->minify_html( $body_html );
 
 		// Collect inline <style> from head.
 		$inline_css = '';
@@ -122,8 +129,28 @@ final class RT_Mirror_Importer {
 			}
 		}
 
+		// Extract preload font links (and any <link rel="preload" as="font">).
+		$fonts = [];
+		foreach ( $xpath->query( '//head/link[@rel="preload" and @as="font"] | //head/link[@as="font"]' ) as $fl ) {
+			$href = (string) $fl->getAttribute( 'href' );
+			if ( $href !== '' ) {
+				$type   = (string) $fl->getAttribute( 'type' );
+				$cross  = $fl->hasAttribute( 'crossorigin' ) ? (string) $fl->getAttribute( 'crossorigin' ) : 'anonymous';
+				$local  = $this->download_one( $href, $base );
+				$fonts[] = [
+					'href'        => $local,
+					'type'        => $type !== '' ? $type : 'font/woff2',
+					'crossorigin' => $cross,
+				];
+			}
+		}
+
 		// Download CSS files into uploads/replanta-imports/{slug}/.
-		$saved_css = $this->download_css_files( $css_links, $slug );		// Build/Update rt_page.
+		$saved_css = $this->download_css_files( $css_links, $slug );
+		// Build a bundled minified CSS to reduce HTTP requests.
+		$bundle_url = $this->build_css_bundle( $saved_css, $slug );
+
+		// Build/Update rt_page.
 		$post_id = $this->find_or_create_post( $slug, $title );
 		if ( is_wp_error( $post_id ) || ! $post_id ) {
 			return [ 'ok' => false, 'error' => 'wp_insert_post failed' ];
@@ -141,9 +168,11 @@ final class RT_Mirror_Importer {
 		update_post_meta( $post_id, self::META_MIRROR, 1 );
 		update_post_meta( $post_id, self::META_SOURCE_URL, $url );
 		update_post_meta( $post_id, self::META_CSS_FILES, $saved_css );
+		update_post_meta( $post_id, self::META_CSS_BUNDLE, $bundle_url );
 		update_post_meta( $post_id, self::META_INLINE_CSS, $inline_css );
 		update_post_meta( $post_id, self::META_IMPORTED_AT, time() );
 		update_post_meta( $post_id, self::META_ASSETS, $this->asset_map );
+		update_post_meta( $post_id, self::META_FONTS, $fonts );
 		// Compatibility with the rest of the engine.
 		if ( defined( 'RT_Content_Sync::META_SOURCE_URL' ) || class_exists( 'RT_Content_Sync' ) ) {
 			update_post_meta( $post_id, RT_Content_Sync::META_SOURCE_URL, $url );
@@ -157,7 +186,9 @@ final class RT_Mirror_Importer {
 			'edit_url'  => get_edit_post_link( $post_id, 'raw' ),
 			'css_count' => count( $saved_css ),
 			'css_files' => $saved_css,
+			'css_bundle'=> $bundle_url,
 			'img_count' => count( $this->asset_map ),
+			'fonts'     => $fonts,
 			'title'     => $title,
 			'slug'      => $slug,
 		];
@@ -561,6 +592,30 @@ final class RT_Mirror_Importer {
 		if ( ! in_array( $ext, [ 'jpg', 'jpeg', 'png' ], true ) ) {
 			return null;
 		}
+		// Try AVIF first when Imagick has the encoder; AVIF beats WebP on average.
+		$avif = (string) preg_replace( '/\.(jpe?g|png)$/i', '.avif', $file );
+		if ( $avif !== '' && $avif !== $file ) {
+			if ( file_exists( $avif ) ) {
+				return $avif;
+			}
+			if ( class_exists( 'Imagick' ) ) {
+				try {
+					$formats = method_exists( 'Imagick', 'queryFormats' ) ? Imagick::queryFormats( 'AVIF' ) : [];
+					if ( ! empty( $formats ) ) {
+						$im = new Imagick( $file );
+						$im->setImageFormat( 'avif' );
+						$im->setImageCompressionQuality( 60 );
+						$im->writeImage( $avif );
+						$im->clear();
+						if ( file_exists( $avif ) ) {
+							return $avif;
+						}
+					}
+				} catch ( \Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement
+					// Fall through to WebP.
+				}
+			}
+		}
 		$webp = (string) preg_replace( '/\.(jpe?g|png)$/i', '.webp', $file );
 		if ( $webp === '' || $webp === $file ) {
 			return null;
@@ -603,7 +658,152 @@ final class RT_Mirror_Importer {
 	}
 
 	/**
-	 * HTTP GET with ETag/Last-Modified cache and one retry on 5xx/timeout.
+	 * Add loading/decoding/dims attributes to <img> nodes. The first non-tiny
+	 * image gets fetchpriority=high and loading=eager (LCP candidate); the rest
+	 * get loading=lazy and decoding=async. Dimensions are read from the local
+	 * file when missing to avoid CLS.
+	 */
+	private function enhance_images_in_dom( DOMXPath $xpath, DOMNode $root ): void {
+		$imgs = $xpath->query( './/img', $root );
+		if ( ! $imgs ) {
+			return;
+		}
+		$first = true;
+		foreach ( $imgs as $img ) {
+			if ( ! $img instanceof DOMElement ) {
+				continue;
+			}
+			if ( ! $img->hasAttribute( 'decoding' ) ) {
+				$img->setAttribute( 'decoding', 'async' );
+			}
+			// Fill in width/height from local file when both are missing.
+			if ( ! $img->hasAttribute( 'width' ) && ! $img->hasAttribute( 'height' ) ) {
+				$src = $img->getAttribute( 'src' );
+				$dim = $this->intrinsic_size( $src );
+				if ( $dim ) {
+					$img->setAttribute( 'width', (string) $dim[0] );
+					$img->setAttribute( 'height', (string) $dim[1] );
+				}
+			}
+			if ( $first ) {
+				$img->setAttribute( 'fetchpriority', 'high' );
+				$img->setAttribute( 'loading', 'eager' );
+				$first = false;
+			} elseif ( ! $img->hasAttribute( 'loading' ) ) {
+				$img->setAttribute( 'loading', 'lazy' );
+			}
+		}
+	}
+
+	/**
+	 * Resolve a local URL to an absolute filesystem path under uploads, and
+	 * return [width, height] via getimagesize() or null on failure.
+	 *
+	 * @return array{0:int,1:int}|null
+	 */
+	private function intrinsic_size( string $url ): ?array {
+		if ( $url === '' ) {
+			return null;
+		}
+		$uploads = wp_upload_dir();
+		$baseurl = trailingslashit( (string) $uploads['baseurl'] );
+		if ( strpos( $url, $baseurl ) !== 0 ) {
+			return null;
+		}
+		$rel  = substr( $url, strlen( $baseurl ) );
+		$path = trailingslashit( (string) $uploads['basedir'] ) . $rel;
+		if ( ! is_readable( $path ) ) {
+			return null;
+		}
+		$info = @getimagesize( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		if ( ! is_array( $info ) || empty( $info[0] ) || empty( $info[1] ) ) {
+			return null;
+		}
+		return [ (int) $info[0], (int) $info[1] ];
+	}
+
+	/**
+	 * Conservative HTML minify: collapse runs of whitespace outside of pre/
+	 * textarea/script/style, and strip HTML comments (except IE conditionals).
+	 */
+	private function minify_html( string $html ): string {
+		if ( $html === '' ) {
+			return $html;
+		}
+		// Mask protected regions (pre/textarea/script/style) so we don't touch them.
+		$mask    = [];
+		$counter = 0;
+		$masked  = (string) preg_replace_callback(
+			'#<(pre|textarea|script|style)\b[^>]*>.*?</\1>#is',
+			static function ( $m ) use ( &$mask, &$counter ) {
+				$token         = '@@RTMASK' . ( ++$counter ) . '@@';
+				$mask[ $token ] = $m[0];
+				return $token;
+			},
+			$html
+		);
+		// Strip non-IE comments.
+		$masked = (string) preg_replace( '/<!--(?!\[if).*?-->/s', '', $masked );
+		// Collapse whitespace runs.
+		$masked = (string) preg_replace( '/\s{2,}/', ' ', $masked );
+		// Remove whitespace around block-level tags to save bytes.
+		$masked = (string) preg_replace( '/>\s+</', '><', $masked );
+		// Restore masked regions.
+		if ( $mask ) {
+			$masked = strtr( $masked, $mask );
+		}
+		return trim( $masked );
+	}
+
+	/**
+	 * Concatenate and minify all per-page CSS files into a single bundle.
+	 * Returns the public URL of the bundle, or empty string on failure.
+	 *
+	 * @param array<int,string> $files
+	 */
+	private function build_css_bundle( array $files, string $slug ): string {
+		if ( ! $files ) {
+			return '';
+		}
+		$uploads  = wp_upload_dir();
+		$dir      = trailingslashit( $uploads['basedir'] ) . self::UPLOAD_DIR . '/' . $slug;
+		$baseurl  = trailingslashit( $uploads['baseurl'] ) . self::UPLOAD_DIR . '/' . $slug;
+		if ( ! is_dir( $dir ) && ! wp_mkdir_p( $dir ) ) {
+			return '';
+		}
+		$buffer = '';
+		foreach ( $files as $url ) {
+			$rel  = substr( (string) $url, strlen( $baseurl ) + 1 );
+			$path = $dir . '/' . $rel;
+			if ( ! is_readable( $path ) ) {
+				continue;
+			}
+			$buffer .= "\n/*! src: " . basename( $path ) . " */\n" . (string) file_get_contents( $path );
+		}
+		if ( $buffer === '' ) {
+			return '';
+		}
+		$min     = $this->minify_css( $buffer );
+		$bundle  = $dir . '/00-bundle.min.css';
+		if ( file_put_contents( $bundle, $min ) === false ) {
+			return '';
+		}
+		return $baseurl . '/00-bundle.min.css';
+	}
+
+	private function minify_css( string $css ): string {
+		// Remove /* ... */ comments, but keep /*! ... */ source markers.
+		$css = (string) preg_replace( '#/\*(?!\!)[\s\S]*?\*/#', '', $css );
+		// Collapse whitespace.
+		$css = (string) preg_replace( '/\s+/', ' ', $css );
+		// Tight punctuation.
+		$css = (string) preg_replace( '/\s*([{};:,])\s*/', '$1', $css );
+		// Remove last semicolon before }.
+		$css = (string) str_replace( ';}', '}', $css );
+		return trim( $css );
+	}
+
+	/**
 	 *
 	 * Cached responses are stored as transient `rt_mir_http_<md5(url)>` with
 	 * keys: etag, last_modified, body, code, expires. We never re-use the

@@ -42,6 +42,7 @@ final class RT_Theme {
 		( new RT_Mirror_Admin() )->register();
 		( new RT_Schema() )->register();
 		( new RT_Sitemap() )->register();
+		( new RT_Perf() )->register();
 
 		// Register footer menu location for the layout footer.
 		add_action( 'after_setup_theme', static function (): void {

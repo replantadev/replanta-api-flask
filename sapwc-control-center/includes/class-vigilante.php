@@ -162,6 +162,28 @@ class SAPWCC_Vigilante {
         }
         unset( $issue );
 
+        // ── A3. Auto-resolve: missing_ship_to → call /control/repair-ship-to ─
+        foreach ( $issues as &$issue ) {
+            if ( $issue['type'] === 'missing_ship_to' ) {
+                $repair_resp = wp_remote_post(
+                    rtrim( $site['url'], '/' ) . '/wp-json/sapwc/v1/control/repair-ship-to',
+                    [ 'timeout' => 30, 'headers' => [ 'X-SAPWC-Secret' => $secret ] ]
+                );
+                if ( ! is_wp_error( $repair_resp ) && 200 === wp_remote_retrieve_response_code( $repair_resp ) ) {
+                    $body     = json_decode( wp_remote_retrieve_body( $repair_resp ), true );
+                    $repaired = (int) ( $body['repaired'] ?? 0 );
+                    if ( $repaired > 0 ) {
+                        $issue['auto_resolved'] = true;
+                        $issue['detail']       .= " Auto-reparados: $repaired pedido(s).";
+                        SAPWCC_Audit::log( 'vigilante_auto_ship_to', "ShipToCode reparado en $repaired pedido(s)", $site['label'] );
+                        self::increment_roi( $site_key, 'auto_resueltas' );
+                    }
+                }
+                break;
+            }
+        }
+        unset( $issue );
+
         // ── A2. ROI: detect recovered issues ────────────────────────────────
         foreach ( $prev_issues as $prev_issue ) {
             $still_present = false;
@@ -309,6 +331,24 @@ class SAPWCC_Vigilante {
                 'detail'       => 'Pedido en estado procesando/en espera que no ha llegado a SAP.',
                 'since'        => $po['created'] ?? '',
                 'context'      => $po,
+                'auto_resolved'=> false,
+            ];
+        }
+
+        // Rule 9 — Missing ShipToCode on exported orders.
+        $missing_ship_to = $data['missing_ship_to'] ?? [];
+        if ( ! empty( $missing_ship_to ) ) {
+            $count    = count( $missing_ship_to );
+            $order_ids = array_column( $missing_ship_to, 'order_id' );
+            $issues[] = [
+                'id'           => 'missing_ship_to',
+                'type'         => 'missing_ship_to',
+                'audience'     => 'admin',
+                'severity'     => self::SEV_WARNING,
+                'title'        => $count . ' pedido(s) en SAP sin direccion de envio asignada',
+                'detail'       => 'ShipToCode vacio: la direccion existe en el BP pero no esta vinculada al pedido SAP. Se reparara automaticamente.',
+                'since'        => $missing_ship_to[0]['created'] ?? '',
+                'context'      => [ 'order_ids' => $order_ids, 'count' => $count ],
                 'auto_resolved'=> false,
             ];
         }

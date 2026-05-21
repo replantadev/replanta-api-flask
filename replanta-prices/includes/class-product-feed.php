@@ -137,16 +137,19 @@ class Replanta_Prices_Product_Feed {
         // https://www.google.com/basepages/producttype/taxonomy-with-ids.en-US.txt
         $category_map = array(
             'hosting'       => array(
-                'google' => '5299',   // Software
+                'google' => '5299',
                 'fb'     => 'Software > Web Hosting',
+                'label'  => 'Eco Web Hosting',
             ),
             'mantenimiento' => array(
-                'google' => '5299',   // Software (services don't have a direct GMC category)
+                'google' => '5299',
                 'fb'     => 'Services > IT Services',
+                'label'  => 'Mantenimiento WordPress',
             ),
             'sapwoo'        => array(
-                'google' => '5299',   // Software
+                'google' => '5299',
                 'fb'     => 'Software > E-Commerce Software',
+                'label'  => 'SAP WooCommerce',
             ),
         );
 
@@ -155,9 +158,10 @@ class Replanta_Prices_Product_Feed {
                 continue;
             }
 
-            $cat_label_google = isset( $category_map[ $category_key ]['google'] ) ? $category_map[ $category_key ]['google'] : 'Software';
-            $cat_label_fb     = isset( $category_map[ $category_key ]['fb'] )     ? $category_map[ $category_key ]['fb']     : 'Software';
-            $cat_title        = isset( $category['title'] ) ? wp_strip_all_tags( $category['title'] ) : $category_key;
+            $cat_label_google  = isset( $category_map[ $category_key ]['google'] ) ? $category_map[ $category_key ]['google'] : 'Software';
+            $cat_label_fb      = isset( $category_map[ $category_key ]['fb'] )     ? $category_map[ $category_key ]['fb']     : 'Software';
+            $cat_marketing     = isset( $category_map[ $category_key ]['label'] )  ? $category_map[ $category_key ]['label']  : ucfirst( $category_key );
+            $cat_title         = isset( $category['title'] ) ? wp_strip_all_tags( $category['title'] ) : $category_key;
 
             foreach ( $category['plans'] as $plan_key => $plan ) {
                 $price = self::resolve_price( $plan, $currency, $period );
@@ -179,7 +183,7 @@ class Replanta_Prices_Product_Feed {
                     }
                 }
 
-                $description_raw = $cat_title . ' - ' . $name . ( $subtitle ? ' (' . $subtitle . ')' : '' );
+                $description_raw = $cat_marketing . ' - ' . $name . ( $subtitle ? ' (' . $subtitle . ')' : '' );
                 if ( ! empty( $desc_parts ) ) {
                     $description_raw .= '. ' . implode( '. ', $desc_parts );
                 }
@@ -194,7 +198,7 @@ class Replanta_Prices_Product_Feed {
 
                 $items[] = array(
                     'id'             => 'replanta-' . $category_key . '-' . $plan_key,
-                    'title'          => $name . ' - ' . $cat_title,
+                    'title'          => $cat_marketing . ' – ' . $name,
                     'description'    => $description,
                     'link'           => $landing_url,
                     'image_link'     => $image_url,
