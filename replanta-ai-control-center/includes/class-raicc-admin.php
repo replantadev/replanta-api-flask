@@ -16,7 +16,9 @@ final class RAICCAdmin
     public function __construct(
         private RAICCAIConnectorService $connectorService,
         private RAICCBlueprintValidator $validator,
-        private RAICCPageService $pageService
+        private RAICCPageService $pageService,
+        private RAICCRateLimiter $rateLimiter,
+        private RAICCOperationLogger $logger
     ) {
     }
 
@@ -25,6 +27,31 @@ final class RAICCAdmin
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_post_raicc_create_prompt', [$this, 'handleCreatePrompt']);
         add_action('admin_post_raicc_set_status', [$this, 'handleSetStatus']);
+        add_action('admin_head', [$this, 'printAdminCss']);
+    }
+
+    public function printAdminCss(): void
+    {
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        if (!$screen || $screen->id !== 'toplevel_page_' . self::PAGE_SLUG) {
+            return;
+        }
+        echo '<style>';
+        echo '.raicc-grid{display:grid;grid-template-columns:1.25fr .95fr;gap:18px;align-items:start}';
+        echo '.raicc-card{background:#fff;border:1px solid #d6dfd8;border-radius:10px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}';
+        echo '.raicc-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;color:#153024}';
+        echo '.raicc-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}';
+        echo '.raicc-kpi{border:1px solid #e1e7e3;border-radius:8px;padding:10px}';
+        echo '.raicc-kpi b{display:block;font-size:1rem;color:#0f2d1f}';
+        echo '.raicc-kpi span{color:#607267;font-size:.8rem}';
+        echo '.raicc-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}';
+        echo '.raicc-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:600}';
+        echo '.raicc-ok{background:#dcfce7;color:#166534}';
+        echo '.raicc-warn{background:#fef3c7;color:#92400e}';
+        echo '.raicc-muted{color:#5f6d63}';
+        echo '.raicc-inline-icon svg{vertical-align:middle}';
+        echo '@media (max-width:1100px){.raicc-grid{grid-template-columns:1fr}.raicc-kpis{grid-template-columns:1fr}}';
+        echo '</style>';
     }
 
     public function adminMenu(): void
@@ -51,17 +78,23 @@ final class RAICCAdmin
         $pages = $this->pageService->latestPages(40);
 
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Replanta AI Control Center', 'replanta-ai-control-center') . '</h1>';
+        echo '<h1 style="display:flex;align-items:center;gap:8px;">' . RAICCIcons::svg('rocket', 20) . esc_html__('Replanta AI Control Center', 'replanta-ai-control-center') . '</h1>';
         echo '<p>' . esc_html__('Crea páginas semánticas por prompt y controla publicación en un solo panel.', 'replanta-ai-control-center') . '</p>';
 
         if ($notice !== '') {
             echo '<div class="notice notice-info"><p>' . esc_html($notice) . '</p></div>';
         }
 
-        echo '<div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start;">';
+        echo '<div class="raicc-kpis">';
+        echo '<div class="raicc-kpi"><b>' . esc_html((string) count($pages)) . '</b><span>' . esc_html__('Páginas cargadas', 'replanta-ai-control-center') . '</span></div>';
+        echo '<div class="raicc-kpi"><b>' . esc_html((string) ($status['active_connector'] ?? 'none')) . '</b><span>' . esc_html__('Conector activo', 'replanta-ai-control-center') . '</span></div>';
+        echo '<div class="raicc-kpi"><b>' . esc_html(!empty($status['connector_health']['ok']) ? 'OK' : 'Warning') . '</b><span>' . esc_html__('Salud IA', 'replanta-ai-control-center') . '</span></div>';
+        echo '</div>';
 
-        echo '<div class="postbox" style="padding:16px;">';
-        echo '<h2>' . esc_html__('Nueva página desde prompt', 'replanta-ai-control-center') . '</h2>';
+        echo '<div class="raicc-grid">';
+
+        echo '<div class="raicc-card">';
+        echo '<h2 class="raicc-title">' . RAICCIcons::svg('wand', 18) . esc_html__('Nueva página desde prompt', 'replanta-ai-control-center') . '</h2>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
         wp_nonce_field('raicc_create_prompt');
         echo '<input type="hidden" name="action" value="raicc_create_prompt">';
@@ -73,21 +106,23 @@ final class RAICCAdmin
         echo '</form>';
         echo '</div>';
 
-        echo '<div class="postbox" style="padding:16px;">';
-        echo '<h2>' . esc_html__('Estado del conector', 'replanta-ai-control-center') . '</h2>';
+        echo '<div class="raicc-card">';
+        echo '<h2 class="raicc-title">' . RAICCIcons::svg('gauge', 18) . esc_html__('Estado del conector', 'replanta-ai-control-center') . '</h2>';
         echo '<p><strong>' . esc_html__('Modo', 'replanta-ai-control-center') . ':</strong> ' . esc_html((string) ($status['mode'] ?? 'unknown')) . '</p>';
         echo '<p><strong>' . esc_html__('Conector activo', 'replanta-ai-control-center') . ':</strong> ' . esc_html((string) ($status['active_connector'] ?? 'none')) . '</p>';
         $health = isset($status['connector_health']) && is_array($status['connector_health']) ? $status['connector_health'] : [];
-        echo '<p><strong>' . esc_html__('Health', 'replanta-ai-control-center') . ':</strong> ' . esc_html(!empty($health['ok']) ? 'OK' : 'Warning') . '</p>';
+        $healthClass = !empty($health['ok']) ? 'raicc-badge raicc-ok' : 'raicc-badge raicc-warn';
+        $healthIcon = !empty($health['ok']) ? RAICCIcons::svg('check', 14) : RAICCIcons::svg('warning', 14);
+        echo '<p><strong>' . esc_html__('Health', 'replanta-ai-control-center') . ':</strong> <span class="' . esc_attr($healthClass) . '">' . $healthIcon . esc_html(!empty($health['ok']) ? 'OK' : 'Warning') . '</span></p>';
         if (!empty($health['message'])) {
-            echo '<p>' . esc_html((string) $health['message']) . '</p>';
+            echo '<p class="raicc-muted">' . esc_html((string) $health['message']) . '</p>';
         }
         echo '</div>';
 
         echo '</div>';
 
-        echo '<div class="postbox" style="padding:16px;margin-top:16px;">';
-        echo '<h2>' . esc_html__('Páginas recientes', 'replanta-ai-control-center') . '</h2>';
+        echo '<div class="raicc-card" style="margin-top:16px;">';
+        echo '<h2 class="raicc-title">' . RAICCIcons::svg('sparkle', 18) . esc_html__('Páginas recientes', 'replanta-ai-control-center') . '</h2>';
         echo '<table class="widefat striped"><thead><tr><th>' . esc_html__('Título', 'replanta-ai-control-center') . '</th><th>' . esc_html__('Estado', 'replanta-ai-control-center') . '</th><th>' . esc_html__('Modificado', 'replanta-ai-control-center') . '</th><th>' . esc_html__('Acciones', 'replanta-ai-control-center') . '</th></tr></thead><tbody>';
 
         foreach ($pages as $page) {
@@ -97,7 +132,7 @@ final class RAICCAdmin
             echo '<td><a href="' . esc_url((string) $edit) . '">' . esc_html((string) $page->post_title) . '</a></td>';
             echo '<td>' . esc_html((string) $page->post_status) . '</td>';
             echo '<td>' . esc_html((string) get_the_modified_date('', (int) $page->ID)) . '</td>';
-            echo '<td style="display:flex;gap:8px;align-items:center;">';
+            echo '<td><div class="raicc-actions">';
 
             echo '<a class="button" href="' . esc_url((string) $edit) . '">' . esc_html__('Editar', 'replanta-ai-control-center') . '</a>';
             if ($view !== '') {
@@ -117,7 +152,7 @@ final class RAICCAdmin
             );
             echo '</form>';
 
-            echo '</td>';
+            echo '</div></td>';
             echo '</tr>';
         }
 
@@ -138,6 +173,18 @@ final class RAICCAdmin
         }
         check_admin_referer('raicc_create_prompt');
 
+        $userId = get_current_user_id();
+        $limit = $this->rateLimiter->check('admin_create_from_prompt', $userId, 8, 60);
+        if (empty($limit['allowed'])) {
+            $this->logger->log('rate_limited', [
+                'bucket' => 'admin_create_from_prompt',
+                'user_id' => $userId,
+                'retry_after' => (int) ($limit['retry_after'] ?? 60),
+            ]);
+
+            $this->redirectNotice(__('Límite temporal alcanzado. Espera unos segundos e intenta nuevamente.', 'replanta-ai-control-center'));
+        }
+
         $prompt = isset($_POST['prompt']) ? trim((string) wp_unslash($_POST['prompt'])) : '';
         $title = isset($_POST['title']) ? sanitize_text_field((string) wp_unslash($_POST['title'])) : '';
         $slug = isset($_POST['slug']) ? sanitize_title((string) wp_unslash($_POST['slug'])) : '';
@@ -153,7 +200,14 @@ final class RAICCAdmin
             'slug' => $slug,
             'lang' => $lang,
         ], [
-            'user_id' => get_current_user_id(),
+            'user_id' => $userId,
+        ]);
+
+        $this->logger->log('admin_create_from_prompt', [
+            'user_id' => $userId,
+            'ok' => !empty($connector['ok']) ? 1 : 0,
+            'connector_id' => (string) ($connector['connector_id'] ?? ''),
+            'latency_ms' => (int) ($connector['latency_ms'] ?? 0),
         ]);
 
         if (empty($connector['ok'])) {
@@ -184,12 +238,41 @@ final class RAICCAdmin
         $status = isset($_POST['target_status']) ? sanitize_key((string) $_POST['target_status']) : '';
         check_admin_referer('raicc_set_status_' . $postId);
 
+        $userId = get_current_user_id();
+        $limitBucket = $status === 'publish' ? 'admin_publish' : 'admin_unpublish';
+        $limit = $this->rateLimiter->check($limitBucket, $userId, 20, 60);
+        if (empty($limit['allowed'])) {
+            $this->logger->log('rate_limited', [
+                'bucket' => $limitBucket,
+                'user_id' => $userId,
+                'retry_after' => (int) ($limit['retry_after'] ?? 60),
+            ]);
+
+            $this->redirectNotice(__('Límite temporal alcanzado para cambios de estado.', 'replanta-ai-control-center'));
+        }
+
         if ($postId <= 0 || ($status !== 'publish' && $status !== 'draft')) {
             $this->redirectNotice(__('Petición inválida.', 'replanta-ai-control-center'));
         }
 
         $res = $this->pageService->setPageStatus($postId, $status);
+        $this->logger->log('admin_set_status', [
+            'user_id' => $userId,
+            'post_id' => $postId,
+            'target_status' => $status,
+            'ok' => !empty($res['ok']) ? 1 : 0,
+            'error' => isset($res['error']) ? (string) $res['error'] : '',
+        ]);
+
         if (empty($res['ok'])) {
+            if (isset($res['gate']) && is_array($res['gate'])) {
+                $blockers = isset($res['gate']['blockers']) && is_array($res['gate']['blockers'])
+                    ? implode('; ', array_map('strval', $res['gate']['blockers']))
+                    : '';
+
+                $this->redirectNotice(__('Bloqueado por validaciones de publicación: ', 'replanta-ai-control-center') . $blockers);
+            }
+
             $this->redirectNotice(__('No se pudo actualizar el estado.', 'replanta-ai-control-center'));
         }
 
@@ -202,7 +285,7 @@ final class RAICCAdmin
     {
         $url = add_query_arg([
             'page' => self::PAGE_SLUG,
-            'raicc_notice' => rawurlencode($message),
+            'raicc_notice' => $message,
         ], admin_url('admin.php'));
 
         wp_safe_redirect($url);

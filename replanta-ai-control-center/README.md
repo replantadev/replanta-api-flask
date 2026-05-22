@@ -6,6 +6,9 @@ Minimal plugin scaffold for:
 - Create native page from prompt endpoint
 - Blueprint validation and semantic HTML rendering
 - Replanta AI admin dashboard for create/publish/unpublish
+- REST/Admin rate limiting for sensitive operations
+- Publish-time validation gates (a11y + semantic + seo baseline)
+- Structured operation logging
 
 ## Included Endpoints
 
@@ -14,6 +17,7 @@ Minimal plugin scaffold for:
 
 - POST /wp-json/replanta-ai/v1/pages/create-from-prompt
   - Permission: edit_pages
+  - Rate limit: 12 requests per minute per user
   - JSON body:
     - prompt (required)
     - title (optional)
@@ -22,9 +26,12 @@ Minimal plugin scaffold for:
 
 - POST /wp-json/replanta-ai/v1/pages/{id}/publish
   - Permission: edit_pages
+  - Rate limit: 30 requests per minute per user
+  - Blocked if publish gates fail
 
 - POST /wp-json/replanta-ai/v1/pages/{id}/unpublish
   - Permission: edit_pages
+  - Rate limit: 30 requests per minute per user
 
 ## Connector-First Contract
 
@@ -49,6 +56,35 @@ If no connector returns a valid array, fallback-local blueprint generation is us
 - _raicc_mode = ai
 - _raicc_prompt_last
 - _raicc_change_origin = ai
+
+## Publish Gates
+
+Before changing a page to publish, the plugin validates:
+- main landmark present
+- exactly one h1
+- all img tags include alt
+
+Warnings (non-blocking) include:
+- short content
+- title length outside recommended SEO range
+
+If blockers exist, publish is rejected with a detailed gate payload.
+
+## Operation Logs
+
+Structured logs are saved in:
+- option: raicc_operation_logs (bounded list)
+- debug log line prefix: RAICC_LOG
+
+Logged events include connector execution, rate limit hits, create status, and publish/unpublish outcomes.
+
+## Benchmark Workflow vs Astra
+
+- Script: ./scripts/benchmark-vs-astra.ps1
+- Checklist: ./RELEASE-CHECKLIST.md
+
+Example:
+- powershell -ExecutionPolicy Bypass -File ./scripts/benchmark-vs-astra.ps1 -ReplantaUrl "https://staging.example.com/replanta-page" -AstraUrl "https://staging.example.com/astra-page"
 
 ## Quick Test (example)
 

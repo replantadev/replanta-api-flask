@@ -16,6 +16,14 @@ final class RAICCPageService
     public const META_PROMPT_LAST = '_raicc_prompt_last';
     public const META_CHANGE_ORIGIN = '_raicc_change_origin';
 
+    public function __construct(
+        private ?RAICCPublishGateValidator $publishGateValidator = null,
+        private ?RAICCOperationLogger $logger = null
+    ) {
+        $this->publishGateValidator = $this->publishGateValidator ?? new RAICCPublishGateValidator();
+        $this->logger = $this->logger ?? new RAICCOperationLogger();
+    }
+
     /**
      * @param array<string,mixed> $blueprint
      * @return array<string,mixed>
@@ -34,6 +42,13 @@ final class RAICCPageService
         ], true);
 
         if (is_wp_error($postId) || (int) $postId <= 0) {
+            $this->logger?->log('create_page_failed', [
+                'reason' => 'wp_insert_post_failed',
+                'title' => $title,
+                'slug' => $slug,
+                'user_id' => get_current_user_id(),
+            ]);
+
             return [
                 'ok' => false,
                 'error' => 'wp_insert_post failed',
@@ -45,6 +60,12 @@ final class RAICCPageService
         update_post_meta($postId, self::META_MODE, 'ai');
         update_post_meta($postId, self::META_PROMPT_LAST, $prompt);
         update_post_meta($postId, self::META_CHANGE_ORIGIN, 'ai');
+
+        $this->logger?->log('create_page_success', [
+            'post_id' => $postId,
+            'status' => 'draft',
+            'user_id' => get_current_user_id(),
+        ]);
 
         return [
             'ok' => true,
@@ -101,11 +122,46 @@ final class RAICCPageService
     {
         $post = get_post($postId);
         if (!$post || $post->post_type !== 'page') {
+            $this->logger?->log('set_status_failed', [
+                'post_id' => $postId,
+                'target_status' => $status,
+                'reason' => 'page_not_found',
+                'user_id' => get_current_user_id(),
+            ]);
+
             return ['ok' => false, 'error' => 'page not found'];
         }
 
         if (!in_array($status, ['publish', 'draft'], true)) {
+            $this->logger?->log('set_status_failed', [
+                'post_id' => $postId,
+                'target_status' => $status,
+                'reason' => 'invalid_status',
+                'user_id' => get_current_user_id(),
+            ]);
+
             return ['ok' => false, 'error' => 'invalid status'];
+        }
+
+        if ($status === 'publish') {
+            $gate = $this->publishGateValidator?->evaluatePage($postId) ?? ['ok' => false, 'blockers' => ['gate unavailable']];
+
+            if (empty($gate['ok'])) {
+                $this->logger?->log('publish_gate_blocked', [
+                    'post_id' => $postId,
+                    'target_status' => $status,
+                    'blockers' => isset($gate['blockers']) ? $gate['blockers'] : [],
+                    'warnings' => isset($gate['warnings']) ? $gate['warnings'] : [],
+                    'score' => isset($gate['score']) ? (int) $gate['score'] : 0,
+                    'user_id' => get_current_user_id(),
+                ]);
+
+                return [
+                    'ok' => false,
+                    'error' => 'publish gate failed',
+                    'gate' => $gate,
+                ];
+            }
         }
 
         $updated = wp_update_post([
@@ -114,8 +170,21 @@ final class RAICCPageService
         ], true);
 
         if (is_wp_error($updated)) {
+            $this->logger?->log('set_status_failed', [
+                'post_id' => $postId,
+                'target_status' => $status,
+                'reason' => 'wp_update_post_failed',
+                'user_id' => get_current_user_id(),
+            ]);
+
             return ['ok' => false, 'error' => 'wp_update_post failed'];
         }
+
+        $this->logger?->log('set_status_success', [
+            'post_id' => $postId,
+            'target_status' => $status,
+            'user_id' => get_current_user_id(),
+        ]);
 
         return [
             'ok' => true,
