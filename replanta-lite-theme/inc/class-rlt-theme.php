@@ -25,8 +25,32 @@ final class RLTTheme
         add_action('widgets_init', [$this, 'registerWidgetAreas']);
         add_action('init', [$this, 'optimizeFrontend']);
         add_action('wp_enqueue_scripts', [$this, 'dequeueCoreBloat'], 100);
+        add_action('wp_head', [$this, 'printDynamicThemeCss'], 20);
+        add_action('wp_footer', [$this, 'printHeaderBehaviorScript'], 99);
 
         (new RLTCustomizer())->register();
+        (new RLTPageOptions())->register();
+    }
+
+    public function printDynamicThemeCss(): void
+    {
+        $vars = RLTLayout::cssVariables();
+        echo '<style id="rlt-theme-vars">:root{' . esc_html($vars) . '}';
+        echo '.rlt-site-header.rlt-is-fixed{position:fixed;left:0;right:0;top:0;z-index:1000;background:var(--rlt-header-bg,rgba(255,255,255,.98));backdrop-filter:saturate(150%) blur(8px);}';
+        echo '.admin-bar .rlt-site-header.rlt-is-fixed{top:32px;}';
+        echo '.rlt-site-header.rlt-is-transparent{position:absolute;left:0;right:0;top:0;z-index:1000;background:transparent;border-bottom-color:transparent;}';
+        echo '.rlt-site-header.rlt-is-transparent.rlt-scrolled{background:var(--rlt-header-bg,rgba(255,255,255,.98));border-bottom-color:var(--rlt-border);position:fixed;}';
+        echo 'body.rlt-has-fixed-header{padding-top:var(--rlt-header-offset,0px);}';
+        echo '</style>';
+    }
+
+    public function printHeaderBehaviorScript(): void
+    {
+        echo '<script>(function(){var h=document.querySelector(".rlt-site-header");if(!h){return;}';
+        echo 'var body=document.body;var fixed=h.classList.contains("rlt-is-fixed")||h.classList.contains("rlt-is-transparent");';
+        echo 'if(fixed){body.classList.add("rlt-has-fixed-header");var setOff=function(){document.documentElement.style.setProperty("--rlt-header-offset",h.offsetHeight+"px");};setOff();window.addEventListener("resize",setOff,{passive:true});}';
+        echo 'var onScroll=function(){if(h.classList.contains("rlt-is-transparent")){h.classList.toggle("rlt-scrolled",window.scrollY>8);}};onScroll();window.addEventListener("scroll",onScroll,{passive:true});';
+        echo '})();</script>';
     }
 
     public function optimizeFrontend(): void

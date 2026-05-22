@@ -14,6 +14,96 @@ if (!defined('ABSPATH')) {
 final class RLTLayout
 {
     /** @return array<string,string> */
+    private static function paletteDefaults(string $preset): array
+    {
+        switch ($preset) {
+            case 'forest':
+                return ['bg' => '#f7fbf8', 'text' => '#132218', 'accent' => '#1f6f45', 'border' => '#cfe0d5', 'header_bg' => 'rgba(247,251,248,.97)'];
+            case 'ocean':
+                return ['bg' => '#f6fbff', 'text' => '#112131', 'accent' => '#156f8f', 'border' => '#cfe0ea', 'header_bg' => 'rgba(246,251,255,.97)'];
+            case 'contrast':
+                return ['bg' => '#ffffff', 'text' => '#111111', 'accent' => '#005fcc', 'border' => '#cfcfcf', 'header_bg' => 'rgba(255,255,255,.98)'];
+            case 'replanta':
+            default:
+                return ['bg' => '#ffffff', 'text' => '#122015', 'accent' => '#17653f', 'border' => '#d8e0da', 'header_bg' => 'rgba(255,255,255,.98)'];
+        }
+    }
+
+    private static function currentPalettePreset(): string
+    {
+        $preset = (string) get_theme_mod('rlt_palette_preset', 'replanta');
+        if (is_singular()) {
+            $post = get_post(null);
+            if ($post instanceof WP_Post) {
+                $override = (string) get_post_meta($post->ID, RLTPageOptions::META_PALETTE, true);
+                if ($override !== '' && $override !== 'global') {
+                    $preset = $override;
+                }
+            }
+        }
+        return in_array($preset, ['replanta', 'forest', 'ocean', 'contrast'], true) ? $preset : 'replanta';
+    }
+
+    public static function cssVariables(): string
+    {
+        $preset = self::currentPalettePreset();
+        $defaults = self::paletteDefaults($preset);
+
+        $bg = (string) get_theme_mod('rlt_color_bg', '');
+        $text = (string) get_theme_mod('rlt_color_text', '');
+        $accent = (string) get_theme_mod('rlt_color_accent', '');
+        $border = (string) get_theme_mod('rlt_color_border', '');
+        $headerBg = (string) get_theme_mod('rlt_color_header_bg', '');
+
+        $resolved = [
+            'bg' => $bg !== '' ? $bg : $defaults['bg'],
+            'text' => $text !== '' ? $text : $defaults['text'],
+            'accent' => $accent !== '' ? $accent : $defaults['accent'],
+            'border' => $border !== '' ? $border : $defaults['border'],
+            'header_bg' => $headerBg !== '' ? $headerBg : $defaults['header_bg'],
+        ];
+
+        return '--rlt-bg:' . $resolved['bg']
+            . ';--rlt-text:' . $resolved['text']
+            . ';--rlt-accent:' . $resolved['accent']
+            . ';--rlt-border:' . $resolved['border']
+            . ';--rlt-header-bg:' . $resolved['header_bg']
+            . ';';
+    }
+
+    private static function headerMode(): string
+    {
+        $mode = (string) get_theme_mod('rlt_header_mode', 'normal');
+        if (is_singular()) {
+            $post = get_post(null);
+            if ($post instanceof WP_Post) {
+                $override = (string) get_post_meta($post->ID, RLTPageOptions::META_HEADER_MODE, true);
+                if ($override !== '' && $override !== 'global') {
+                    $mode = $override;
+                }
+            }
+        }
+        return $mode === 'transparent' ? 'transparent' : 'normal';
+    }
+
+    private static function headerFixed(): bool
+    {
+        $fixed = (bool) get_theme_mod('rlt_header_fixed', false);
+        if (is_singular()) {
+            $post = get_post(null);
+            if ($post instanceof WP_Post) {
+                $override = (string) get_post_meta($post->ID, RLTPageOptions::META_HEADER_FIXED, true);
+                if ($override === '1') {
+                    $fixed = true;
+                }
+                if ($override === '0') {
+                    $fixed = false;
+                }
+            }
+        }
+        return $fixed;
+    }
+    /** @return array<string,string> */
     private static function socialLinks(): array
     {
         $out = [];
@@ -108,7 +198,14 @@ final class RLTLayout
 
     public static function renderHeader(): void
     {
-        echo '<header class="rlt-site-header" role="banner" style="' . esc_attr(self::containerStyleVar()) . '">';
+		$classes = ['rlt-site-header'];
+		if (self::headerMode() === 'transparent') {
+			$classes[] = 'rlt-is-transparent';
+		}
+		if (self::headerFixed()) {
+			$classes[] = 'rlt-is-fixed';
+		}
+        echo '<header class="' . esc_attr(implode(' ', $classes)) . '" role="banner" style="' . esc_attr(self::containerStyleVar()) . '">';
         self::renderAreaRows('header');
         echo '</header>';
     }

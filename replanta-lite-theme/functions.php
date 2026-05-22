@@ -17,6 +17,7 @@ define('RLT_THEME_URI', trailingslashit(get_template_directory_uri()));
 
 require_once RLT_THEME_DIR . 'inc/class-rlt-customizer.php';
 require_once RLT_THEME_DIR . 'inc/class-rlt-layout.php';
+require_once RLT_THEME_DIR . 'inc/class-rlt-page-options.php';
 require_once RLT_THEME_DIR . 'inc/class-rlt-theme.php';
 
 add_action('after_setup_theme', static function (): void {

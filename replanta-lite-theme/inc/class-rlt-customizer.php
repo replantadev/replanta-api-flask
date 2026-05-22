@@ -117,6 +117,68 @@ final class RLTCustomizer
             'priority' => 32,
         ]);
 
+        $wpCustomize->add_section('rlt_design', [
+            'title' => __('Design & Header Behavior', 'replanta-lite'),
+            'priority' => 33,
+        ]);
+
+        $wpCustomize->add_setting('rlt_palette_preset', [
+            'default' => 'replanta',
+            'sanitize_callback' => [self::class, 'sanitizePalette'],
+        ]);
+        $wpCustomize->add_control('rlt_palette_preset', [
+            'type' => 'select',
+            'section' => 'rlt_design',
+            'label' => __('Palette preset', 'replanta-lite'),
+            'choices' => [
+                'replanta' => __('Replanta', 'replanta-lite'),
+                'forest' => __('Forest', 'replanta-lite'),
+                'ocean' => __('Ocean', 'replanta-lite'),
+                'contrast' => __('High Contrast', 'replanta-lite'),
+            ],
+        ]);
+
+        foreach ([
+            'rlt_color_bg' => __('Background color', 'replanta-lite'),
+            'rlt_color_text' => __('Text color', 'replanta-lite'),
+            'rlt_color_accent' => __('Accent color', 'replanta-lite'),
+            'rlt_color_border' => __('Border color', 'replanta-lite'),
+            'rlt_color_header_bg' => __('Header background color', 'replanta-lite'),
+        ] as $key => $label) {
+            $wpCustomize->add_setting($key, [
+                'default' => '',
+                'sanitize_callback' => [self::class, 'sanitizeColor'],
+            ]);
+            $wpCustomize->add_control(new WP_Customize_Color_Control($wpCustomize, $key, [
+                'label' => $label,
+                'section' => 'rlt_design',
+            ]));
+        }
+
+        $wpCustomize->add_setting('rlt_header_mode', [
+            'default' => 'normal',
+            'sanitize_callback' => [self::class, 'sanitizeHeaderMode'],
+        ]);
+        $wpCustomize->add_control('rlt_header_mode', [
+            'type' => 'select',
+            'section' => 'rlt_design',
+            'label' => __('Header mode', 'replanta-lite'),
+            'choices' => [
+                'normal' => __('Normal', 'replanta-lite'),
+                'transparent' => __('Transparent', 'replanta-lite'),
+            ],
+        ]);
+
+        $wpCustomize->add_setting('rlt_header_fixed', [
+            'default' => false,
+            'sanitize_callback' => [self::class, 'sanitizeBool'],
+        ]);
+        $wpCustomize->add_control('rlt_header_fixed', [
+            'type' => 'checkbox',
+            'section' => 'rlt_design',
+            'label' => __('Fixed header', 'replanta-lite'),
+        ]);
+
         $wpCustomize->add_setting('rlt_container_max_width', [
             'default' => 1200,
             'sanitize_callback' => [self::class, 'sanitizeWidth'],
@@ -229,5 +291,23 @@ final class RLTCustomizer
             return 1680;
         }
         return $int;
+    }
+
+    public static function sanitizePalette(mixed $value): string
+    {
+        $key = sanitize_key((string) $value);
+        return in_array($key, ['replanta', 'forest', 'ocean', 'contrast'], true) ? $key : 'replanta';
+    }
+
+    public static function sanitizeColor(mixed $value): string
+    {
+        $hex = sanitize_hex_color((string) $value);
+        return is_string($hex) ? $hex : '';
+    }
+
+    public static function sanitizeHeaderMode(mixed $value): string
+    {
+        $key = sanitize_key((string) $value);
+        return in_array($key, ['normal', 'transparent'], true) ? $key : 'normal';
     }
 }
