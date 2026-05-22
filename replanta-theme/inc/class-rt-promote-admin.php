@@ -149,8 +149,8 @@ final class RT_Promote_Admin {
 					__( 'Adoptar URL: %s', 'replanta-theme' ),
 					(string) wp_parse_url( $src, PHP_URL_PATH )
 				),
-				'href'   => '#',
-				'meta'   => [ 'class' => 'rt-promote-action', 'html' => 'data-rt-action="adopt" data-rt-id="' . (int) $post->ID . '"' ],
+				'href'   => '#rt-action=adopt&rt-id=' . (int) $post->ID,
+				'meta'   => [ 'class' => 'rt-promote-action' ],
 			] );
 		}
 		if ( $promoted ) {
@@ -158,8 +158,8 @@ final class RT_Promote_Admin {
 				'parent' => 'rt-promote',
 				'id'     => 'rt-promote-undo',
 				'title'  => __( 'Revertir adopción', 'replanta-theme' ),
-				'href'   => '#',
-				'meta'   => [ 'class' => 'rt-promote-action', 'html' => 'data-rt-action="undo" data-rt-id="' . (int) $post->ID . '"' ],
+				'href'   => '#rt-action=undo&rt-id=' . (int) $post->ID,
+				'meta'   => [ 'class' => 'rt-promote-action' ],
 			] );
 		}
 		if ( $origin ) {
@@ -167,16 +167,16 @@ final class RT_Promote_Admin {
 				'parent' => 'rt-promote',
 				'id'     => 'rt-promote-menus',
 				'title'  => __( 'Reemplazar en menús', 'replanta-theme' ),
-				'href'   => '#',
-				'meta'   => [ 'class' => 'rt-promote-action', 'html' => 'data-rt-action="menus" data-rt-id="' . (int) $post->ID . '"' ],
+				'href'   => '#rt-action=menus&rt-id=' . (int) $post->ID,
+				'meta'   => [ 'class' => 'rt-promote-action' ],
 			] );
 		}
 		$bar->add_node( [
 			'parent' => 'rt-promote',
 			'id'     => 'rt-promote-front',
 			'title'  => __( 'Establecer como Front page', 'replanta-theme' ),
-			'href'   => '#',
-			'meta'   => [ 'class' => 'rt-promote-action', 'html' => 'data-rt-action="front" data-rt-id="' . (int) $post->ID . '"' ],
+			'href'   => '#rt-action=front&rt-id=' . (int) $post->ID,
+			'meta'   => [ 'class' => 'rt-promote-action' ],
 		] );
 	}
 
@@ -644,6 +644,14 @@ final class RT_Promote_Admin {
 			}
 		});
 	}
+	function actionFromHref(a){
+		var href=(a&&a.getAttribute)?(a.getAttribute('href')||''):'';
+		if(!href||href.charAt(0)!=='#')return null;
+		var mAction=href.match(/rt-action=([a-z]+)/i);
+		var mId=href.match(/rt-id=(\d+)/i);
+		if(!mAction||!mId)return null;
+		return {action:mAction[1].toLowerCase(),id:parseInt(mId[1],10)};
+	}
 	document.addEventListener('click',function(e){
 		var closer=e.target.closest('[data-rt-close]');
 		if(closer){var box=closer.closest('[data-rt-modal]');if(box){closeModal(box.id);}return;}
@@ -663,6 +671,10 @@ final class RT_Promote_Admin {
 			e.preventDefault();
 			var action=a.getAttribute('data-rt-action');
 			var id=parseInt(a.getAttribute('data-rt-id'),10);
+			if((!action||!id)&&a.getAttribute){
+				var fromHref=actionFromHref(a);
+				if(fromHref){action=fromHref.action;id=fromHref.id;}
+			}
 			if(!action||!id)return;
 			run(action,id,a);
 		}

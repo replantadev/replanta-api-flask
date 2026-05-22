@@ -223,10 +223,18 @@ final class RT_Promote {
 		], true );
 		if ( ! is_wp_error( $page_id ) && (int) $page_id > 0 ) {
 			$page_id = (int) $page_id;
+			// Keep original template assignment (e.g., Elementor canvas/full-width)
+			// so the adopted page preserves container behavior.
+			$origin_tpl = (string) get_post_meta( $origin_id, '_wp_page_template', true );
+			if ( $origin_tpl !== '' ) {
+				update_post_meta( $page_id, '_wp_page_template', $origin_tpl );
+			}
 			$copy_metas = [
 				RT_Mirror_Importer::META_MIRROR,
 				RT_Mirror_Importer::META_CSS_FILES,
+				RT_Mirror_Importer::META_CSS_BUNDLE,
 				RT_Mirror_Importer::META_INLINE_CSS,
+				RT_Mirror_Importer::META_FONTS,
 				RT_Mirror_Importer::META_IMPORTED_AT,
 				RT_Mirror_Importer::META_SOURCE_URL,
 				RT_Content_Sync::META_SOURCE_URL,
@@ -279,7 +287,8 @@ final class RT_Promote {
 		}
 
 		if ( ! empty( $opts['set_front'] ) ) {
-			$front = $this->set_front_page( $rt_page_id );
+			$front_id = ( isset( $page_id ) && is_int( $page_id ) && $page_id > 0 ) ? $page_id : $rt_page_id;
+			$front = $this->set_front_page( $front_id );
 			$report['front_page_set'] = ! empty( $front['ok'] );
 		}
 
@@ -396,14 +405,14 @@ final class RT_Promote {
 
 	/* =============================================================== Misc */
 
-	public function set_front_page( int $rt_page_id ): array {
-		$post = get_post( $rt_page_id );
-		if ( ! $post || $post->post_type !== RT_CPT_Page::POST_TYPE ) {
-			return [ 'ok' => false, 'error' => 'rt_page not found' ];
+	public function set_front_page( int $post_id ): array {
+		$post = get_post( $post_id );
+		if ( ! $post || ! in_array( $post->post_type, [ RT_CPT_Page::POST_TYPE, 'page' ], true ) ) {
+			return [ 'ok' => false, 'error' => 'page not found' ];
 		}
 		update_option( 'show_on_front', 'page', false );
-		update_option( 'page_on_front', $rt_page_id, false );
-		return [ 'ok' => true, 'page_on_front' => $rt_page_id ];
+		update_option( 'page_on_front', $post_id, false );
+		return [ 'ok' => true, 'page_on_front' => $post_id ];
 	}
 
 	/* =========================================================== Preflight */

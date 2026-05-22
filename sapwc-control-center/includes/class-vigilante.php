@@ -184,6 +184,28 @@ class SAPWCC_Vigilante {
         }
         unset( $issue );
 
+        // ── A4. Auto-resolve: duplicate_document → call /control/repair-duplicates ─
+        foreach ( $issues as &$issue ) {
+            if ( $issue['type'] === 'failure_type_duplicate_document' && ! $issue['auto_resolved'] ) {
+                $repair_resp = wp_remote_post(
+                    rtrim( $site['url'], '/' ) . '/wp-json/sapwc/v1/control/repair-duplicates',
+                    [ 'timeout' => 30, 'headers' => [ 'X-SAPWC-Secret' => $secret ] ]
+                );
+                if ( ! is_wp_error( $repair_resp ) && 200 === wp_remote_retrieve_response_code( $repair_resp ) ) {
+                    $body     = json_decode( wp_remote_retrieve_body( $repair_resp ), true );
+                    $repaired = (int) ( $body['repaired'] ?? 0 );
+                    if ( $repaired > 0 ) {
+                        $issue['auto_resolved'] = true;
+                        $issue['detail']       .= " Auto-reparados: $repaired pedido(s) duplicados.";
+                        SAPWCC_Audit::log( 'vigilante_auto_duplicate', "Pedidos duplicados reparados: $repaired", $site['label'] );
+                        self::increment_roi( $site_key, 'auto_resueltas' );
+                    }
+                }
+                break;
+            }
+        }
+        unset( $issue );
+
         // ── A2. ROI: detect recovered issues ────────────────────────────────
         foreach ( $prev_issues as $prev_issue ) {
             $still_present = false;
@@ -194,6 +216,10 @@ class SAPWCC_Vigilante {
                 }
             }
             if ( ! $still_present && in_array( $prev_issue['type'], [ 'retry_exhausted', 'pending_old' ], true ) ) {
+                self::increment_roi( $site_key, 'pedidos_recuperados' );
+            }
+            // Also count recovered classified failures as recovered.
+            if ( ! $still_present && str_starts_with( $prev_issue['type'], 'failure_type_' ) ) {
                 self::increment_roi( $site_key, 'pedidos_recuperados' );
             }
         }
@@ -234,19 +260,46 @@ class SAPWCC_Vigilante {
     private static function analyze( array $data ): array {
         $issues = [];
 
-        // Rule 1 — Retry-exhausted orders.
-        foreach ( $data['retry_exhausted'] ?? [] as $order ) {
-            $issues[] = [
-                'id'           => 'retry_exhausted_' . $order['order_id'],
-                'type'         => 'retry_exhausted',
-                'audience'     => 'admin',
-                'severity'     => self::SEV_CRITICAL,
-                'title'        => 'Pedido #' . $order['order_id'] . ' bloqueado — reintentos agotados',
-                'detail'       => $order['reason'] ?: 'Sin motivo registrado',
-                'since'        => $order['failed_at'] ?? '',
-                'context'      => $order,
-                'auto_resolved'=> false,
-            ];
+        // Rule 1 — Classified failures (one issue per error type, audience from library).
+        // Falls back to legacy retry_exhausted for old plugin versions without classified_failures.
+        $classified = $data['classified_failures'] ?? [];
+        if ( ! empty( $classified ) ) {
+            foreach ( $classified as $type => $bucket ) {
+                $count    = (int) $bucket['count'];
+                $meta     = $bucket['type_meta'];
+                $order_ids = array_column( $bucket['orders'], 'order_id' );
+                $issues[] = [
+                    'id'           => 'failure_type_' . $type,
+                    'type'         => 'failure_type_' . $type,
+                    'audience'     => $meta['audience'],
+                    'severity'     => ( $meta['severity'] === 'critical' || $count >= 3 ) ? self::SEV_CRITICAL : self::SEV_WARNING,
+                    'title'        => $count . ' pedido(s): ' . $meta['title'],
+                    'detail'       => ( $meta['detail'] ?? '' ) . ' Afectados: #' . implode( ', #', $order_ids ),
+                    'since'        => $bucket['orders'][0]['failed_at'] ?? '',
+                    'context'      => [
+                        'count'     => $count,
+                        'orders'    => $bucket['orders'],
+                        'steps_sap' => $meta['steps_sap'] ?? [],
+                        'auto_fix'  => $meta['auto_fix'],
+                    ],
+                    'auto_resolved'=> false,
+                ];
+            }
+        } else {
+            // Backward compat: old plugin versions only expose retry_exhausted.
+            foreach ( $data['retry_exhausted'] ?? [] as $order ) {
+                $issues[] = [
+                    'id'           => 'retry_exhausted_' . $order['order_id'],
+                    'type'         => 'retry_exhausted',
+                    'audience'     => 'admin',
+                    'severity'     => self::SEV_CRITICAL,
+                    'title'        => 'Pedido #' . $order['order_id'] . ' bloqueado — reintentos agotados',
+                    'detail'       => $order['reason'] ?: 'Sin motivo registrado',
+                    'since'        => $order['failed_at'] ?? '',
+                    'context'      => $order,
+                    'auto_resolved'=> false,
+                ];
+            }
         }
 
         // Rule 2 — Cron silence.

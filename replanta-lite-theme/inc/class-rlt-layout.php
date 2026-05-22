@@ -1,0 +1,186 @@
+<?php
+/**
+ * Semantic header/footer renderer with rows and columns.
+ *
+ * @package ReplantaLite
+ */
+
+declare(strict_types=1);
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+final class RLTLayout
+{
+    /** @return array<string,string> */
+    private static function socialLinks(): array
+    {
+        $out = [];
+        foreach (['x','linkedin','youtube','instagram'] as $key) {
+            $url = (string) get_theme_mod('rlt_social_' . $key, '');
+            if ($url !== '') {
+                $out[$key] = $url;
+            }
+        }
+        return $out;
+    }
+
+    private static function renderModule(string $module, string $area): void
+    {
+        switch ($module) {
+            case 'empty':
+                return;
+            case 'brand':
+                self::renderBrand();
+                return;
+            case 'menu_primary':
+                self::renderMenu('primary', __('Primary navigation', 'replanta-lite'));
+                return;
+            case 'menu_secondary':
+                self::renderMenu('secondary', __('Secondary navigation', 'replanta-lite'));
+                return;
+            case 'menu_footer':
+                self::renderMenu('footer', __('Footer navigation', 'replanta-lite'));
+                return;
+            case 'search':
+                echo '<div class="rlt-search">';
+                get_search_form();
+                echo '</div>';
+                return;
+            case 'button':
+                $label = (string) get_theme_mod('rlt_cta_label', __('Empezar', 'replanta-lite'));
+                $url = (string) get_theme_mod('rlt_cta_url', home_url('/contacto/'));
+                if ($label !== '' && $url !== '') {
+                    echo '<a class="rlt-cta" href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
+                }
+                return;
+            case 'social':
+                $links = self::socialLinks();
+                if ($links === []) {
+                    return;
+                }
+                echo '<nav class="rlt-social" aria-label="' . esc_attr__('Social links', 'replanta-lite') . '"><ul>';
+                foreach ($links as $name => $url) {
+                    echo '<li><a href="' . esc_url($url) . '" rel="noopener" target="_blank">' . esc_html(strtoupper($name)) . '</a></li>';
+                }
+                echo '</ul></nav>';
+                return;
+            case 'text':
+                $text = (string) get_theme_mod('rlt_brand_text', __('WordPress rápido y semántico para Replanta', 'replanta-lite'));
+                if ($text !== '') {
+                    echo '<p class="rlt-brand-copy">' . esc_html($text) . '</p>';
+                }
+                return;
+            case 'auto':
+            default:
+                if ($area === 'header') {
+                    self::renderBrand();
+                    self::renderMenu('primary', __('Primary navigation', 'replanta-lite'));
+                }
+                return;
+        }
+    }
+
+    private static function renderMenu(string $location, string $label): void
+    {
+        wp_nav_menu([
+            'theme_location' => $location,
+            'container' => 'nav',
+            'container_class' => 'rlt-nav rlt-nav-' . $location,
+            'container_aria_label' => $label,
+            'fallback_cb' => '__return_empty_string',
+            'depth' => $location === 'footer' ? 1 : 2,
+        ]);
+    }
+    public static function containerStyleVar(): string
+    {
+        $width = (int) get_theme_mod('rlt_container_max_width', 1200);
+        if ($width < 960) {
+            $width = 960;
+        }
+        if ($width > 1680) {
+            $width = 1680;
+        }
+
+        return '--rlt-container:' . $width . 'px';
+    }
+
+    public static function renderHeader(): void
+    {
+        echo '<header class="rlt-site-header" role="banner" style="' . esc_attr(self::containerStyleVar()) . '">';
+        self::renderAreaRows('header');
+        echo '</header>';
+    }
+
+    public static function renderFooter(): void
+    {
+        echo '<footer class="rlt-site-footer" role="contentinfo" style="' . esc_attr(self::containerStyleVar()) . '">';
+        self::renderAreaRows('footer');
+        echo '</footer>';
+    }
+
+    private static function renderAreaRows(string $area): void
+    {
+        foreach (RLTTheme::ROWS as $row) {
+            $visible = (bool) get_theme_mod(sprintf('rlt_%s_%s_visible', $area, $row), true);
+            if (!$visible) {
+                continue;
+            }
+
+            $cols = (int) get_theme_mod(sprintf('rlt_%s_%s_cols', $area, $row), $row === 'main' ? 3 : 1);
+            $cols = max(1, min(RLTTheme::MAX_COLS, $cols));
+
+            echo '<div class="rlt-row rlt-' . esc_attr($area) . '-' . esc_attr($row) . '">';
+            echo '<div class="rlt-container">';
+            echo '<div class="rlt-grid cols-' . esc_attr((string) $cols) . '">';
+
+            for ($col = 1; $col <= $cols; $col++) {
+                self::renderColumn($area, $row, $col);
+            }
+
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+        }
+    }
+
+    private static function renderColumn(string $area, string $row, int $col): void
+    {
+        $sidebarId = sprintf('rlt_%s_%s_%d', $area, $row, $col);
+        $module = (string) get_theme_mod(sprintf('rlt_%s_%s_%d_module', $area, $row, $col), 'auto');
+
+        echo '<div class="rlt-col rlt-col-' . esc_attr((string) $col) . '">';
+
+        if ($module === 'widget' && is_active_sidebar($sidebarId)) {
+            dynamic_sidebar($sidebarId);
+            echo '</div>';
+            return;
+        }
+
+        if ($module === 'widget' && !is_active_sidebar($sidebarId) && $area === 'footer' && $row === 'bottom' && $col === 1) {
+            echo '<small class="rlt-copyright">' . esc_html(get_bloginfo('name')) . ' · ' . esc_html((string) gmdate('Y')) . '</small>';
+            echo '</div>';
+            return;
+        }
+
+		self::renderModule($module, $area);
+
+        echo '</div>';
+    }
+
+    private static function renderBrand(): void
+    {
+        if (function_exists('the_custom_logo') && has_custom_logo()) {
+            the_custom_logo();
+            return;
+        }
+
+        $homeUrl = home_url('/');
+        $name = get_bloginfo('name');
+
+        echo '<a class="rlt-brand" href="' . esc_url($homeUrl) . '">';
+        echo '<span class="rlt-brand-text">' . esc_html($name) . '</span>';
+        echo '</a>';
+    }
+}

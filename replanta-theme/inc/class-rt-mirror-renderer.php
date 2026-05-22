@@ -21,6 +21,7 @@ final class RT_Mirror_Renderer {
 		add_action( 'wp_head', [ $this, 'print_inline_css' ], 1 );
 		add_action( 'wp_head', [ $this, 'print_font_preloads' ], 2 );
 		add_action( 'wp_head', [ $this, 'print_deferred_css' ], 3 );
+		add_action( 'wp_head', [ $this, 'print_layout_overrides' ], 4 );
 		add_filter( 'style_loader_tag', [ $this, 'maybe_defer_style' ], 10, 4 );
 		add_action( 'send_headers', [ $this, 'send_link_headers' ] );
 	}
@@ -101,6 +102,22 @@ final class RT_Mirror_Renderer {
 		}
 		$href = esc_url( $bundle );
 		echo "<noscript><link rel=\"stylesheet\" href=\"{$href}\"></noscript>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+	}
+
+	/**
+	 * Mirror/adopted pages should render raw imported HTML without constrained
+	 * theme wrappers changing widths/spacings.
+	 */
+	public function print_layout_overrides(): void {
+		$post_id = $this->current_mirror_post();
+		if ( ! $post_id ) {
+			return;
+		}
+		echo "<style id=\"rt-mirror-layout-{$post_id}\">\n"
+			. "main.wp-block-group{max-width:none!important;padding-left:0!important;padding-right:0!important;}\n"
+			. ".wp-block-post-content{max-width:none!important;margin:0!important;}\n"
+			. "main.wp-block-group > .wp-block-post-title,main.wp-block-group > .wp-block-post-featured-image{display:none!important;}\n"
+			. "</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/**

@@ -27,6 +27,8 @@ final class RT_Installer {
 	public function on_activation(): void {
 		// Just create dirs on activation; full install runs from button.
 		$this->ensure_dirs();
+		( new RT_CPT_Page() )->register_post_type();
+		flush_rewrite_rules();
 	}
 
 	public function maybe_notice(): void {

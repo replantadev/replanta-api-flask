@@ -9,6 +9,7 @@
  * License: GPL v2 or later
  * Text Domain: replanta-meta-fill
  * Requires at least: 5.8
+ * Tested up to: 7.0
  * Requires PHP: 7.4
  */
 

@@ -9,6 +9,9 @@
  * License:     GPL-2.0+
  * Text Domain: replanta-sitemap-hreflang
  *
+ * Requires at least: 5.8
+ * Tested up to: 7.0
+ * Requires PHP: 7.4
  * Requires Plugins: seo-by-rank-math, polylang
  */
 
