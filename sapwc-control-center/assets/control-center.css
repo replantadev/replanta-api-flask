@@ -116,10 +116,15 @@
 }
 
 .sapwcc-card-footer {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     padding: 8px 12px; border-top: 1px solid #f0f0f1;
 }
-.sapwcc-card-footer .sapwcc-remove-btn { margin-left: auto; color: #b32d2e; }
+.sapwcc-footer-row2 {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding-top: 4px; border-top: 1px solid #f0f0f1;
+    margin-top: 2px;
+}
+.sapwcc-footer-row2 .sapwcc-remove-btn { margin-left: auto; color: #b32d2e; }
 .sapwcc-card-footer .dashicons { font-size: 14px; width: 14px; height: 14px; vertical-align: text-bottom; }
 
 .sapwcc-outdated { color: #dba617; font-weight: 600; }

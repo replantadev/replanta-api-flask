@@ -268,21 +268,24 @@ $vig_criticals  = class_exists( 'SAPWCC_Vigilante' ) ? SAPWCC_Vigilante::total_c
                             <span class="dashicons dashicons-update-alt"></span> Actualizar
                         </button>
                         <?php endif; ?>
-                        <button class="button sapwcc-quick-action sapwcc-rotate-secret-btn"
-                                data-key="<?php echo esc_attr( $key ); ?>"
-                                data-label="<?php echo esc_attr( $site['label'] ); ?>"
-                                title="Generar nuevo X-SAPWC-Secret para este sitio">
-                            <span class="dashicons dashicons-lock"></span> Rotar Secret
-                        </button>
-                        <?php if ( $health ) : ?>
-                            <small class="sapwcc-muted">
-                                Checked: <?php echo esc_html( $health['checked_at'] ?? '—' ); ?>
-                            </small>
-                        <?php endif; ?>
-                        <button class="button sapwcc-remove-btn" data-key="<?php echo esc_attr( $key ); ?>"
-                                title="Eliminar sitio">
-                            <span class="dashicons dashicons-trash"></span>
-                        </button>
+
+                        <div class="sapwcc-footer-row2">
+                            <button class="button sapwcc-quick-action sapwcc-rotate-secret-btn"
+                                    data-key="<?php echo esc_attr( $key ); ?>"
+                                    data-label="<?php echo esc_attr( $site['label'] ); ?>"
+                                    title="Generar nuevo X-SAPWC-Secret para este sitio">
+                                <span class="dashicons dashicons-lock"></span> Rotar Secret
+                            </button>
+                            <?php if ( $health ) : ?>
+                                <small class="sapwcc-muted">
+                                    Checked: <?php echo esc_html( $health['checked_at'] ?? '—' ); ?>
+                                </small>
+                            <?php endif; ?>
+                            <button class="button sapwcc-remove-btn" data-key="<?php echo esc_attr( $key ); ?>"
+                                    title="Eliminar sitio">
+                                <span class="dashicons dashicons-trash"></span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Client metadata (expandable) -->
