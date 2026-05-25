@@ -227,6 +227,20 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
                             <span class="dashicons dashicons-superhero-alt"></span> IA
                         </button>
                         <?php endif; ?>
+                        <?php
+                        $repair_map = [
+                            'missing_ship_to'                 => 'control/repair-ship-to',
+                            'failure_type_duplicate_document' => 'control/repair-duplicates',
+                        ];
+                        $repair_ep = $repair_map[ $issue['type'] ] ?? null;
+                        if ( $repair_ep && ! $is_resolved ) : ?>
+                        <button class="button button-small sapwcc-vig-repair-btn"
+                                data-site-key="<?php echo esc_attr( $site_key ); ?>"
+                                data-endpoint="<?php echo esc_attr( $repair_ep ); ?>"
+                                title="Reparar automáticamente ahora">
+                            <span class="dashicons dashicons-admin-tools"></span> Corregir
+                        </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php if ( $ai_configured ) : ?>

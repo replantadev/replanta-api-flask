@@ -878,6 +878,38 @@
         });
     });
 
+    // Repair button (Corregir) — async repair-ship-to / repair-duplicates
+    $(document).on('click', '.sapwcc-vig-repair-btn', function () {
+        var $btn      = $(this);
+        var siteKey   = $btn.data('site-key');
+        var endpoint  = $btn.data('endpoint');
+        var $issue    = $btn.closest('.sapwcc-vig-issue');
+        var $detail   = $issue.find('.sapwcc-muted');
+
+        $btn.prop('disabled', true)
+            .html('<span class="dashicons dashicons-update spin"></span> Reparando...');
+
+        remoteAction(siteKey, endpoint, 'POST', {}, function (res) {
+            if (res.success) {
+                var d        = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+                var repaired = d.repaired !== undefined ? d.repaired : (d.success ? '✓' : 0);
+                $btn.html('<span class="dashicons dashicons-yes"></span> ' + repaired + ' reparado(s)')
+                    .css({ background: '#d4edda', borderColor: '#28a745', color: '#155724' })
+                    .prop('disabled', true);
+                if (repaired > 0) {
+                    $detail.text($detail.text().replace(/Se reparar[áa] autom[áa]ticamente\.?/, '') +
+                        ' Auto-reparados: ' + repaired + '.');
+                }
+            } else {
+                var errMsg = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
+                $btn.html('<span class="dashicons dashicons-warning"></span> Error')
+                    .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24' })
+                    .prop('disabled', false)
+                    .attr('title', errMsg);
+            }
+        });
+    });
+
     // Save Vigilante config
     $('#sapwcc-vig-config-form').on('submit', function (e) {
         e.preventDefault();

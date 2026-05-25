@@ -457,6 +457,8 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/set-cc-ip',
         'control/set-flags-hmac-secret',
         'control/pending-issues',
+        'control/repair-ship-to',
+        'control/repair-duplicates',
     ];
 
     if ( ! in_array( $endpoint, $allowed_endpoints, true ) ) {
