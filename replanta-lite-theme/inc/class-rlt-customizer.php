@@ -27,6 +27,7 @@ final class RLTCustomizer
             'button'         => __('CTA Button', 'replanta-lite'),
             'social'         => __('Social Links', 'replanta-lite'),
             'text'           => __('Text Block', 'replanta-lite'),
+            'html'           => __('Custom HTML', 'replanta-lite'),
             'empty'          => __('Empty', 'replanta-lite'),
         ];
     }
@@ -52,6 +53,15 @@ final class RLTCustomizer
             return 'social';
         }
         return 'widget';
+    }
+
+    private function defaultRowPadding(string $area, string $row): int
+    {
+        if ($area === 'header') {
+            return $row === 'main' ? 12 : 8;
+        }
+
+        return $row === 'main' ? 20 : 12;
     }
 
     public function register(): void
@@ -199,6 +209,7 @@ final class RLTCustomizer
         $wpCustomize->add_section($section, [
             'title' => $title,
             'priority' => $priority,
+            'description' => __('Configura filas, columnas y contenido de cada celda para el área seleccionada.', 'replanta-lite'),
         ]);
 
         foreach (RLTTheme::ROWS as $row) {
@@ -236,6 +247,28 @@ final class RLTCustomizer
                 'input_attrs' => ['min' => 1, 'max' => RLTTheme::MAX_COLS, 'step' => 1],
             ]);
 
+            $rowBgSetting = sprintf('rlt_%s_%s_bg', $area, $row);
+            $wpCustomize->add_setting($rowBgSetting, [
+                'default' => '',
+                'sanitize_callback' => [self::class, 'sanitizeColor'],
+            ]);
+            $wpCustomize->add_control(new WP_Customize_Color_Control($wpCustomize, $rowBgSetting, [
+                'label' => sprintf(__('Background for %s row', 'replanta-lite'), ucfirst($row)),
+                'section' => $section,
+            ]));
+
+            $rowPaddingSetting = sprintf('rlt_%s_%s_py', $area, $row);
+            $wpCustomize->add_setting($rowPaddingSetting, [
+                'default' => $this->defaultRowPadding($area, $row),
+                'sanitize_callback' => [self::class, 'sanitizeSpacing'],
+            ]);
+            $wpCustomize->add_control($rowPaddingSetting, [
+                'type' => 'number',
+                'section' => $section,
+                'label' => sprintf(__('Vertical padding for %s row (px)', 'replanta-lite'), ucfirst($row)),
+                'input_attrs' => ['min' => 0, 'max' => 72, 'step' => 1],
+            ]);
+
             for ($col = 1; $col <= RLTTheme::MAX_COLS; $col++) {
                 $moduleSetting = sprintf('rlt_%s_%s_%d_module', $area, $row, $col);
                 $wpCustomize->add_setting($moduleSetting, [
@@ -253,15 +286,68 @@ final class RLTCustomizer
                     ),
                     'choices' => $this->moduleChoices(),
                 ]);
+
+                $textSetting = sprintf('rlt_%s_%s_%d_text', $area, $row, $col);
+                $wpCustomize->add_setting($textSetting, [
+                    'default' => '',
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ]);
+                $wpCustomize->add_control($textSetting, [
+                    'type' => 'textarea',
+                    'section' => $section,
+                    'label' => sprintf(__('Custom text in %1$s row, column %2$d', 'replanta-lite'), ucfirst($row), $col),
+                    'description' => __('Se usa cuando el módulo es Text.', 'replanta-lite'),
+                ]);
+
+                $buttonLabelSetting = sprintf('rlt_%s_%s_%d_button_label', $area, $row, $col);
+                $wpCustomize->add_setting($buttonLabelSetting, [
+                    'default' => '',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ]);
+                $wpCustomize->add_control($buttonLabelSetting, [
+                    'type' => 'text',
+                    'section' => $section,
+                    'label' => sprintf(__('Button label in %1$s row, column %2$d', 'replanta-lite'), ucfirst($row), $col),
+                    'description' => __('Se usa cuando el módulo es Button.', 'replanta-lite'),
+                ]);
+
+                $buttonUrlSetting = sprintf('rlt_%s_%s_%d_button_url', $area, $row, $col);
+                $wpCustomize->add_setting($buttonUrlSetting, [
+                    'default' => '',
+                    'sanitize_callback' => 'esc_url_raw',
+                ]);
+                $wpCustomize->add_control($buttonUrlSetting, [
+                    'type' => 'url',
+                    'section' => $section,
+                    'label' => sprintf(__('Button URL in %1$s row, column %2$d', 'replanta-lite'), ucfirst($row), $col),
+                    'description' => __('Se usa cuando el módulo es Button.', 'replanta-lite'),
+                ]);
+
+                $htmlSetting = sprintf('rlt_%s_%s_%d_html', $area, $row, $col);
+                $wpCustomize->add_setting($htmlSetting, [
+                    'default' => '',
+                    'sanitize_callback' => [self::class, 'sanitizeHtml'],
+                ]);
+                $wpCustomize->add_control($htmlSetting, [
+                    'type' => 'textarea',
+                    'section' => $section,
+                    'label' => sprintf(__('Custom HTML in %1$s row, column %2$d', 'replanta-lite'), ucfirst($row), $col),
+                    'description' => __('Se usa cuando el módulo es Custom HTML.', 'replanta-lite'),
+                ]);
             }
         }
     }
 
     public static function sanitizeModule(mixed $value): string
     {
-        $allowed = ['auto','widget','brand','menu_primary','menu_secondary','menu_footer','search','button','social','text','empty'];
+        $allowed = ['auto','widget','brand','menu_primary','menu_secondary','menu_footer','search','button','social','text','html','empty'];
         $key = sanitize_key((string) $value);
         return in_array($key, $allowed, true) ? $key : 'auto';
+    }
+
+    public static function sanitizeHtml(mixed $value): string
+    {
+        return wp_kses_post((string) $value);
     }
 
     public static function sanitizeBool(mixed $value): bool
@@ -289,6 +375,18 @@ final class RLTCustomizer
         }
         if ($int > 1680) {
             return 1680;
+        }
+        return $int;
+    }
+
+    public static function sanitizeSpacing(mixed $value): int
+    {
+        $int = (int) $value;
+        if ($int < 0) {
+            return 0;
+        }
+        if ($int > 72) {
+            return 72;
         }
         return $int;
     }

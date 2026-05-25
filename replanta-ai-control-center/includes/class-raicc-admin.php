@@ -18,7 +18,9 @@ final class RAICCAdmin
         private RAICCBlueprintValidator $validator,
         private RAICCPageService $pageService,
         private RAICCRateLimiter $rateLimiter,
-        private RAICCOperationLogger $logger
+        private RAICCOperationLogger $logger,
+        private RAICCThemeLayoutService $themeLayoutService,
+        private RAICCElementorMigrationService $elementorMigrationService
     ) {
     }
 
@@ -27,6 +29,8 @@ final class RAICCAdmin
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_post_raicc_create_prompt', [$this, 'handleCreatePrompt']);
         add_action('admin_post_raicc_set_status', [$this, 'handleSetStatus']);
+        add_action('admin_post_raicc_apply_theme_prompt', [$this, 'handleThemePrompt']);
+        add_action('admin_post_raicc_migrate_elementor', [$this, 'handleMigrateElementor']);
         add_action('admin_head', [$this, 'printAdminCss']);
     }
 
@@ -117,6 +121,29 @@ final class RAICCAdmin
         if (!empty($health['message'])) {
             echo '<p class="raicc-muted">' . esc_html((string) $health['message']) . '</p>';
         }
+        echo '</div>';
+
+        echo '<div class="raicc-card">';
+        echo '<h2 class="raicc-title">' . RAICCIcons::svg('sparkle', 18) . esc_html__('IA para Header/Footer del Tema', 'replanta-ai-control-center') . '</h2>';
+        echo '<p class="raicc-muted">' . esc_html__('Describe el layout y la IA ajustará filas, columnas, módulos, textos y botones del tema.', 'replanta-ai-control-center') . '</p>';
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+        wp_nonce_field('raicc_apply_theme_prompt');
+        echo '<input type="hidden" name="action" value="raicc_apply_theme_prompt">';
+        echo '<p><label>' . esc_html__('Prompt de layout', 'replanta-ai-control-center') . '<br><textarea name="prompt" rows="6" class="large-text" required placeholder="Ejemplo: Header main 3 columnas con logo, menú y botón Presupuesto. Footer main 3 columnas con texto, menú y redes; bottom 1 columna copyright."></textarea></label></p>';
+        submit_button(__('Generar y aplicar layout', 'replanta-ai-control-center'), 'secondary');
+        echo '</form>';
+        echo '</div>';
+
+        echo '<div class="raicc-card">';
+        echo '<h2 class="raicc-title">' . RAICCIcons::svg('wand', 18) . esc_html__('Migrar Elementor a Tema Semántico', 'replanta-ai-control-center') . '</h2>';
+        echo '<p class="raicc-muted">' . esc_html__('Convierte páginas Elementor a contenido semántico compatible con el tema. Guarda backup y opción de desactivar metadatos Elementor.', 'replanta-ai-control-center') . '</p>';
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+        wp_nonce_field('raicc_migrate_elementor');
+        echo '<input type="hidden" name="action" value="raicc_migrate_elementor">';
+        echo '<p><label><input type="checkbox" name="disable_elementor_meta" value="1"> ' . esc_html__('Eliminar metadatos Elementor tras migrar (recomendado para rendimiento final)', 'replanta-ai-control-center') . '</label></p>';
+        echo '<p><label><input type="checkbox" name="migrate_theme_builder" value="1" checked> ' . esc_html__('Migrar plantillas Header/Footer de Elementor al tema (módulo HTML)', 'replanta-ai-control-center') . '</label></p>';
+        submit_button(__('Migrar páginas Elementor', 'replanta-ai-control-center'), 'secondary');
+        echo '</form>';
         echo '</div>';
 
         echo '</div>';
@@ -279,6 +306,93 @@ final class RAICCAdmin
         $this->redirectNotice($status === 'publish'
             ? __('Página publicada.', 'replanta-ai-control-center')
             : __('Página despublicada.', 'replanta-ai-control-center'));
+    }
+
+    public function handleThemePrompt(): void
+    {
+        if (!current_user_can('customize')) {
+            wp_die(esc_html__('Insufficient permissions', 'replanta-ai-control-center'));
+        }
+
+        check_admin_referer('raicc_apply_theme_prompt');
+
+        $userId = get_current_user_id();
+        $limit = $this->rateLimiter->check('admin_theme_layout_prompt', $userId, 8, 60);
+        if (empty($limit['allowed'])) {
+            $this->redirectNotice(__('Límite temporal alcanzado para prompts de layout.', 'replanta-ai-control-center'));
+        }
+
+        $prompt = isset($_POST['prompt']) ? trim((string) wp_unslash($_POST['prompt'])) : '';
+        if ($prompt === '') {
+            $this->redirectNotice(__('Debes escribir un prompt para el layout del tema.', 'replanta-ai-control-center'));
+        }
+
+        $connector = $this->connectorService->execute('theme_layout', [
+            'prompt' => $prompt,
+            'current_layout' => $this->themeLayoutService->currentLayout(),
+        ], [
+            'user_id' => $userId,
+        ]);
+
+        $layout = isset($connector['layout_json']) && is_array($connector['layout_json']) ? $connector['layout_json'] : [];
+        $applied = $this->themeLayoutService->applyLayout($layout);
+
+        $this->logger->log('admin_theme_layout_apply', [
+            'user_id' => $userId,
+            'ok' => !empty($applied['ok']) ? 1 : 0,
+            'connector_id' => (string) ($connector['connector_id'] ?? ''),
+            'latency_ms' => (int) ($connector['latency_ms'] ?? 0),
+            'error' => isset($applied['error']) ? (string) $applied['error'] : '',
+        ]);
+
+        if (empty($applied['ok'])) {
+            $this->redirectNotice(__('No se pudo aplicar el layout IA al tema.', 'replanta-ai-control-center'));
+        }
+
+        $this->redirectNotice(__('Layout de cabecera/footer aplicado correctamente.', 'replanta-ai-control-center'));
+    }
+
+    public function handleMigrateElementor(): void
+    {
+        if (!current_user_can('edit_pages')) {
+            wp_die(esc_html__('Insufficient permissions', 'replanta-ai-control-center'));
+        }
+
+        check_admin_referer('raicc_migrate_elementor');
+
+        $userId = get_current_user_id();
+        $limit = $this->rateLimiter->check('admin_migrate_elementor', $userId, 2, 60);
+        if (empty($limit['allowed'])) {
+            $this->redirectNotice(__('Límite temporal alcanzado para migraciones.', 'replanta-ai-control-center'));
+        }
+
+        $disableElementorMeta = isset($_POST['disable_elementor_meta']) && (string) $_POST['disable_elementor_meta'] === '1';
+        $migrateThemeBuilder = isset($_POST['migrate_theme_builder']) && (string) $_POST['migrate_theme_builder'] === '1';
+
+        $pages = $this->elementorMigrationService->migrateAllPages($disableElementorMeta, 500);
+        $theme = $migrateThemeBuilder
+            ? $this->elementorMigrationService->migrateThemeBuilderTemplatesToThemeMods()
+            : ['ok' => true, 'header_found' => false, 'footer_found' => false];
+
+        $this->logger->log('admin_elementor_migration_run', [
+            'user_id' => $userId,
+            'disable_elementor_meta' => $disableElementorMeta ? 1 : 0,
+            'migrate_theme_builder' => $migrateThemeBuilder ? 1 : 0,
+            'pages_found' => (int) ($pages['found'] ?? 0),
+            'pages_migrated' => (int) ($pages['migrated'] ?? 0),
+            'pages_failed' => (int) ($pages['failed'] ?? 0),
+            'theme_header_found' => !empty($theme['header_found']) ? 1 : 0,
+            'theme_footer_found' => !empty($theme['footer_found']) ? 1 : 0,
+        ]);
+
+        $notice = sprintf(
+            __('Migración completada. Encontradas: %1$d | Migradas: %2$d | Fallidas: %3$d', 'replanta-ai-control-center'),
+            (int) ($pages['found'] ?? 0),
+            (int) ($pages['migrated'] ?? 0),
+            (int) ($pages['failed'] ?? 0)
+        );
+
+        $this->redirectNotice($notice);
     }
 
     private function redirectNotice(string $message): void

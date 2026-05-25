@@ -18,7 +18,8 @@ final class RAICCREST
         private RAICCBlueprintValidator $validator,
         private RAICCPageService $pageService,
         private RAICCRateLimiter $rateLimiter,
-        private RAICCOperationLogger $logger
+        private RAICCOperationLogger $logger,
+        private RAICCThemeLayoutService $themeLayoutService
     ) {
     }
 
@@ -46,6 +47,24 @@ final class RAICCREST
             'methods' => 'POST',
             'callback' => [$this, 'unpublishPage'],
             'permission_callback' => static fn(): bool => current_user_can('edit_pages'),
+        ]);
+
+        register_rest_route(self::NS, '/theme/layout', [
+            'methods' => 'GET',
+            'callback' => [$this, 'themeLayout'],
+            'permission_callback' => static fn(): bool => current_user_can('customize'),
+        ]);
+
+        register_rest_route(self::NS, '/theme/layout/generate-from-prompt', [
+            'methods' => 'POST',
+            'callback' => [$this, 'generateThemeLayoutFromPrompt'],
+            'permission_callback' => static fn(): bool => current_user_can('customize'),
+        ]);
+
+        register_rest_route(self::NS, '/theme/layout/apply', [
+            'methods' => 'POST',
+            'callback' => [$this, 'applyThemeLayout'],
+            'permission_callback' => static fn(): bool => current_user_can('customize'),
         ]);
     }
 
@@ -205,5 +224,97 @@ final class RAICCREST
             'error' => isset($res['error']) ? (string) $res['error'] : '',
         ]);
         return new \WP_REST_Response($res, !empty($res['ok']) ? 200 : 400);
+    }
+
+    public function themeLayout(): \WP_REST_Response
+    {
+        return new \WP_REST_Response([
+            'ok' => true,
+            'layout' => $this->themeLayoutService->currentLayout(),
+        ]);
+    }
+
+    public function generateThemeLayoutFromPrompt(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $body = (array) $request->get_json_params();
+        $prompt = trim((string) ($body['prompt'] ?? ''));
+        $userId = get_current_user_id();
+
+        if ($prompt === '') {
+            return new \WP_REST_Response([
+                'ok' => false,
+                'error' => 'prompt required',
+            ], 400);
+        }
+
+        $limit = $this->rateLimiter->check('rest_theme_layout_generate', $userId, 10, 60);
+        if (empty($limit['allowed'])) {
+            return new \WP_REST_Response([
+                'ok' => false,
+                'error' => 'rate limit exceeded',
+                'retry_after' => (int) ($limit['retry_after'] ?? 60),
+            ], 429);
+        }
+
+        $connector = $this->connectorService->execute('theme_layout', [
+            'prompt' => $prompt,
+            'current_layout' => $this->themeLayoutService->currentLayout(),
+        ], [
+            'user_id' => $userId,
+        ]);
+
+        $layout = isset($connector['layout_json']) && is_array($connector['layout_json'])
+            ? $connector['layout_json']
+            : [];
+
+        $normalized = $this->themeLayoutService->normalizeLayout($layout);
+        if (empty($normalized['ok'])) {
+            return new \WP_REST_Response([
+                'ok' => false,
+                'error' => 'invalid layout schema',
+                'details' => $normalized,
+            ], 422);
+        }
+
+        $this->logger->log('rest_theme_layout_generated', [
+            'user_id' => $userId,
+            'connector_id' => (string) ($connector['connector_id'] ?? ''),
+            'latency_ms' => (int) ($connector['latency_ms'] ?? 0),
+        ]);
+
+        return new \WP_REST_Response([
+            'ok' => true,
+            'layout' => $normalized['layout'],
+            'connector' => [
+                'connector_id' => (string) ($connector['connector_id'] ?? ''),
+                'latency_ms' => (int) ($connector['latency_ms'] ?? 0),
+                'warnings' => isset($connector['warnings']) && is_array($connector['warnings']) ? $connector['warnings'] : [],
+            ],
+        ]);
+    }
+
+    public function applyThemeLayout(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $body = (array) $request->get_json_params();
+        $layout = isset($body['layout']) && is_array($body['layout']) ? $body['layout'] : [];
+        $userId = get_current_user_id();
+
+        $limit = $this->rateLimiter->check('rest_theme_layout_apply', $userId, 20, 60);
+        if (empty($limit['allowed'])) {
+            return new \WP_REST_Response([
+                'ok' => false,
+                'error' => 'rate limit exceeded',
+                'retry_after' => (int) ($limit['retry_after'] ?? 60),
+            ], 429);
+        }
+
+        $applied = $this->themeLayoutService->applyLayout($layout);
+        $this->logger->log('rest_theme_layout_apply', [
+            'user_id' => $userId,
+            'ok' => !empty($applied['ok']) ? 1 : 0,
+            'error' => isset($applied['error']) ? (string) $applied['error'] : '',
+        ]);
+
+        return new \WP_REST_Response($applied, !empty($applied['ok']) ? 200 : 400);
     }
 }

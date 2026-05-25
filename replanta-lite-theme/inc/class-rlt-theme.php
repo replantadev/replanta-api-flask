@@ -86,6 +86,7 @@ final class RLTTheme
             'flex-height' => true,
             'flex-width' => true,
         ]);
+        add_theme_support('customize-selective-refresh-widgets');
 
         register_nav_menus([
             'primary' => __('Primary Menu', 'replanta-lite'),

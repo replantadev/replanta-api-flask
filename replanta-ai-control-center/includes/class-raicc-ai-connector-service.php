@@ -77,6 +77,9 @@ final class RAICCAIConnectorService
         $blueprint = isset($result['blueprint_json']) && is_array($result['blueprint_json'])
             ? $result['blueprint_json']
             : [];
+        $layout = isset($result['layout_json']) && is_array($result['layout_json'])
+            ? $result['layout_json']
+            : [];
 
         return [
             'ok' => $ok,
@@ -87,6 +90,7 @@ final class RAICCAIConnectorService
             'warnings' => isset($result['warnings']) && is_array($result['warnings']) ? $result['warnings'] : [],
             'notes' => isset($result['notes']) ? (string) $result['notes'] : '',
             'blueprint_json' => $blueprint,
+            'layout_json' => $layout,
         ];
     }
 
@@ -100,6 +104,15 @@ final class RAICCAIConnectorService
         $prompt = trim((string) ($payload['prompt'] ?? ''));
         $lang = trim((string) ($payload['lang'] ?? 'es'));
         $title = trim((string) ($payload['title'] ?? 'Nueva pagina'));
+
+        if ($operation === 'theme_layout') {
+            return [
+                'ok' => true,
+                'warnings' => ['Generated in fallback mode without external connector'],
+                'notes' => 'Fallback theme layout generated',
+                'layout_json' => $this->fallbackGenerateThemeLayout($prompt),
+            ];
+        }
 
         if ($operation !== 'create_page') {
             return [
@@ -162,6 +175,97 @@ final class RAICCAIConnectorService
                 'context' => [
                     'source' => 'fallback-local',
                     'requested_by' => isset($context['user_id']) ? (int) $context['user_id'] : 0,
+                ],
+            ],
+        ];
+    }
+
+    /** @return array<string,mixed> */
+    private function fallbackGenerateThemeLayout(string $prompt): array
+    {
+        $promptLower = function_exists('mb_strtolower') ? mb_strtolower($prompt) : strtolower($prompt);
+        $transparent = str_contains($promptLower, 'transparent');
+        $fixed = str_contains($promptLower, 'fixed') || str_contains($promptLower, 'sticky');
+
+        return [
+            'header_mode' => $transparent ? 'transparent' : 'normal',
+            'header_fixed' => $fixed,
+            'areas' => [
+                'header' => [
+                    'top' => [
+                        'visible' => false,
+                        'cols' => 1,
+                        'bg' => '',
+                        'py' => 6,
+                        'columns' => [
+                            '1' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '2' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '3' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '4' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                        ],
+                    ],
+                    'main' => [
+                        'visible' => true,
+                        'cols' => 3,
+                        'bg' => '',
+                        'py' => 12,
+                        'columns' => [
+                            '1' => ['module' => 'brand', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '2' => ['module' => 'menu_primary', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '3' => ['module' => 'button', 'text' => '', 'button_label' => 'Contactar', 'button_url' => home_url('/contacto/')],
+                            '4' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                        ],
+                    ],
+                    'bottom' => [
+                        'visible' => false,
+                        'cols' => 1,
+                        'bg' => '',
+                        'py' => 6,
+                        'columns' => [
+                            '1' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '2' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '3' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '4' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                        ],
+                    ],
+                ],
+                'footer' => [
+                    'top' => [
+                        'visible' => false,
+                        'cols' => 1,
+                        'bg' => '',
+                        'py' => 10,
+                        'columns' => [
+                            '1' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '2' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '3' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '4' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                        ],
+                    ],
+                    'main' => [
+                        'visible' => true,
+                        'cols' => 3,
+                        'bg' => '',
+                        'py' => 18,
+                        'columns' => [
+                            '1' => ['module' => 'text', 'text' => 'WordPress rápido y semántico para Replanta', 'button_label' => '', 'button_url' => ''],
+                            '2' => ['module' => 'menu_footer', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '3' => ['module' => 'social', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '4' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                        ],
+                    ],
+                    'bottom' => [
+                        'visible' => true,
+                        'cols' => 1,
+                        'bg' => '',
+                        'py' => 10,
+                        'columns' => [
+                            '1' => ['module' => 'text', 'text' => get_bloginfo('name') . ' · ' . gmdate('Y'), 'button_label' => '', 'button_url' => ''],
+                            '2' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '3' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                            '4' => ['module' => 'empty', 'text' => '', 'button_label' => '', 'button_url' => ''],
+                        ],
+                    ],
                 ],
             ],
         ];

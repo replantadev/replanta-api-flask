@@ -22,9 +22,19 @@ Open Appearance > Customize:
 - Header Builder
   - show/hide row
   - columns per row
+  - row background color
+  - row vertical spacing
+  - per-column module selection
+  - per-column custom text (when module is Text)
+  - per-column button label and URL (when module is Button)
 - Footer Builder
   - show/hide row
   - columns per row
+  - row background color
+  - row vertical spacing
+  - per-column module selection
+  - per-column custom text (when module is Text)
+  - per-column button label and URL (when module is Button)
 - Global Layout
   - container max width
 

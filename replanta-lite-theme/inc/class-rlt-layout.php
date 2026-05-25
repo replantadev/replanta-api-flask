@@ -116,7 +116,7 @@ final class RLTLayout
         return $out;
     }
 
-    private static function renderModule(string $module, string $area): void
+    private static function renderModule(string $module, string $area, string $row, int $col): void
     {
         switch ($module) {
             case 'empty':
@@ -139,8 +139,14 @@ final class RLTLayout
                 echo '</div>';
                 return;
             case 'button':
-                $label = (string) get_theme_mod('rlt_cta_label', __('Empezar', 'replanta-lite'));
-                $url = (string) get_theme_mod('rlt_cta_url', home_url('/contacto/'));
+                $label = (string) get_theme_mod(sprintf('rlt_%s_%s_%d_button_label', $area, $row, $col), '');
+                $url = (string) get_theme_mod(sprintf('rlt_%s_%s_%d_button_url', $area, $row, $col), '');
+                if ($label === '') {
+                    $label = (string) get_theme_mod('rlt_cta_label', __('Empezar', 'replanta-lite'));
+                }
+                if ($url === '') {
+                    $url = (string) get_theme_mod('rlt_cta_url', home_url('/contacto/'));
+                }
                 if ($label !== '' && $url !== '') {
                     echo '<a class="rlt-cta" href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
                 }
@@ -157,9 +163,18 @@ final class RLTLayout
                 echo '</ul></nav>';
                 return;
             case 'text':
-                $text = (string) get_theme_mod('rlt_brand_text', __('WordPress rápido y semántico para Replanta', 'replanta-lite'));
+                $text = (string) get_theme_mod(sprintf('rlt_%s_%s_%d_text', $area, $row, $col), '');
+                if ($text === '') {
+                    $text = (string) get_theme_mod('rlt_brand_text', __('WordPress rápido y semántico para Replanta', 'replanta-lite'));
+                }
                 if ($text !== '') {
                     echo '<p class="rlt-brand-copy">' . esc_html($text) . '</p>';
+                }
+                return;
+            case 'html':
+                $html = (string) get_theme_mod(sprintf('rlt_%s_%s_%d_html', $area, $row, $col), '');
+                if ($html !== '') {
+                    echo '<div class="rlt-html-block">' . wp_kses_post($html) . '</div>';
                 }
                 return;
             case 'auto':
@@ -228,7 +243,15 @@ final class RLTLayout
             $cols = (int) get_theme_mod(sprintf('rlt_%s_%s_cols', $area, $row), $row === 'main' ? 3 : 1);
             $cols = max(1, min(RLTTheme::MAX_COLS, $cols));
 
-            echo '<div class="rlt-row rlt-' . esc_attr($area) . '-' . esc_attr($row) . '">';
+            $rowBg = (string) get_theme_mod(sprintf('rlt_%s_%s_bg', $area, $row), '');
+            $rowPy = (int) get_theme_mod(sprintf('rlt_%s_%s_py', $area, $row), $area === 'header' ? ($row === 'main' ? 12 : 8) : ($row === 'main' ? 20 : 12));
+            $rowPy = max(0, min(72, $rowPy));
+            $rowStyle = 'padding-top:' . $rowPy . 'px;padding-bottom:' . $rowPy . 'px;';
+            if ($rowBg !== '') {
+                $rowStyle .= 'background:' . $rowBg . ';';
+            }
+
+            echo '<div class="rlt-row rlt-' . esc_attr($area) . '-' . esc_attr($row) . '" style="' . esc_attr($rowStyle) . '">';
             echo '<div class="rlt-container">';
             echo '<div class="rlt-grid cols-' . esc_attr((string) $cols) . '">';
 
@@ -261,7 +284,7 @@ final class RLTLayout
             return;
         }
 
-		self::renderModule($module, $area);
+        self::renderModule($module, $area, $row, $col);
 
         echo '</div>';
     }

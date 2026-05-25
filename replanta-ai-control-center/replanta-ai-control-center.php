@@ -28,6 +28,8 @@ require_once RAICC_DIR . 'includes/class-raicc-page-service.php';
 require_once RAICC_DIR . 'includes/class-raicc-rate-limiter.php';
 require_once RAICC_DIR . 'includes/class-raicc-operation-logger.php';
 require_once RAICC_DIR . 'includes/class-raicc-publish-gate-validator.php';
+require_once RAICC_DIR . 'includes/class-raicc-theme-layout-service.php';
+require_once RAICC_DIR . 'includes/class-raicc-elementor-migration-service.php';
 require_once RAICC_DIR . 'includes/class-raicc-admin.php';
 require_once RAICC_DIR . 'includes/class-raicc-icons.php';
 

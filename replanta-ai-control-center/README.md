@@ -9,6 +9,7 @@ Minimal plugin scaffold for:
 - REST/Admin rate limiting for sensitive operations
 - Publish-time validation gates (a11y + semantic + seo baseline)
 - Structured operation logging
+- AI-assisted theme layout editing (header/footer rows, columns, modules)
 
 ## Included Endpoints
 
@@ -32,6 +33,17 @@ Minimal plugin scaffold for:
 - POST /wp-json/replanta-ai/v1/pages/{id}/unpublish
   - Permission: edit_pages
   - Rate limit: 30 requests per minute per user
+
+- GET /wp-json/replanta-ai/v1/theme/layout
+  - Permission: customize
+
+- POST /wp-json/replanta-ai/v1/theme/layout/generate-from-prompt
+  - Permission: customize
+  - Body: { "prompt": "..." }
+
+- POST /wp-json/replanta-ai/v1/theme/layout/apply
+  - Permission: customize
+  - Body: { "layout": { ... } }
 
 ## Connector-First Contract
 
@@ -112,3 +124,4 @@ Capabilities included:
 - View connector mode/health
 - List recent pages
 - Publish or unpublish in one click
+- Generate and apply header/footer layout from prompt

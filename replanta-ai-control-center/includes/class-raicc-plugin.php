@@ -17,6 +17,8 @@ final class RAICCPlugin
     private ?RAICCOperationLogger $logger = null;
     private ?RAICCPublishGateValidator $publishGateValidator = null;
     private ?RAICCPageService $pageService = null;
+    private ?RAICCThemeLayoutService $themeLayoutService = null;
+    private ?RAICCElementorMigrationService $elementorMigrationService = null;
 
     public function register(): void
     {
@@ -26,7 +28,9 @@ final class RAICCPlugin
             $this->validator(),
             $this->pageService(),
             $this->rateLimiter(),
-            $this->logger()
+            $this->logger(),
+            $this->themeLayoutService(),
+            $this->elementorMigrationService()
         ))->register();
     }
 
@@ -37,7 +41,8 @@ final class RAICCPlugin
             $this->validator(),
             $this->pageService(),
             $this->rateLimiter(),
-            $this->logger()
+            $this->logger(),
+            $this->themeLayoutService()
         ))->registerRoutes();
     }
 
@@ -93,5 +98,23 @@ final class RAICCPlugin
         }
 
         return $this->pageService;
+    }
+
+    private function themeLayoutService(): RAICCThemeLayoutService
+    {
+        if (!$this->themeLayoutService) {
+            $this->themeLayoutService = new RAICCThemeLayoutService();
+        }
+
+        return $this->themeLayoutService;
+    }
+
+    private function elementorMigrationService(): RAICCElementorMigrationService
+    {
+        if (!$this->elementorMigrationService) {
+            $this->elementorMigrationService = new RAICCElementorMigrationService($this->logger());
+        }
+
+        return $this->elementorMigrationService;
     }
 }
