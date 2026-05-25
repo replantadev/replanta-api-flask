@@ -892,20 +892,29 @@
         remoteAction(siteKey, endpoint, 'POST', {}, function (res) {
             if (res.success) {
                 var d        = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
-                var repaired = d.repaired !== undefined ? d.repaired : (d.success ? '✓' : 0);
-                $btn.html('<span class="dashicons dashicons-yes"></span> ' + repaired + ' reparado(s)')
-                    .css({ background: '#d4edda', borderColor: '#28a745', color: '#155724' })
-                    .prop('disabled', true);
+                var repaired = parseInt(d.repaired, 10) || 0;
+                var skipped  = parseInt(d.skipped,  10) || 0;
+                var firstErr = d.details && d.details.find(function(x) { return x.status === 'error'; });
+                var label    = repaired + ' reparado(s)';
+                if (skipped) label += ', ' + skipped + ' omitido(s)';
+
                 if (repaired > 0) {
+                    $btn.html('<span class="dashicons dashicons-yes"></span> ' + label)
+                        .css({ background: '#d4edda', borderColor: '#28a745', color: '#155724' })
+                        .prop('disabled', true);
                     $detail.text($detail.text().replace(/Se reparar[áa] autom[áa]ticamente\.?/, '') +
                         ' Auto-reparados: ' + repaired + '.');
+                } else {
+                    var errHint = firstErr ? ' — ' + firstErr.error : (skipped ? ' — ver logs SAP' : '');
+                    $btn.html('<span class="dashicons dashicons-warning"></span> ' + label + errHint)
+                        .css({ background: '#fff3cd', borderColor: '#ffc107', color: '#856404', 'font-size': '11px' })
+                        .prop('disabled', false);
                 }
             } else {
                 var errMsg = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
-                $btn.html('<span class="dashicons dashicons-warning"></span> Error')
-                    .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24' })
-                    .prop('disabled', false)
-                    .attr('title', errMsg);
+                $btn.html('<span class="dashicons dashicons-warning"></span> Error: ' + errMsg)
+                    .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24', 'font-size': '11px' })
+                    .prop('disabled', false);
             }
         });
     });
