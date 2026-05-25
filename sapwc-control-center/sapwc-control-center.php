@@ -517,7 +517,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/set-flags-hmac-secret'  => 'set_flags_hmac_secret',
     ];
     $audit_action = $audit_map[ $endpoint ] ?? 'remote_action';
-    SAPWCC_Audit::log( $audit_action, “HTTP {$code} - {$endpoint}”, $site['label'] );
+    SAPWCC_Audit::log( $audit_action, "HTTP {$code} - {$endpoint}", $site['label'] );
 
     if ( $code >= 200 && $code < 300 ) {
         // After a successful secret rotation, persist the new secret in the Control Center.
