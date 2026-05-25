@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.22
+ * Version:     1.2.23
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 8.0
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.22' );;;;;;;;;;;;;;;;;;
+define( 'SAPWCC_VERSION', '1.2.23' );;;;;;;;;;;;;;;;;;
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
 define( 'SAPWCC_LATEST_SUITE_VERSION', '2.16.8' );;;;;;;
