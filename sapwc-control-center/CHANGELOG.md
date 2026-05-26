@@ -6,6 +6,41 @@ El formato estÃ¡ basado en [Keep a Changelog](https://keepachangelog.com/es-ES
 y este proyecto adhiere a [Versionado SemÃ¡ntico](https://semver.org/lang/es/).
 
 ---
+## [1.2.35] - 2026-05-26
+
+### Añadido
+
+- **Resolver/Revertir tareas SAP desde el Vigilante del CC** — Sin necesidad de entrar al WP-Admin del cliente. En cada alerta con `audience=sap_user` aparece el botón **"✓ Resolver"** (pide nota opcional). Si ya está resuelta, aparece **↩ Deshacer** (válido dentro de la ventana de 72h del remoto). Los endpoints `control/resolve-task` y `control/unresolve-task` están whitelisted y auditados.
+
+### Requisito
+
+- Necesita SAP Woo Suite ≥ **2.18.2** en el sitio remoto (que añade los endpoints REST).
+
+---
+## [1.2.34] - 2026-05-26
+
+### Corregido
+
+- **`SAPWCC_Flags::get_path()` descartaba la ruta guardada** si el directorio padre no existía físicamente en el filesystem del CC, cayendo al `DEFAULT_PATH` (idéntico). El usuario configuraba la ruta correcta en Settings, pulsaba Guardar, y el aviso seguía apareciendo porque la opción se ignoraba silenciosamente. Ahora se respeta siempre que esté no vacía; si el usuario guardó solo el directorio, se autocompleta con `flags.json` al final.
+
+### Añadido
+
+- **`SAPWCC_Flags::diagnose()`**: devuelve `path/exists/readable/writable_dir/error` para diagnosticar por qué `read()` devuelve vacío.
+- **Aviso del dashboard mejorado**: en lugar de un mensaje genérico, muestra ruta + estado existencia/lectura/escritura + sugerencia accionable (`mkdir -p ...`).
+
+---
+## [1.2.33] - 2026-05-26
+
+### Corregido
+
+- **Versión de plugin obsoleta tras update**: tras `POST /control/update` exitoso, el handler AJAX ahora borra el transient `sapwcc_health_{site_key}` y dispara un re-ping inmediato (`SAPWCC_Sites::fetch_health()`). Antes el TTL de 5 min mantenía la versión vieja en la card hasta el siguiente ciclo.
+- **Card de plan incoherente**: las dos filas "Asignar Plan" (selector + check) y "Plan" (texto coloreado) se fusionan en una sola fila `sapwcc-plan-row` que muestra: pill con el plan efectivo (el que reporta el cliente vía health) + selector compacto para reasignar + icono ⚠ si el plan asignado en `flags.json` diverge del efectivo.
+
+### Estilos
+
+- Nuevos: `.sapwcc-plan-row`, `.sapwcc-plan-pill`, `.sapwcc-plan-pill--none`, `.sapwcc-plan-select-inline`.
+
+---
 ## [1.2.5] - 2026-05-18
 
 ### Actualizado

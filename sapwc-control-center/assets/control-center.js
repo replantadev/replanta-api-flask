@@ -947,6 +947,68 @@
         });
     });
 
+    // Resolve a Vigilante SAP task remotely
+    $(document).on('click', '.sapwcc-vig-resolve-btn', function () {
+        var $btn       = $(this);
+        var siteKey    = $btn.data('site-key');
+        var taskId     = $btn.data('task-id');
+        var issueTitle = $btn.data('issue-title') || taskId;
+
+        var note = prompt(
+            'Marcar como resuelta: "' + issueTitle + '"\n\n' +
+            'Nota opcional (quién lo resolvió y cómo):',
+            ''
+        );
+        if (note === null) return; // cancel
+
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span>');
+
+        remoteAction(siteKey, 'control/resolve-task', 'POST',
+            { task_id: taskId, note: note },
+            function (res) {
+                if (res.success) {
+                    var $issue = $btn.closest('.sapwcc-vig-issue');
+                    $issue.addClass('sapwcc-vig-issue--resolved');
+                    $btn.replaceWith(
+                        '<span class="sapwcc-vig-pill sapwcc-vig-pill--ok" title="Marcada como resuelta desde Control Center">✓ Resuelta</span> ' +
+                        '<button class="button button-small sapwcc-vig-unresolve-btn" ' +
+                        'data-site-key="' + siteKey + '" data-task-id="' + taskId + '" ' +
+                        'title="Revertir resolución (solo dentro de 72h)">' +
+                        '<span class="dashicons dashicons-undo"></span></button>'
+                    );
+                } else {
+                    var errMsg = (typeof res.data === 'string') ? res.data : JSON.stringify(res.data);
+                    alert('✗ Error: ' + errMsg);
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-yes"></span> Resolver');
+                }
+            }
+        );
+    });
+
+    // Undo Vigilante task resolution
+    $(document).on('click', '.sapwcc-vig-unresolve-btn', function () {
+        var $btn    = $(this);
+        var siteKey = $btn.data('site-key');
+        var taskId  = $btn.data('task-id');
+
+        if (!confirm('Revertir la resolución de esta tarea?\n\nLa alerta volverá a aparecer en la próxima evaluación.')) return;
+
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span>');
+
+        remoteAction(siteKey, 'control/unresolve-task', 'POST', { task_id: taskId }, function (res) {
+            if (res.success) {
+                location.reload();
+            } else {
+                var d = res.data || {};
+                var errMsg = (typeof d === 'string') ? d
+                    : (d.response && d.response.message) ? d.response.message
+                    : JSON.stringify(d);
+                alert('✗ ' + errMsg);
+                $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span>');
+            }
+        });
+    });
+
     // Save Vigilante config
     $('#sapwcc-vig-config-form').on('submit', function (e) {
         e.preventDefault();

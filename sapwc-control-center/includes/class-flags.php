@@ -56,31 +56,67 @@ class SAPWCC_Flags {
     /**
      * Devuelve la ruta configurada al flags.json.
      *
-     * Prioridad: opción guardada → auto-detect sap-woo (repo git) → sap-woo-suite → DEFAULT_PATH.
+     * Prioridad: opción guardada (respetada SIEMPRE si no está vacía) →
+     * autodetect sap-woo (repo git) → sap-woo-suite → DEFAULT_PATH.
+     *
+     * Nota: si el directorio padre no existe, `write()` intentará crearlo con
+     * `wp_mkdir_p()`. No descartamos la ruta aquí solo porque el dir no exista
+     * todavía — esa comprobación es responsabilidad del paso de escritura.
      */
     public static function get_path(): string {
-        $saved = get_option( 'sapwcc_flags_path', '' );
+        $saved = trim( (string) get_option( 'sapwcc_flags_path', '' ) );
 
-        // Si hay ruta guardada y el directorio existe, usarla.
-        if ( $saved && is_dir( dirname( $saved ) ) ) {
+        if ( $saved !== '' ) {
+            // Si el usuario guardó solo el directorio, anexa flags.json.
+            if ( substr( $saved, -10 ) !== 'flags.json' ) {
+                $saved = rtrim( $saved, '/\\' ) . '/flags.json';
+            }
             return $saved;
         }
 
         // Auto-detect: priorizar sap-woo (repo git de GitHub Pages), luego sap-woo-suite.
-        // Comprobar si el directorio raíz del plugin existe (docs/ se creará en write()).
         $candidates = [
             WP_CONTENT_DIR . '/plugins/sap-woo/docs/flags.json',
             WP_CONTENT_DIR . '/plugins/sap-woo-suite/docs/flags.json',
         ];
 
         foreach ( $candidates as $candidate ) {
-            $plugin_root = dirname( dirname( $candidate ) ); // e.g. .../plugins/sap-woo
+            $plugin_root = dirname( dirname( $candidate ) );
             if ( file_exists( $candidate ) || is_dir( dirname( $candidate ) ) || is_dir( $plugin_root ) ) {
                 return $candidate;
             }
         }
 
         return self::DEFAULT_PATH;
+    }
+
+    /**
+     * Diagnóstico de por qué `read()` puede devolver vacío.
+     *
+     * @return array{path:string,exists:bool,readable:bool,writable_dir:bool,error:string}
+     */
+    public static function diagnose(): array {
+        $path  = self::get_path();
+        $dir   = dirname( $path );
+        $diag  = [
+            'path'         => $path,
+            'exists'       => file_exists( $path ),
+            'readable'     => is_readable( $path ),
+            'writable_dir' => is_dir( $dir ) && is_writable( $dir ),
+            'error'        => '',
+        ];
+
+        if ( ! $diag['exists'] ) {
+            if ( ! is_dir( $dir ) ) {
+                $diag['error'] = "El directorio no existe: {$dir}. Crea la carpeta o ajusta la ruta en Settings.";
+            } else {
+                $diag['error'] = "El archivo aún no existe. Edita y guarda en la pestaña Flags para crearlo.";
+            }
+        } elseif ( ! $diag['readable'] ) {
+            $diag['error'] = "El archivo existe pero no tiene permisos de lectura para el usuario web.";
+        }
+
+        return $diag;
     }
 
     /**

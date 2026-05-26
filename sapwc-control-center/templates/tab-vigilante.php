@@ -226,6 +226,20 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
                         <?php endif; ?>
                         <?php if ( $is_resolved ) : ?>
                             <span class="sapwcc-vig-pill sapwcc-vig-pill--ok" title="Marcada como resuelta por el equipo SAP">✓ Resuelta</span>
+                            <button class="button button-small sapwcc-vig-unresolve-btn"
+                                    data-site-key="<?php echo esc_attr( $site_key ); ?>"
+                                    data-task-id="<?php echo esc_attr( $issue['id'] ); ?>"
+                                    title="Revertir resolución (solo dentro de 72h)">
+                                <span class="dashicons dashicons-undo"></span>
+                            </button>
+                        <?php elseif ( $audience === 'sap_user' ) : ?>
+                            <button class="button button-small button-primary sapwcc-vig-resolve-btn"
+                                    data-site-key="<?php echo esc_attr( $site_key ); ?>"
+                                    data-task-id="<?php echo esc_attr( $issue['id'] ); ?>"
+                                    data-issue-title="<?php echo esc_attr( $issue['title'] ); ?>"
+                                    title="Marcar esta tarea SAP como resuelta">
+                                <span class="dashicons dashicons-yes"></span> Resolver
+                            </button>
                         <?php endif; ?>
                         <?php if ( $ai_configured ) : ?>
                         <button class="button button-small sapwcc-vig-ai-btn" title="Análisis IA">

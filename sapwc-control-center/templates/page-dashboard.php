@@ -120,47 +120,49 @@ $vig_criticals  = class_exists( 'SAPWCC_Vigilante' ) ? SAPWCC_Vigilante::total_c
                             <code><?php echo esc_html( $site_id ); ?></code>
                         </div>
 
+                        <?php
+                            // Read assigned plan from flags.json (CC source of truth).
+                            $flags         = class_exists( 'SAPWCC_Flags' ) ? SAPWCC_Flags::read() : [];
+                            $assigned_plan = ! empty( $site['site_id'] ) ? ( $flags['sites'][ $site['site_id'] ]['plan'] ?? '' ) : '';
+                            // Plan effectively in use by the client (from health ping).
+                            $effective_plan = ( $health && in_array( $status, [ 'ok', 'warning' ], true ) ) ? ( $health['site']['plan'] ?? '' ) : '';
+                            $plans_list     = [ 'starter' => 'Starter', 'business' => 'Business', 'enterprise' => 'Enterprise' ];
+                            $plan_colors    = [ 'starter' => '#2271b1', 'business' => '#00a32a', 'enterprise' => '#8c00b7' ];
+                            $shown_plan     = $effective_plan ?: $assigned_plan;
+                            $plan_mismatch  = ( $assigned_plan && $effective_plan && $assigned_plan !== $effective_plan );
+                        ?>
+
                         <?php if ( ! empty( $site['site_id'] ) ) : ?>
-                        <div class="sapwcc-card-row sapwcc-plan-assign-row">
-                            <span class="sapwcc-card-label">Asignar Plan</span>
-                            <?php
-                                $flags = class_exists( 'SAPWCC_Flags' ) ? SAPWCC_Flags::read() : [];
-                                $assigned_plan = $flags['sites'][ $site['site_id'] ]['plan'] ?? '';
-                            ?>
-                            <select class="sapwcc-plan-assign" data-site-key="<?php echo esc_attr( $key ); ?>" data-site-id="<?php echo esc_attr( $site['site_id'] ); ?>">
-                                <option value="">-- Sin asignar --</option>
-                                <?php
-                                $plans = [ 'starter' => 'Starter', 'business' => 'Business', 'enterprise' => 'Enterprise' ];
-                                $colors = [ 'starter' => '#2271b1', 'business' => '#00a32a', 'enterprise' => '#8c00b7' ];
-                                foreach ( $plans as $pkey => $plabel ) :
-                                ?>
-                                    <option value="<?php echo esc_attr( $pkey ); ?>" 
-                                            <?php selected( $assigned_plan, $pkey ); ?>
-                                            style="color:<?php echo esc_attr( $colors[ $pkey ] ); ?>;font-weight:600;">
+                        <div class="sapwcc-card-row sapwcc-plan-row">
+                            <span class="sapwcc-card-label">Plan</span>
+                            <span class="sapwcc-plan-current">
+                                <?php if ( $shown_plan ) : ?>
+                                    <span class="sapwcc-plan-pill" style="background:<?php echo esc_attr( $plan_colors[ $shown_plan ] ?? '#666' ); ?>;">
+                                        <?php echo esc_html( $plans_list[ $shown_plan ] ?? ucfirst( $shown_plan ) ); ?>
+                                    </span>
+                                <?php else : ?>
+                                    <span class="sapwcc-plan-pill sapwcc-plan-pill--none">Sin asignar</span>
+                                <?php endif; ?>
+                            </span>
+                            <select class="sapwcc-plan-assign sapwcc-plan-select-inline"
+                                    data-site-key="<?php echo esc_attr( $key ); ?>"
+                                    data-site-id="<?php echo esc_attr( $site['site_id'] ); ?>"
+                                    title="Cambiar plan asignado">
+                                <option value="">— Cambiar —</option>
+                                <?php foreach ( $plans_list as $pkey => $plabel ) : ?>
+                                    <option value="<?php echo esc_attr( $pkey ); ?>" <?php selected( $assigned_plan, $pkey ); ?>>
                                         <?php echo esc_html( $plabel ); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <?php if ( ! empty( $assigned_plan ) ) : ?>
-                                <span class="dashicons dashicons-yes-alt" style="color:#00a32a;" title="Plan asignado"></span>
-                            <?php else : ?>
-                                <span class="dashicons dashicons-warning" style="color:#dba617;" title="Sin plan asignado"></span>
+                            <?php if ( $plan_mismatch ) : ?>
+                                <span class="dashicons dashicons-warning" style="color:#dba617;"
+                                      title="El cliente reporta <?php echo esc_attr( $plans_list[ $effective_plan ] ?? $effective_plan ); ?> pero el CC asignó <?php echo esc_attr( $plans_list[ $assigned_plan ] ?? $assigned_plan ); ?>. Tras propagar flags.json, debería sincronizarse."></span>
                             <?php endif; ?>
                         </div>
                         <?php endif; ?>
 
                         <?php if ( $health && $status !== 'unreachable' && $status !== 'error' && $status !== 'unknown' ) : ?>
-                            <?php
-                                $plan_key   = $health['site']['plan'] ?? 'starter';
-                                $plan_labels = [ 'starter' => 'Starter', 'business' => 'Business', 'enterprise' => 'Enterprise' ];
-                                $plan_colors = [ 'starter' => '#2271b1', 'business' => '#00a32a', 'enterprise' => '#8c00b7' ];
-                            ?>
-                            <div class="sapwcc-card-row">
-                                <span class="sapwcc-card-label">Plan</span>
-                                <span style="font-weight:600;color:<?php echo esc_attr( $plan_colors[ $plan_key ] ?? '#2271b1' ); ?>;">
-                                    <?php echo esc_html( $plan_labels[ $plan_key ] ?? ucfirst( $plan_key ) ); ?>
-                                </span>
-                            </div>
                             <div class="sapwcc-card-row">
                                 <span class="sapwcc-card-label">Plugin</span>
                                 <?php
@@ -486,8 +488,26 @@ $vig_criticals  = class_exists( 'SAPWCC_Vigilante' ) ? SAPWCC_Vigilante::total_c
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <div id="tab-flags" class="sapwcc-tab-content" <?php echo $active !== 'flags' ? 'style="display:none"' : ''; ?>>
 
-        <?php if ( empty( $flags ) ) : ?>
-            <div class="notice notice-warning"><p>No se pudo leer flags.json en <code><?php echo esc_html( SAPWCC_Flags::get_path() ); ?></code></p></div>
+        <?php if ( empty( $flags ) ) :
+            $vig_diag = SAPWCC_Flags::diagnose();
+        ?>
+            <div class="notice notice-warning">
+                <p><strong>flags.json vacío o no encontrado.</strong></p>
+                <p>Ruta usada: <code><?php echo esc_html( $vig_diag['path'] ); ?></code></p>
+                <?php if ( $vig_diag['error'] ) : ?>
+                    <p><?php echo esc_html( $vig_diag['error'] ); ?></p>
+                <?php endif; ?>
+                <p style="font-size:12px;color:#646970;">
+                    Existe: <?php echo $vig_diag['exists'] ? '✓' : '✗'; ?> ·
+                    Legible: <?php echo $vig_diag['readable'] ? '✓' : '✗'; ?> ·
+                    Dir escribible: <?php echo $vig_diag['writable_dir'] ? '✓' : '✗'; ?>
+                </p>
+                <p style="font-size:12px;">
+                    Si el directorio no existe, crea la carpeta en el servidor (ej.
+                    <code>mkdir -p <?php echo esc_html( dirname( $vig_diag['path'] ) ); ?></code>)
+                    o ajusta <em>Settings → Ruta local de flags.json</em>.
+                </p>
+            </div>
         <?php endif; ?>
 
         <div class="sapwcc-flags-layout-v2">

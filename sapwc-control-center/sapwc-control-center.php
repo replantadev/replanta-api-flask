@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.32
+ * Version:     1.2.36
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 8.0
@@ -14,10 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SAPWCC_VERSION', '1.2.32' );;;;;;;;;;;;;;;;;;;;;;;;;
+define( 'SAPWCC_VERSION', '1.2.36' );
 define( 'SAPWCC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAPWCC_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAPWCC_LATEST_SUITE_VERSION', '2.18.1' );;;;;;;;;;;;;;;
+define( 'SAPWCC_LATEST_SUITE_VERSION', '2.18.3' );
 
 // HMAC secret shared with sap-woo-suite for flags.json integrity.
 // Override in wp-config.php: define( 'SAPWCC_FLAGS_HMAC_SECRET', 'your-secret' );
@@ -459,6 +459,9 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/pending-issues',
         'control/repair-ship-to',
         'control/repair-duplicates',
+        'control/mark-order-completed',
+        'control/resolve-task',
+        'control/unresolve-task',
     ];
 
     if ( ! in_array( $endpoint, $allowed_endpoints, true ) ) {
@@ -515,6 +518,8 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/rotate-secret'          => 'rotate_secret',
         'control/set-cc-ip'              => 'set_cc_ip',
         'control/set-flags-hmac-secret'  => 'set_flags_hmac_secret',
+        'control/resolve-task'           => 'resolve_task',
+        'control/unresolve-task'         => 'unresolve_task',
     ];
     $audit_action = $audit_map[ $endpoint ] ?? 'remote_action';
     SAPWCC_Audit::log( $audit_action, "HTTP {$code} - {$endpoint}", $site['label'] );
@@ -525,6 +530,13 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
             SAPWCC_Sites::update_secret( $site_key, $body['new_secret'] );
             // Remove the secret from the response body before sending to the browser.
             unset( $body['new_secret'] );
+        }
+        // After a successful update, invalidate health cache so the dashboard reflects
+        // the new plugin version on reload instead of the 5-min cached pre-update one.
+        if ( $endpoint === 'control/update' ) {
+            delete_transient( SAPWCC_Sites::HEALTH_PREFIX . $site_key );
+            // Force a fresh health ping right away so reload shows new version.
+            SAPWCC_Sites::fetch_health( $site_key );
         }
         wp_send_json_success( $body );
     } else {
