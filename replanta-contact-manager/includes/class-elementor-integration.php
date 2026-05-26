@@ -26,8 +26,11 @@ class RCM_Elementor_Integration {
      * Capturar envío de formulario Elementor
      */
     public function capture_form_submission($record, $handler) {
+        error_log('RCM DEBUG: elementor_pro/forms/new_record fired');
+
         // Verificar si la captura está habilitada
         if (!Replanta_Contact_Manager::get_option('elementor_capture', 1)) {
+            error_log('RCM DEBUG: elementor_capture disabled, skipping');
             return;
         }
         
@@ -35,9 +38,12 @@ class RCM_Elementor_Integration {
         $form_name = $record->get_form_settings('form_name');
         $form_id = $record->get_form_settings('id');
         
+        error_log('RCM DEBUG: form_name=' . $form_name . ' form_id=' . $form_id);
+
         // Verificar si este formulario está excluido
         $excluded_forms = Replanta_Contact_Manager::get_option('elementor_exclude_forms', []);
         if (in_array($form_id, $excluded_forms)) {
+            error_log('RCM DEBUG: form excluded, skipping');
             return;
         }
         
@@ -49,14 +55,19 @@ class RCM_Elementor_Integration {
             $fields[$field['id']] = $field['value'];
         }
         
+        error_log('RCM DEBUG: field IDs found: ' . implode(', ', array_keys($fields)));
+
         // Intentar identificar campos comunes
         $name = $this->find_field($fields, ['name', 'nombre', 'fullname', 'full_name']);
         $email = $this->find_field($fields, ['email', 'correo', 'e-mail', 'mail']);
         $phone = $this->find_field($fields, ['phone', 'telefono', 'tel', 'movil', 'celular']);
         $message = $this->find_field($fields, ['message', 'mensaje', 'comment', 'comentario', 'consulta']);
         
+        error_log('RCM DEBUG: name=' . $name . ' email=' . $email);
+
         // Si no hay email, no guardar (requisito mínimo)
         if (empty($email)) {
+            error_log('RCM DEBUG: email empty, skipping. Field IDs were: ' . implode(', ', array_keys($fields)));
             return;
         }
         
