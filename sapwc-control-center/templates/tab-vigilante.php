@@ -204,7 +204,12 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
                 <div class="sapwcc-vig-issue-header">
                     <span class="dashicons dashicons-<?php echo esc_attr( $icon ); ?>"></span>
                     <div class="sapwcc-vig-issue-text">
-                        <strong><?php echo esc_html( $issue['title'] ); ?></strong>
+                        <strong>
+                            <?php echo esc_html( $issue['title'] ); ?>
+                            <button type="button" class="sapwcc-vig-help-btn" data-issue-type="<?php echo esc_attr( $issue['type'] ); ?>" title="Más información sobre esta alerta" aria-label="Ayuda">
+                                <span class="dashicons dashicons-editor-help"></span>
+                            </button>
+                        </strong>
                         <span class="sapwcc-muted"><?php echo esc_html( $issue['detail'] ); ?></span>
                         <?php if ( ! empty( $issue['since'] ) ) : ?>
                             <span class="sapwcc-vig-since">Desde: <?php echo esc_html( $issue['since'] ); ?></span>
@@ -240,6 +245,16 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
                                 title="Reparar automáticamente ahora">
                             <span class="dashicons dashicons-admin-tools"></span> Corregir
                         </button>
+                        <?php endif; ?>
+                        <?php if ( $issue['type'] === 'processing_stale' && ! $is_resolved && ! empty( $issue['context']['orders'] ) ) : ?>
+                            <?php foreach ( $issue['context']['orders'] as $_stale ) : ?>
+                            <button class="button button-small sapwcc-vig-mark-completed-btn"
+                                    data-site-key="<?php echo esc_attr( $site_key ); ?>"
+                                    data-order-id="<?php echo esc_attr( $_stale['order_id'] ); ?>"
+                                    title="Marcar #<?php echo esc_attr( $_stale['order_id'] ); ?> como completado">
+                                <span class="dashicons dashicons-yes"></span> #<?php echo esc_html( $_stale['order_id'] ); ?>
+                            </button>
+                            <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
                 </div>

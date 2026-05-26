@@ -108,22 +108,39 @@ class SAPWCC_AI {
 
     private static function build_prompt( string $issue_type, array $context, string $site_label ): string {
         $ctx = wp_json_encode( $context, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+
+        // Hints accionables específicos por tipo de issue.
+        $hints = [
+            'missing_ship_to'      => 'El plugin auto-repara con POST /control/repair-ship-to. Si persiste, indicar al operador que pulse "Corregir" o que el equipo SAP revise el BP del cliente genérico.',
+            'processing_stale'     => 'Pedidos en processing >7 dias YA estan en SAP. El operador debe verificar la entrega en SAP B1 y pulsar el boton #N para marcar completado manualmente. NO sugerir reenvio.',
+            'retry_exhausted'      => 'Tras 5 reintentos el cron ya no retoca el pedido. Revisar _sap_sync_failed_reason. Si es error de datos, corregir en WC; si es SAP, escalar al equipo SAP.',
+            'cron_gap'             => 'El cron no se ha disparado en >2 ciclos. Revisar Action Scheduler en WC > Status > Scheduled Actions, o servidor caido.',
+            'skipped_persistent'   => 'Pedidos saltados varios ciclos seguidos: probablemente _sap_no_sync=1 o exportados sin status WC avanzado.',
+            'errors_spike'         => 'Pico de errores en la ultima hora. Revisar el log SAPWC y conexion Service Layer.',
+            'inactive_customer'    => 'CardCode esta inactivo en SAP B1. Equipo SAP debe reactivar el BP (campo Frozen=tNO).',
+            'pending_old'          => 'Pedidos viejos sin _sap_exported: probablemente bloqueados en cola. Revisar log y forzar reenvio.',
+            'failure_type_duplicate_document' => 'Documento duplicado en SAP. El plugin auto-repara con repair-duplicates (marca _sap_docentry del existente).',
+        ];
+        $hint = $hints[ $issue_type ] ?? 'Analiza el contexto y propon pasos especificos. Si el contexto incluye order_ids/orders, refierete a esos pedidos concretos.';
+
         return <<<PROMPT
-Eres el asistente técnico de SAP Woo Suite, un conector entre WooCommerce y SAP Business One.
+Eres el asistente tecnico de SAP Woo Suite, un conector entre WooCommerce y SAP Business One.
 Se ha detectado un problema en el sitio "{$site_label}".
 
 Tipo de problema: {$issue_type}
+Pista interna (no la repitas literal, usala para guiar tu respuesta): {$hint}
+
 Datos del problema:
 {$ctx}
 
-Responde ÚNICAMENTE con un objeto JSON válido con estas 3 claves exactas (sin texto adicional):
+Responde UNICAMENTE con un objeto JSON valido con estas 3 claves exactas (sin texto adicional):
 {
-  "explanation": "qué salió mal, en 1-2 frases, sin jerga técnica, orientado al operador",
-  "steps": ["acción concreta 1", "acción concreta 2", "acción concreta 3 si aplica"],
-  "prevention": "cómo evitar que vuelva a ocurrir, en 1 frase"
+  "explanation": "que salio mal, en 1-2 frases, sin jerga tecnica, orientado al operador. Si hay ordenes concretas, mencionalas.",
+  "steps": ["accion concreta 1 (referenciando IDs si aplica)", "accion concreta 2", "accion concreta 3 si aplica"],
+  "prevention": "como evitar que vuelva a ocurrir, en 1 frase"
 }
 
-Responde en español. Sé directo y accionable. Máximo 3 pasos.
+Responde en espanol. Se directo y accionable. Maximo 3 pasos.
 PROMPT;
     }
 

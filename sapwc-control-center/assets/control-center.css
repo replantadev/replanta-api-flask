@@ -694,3 +694,66 @@
     .sapwcc-vig-header-inner { flex-direction: column; align-items: flex-start; }
 }
 
+
+/* ── Vigilante issue-type help (?) button + modal ───────────────────── */
+.sapwcc-vig-help-btn {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0 4px;
+    color: #2271b1;
+    vertical-align: middle;
+    line-height: 1;
+}
+.sapwcc-vig-help-btn:hover { color: #135e96; }
+.sapwcc-vig-help-btn .dashicons { font-size: 16px; width: 16px; height: 16px; }
+
+.sapwcc-vig-mark-completed-btn {
+    background: #fff3cd !important;
+    border-color: #ffc107 !important;
+    color: #856404 !important;
+}
+.sapwcc-vig-mark-completed-btn:hover { background: #ffe69c !important; }
+
+.sapwcc-vig-help-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display: none;
+    z-index: 100050;
+    align-items: center;
+    justify-content: center;
+}
+.sapwcc-vig-help-overlay.is-open { display: flex; }
+.sapwcc-vig-help-box {
+    background: #fff;
+    border-radius: 6px;
+    max-width: 620px;
+    width: calc(100% - 40px);
+    max-height: 80vh;
+    overflow: auto;
+    padding: 24px 28px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,.3);
+}
+.sapwcc-vig-help-close {
+    position: absolute;
+    top: 8px; right: 12px;
+    background: transparent;
+    border: 0;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: #555;
+}
+.sapwcc-vig-help-close:hover { color: #000; }
+.sapwcc-vig-help-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    padding-right: 30px;
+    border-bottom: 1px solid #dcdcde;
+    padding-bottom: 10px;
+}
+.sapwcc-vig-help-body { font-size: 14px; line-height: 1.6; }
+.sapwcc-vig-help-body p { margin: 0 0 12px; }
+.sapwcc-vig-help-body code { background: #f0f0f1; padding: 1px 5px; border-radius: 3px; font-size: 12px; }

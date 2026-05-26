@@ -919,6 +919,34 @@
         });
     });
 
+    // Mark order completed (processing_stale)
+    $(document).on('click', '.sapwcc-vig-mark-completed-btn', function () {
+        var $btn    = $(this);
+        var siteKey = $btn.data('site-key');
+        var orderId = $btn.data('order-id');
+        if (!confirm('Marcar pedido #' + orderId + ' como completado? El pedido ya está en SAP. Solo avanza el estado en WooCommerce.')) {
+            return;
+        }
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> #' + orderId);
+        remoteAction(siteKey, 'control/mark-order-completed', 'POST', { order_id: orderId }, function (res) {
+            if (res.success) {
+                var d = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+                if (d.success) {
+                    $btn.html('<span class="dashicons dashicons-yes-alt"></span> #' + orderId + ' OK')
+                        .css({ background: '#d4edda', borderColor: '#28a745', color: '#155724' });
+                } else {
+                    $btn.html('<span class="dashicons dashicons-warning"></span> ' + (d.message || 'Error'))
+                        .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24', 'font-size': '11px' })
+                        .prop('disabled', false);
+                }
+            } else {
+                $btn.html('<span class="dashicons dashicons-warning"></span> Error')
+                    .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24' })
+                    .prop('disabled', false);
+            }
+        });
+    });
+
     // Save Vigilante config
     $('#sapwcc-vig-config-form').on('submit', function (e) {
         e.preventDefault();
@@ -964,5 +992,89 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
     }
+
+    /* ── Vigilante issue-type help modal ──────────────────────────────────── */
+
+    var vigHelp = {
+        missing_ship_to: {
+            title: 'Pedido sin dirección de envío vinculada (ShipToCode)',
+            body: '<p>El pedido ya está en SAP, pero el campo <b>"Enviar a"</b> de la pestaña Logística no apunta a una entrada del array <code>BPAddresses</code>. La dirección física <b>SÍ</b> está grabada en <code>AddressExtension</code> del documento — el transportista la recibirá.</p>' +
+                  '<p><b>Auto-fix:</b> el Vigilante intenta repararlo con PATCH <code>ShipToCode</code>. Si SAP devuelve -1029 / -5002 (documento cerrado o enlazado), se acepta el "no" y se marca resuelto localmente.</p>' +
+                  '<p><b>Desde v2.17.0:</b> los nuevos pedidos nacen ya con <code>ShipToCode</code> en el POST (preflight). Esta alerta solo afecta a pedidos viejos pre-v2.17.</p>'
+        },
+        processing_stale: {
+            title: 'Pedidos en processing >7 días ya exportados a SAP',
+            body: '<p>Estos pedidos tienen <code>_sap_exported=1</code> pero su estado WooCommerce sigue en <i>processing</i>. El cron los salta cada ciclo (correcto: ya están en SAP).</p>' +
+                  '<p><b>Acción del operador:</b> verifica en SAP B1 que la entrega salió. Si sí, pulsa el botón <b>#N</b> para marcar el pedido como completado en WC. <b>No</b> se reenvía a SAP — sólo avanza el estado WC.</p>' +
+                  '<p><b>Por qué no se hace solo:</b> el plugin no decide por ti si la mercancía salió. Tú lo confirmas.</p>'
+        },
+        retry_exhausted: {
+            title: 'Pedido con 5 reintentos consumidos',
+            body: '<p>El sistema de reintentos exponenciales ya no volverá a tocar este pedido. Causa: error persistente al sincronizar con SAP.</p>' +
+                  '<p><b>Acción:</b> revisa <code>_sap_sync_failed_reason</code>. Si es un error de datos (CardCode inexistente, artículo discontinuado), corrígelo en WC. Si es SAP (BP bloqueado, sesión SL caída), avisa al equipo SAP.</p>'
+        },
+        cron_gap: {
+            title: 'El cron no se está disparando',
+            body: '<p>Han pasado >2 ciclos sin que el cron procese la cola de pedidos. Causas típicas: servidor caído, Action Scheduler bloqueado, o WP-Cron desactivado sin un cron real configurado.</p>' +
+                  '<p><b>Acción:</b> WP Admin → Tools → Scheduled Actions, busca <code>sapwc_sync_cron</code> y verifica que se está ejecutando.</p>'
+        },
+        skipped_persistent: {
+            title: 'Pedidos saltados varios ciclos consecutivos',
+            body: '<p>El cron coge estos pedidos, decide saltarlos, y los devuelve. Causas: <code>_sap_no_sync=1</code> (excluidos manualmente) o ya exportados pero con estado WC sin avanzar.</p>' +
+                  '<p><b>Desde v2.17.1:</b> el cron filtra esos pedidos en el query, así que esta alerta debería estar vacía. Si aparece, hay un caso edge que no estamos filtrando.</p>'
+        },
+        errors_spike: {
+            title: 'Pico de errores en la última hora',
+            body: '<p>Más errores de lo normal en <code>wp_sapwc_logs</code> con status=error en los últimos 60min. Suele ser cascada por Service Layer caído.</p>' +
+                  '<p><b>Acción:</b> WP Admin → SAP Woo Suite → Logs, filtra por error, mira el patrón. Si todos dicen "session expired", reinicia la conexión.</p>'
+        },
+        inactive_customer: {
+            title: 'CardCode inactivo en SAP B1',
+            body: '<p>SAP rechaza el POST porque el BP está marcado <code>Frozen=tYES</code>. Es decisión del equipo SAP.</p>' +
+                  '<p><b>Acción:</b> el equipo SAP debe reactivar el BP en SAP B1. Cuando esté hecho, el cron reintentará automáticamente.</p>'
+        },
+        pending_old: {
+            title: 'Pedidos antiguos sin exportar (>90min, <30 días)',
+            body: '<p>Pedidos en <i>processing</i> u <i>on-hold</i> sin <code>_sap_exported</code> que llevan más de 90min. Probablemente atascados en cola o con error que no marca <code>_sap_sync_failed</code>.</p>' +
+                  '<p><b>Acción:</b> WP Admin → SAP Woo Suite → Logs, busca por order_id. Si no hay rastro, fuerza reenvío manual.</p>'
+        },
+        failure_type_duplicate_document: {
+            title: 'Documento duplicado en SAP',
+            body: '<p>SAP rechaza el POST porque ya existe un pedido con el mismo número. Suele pasar tras un timeout que sí creó el documento en SAP (ver v2.18.0 idempotencia).</p>' +
+                  '<p><b>Auto-fix:</b> el Vigilante busca el DocEntry existente y lo asocia al pedido WC con <code>repair-duplicates</code>.</p>'
+        }
+    };
+
+    var $vigHelpModal = $(
+        '<div id="sapwcc-vig-help-modal" class="sapwcc-vig-help-overlay" aria-hidden="true" role="dialog">' +
+        '  <div class="sapwcc-vig-help-box">' +
+        '    <button type="button" class="sapwcc-vig-help-close" aria-label="Cerrar">&times;</button>' +
+        '    <h3 class="sapwcc-vig-help-title"></h3>' +
+        '    <div class="sapwcc-vig-help-body"></div>' +
+        '  </div>' +
+        '</div>'
+    ).appendTo('body');
+
+    function openVigHelp(key) {
+        var data = vigHelp[key];
+        if (!data) { return; }
+        $vigHelpModal.find('.sapwcc-vig-help-title').text(data.title);
+        $vigHelpModal.find('.sapwcc-vig-help-body').html(data.body);
+        $vigHelpModal.attr('aria-hidden', 'false').addClass('is-open');
+    }
+    function closeVigHelp() {
+        $vigHelpModal.attr('aria-hidden', 'true').removeClass('is-open');
+    }
+    $(document).on('click', '.sapwcc-vig-help-btn', function (e) {
+        e.preventDefault();
+        openVigHelp($(this).data('issue-type'));
+    });
+    $(document).on('click', '.sapwcc-vig-help-close', closeVigHelp);
+    $(document).on('click', '.sapwcc-vig-help-overlay', function (e) {
+        if ($(e.target).hasClass('sapwcc-vig-help-overlay')) { closeVigHelp(); }
+    });
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape') { closeVigHelp(); }
+    });
 
 })(jQuery);

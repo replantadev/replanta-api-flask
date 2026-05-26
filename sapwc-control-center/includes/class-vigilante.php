@@ -406,6 +406,24 @@ class SAPWCC_Vigilante {
             ];
         }
 
+        // Rule 10 — Processing stale: pedidos exportados a SAP que llevan >7d en processing.
+        $processing_stale = $data['processing_stale'] ?? [];
+        if ( ! empty( $processing_stale ) ) {
+            $count     = count( $processing_stale );
+            $order_ids = array_column( $processing_stale, 'order_id' );
+            $issues[] = [
+                'id'           => 'processing_stale',
+                'type'         => 'processing_stale',
+                'audience'     => 'admin',
+                'severity'     => self::SEV_WARNING,
+                'title'        => $count . ' pedido(s) en processing >7 dias ya exportados a SAP',
+                'detail'       => 'El cron los salta porque _sap_exported=1. Revisa y marca completado si la entrega ya salio.',
+                'since'        => $processing_stale[0]['created'] ?? '',
+                'context'      => [ 'orders' => $processing_stale, 'count' => $count ],
+                'auto_resolved'=> false,
+            ];
+        }
+
         return $issues;
     }
 
