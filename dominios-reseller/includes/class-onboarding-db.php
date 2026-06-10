@@ -587,7 +587,9 @@ class Dominios_Reseller_Onboarding_DB {
             'onboarded',      // Completado exitosamente
             'error',          // Error en el proceso
             'needs_manual_ns',// Requiere cambio manual de NS
-            'partial'         // Completado parcialmente (algunos settings no aplicados)
+            'partial',        // Completado parcialmente (algunos settings no aplicados)
+            'pending_ns',     // Esperando propagación de nameservers
+            'completed'       // Completado (alias usado por el worker)
         ];
     }
 
