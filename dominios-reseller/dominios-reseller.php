@@ -2,11 +2,11 @@
 /*
 Plugin Name: Dominios Reseller
 Description: Certifica dominios ecológicos desde WHM, muestra árboles plantados y CO2 evitado. Integración con Cloudflare.
-Version: 1.7.1
+Version: 1.7.2
 Author: Replanta
 */
 
-define('DOMINIOS_RESELLER_VERSION', '1.7.1');
+define('DOMINIOS_RESELLER_VERSION', '1.7.2');
 define('DOMINIOS_RESELLER_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 /**

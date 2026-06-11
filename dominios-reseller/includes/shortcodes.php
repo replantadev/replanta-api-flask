@@ -24,12 +24,15 @@ function dr_obtener_datos_dominio_actual(): ?array {
     global $wpdb;
     $table = $wpdb->prefix . 'dominios_reseller';
 
-    // 1. Parámetro GET explícito  →  ?dominio=cliente.com
+    // 1. Parámetro GET explícito → ?dominio= | ?domain= (badge sello) | ?sitio= (Schema.org sello)
     $detected = '';
-    if ( ! empty( $_GET['dominio'] ) ) {
-        $detected = sanitize_text_field( wp_unslash( $_GET['dominio'] ) );
-        // Eliminar www. y normalizar
-        $detected = preg_replace( '/^www\./i', '', strtolower( trim( $detected ) ) );
+    foreach ( [ 'dominio', 'domain', 'sitio' ] as $param ) {
+        if ( ! empty( $_GET[ $param ] ) ) {
+            $detected = sanitize_text_field( wp_unslash( $_GET[ $param ] ) );
+            // Eliminar www. y normalizar
+            $detected = preg_replace( '/^www\./i', '', strtolower( trim( $detected ) ) );
+            break;
+        }
     }
 
     // 2. HTTP_REFERER como fallback

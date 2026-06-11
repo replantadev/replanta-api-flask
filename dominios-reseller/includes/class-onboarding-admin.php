@@ -76,6 +76,7 @@ class Dominios_Reseller_Onboarding_Admin {
         add_action('wp_ajax_dr_get_php_alerts', [$this, 'ajax_get_php_alerts']);
         add_action('wp_ajax_dr_refresh_domain_status', [$this, 'ajax_refresh_domain_status']);
         add_action('wp_ajax_dr_reactivate_zone', [$this, 'ajax_reactivate_zone']);
+        add_action('wp_ajax_dr_clear_last_error', [$this, 'ajax_clear_last_error']);
         
         // Cron para actualización de PHP info cada 24h
         add_action('dr_cron_refresh_php_info', [$this, 'cron_refresh_php_info']);
@@ -668,7 +669,8 @@ class Dominios_Reseller_Onboarding_Admin {
         // === ROW 4: Error o NS objetivo (si aplica) ===
         if ($state && !empty($state['last_error']) && in_array($onboarding_state, ['error', 'partial', 'needs_manual_ns', 'pending_ns'])) {
             echo '<div class="dr-card-row dr-error-row">';
-            echo '<small>⚠️ ' . esc_html(substr($state['last_error'], 0, 100)) . '</small>';
+            echo '<small><span class="dashicons dashicons-warning"></span> ' . esc_html(substr($state['last_error'], 0, 140)) . '</small>';
+            echo ' <button class="dr-btn-clear-error button-link" data-domain="' . esc_attr($pd) . '" title="Limpiar este error persistido (requiere volver a aplicar el preset para validar)"><span class="dashicons dashicons-dismiss"></span></button>';
             echo '</div>';
         }
         
@@ -2915,9 +2917,47 @@ class Dominios_Reseller_Onboarding_Admin {
                         alert('Error: ' + (response.data || 'no se pudo reactivar'));
                         $btn.prop('disabled', false).html(originalText);
                     }
-                }).fail(function() {
-                    alert('Error de conexión');
+                }).fail(function(xhr) {
+                    var detail = '';
+                    if (xhr) {
+                        detail = '\nHTTP ' + xhr.status + ' ' + (xhr.statusText || '');
+                        if (xhr.responseText) {
+                            // Recortar para no romper el alert
+                            detail += '\n' + String(xhr.responseText).substring(0, 300);
+                        }
+                    }
+                    alert('Error de conexión al reactivar la zona.' + detail +
+                          '\n\nPosibles causas: plugin no actualizado en el server, nonce caducado (recarga la página), o admin-ajax.php bloqueado por WAF/cache.');
                     $btn.prop('disabled', false).html(originalText);
+                });
+            });
+
+            // ========================================
+            // CLEAR LAST_ERROR persistido (texto obsoleto en BD)
+            // ========================================
+            $(document).on('click', '.dr-btn-clear-error', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                var domain = $btn.data('domain');
+                if (!domain) return;
+                if (!confirm('Limpiar el error persistido de ' + domain + '?\n\nNo cambia el estado de Cloudflare. Vuelve a aplicar el preset después para validar.')) return;
+
+                $btn.prop('disabled', true);
+
+                $.post(ajaxurl, {
+                    action: 'dr_clear_last_error',
+                    _nonce: nonce,
+                    domain: domain
+                }, function(response) {
+                    if (response && response.success) {
+                        $btn.closest('.dr-error-row').fadeOut(200);
+                    } else {
+                        alert('No se pudo limpiar: ' + ((response && response.data) || 'error desconocido'));
+                        $btn.prop('disabled', false);
+                    }
+                }).fail(function(xhr) {
+                    alert('Error de conexión limpiando.\nHTTP ' + (xhr ? xhr.status : '?'));
+                    $btn.prop('disabled', false);
                 });
             });
 
@@ -4566,6 +4606,57 @@ class Dominios_Reseller_Onboarding_Admin {
             'message' => 'Cloudflare está re-verificando los NS de la zona. La zona pasará a `active` en unos minutos si los NS apuntan correctamente.',
             'domain'  => $domain,
             'zone_id' => $zone_id,
+        ]);
+    }
+
+    /**
+     * AJAX: Limpiar el `last_error` persistido de un dominio
+     *
+     * Útil cuando el error proviene de una versión antigua del plugin y
+     * persiste en la BD aunque el preset ya se aplique correctamente. No
+     * cambia el estado, solo borra el texto de error para que la UI deje
+     * de mostrar mensajes obsoletos. La próxima ejecución del preset/refresh
+     * lo recalculará.
+     */
+    public function ajax_clear_last_error(): void {
+        check_ajax_referer('dr_onboarding_nonce', '_nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permisos insuficientes');
+        }
+
+        $domain = sanitize_text_field($_POST['domain'] ?? '');
+        if (empty($domain)) {
+            wp_send_json_error('Dominio requerido');
+        }
+
+        global $wpdb;
+        $table = Dominios_Reseller_Onboarding_DB::get_onboarding_table();
+        $updated = $wpdb->update(
+            $table,
+            ['last_error' => null, 'updated_at' => current_time('mysql')],
+            ['primary_domain' => $domain],
+            ['%s', '%s'],
+            ['%s']
+        );
+
+        if ($updated === false) {
+            wp_send_json_error('Error de BD: ' . $wpdb->last_error);
+        }
+
+        if (class_exists('Dominios_Reseller_Onboarding_DB')
+            && method_exists('Dominios_Reseller_Onboarding_DB', 'log_activity')) {
+            Dominios_Reseller_Onboarding_DB::log_activity(
+                'clear_last_error',
+                $domain,
+                'Error persistido limpiado manualmente desde el panel',
+                ['component' => 'admin']
+            );
+        }
+
+        wp_send_json_success([
+            'message' => 'Error persistido limpiado. Vuelve a aplicar el preset para validar.',
+            'domain'  => $domain,
         ]);
     }
 

@@ -975,7 +975,8 @@ class Dominios_Reseller_Cloudflare_Service {
         if (empty($zone_id)) {
             return new WP_Error('missing_zone_id', 'zone_id requerido');
         }
-        return $this->api_request('PUT', '/zones/' . urlencode($zone_id) . '/activation_check', []);
+        // Cloudflare exige PUT con cuerpo vacío en /activation_check
+        return $this->api_put('/zones/' . urlencode($zone_id) . '/activation_check', []);
     }
 
     /**
