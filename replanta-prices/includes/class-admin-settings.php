@@ -303,6 +303,13 @@ class Replanta_Prices_Admin {
                     $plan['cta_text'] = sanitize_text_field( wp_unslash( $_POST[ $cta_key ] ) );
                 }
 
+                $badge_key = "feat_{$type}_{$slug}_sustainability_badge";
+                if ( isset( $_POST[ $badge_key ] ) ) {
+                    $badge_options = array_keys( Replanta_Prices_Shortcodes::getPlanBadgeOptions() );
+                    $badge_value   = sanitize_key( wp_unslash( $_POST[ $badge_key ] ) );
+                    $plan['sustainability_badge'] = in_array( $badge_value, $badge_options, true ) ? $badge_value : '';
+                }
+
                 // Features (one per line)
                 $feat_key = "feat_{$type}_{$slug}_features";
                 if ( isset( $_POST[ $feat_key ] ) ) {
@@ -940,6 +947,23 @@ class Replanta_Prices_Admin {
                                     <input type="text" name="feat_<?php echo esc_attr( $type . '_' . $slug ); ?>_cta"
                                            value="<?php echo esc_attr( $plan['cta_text'] ); ?>"
                                            class="regular-text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><label><?php esc_html_e( 'Badge sostenibilidad', 'replanta-prices' ); ?></label></th>
+                                <td>
+                                    <?php
+                                    $badge_options = Replanta_Prices_Shortcodes::getPlanBadgeOptions();
+                                    $badge_value   = isset( $plan['sustainability_badge'] ) ? sanitize_key( $plan['sustainability_badge'] ) : '';
+                                    ?>
+                                    <select name="feat_<?php echo esc_attr( $type . '_' . $slug ); ?>_sustainability_badge" class="regular-text">
+                                        <?php foreach ( $badge_options as $opt_value => $opt_label ) : ?>
+                                            <option value="<?php echo esc_attr( $opt_value ); ?>" <?php selected( $badge_value, $opt_value ); ?>>
+                                                <?php echo esc_html( $opt_label ); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <p class="description"><?php esc_html_e( 'Muestra un badge superior en la card del plan.', 'replanta-prices' ); ?></p>
                                 </td>
                             </tr>
                             <tr>

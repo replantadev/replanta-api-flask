@@ -200,6 +200,86 @@ final class RLTCustomizer
             'label' => __('Container max width (px)', 'replanta-lite'),
             'input_attrs' => ['min' => 960, 'max' => 1680, 'step' => 10],
         ]);
+
+        $wpCustomize->add_setting('rlt_container_full_width', [
+            'default' => false,
+            'sanitize_callback' => [self::class, 'sanitizeBool'],
+            'transport' => 'refresh',
+        ]);
+        $wpCustomize->add_control('rlt_container_full_width', [
+            'type' => 'checkbox',
+            'section' => 'rlt_global_layout',
+            'label' => __('Full width (ignora max-width, 100% del viewport)', 'replanta-lite'),
+        ]);
+
+        $wpCustomize->add_setting('rlt_hide_page_title', [
+            'default' => 'show',
+            'sanitize_callback' => [self::class, 'sanitizeHideTitles'],
+            'transport' => 'refresh',
+        ]);
+        $wpCustomize->add_control('rlt_hide_page_title', [
+            'type' => 'select',
+            'section' => 'rlt_global_layout',
+            'label' => __('Títulos de página', 'replanta-lite'),
+            'choices' => [
+                'show' => __('Mostrar', 'replanta-lite'),
+                'hide' => __('Ocultar', 'replanta-lite'),
+            ],
+        ]);
+
+        $this->registerSelectiveRefreshPartials($wpCustomize);
+    }
+
+    private function registerSelectiveRefreshPartials(WP_Customize_Manager $wpCustomize): void
+    {
+        if (!isset($wpCustomize->selective_refresh)) {
+            return;
+        }
+
+        $sharedSettings = ['rlt_cta_label', 'rlt_cta_url', 'rlt_brand_text'];
+        foreach (['x', 'linkedin', 'youtube', 'instagram'] as $s) {
+            $sharedSettings[] = 'rlt_social_' . $s;
+        }
+
+        $headerSettings = array_merge($sharedSettings, ['rlt_header_mode', 'rlt_header_fixed']);
+        $footerSettings = $sharedSettings;
+
+        foreach (RLTTheme::AREAS as $area) {
+            foreach (RLTTheme::ROWS as $row) {
+                $rowKeys = [
+                    sprintf('rlt_%s_%s_visible', $area, $row),
+                    sprintf('rlt_%s_%s_cols', $area, $row),
+                    sprintf('rlt_%s_%s_bg', $area, $row),
+                    sprintf('rlt_%s_%s_py', $area, $row),
+                ];
+                for ($col = 1; $col <= RLTTheme::MAX_COLS; $col++) {
+                    $rowKeys[] = sprintf('rlt_%s_%s_%d_module', $area, $row, $col);
+                    $rowKeys[] = sprintf('rlt_%s_%s_%d_text', $area, $row, $col);
+                    $rowKeys[] = sprintf('rlt_%s_%s_%d_button_label', $area, $row, $col);
+                    $rowKeys[] = sprintf('rlt_%s_%s_%d_button_url', $area, $row, $col);
+                    $rowKeys[] = sprintf('rlt_%s_%s_%d_html', $area, $row, $col);
+                }
+                if ($area === 'header') {
+                    $headerSettings = array_merge($headerSettings, $rowKeys);
+                } else {
+                    $footerSettings = array_merge($footerSettings, $rowKeys);
+                }
+            }
+        }
+
+        $wpCustomize->selective_refresh->add_partial('rlt_site_header', [
+            'selector' => '.rlt-site-header',
+            'render_callback' => ['RLTLayout', 'renderHeader'],
+            'container_inclusive' => true,
+            'settings' => $headerSettings,
+        ]);
+
+        $wpCustomize->selective_refresh->add_partial('rlt_site_footer', [
+            'selector' => '.rlt-site-footer',
+            'render_callback' => ['RLTLayout', 'renderFooter'],
+            'container_inclusive' => true,
+            'settings' => $footerSettings,
+        ]);
     }
 
     private function registerAreaControls(WP_Customize_Manager $wpCustomize, string $area, string $title, int $priority): void
@@ -407,5 +487,11 @@ final class RLTCustomizer
     {
         $key = sanitize_key((string) $value);
         return in_array($key, ['normal', 'transparent'], true) ? $key : 'normal';
+    }
+
+    public static function sanitizeHideTitles(mixed $value): string
+    {
+        $key = sanitize_key((string) $value);
+        return in_array($key, ['show', 'hide'], true) ? $key : 'show';
     }
 }

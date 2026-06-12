@@ -106,6 +106,92 @@
     color: var(--rep-sun, #F7D450);
 }
 
+/* ─── Sustainability badge per plan card ─────────────────────────── */
+.replanta-plans .replanta-pricing-card {
+    position: relative;
+}
+
+.replanta-plans .rep-plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font: 600 11px/1.2 var(--rep-font-body, Inter, sans-serif);
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+}
+
+.replanta-plans .rep-plan-badge > i {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.replanta-plans .rep-plan-badge--green-distribution {
+    background: rgba(65, 153, 159, 0.1);
+    border-color: rgba(65, 153, 159, 0.35);
+    color: #1f5c60;
+}
+
+.replanta-plans .rep-plan-badge--green-origin {
+    background: rgba(247, 212, 80, 0.18);
+    border-color: rgba(247, 212, 80, 0.4);
+    color: #4f420d;
+}
+
+.replanta-plans .rep-plan-badge .rep-tipwrap {
+    margin-left: 2px;
+}
+
+.replanta-plans .rep-plan-badge__tip {
+    width: 14px;
+    height: 14px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    background: rgba(255, 255, 255, 0.45);
+    color: inherit;
+    font: 700 10px/1 var(--rep-font-body, Inter, sans-serif);
+    padding: 0;
+}
+
+.replanta-plans .rep-plan-badge__tip:hover,
+.replanta-plans .rep-plan-badge__tip:focus {
+    background: rgba(255, 255, 255, 0.75);
+}
+
+/* Dark section compatibility (.pricing) */
+.pricing .replanta-plans .rep-plan-badge {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.32);
+    color: #ffffff;
+}
+
+.pricing .replanta-plans .rep-plan-badge--green-distribution {
+    background: rgba(147, 241, 201, 0.18);
+    border-color: rgba(147, 241, 201, 0.42);
+    color: #d8fff0;
+}
+
+.pricing .replanta-plans .rep-plan-badge--green-origin {
+    background: rgba(247, 212, 80, 0.22);
+    border-color: rgba(247, 212, 80, 0.45);
+    color: #fff2bf;
+}
+
+.pricing .replanta-plans .rep-plan-badge__tip {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.65);
+    color: #ffffff;
+}
+
+.pricing .replanta-plans .rep-plan-badge__tip:hover,
+.pricing .replanta-plans .rep-plan-badge__tip:focus {
+    background: rgba(255, 255, 255, 0.28);
+}
+
 /* SAPWOO tooltip readability: ensure tooltips float above neighbor cards */
 .replanta-plans--sapwoo .plans-grid,
 .replanta-plans--sapwoo .replanta-pricing-card,

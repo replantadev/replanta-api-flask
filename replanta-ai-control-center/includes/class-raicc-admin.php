@@ -31,6 +31,7 @@ final class RAICCAdmin
         add_action('admin_post_raicc_set_status', [$this, 'handleSetStatus']);
         add_action('admin_post_raicc_apply_theme_prompt', [$this, 'handleThemePrompt']);
         add_action('admin_post_raicc_migrate_elementor', [$this, 'handleMigrateElementor']);
+        add_action('admin_post_raicc_save_settings', [$this, 'handleSaveSettings']);
         add_action('admin_head', [$this, 'printAdminCss']);
     }
 
@@ -121,6 +122,25 @@ final class RAICCAdmin
         if (!empty($health['message'])) {
             echo '<p class="raicc-muted">' . esc_html((string) $health['message']) . '</p>';
         }
+        $savedSettings = (array) get_option(RAICCAIConnectorService::OPTION_SETTINGS, []);
+        $savedConnector = (string) ($savedSettings['active_connector'] ?? '');
+        $hasApiKey = !empty($savedSettings['api_key']);
+        echo '<details style="margin-top:12px;"><summary style="cursor:pointer;font-weight:600;color:#153024;list-style:none;display:flex;align-items:center;gap:6px;">' . RAICCIcons::svg('settings', 14) . esc_html__('Configurar API del conector', 'replanta-ai-control-center') . '</summary>';
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" style="margin-top:10px;">';
+        wp_nonce_field('raicc_save_settings');
+        echo '<input type="hidden" name="action" value="raicc_save_settings">';
+        echo '<p><label><strong>' . esc_html__('Conector activo', 'replanta-ai-control-center') . '</strong><br>';
+        echo '<input type="text" name="active_connector" value="' . esc_attr($savedConnector) . '" class="regular-text" placeholder="openai, replanta-connector, none..."></label></p>';
+        echo '<p><label><strong>' . esc_html__('API Key / Token', 'replanta-ai-control-center') . '</strong>';
+        if ($hasApiKey) {
+            echo ' <span class="raicc-badge raicc-ok">' . esc_html__('guardada', 'replanta-ai-control-center') . '</span>';
+        }
+        $placeholder = $hasApiKey
+            ? __('Dejar vacío para mantener la actual', 'replanta-ai-control-center')
+            : __('Introduce la API key', 'replanta-ai-control-center');
+        echo '<br><input type="password" name="api_key" value="" class="regular-text" autocomplete="new-password" placeholder="' . esc_attr($placeholder) . '"></label></p>';
+        submit_button(__('Guardar configuración', 'replanta-ai-control-center'), 'secondary', 'submit', false);
+        echo '</form></details>';
         echo '</div>';
 
         echo '<div class="raicc-card">';
@@ -404,5 +424,28 @@ final class RAICCAdmin
 
         wp_safe_redirect($url);
         exit;
+    }
+
+    public function handleSaveSettings(): void
+    {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('Insufficient permissions', 'replanta-ai-control-center'));
+        }
+        check_admin_referer('raicc_save_settings');
+
+        $existing = (array) get_option(RAICCAIConnectorService::OPTION_SETTINGS, []);
+
+        $connector = isset($_POST['active_connector'])
+            ? sanitize_key((string) wp_unslash($_POST['active_connector']))
+            : (string) ($existing['active_connector'] ?? '');
+        $existing['active_connector'] = $connector;
+
+        $apiKeyRaw = isset($_POST['api_key']) ? trim((string) wp_unslash($_POST['api_key'])) : '';
+        if ($apiKeyRaw !== '') {
+            $existing['api_key'] = sanitize_text_field($apiKeyRaw);
+        }
+
+        update_option(RAICCAIConnectorService::OPTION_SETTINGS, $existing);
+        $this->redirectNotice(__('Configuración del conector guardada.', 'replanta-ai-control-center'));
     }
 }

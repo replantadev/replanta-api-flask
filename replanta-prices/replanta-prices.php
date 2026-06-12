@@ -38,8 +38,11 @@ require_once REPLANTA_PRICES_DIR . 'includes/class-shortcodes.php';
 add_action( 'plugins_loaded', 'replanta_prices_init' );
 add_action( 'init', 'replanta_prices_ensure_crons' );
 
-function replanta_prices_init() {
+add_action( 'init', function () {
     load_plugin_textdomain( 'replanta-prices', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}, 1 );
+
+function replanta_prices_init() {
     Replanta_Prices_Geo::init();
     Replanta_Prices_Cache::init();
     Replanta_Prices_Awin_Analytics::init();

@@ -42,6 +42,7 @@ $currency = Replanta_Prices_Cache::get_effective_currency( $first );
         <?php foreach ( $plans as $slug => $plan ) :
             $card_class  = 'replanta-pricing-card';
             $card_class .= $plan['featured'] ? ' replanta-pricing-featured' : '';
+            $plan_badge   = Replanta_Prices_Shortcodes::getPlanBadgeData( $plan );
             $price_m      = Replanta_Prices_Cache::format_plan_price( $plan, 'monthly' );
             $price_y      = Replanta_Prices_Cache::format_plan_price( $plan, 'annual' );
             $order_url    = Replanta_Prices_Geo::get_order_url( $plan['pid'], $plan );
@@ -57,6 +58,18 @@ $currency = Replanta_Prices_Cache::get_effective_currency( $first );
         ?>
         <div class="<?php echo esc_attr( $card_class ); ?>" data-plan="<?php echo esc_attr( $slug ); ?>">
             <?php if ( $discount > 0 ) : ?><span class="rep-discount-tag">-<?php echo esc_html( $discount ); ?>% solidario</span><?php endif; ?>
+            <?php if ( ! empty( $plan_badge ) ) : ?>
+                <span class="rep-plan-badge <?php echo esc_attr( $plan_badge['class'] ); ?>">
+                    <i class="<?php echo esc_attr( $plan_badge['icon'] ); ?>" aria-hidden="true"></i>
+                    <?php echo esc_html( $plan_badge['label'] ); ?>
+                    <?php if ( ! empty( $plan_badge['tip'] ) ) : ?>
+                        <span class="rep-tipwrap" data-dir="up" data-align="left">
+                            <button class="rep-tip rep-plan-badge__tip" type="button" aria-label="<?php esc_attr_e( 'Más info', 'replanta-prices' ); ?>">i</button>
+                            <span class="rep-tooltip" role="tooltip"><?php echo esc_html( $plan_badge['tip'] ); ?></span>
+                        </span>
+                    <?php endif; ?>
+                </span>
+            <?php endif; ?>
             <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
                 <div>
                     <div class="rep-heading-3"><?php echo esc_html( $plan['name'] ); ?></div>

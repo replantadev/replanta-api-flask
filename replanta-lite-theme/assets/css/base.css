@@ -220,10 +220,296 @@ a:focus-visible {
   color: var(--rlt-muted);
 }
 
+/* ─── Sub-menus (desktop dropdown) ──────────────────────────── */
+.rlt-nav li {
+  position: relative;
+}
+
+.rlt-nav ul ul {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 200px;
+  background: var(--rlt-bg);
+  border: 1px solid var(--rlt-border);
+  border-radius: 0.45rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+  padding: 0.3rem 0;
+  z-index: 900;
+  flex-direction: column;
+}
+
+.rlt-nav li:hover > ul,
+.rlt-nav li:focus-within > ul {
+  display: flex;
+}
+
+.rlt-nav ul ul a {
+  padding: 0.45rem 0.9rem;
+  white-space: nowrap;
+  display: block;
+  font-size: 0.93rem;
+}
+
+/* ─── Mobile hamburger toggle ────────────────────────────────── */
+.rlt-menu-toggle {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--rlt-border);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  cursor: pointer;
+  color: var(--rlt-text);
+  z-index: 1001;
+}
+
+.rlt-menu-toggle-icon,
+.rlt-menu-toggle-icon::before,
+.rlt-menu-toggle-icon::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.18s ease, background 0.18s;
+}
+
+.rlt-menu-toggle-icon {
+  position: relative;
+}
+
+.rlt-menu-toggle-icon::before,
+.rlt-menu-toggle-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.rlt-menu-toggle-icon::before { top: -6px; }
+.rlt-menu-toggle-icon::after  { top:  6px; }
+
+.rlt-menu-toggle[aria-expanded="true"] .rlt-menu-toggle-icon {
+  background: transparent;
+}
+
+.rlt-menu-toggle[aria-expanded="true"] .rlt-menu-toggle-icon::before {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+
+.rlt-menu-toggle[aria-expanded="true"] .rlt-menu-toggle-icon::after {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* ─── Pagination ─────────────────────────────────────────────── */
+.page-numbers,
+.wp-pagenavi a,
+.wp-pagenavi span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--rlt-border);
+  border-radius: 0.4rem;
+  text-decoration: none;
+  color: var(--rlt-text);
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.page-numbers.current,
+.wp-pagenavi .current {
+  background: var(--rlt-accent);
+  border-color: var(--rlt-accent);
+  color: #fff;
+}
+
+.page-numbers:hover,
+.wp-pagenavi a:hover {
+  background: var(--rlt-accent);
+  border-color: var(--rlt-accent);
+  color: #fff;
+}
+
+.page-numbers.dots {
+  border-color: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.nav-links,
+.wp-pagenavi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: var(--rlt-space-4) 0;
+}
+
+/* ─── Comments ───────────────────────────────────────────────── */
+.rlt-comments-area {
+  margin-top: var(--rlt-space-4);
+  padding-top: var(--rlt-space-4);
+  border-top: 1px solid var(--rlt-border);
+}
+
+.rlt-comments-title {
+  margin: 0 0 var(--rlt-space-3);
+  font-size: 1.3rem;
+}
+
+.comment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comment-list .children {
+  list-style: none;
+  padding-left: 2rem;
+}
+
+.comment-body {
+  padding: var(--rlt-space-2) 0;
+  border-bottom: 1px solid var(--rlt-border);
+}
+
+.comment-author .fn {
+  font-weight: 600;
+}
+
+.comment-meta {
+  color: var(--rlt-muted);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.comment-content p {
+  margin: 0.5rem 0;
+}
+
+.comment-reply-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.comment-form label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form input[type="url"],
+.comment-form textarea {
+  width: 100%;
+  border: 1px solid var(--rlt-border);
+  border-radius: 0.4rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 1rem;
+  margin-bottom: var(--rlt-space-2);
+}
+
+.comment-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.comment-form .form-submit .submit {
+  background: var(--rlt-accent);
+  color: #fff;
+  border: 0;
+  border-radius: 0.45rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.comment-form .form-submit .submit:hover,
+.comment-form .form-submit .submit:focus-visible {
+  background: #0f5232;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 920px) {
   .rlt-grid.cols-2,
   .rlt-grid.cols-3,
   .rlt-grid.cols-4 {
     grid-template-columns: 1fr;
+  }
+
+  /* Header becomes a positioning context for the burger button */
+  .rlt-site-header {
+    position: relative;
+  }
+
+  /* Show hamburger button */
+  .rlt-menu-toggle {
+    display: flex;
+  }
+
+  /* Primary nav: hidden by default, dropdown panel below header */
+  .rlt-nav.rlt-nav-primary {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--rlt-bg);
+    border-top: 1px solid var(--rlt-border);
+    border-bottom: 1px solid var(--rlt-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .1);
+    z-index: 998;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+    padding: 0.5rem 0 1rem;
+  }
+
+  .rlt-nav.rlt-nav-primary.rlt-nav-open {
+    display: block;
+  }
+
+  /* Vertical stack for top-level items */
+  .rlt-nav.rlt-nav-primary ul {
+    flex-direction: column;
+    gap: 0;
+    padding: 0 1.25rem;
+  }
+
+  .rlt-nav.rlt-nav-primary > nav > ul > li > a,
+  .rlt-nav.rlt-nav-primary > nav > ul > li > span {
+    display: block;
+    padding: 0.85rem 0;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--rlt-border);
+  }
+
+  /* Sub-menus: inline block (no absolute positioning on mobile) */
+  .rlt-nav.rlt-nav-primary ul ul {
+    display: block;
+    position: static;
+    box-shadow: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0 0 0.5rem 1rem;
+    min-width: unset;
+  }
+
+  .rlt-nav.rlt-nav-primary ul ul a {
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--rlt-border);
+    white-space: normal;
+    display: block;
   }
 }

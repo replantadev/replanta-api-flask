@@ -160,6 +160,51 @@ class Replanta_Prices_Shortcodes {
     }
 
     /**
+     * Sustainability badge options available per pricing card.
+     *
+     * @return array<string,string>
+     */
+    public static function getPlanBadgeOptions() {
+        return array(
+            ''                         => __( 'Sin badge', 'replanta-prices' ),
+            'green_distribution'       => __( 'Green Distribution', 'replanta-prices' ),
+            'green_origin_certificado' => __( 'Green Origin certificado', 'replanta-prices' ),
+        );
+    }
+
+    /**
+     * Resolve a plan sustainability badge into render data.
+     *
+     * @param array $plan Plan definition.
+    * @return array{class:string,label:string,tip:string,icon:string}|null
+     */
+    public static function getPlanBadgeData( $plan ) {
+        $key = isset( $plan['sustainability_badge'] ) ? sanitize_key( $plan['sustainability_badge'] ) : '';
+
+        // Backward compatibility with removed options.
+        if ( in_array( $key, array( 'renewable_100', 'csrd_scope_3' ), true ) ) {
+            $key = 'green_origin_certificado';
+        }
+
+        $map = array(
+            'green_distribution' => array(
+                'class' => 'rep-plan-badge--green-distribution',
+                'label' => __( 'Green Distribution', 'replanta-prices' ),
+                'tip'   => __( 'Distribución 100% renovable verificada por The Green Web Foundation a través de Cloudflare CDN, con compensación de emisiones del origen vía proyectos certificados.', 'replanta-prices' ),
+                'icon'  => 'ph-bold ph-cloud',
+            ),
+            'green_origin_certificado' => array(
+                'class' => 'rep-plan-badge--green-origin',
+                'label' => __( 'Green Origin certificado', 'replanta-prices' ),
+                'tip'   => __( 'Infraestructura verificada por The Green Web Foundation. Cadena completa verde de extremo a extremo. Apto para reporting CSRD y Scope 3.', 'replanta-prices' ),
+                'icon'  => 'ph-bold ph-seal-check',
+            ),
+        );
+
+        return isset( $map[ $key ] ) ? $map[ $key ] : null;
+    }
+
+    /**
      * AJAX handler for quote modal submissions.
      */
     public static function handle_quote_lead() {

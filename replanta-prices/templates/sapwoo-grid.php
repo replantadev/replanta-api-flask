@@ -38,6 +38,7 @@ $currency    = Replanta_Prices_Cache::get_effective_currency( $first );
         <?php foreach ( $plans as $slug => $plan ) :
             $card_class  = 'replanta-pricing-card';
             $card_class .= $plan['featured'] ? ' replanta-pricing-featured' : '';
+            $plan_badge   = Replanta_Prices_Shortcodes::getPlanBadgeData( $plan );
             $price_setup = Replanta_Prices_Cache::format_plan_price( $plan, 'setup' );
             $price_m     = Replanta_Prices_Cache::format_plan_price( $plan, 'monthly' );
             // Setup product URL (bcm removed — one-time charge)
@@ -56,6 +57,19 @@ $currency    = Replanta_Prices_Cache::get_effective_currency( $first );
                  id="plan-<?php echo esc_attr( $slug ); ?>"
                  data-plan="<?php echo esc_attr( $slug ); ?>"
                  <?php if ( $plan['featured'] ) : ?>aria-label="<?php esc_attr_e( 'Plan recomendado', 'replanta-prices' ); ?>"<?php endif; ?>>
+
+            <?php if ( ! empty( $plan_badge ) ) : ?>
+                <span class="rep-plan-badge <?php echo esc_attr( $plan_badge['class'] ); ?>">
+                    <i class="<?php echo esc_attr( $plan_badge['icon'] ); ?>" aria-hidden="true"></i>
+                    <?php echo esc_html( $plan_badge['label'] ); ?>
+                    <?php if ( ! empty( $plan_badge['tip'] ) ) : ?>
+                        <span class="rep-tipwrap" data-dir="up" data-align="left">
+                            <button class="rep-tip rep-plan-badge__tip" type="button" aria-label="<?php esc_attr_e( 'Más info', 'replanta-prices' ); ?>">i</button>
+                            <span class="rep-tooltip" role="tooltip"><?php echo esc_html( $plan_badge['tip'] ); ?></span>
+                        </span>
+                    <?php endif; ?>
+                </span>
+            <?php endif; ?>
 
             <!-- Header -->
             <header class="plan-head">

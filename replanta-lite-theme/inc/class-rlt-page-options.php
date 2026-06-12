@@ -16,6 +16,7 @@ final class RLTPageOptions
     public const META_HEADER_MODE = '_rlt_header_mode';
     public const META_HEADER_FIXED = '_rlt_header_fixed';
     public const META_PALETTE = '_rlt_palette_preset';
+    public const META_HIDE_TITLE = '_rlt_hide_title';
 
     public function register(): void
     {
@@ -63,6 +64,14 @@ final class RLTPageOptions
             echo '<option value="' . esc_attr($value) . '" ' . selected($palette !== '' ? $palette : 'global', $value, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select></p>';
+
+        $hideTitle = (string) get_post_meta($post->ID, self::META_HIDE_TITLE, true);
+        echo '<p><label for="rlt_hide_title"><strong>' . esc_html__('Título de página', 'replanta-lite') . '</strong></label><br>';
+        echo '<select id="rlt_hide_title" name="rlt_hide_title" style="width:100%;">';
+        foreach (['global' => __('Global', 'replanta-lite'), 'show' => __('Mostrar', 'replanta-lite'), 'hide' => __('Ocultar', 'replanta-lite')] as $value => $label) {
+            echo '<option value="' . esc_attr($value) . '" ' . selected($hideTitle !== '' ? $hideTitle : 'global', $value, false) . '>' . esc_html($label) . '</option>';
+        }
+        echo '</select></p>';
     }
 
     public function savePageOptions(int $postId): void
@@ -93,8 +102,14 @@ final class RLTPageOptions
             $palette = 'global';
         }
 
+        $hideTitle = isset($_POST['rlt_hide_title']) ? sanitize_key((string) wp_unslash($_POST['rlt_hide_title'])) : 'global';
+        if (!in_array($hideTitle, ['global', 'show', 'hide'], true)) {
+            $hideTitle = 'global';
+        }
+
         update_post_meta($postId, self::META_HEADER_MODE, $headerMode);
         update_post_meta($postId, self::META_HEADER_FIXED, $headerFixed);
         update_post_meta($postId, self::META_PALETTE, $palette);
+        update_post_meta($postId, self::META_HIDE_TITLE, $hideTitle);
     }
 }

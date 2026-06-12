@@ -39,6 +39,8 @@ final class RAICCIcons
                 return '<path d="M128 24l104 184H24z"/><path d="M128 96v48"/><circle cx="128" cy="176" r="4" fill="currentColor" stroke="none"/>';
             case 'wand':
                 return '<path d="M40 216l88-88"/><path d="M96 40l8 24 24 8-24 8-8 24-8-24-24-8 24-8z"/><path d="M176 120l4 12 12 4-12 4-4 12-4-12-12-4 12-4z"/>';
+            case 'settings':
+                return '<circle cx="128" cy="128" r="40"/><path d="M128 48v16M128 192v16M48 128H32M224 128h-16M75 75l-12-12M193 193l-12-12M75 181l-12 12M193 63l-12 12"/>';
             default:
                 return '';
         }

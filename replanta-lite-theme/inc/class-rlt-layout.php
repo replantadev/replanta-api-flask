@@ -68,7 +68,18 @@ final class RLTLayout
             . ';--rlt-accent:' . $resolved['accent']
             . ';--rlt-border:' . $resolved['border']
             . ';--rlt-header-bg:' . $resolved['header_bg']
+            . ';--rlt-container:' . self::resolvedContainerWidth()
             . ';';
+    }
+
+    private static function resolvedContainerWidth(): string
+    {
+        if ((bool) get_theme_mod('rlt_container_full_width', false)) {
+            return '100%';
+        }
+        $width = (int) get_theme_mod('rlt_container_max_width', 1200);
+        $width = max(960, min(1680, $width));
+        return $width . 'px';
     }
 
     private static function headerMode(): string
@@ -190,25 +201,18 @@ final class RLTLayout
     private static function renderMenu(string $location, string $label): void
     {
         wp_nav_menu([
-            'theme_location' => $location,
-            'container' => 'nav',
-            'container_class' => 'rlt-nav rlt-nav-' . $location,
+            'theme_location'       => $location,
+            'container'            => 'nav',
+            'container_class'      => 'rlt-nav rlt-nav-' . $location,
             'container_aria_label' => $label,
-            'fallback_cb' => '__return_empty_string',
-            'depth' => $location === 'footer' ? 1 : 2,
+            'container_id'         => $location === 'primary' ? 'rlt-nav-primary' : '',
+            'fallback_cb'          => '__return_empty_string',
+            'depth'                => $location === 'footer' ? 1 : 2,
         ]);
     }
     public static function containerStyleVar(): string
     {
-        $width = (int) get_theme_mod('rlt_container_max_width', 1200);
-        if ($width < 960) {
-            $width = 960;
-        }
-        if ($width > 1680) {
-            $width = 1680;
-        }
-
-        return '--rlt-container:' . $width . 'px';
+        return '--rlt-container:' . self::resolvedContainerWidth();
     }
 
     public static function renderHeader(): void
@@ -221,6 +225,9 @@ final class RLTLayout
 			$classes[] = 'rlt-is-fixed';
 		}
         echo '<header class="' . esc_attr(implode(' ', $classes)) . '" role="banner" style="' . esc_attr(self::containerStyleVar()) . '">';
+        echo '<button class="rlt-menu-toggle" aria-expanded="false" aria-controls="rlt-nav-primary" aria-label="' . esc_attr__('Abrir menú de navegación', 'replanta-lite') . '">';
+        echo '<span class="rlt-menu-toggle-icon" aria-hidden="true"></span>';
+        echo '</button>';
         self::renderAreaRows('header');
         echo '</header>';
     }
