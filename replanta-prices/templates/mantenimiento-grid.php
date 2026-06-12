@@ -38,9 +38,11 @@ $currency    = Replanta_Prices_Cache::get_effective_currency( $first );
         <?php foreach ( $plans as $slug => $plan ) :
             $card_class  = 'replanta-pricing-card';
             $card_class .= $plan['featured'] ? ' replanta-pricing-featured' : '';
+            $card_class .= ! empty( $plan['is_addon'] ) ? ' replanta-pricing-addon' : '';
             $plan_badge   = Replanta_Prices_Shortcodes::getPlanBadgeData( $plan );
             $price       = Replanta_Prices_Cache::format_plan_price( $plan, 'monthly' );
-            $order_url   = Replanta_Prices_Geo::get_order_url( $plan['pid'], $plan );
+            $order_url   = ! empty( $plan['cta_url'] ) ? esc_url_raw( $plan['cta_url'] ) : Replanta_Prices_Geo::get_order_url( $plan['pid'], $plan );
+            $price_suffix = ! empty( $plan['price_suffix'] ) ? $plan['price_suffix'] : __( 'mes', 'replanta-prices' );
         ?>
         <article class="<?php echo esc_attr( $card_class ); ?>"
                  id="plan-<?php echo esc_attr( $slug ); ?>"
@@ -60,6 +62,10 @@ $currency    = Replanta_Prices_Cache::get_effective_currency( $first );
                 </span>
             <?php endif; ?>
 
+            <?php if ( ! empty( $plan['is_addon'] ) ) : ?>
+                <span class="rep-plan-addon-label"><?php esc_html_e( 'Add-on', 'replanta-prices' ); ?></span>
+            <?php endif; ?>
+
             <!-- Header -->
             <header class="plan-head">
                 <div>
@@ -67,7 +73,7 @@ $currency    = Replanta_Prices_Cache::get_effective_currency( $first );
                     <p class="plan-subtitle"><?php echo esc_html( $plan['subtitle'] ); ?></p>
                 </div>
                 <div class="rep-heading-3 price" data-plan="<?php echo esc_attr( $slug ); ?>">
-                    <?php echo wp_kses_post( $price ); ?><span class="rep-text-small">/<?php esc_html_e( 'mes', 'replanta-prices' ); ?></span>
+                    <?php echo wp_kses_post( $price ); ?><span class="rep-text-small">/<?php echo esc_html( $price_suffix ); ?></span>
                 </div>
             </header>
 

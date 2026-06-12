@@ -269,6 +269,26 @@
 
 /* (tick flex layout now handled by the shared .replanta-pricing-card ul li rule above) */
 
+.replanta-plans--mantenimiento .replanta-pricing-addon {
+    border: 2px dashed rgba(65, 153, 159, 0.45) !important;
+    background: linear-gradient(180deg, rgba(65, 153, 159, 0.06) 0%, rgba(255, 255, 255, 0.95) 100%) !important;
+}
+
+.replanta-plans--mantenimiento .rep-plan-addon-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(65, 153, 159, 0.35);
+    color: var(--rep-teal, #41999F);
+    background: rgba(65, 153, 159, 0.1);
+    font: 700 11px/1.2 var(--rep-font-body, Inter, sans-serif);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
 
 /* ==========================================================================
    UTILITIES
