@@ -526,7 +526,19 @@
                 if (res.success) {
                     var d = res.data || {};
                     alert('✓ ' + (d.message || 'Actualización completada.'));
-                    location.reload();
+                    // Esperar a que opcache del remote expire antes de re-pingar salud,
+                    // así la card muestra la versión correcta tras el reload.
+                    var $card = $('.sapwcc-site-card[data-key="' + key + '"]');
+                    if ($card.length) {
+                        $card.find('.sapwcc-version-badge, .sapwcc-plugin-version').text('Actualizando…');
+                    }
+                    setTimeout(function () {
+                        $.post(AJAX, { action: 'sapwcc_check_health', nonce: NONCE, site_key: key }, function () {
+                            location.reload();
+                        }).fail(function () {
+                            location.reload();
+                        });
+                    }, 3500);
                 } else {
                     var errMsg = (typeof res.data === 'string') ? res.data
                         : (res.data && res.data.response && res.data.response.message) ? res.data.response.message

@@ -6,6 +6,13 @@ El formato estÃ¡ basado en [Keep a Changelog](https://keepachangelog.com/es-ES
 y este proyecto adhiere a [Versionado SemÃ¡ntico](https://semver.org/lang/es/).
 
 ---
+## [1.2.44] - 2026-06-16
+
+### Corregido
+
+- **Card del dashboard mostraba versión antigua tras actualización exitosa** — después de `control/update`, el PHP hacía un re-ping inmediato a `/health` del remote, pero opcache del servidor remoto todavía tenía el header de versión antigua en caché. El transient quedaba con la versión vieja, y el `location.reload()` inmediato leía ese transient malo. Fix en dos partes: (1) eliminado el `fetch_health()` síncrono post-update del handler PHP (solo se borra el transient); (2) el JS espera 3,5 s antes de disparar `sapwcc_check_health` (nueva petición real al remote, ya con opcache renovado) y luego recarga — la card muestra la versión correcta.
+
+---
 ## [1.2.35] - 2026-05-26
 
 ### Añadido
