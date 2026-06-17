@@ -288,7 +288,7 @@ class SAPWCC_Sites {
         $secret = self::decrypt( $site['secret'] );
 
         $response = wp_remote_get( $url, [
-            'timeout'   => 10,
+            'timeout'   => 25,
             'sslverify' => ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
             'headers'   => [
                 'X-SAPWC-Secret' => $secret,

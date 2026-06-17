@@ -27,14 +27,30 @@
     font-family: var(--rep-font-body);
     color: #1a1a1a;
     line-height: 1.6;
-    overflow-x: hidden;
-    /* Break out of theme container */
+    overflow-x: clip;
     width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+@supports (width: 100dvw) {
+    .raff-landing {
+        width: 100dvw;
+        max-width: 100dvw;
+        margin-left: calc(50% - 50dvw);
+        margin-right: calc(50% - 50dvw);
+    }
+}
+
+/* Astra fallback: hide page title/header only on pages with this shortcode. */
+body.raff-landing-shortcode .entry-header.ast-header-without-markup {
+    display: none;
+}
+
+/* Prevent horizontal scrollbar when the landing breaks out of theme containers. */
+body.raff-landing-shortcode {
+    overflow-x: clip;
 }
 
 .raff-landing h1,

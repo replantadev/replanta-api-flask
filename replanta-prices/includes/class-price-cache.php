@@ -28,6 +28,7 @@ class Replanta_Prices_Cache {
                         'name'       => 'Sauce',
                         'subtitle'   => 'Personal',
                         'featured'   => false,
+                        'sustainability_badge' => 'green_distribution',
                         'pid'        => '6d530876-8251-d485-d80a-147e390921e6',
                         'price_m'    => 12.99,
                         'price_y'    => 129.00,
@@ -41,7 +42,7 @@ class Replanta_Prices_Cache {
                         ),
                         'features'   => array(
                             '1 sitio (1 dominio)',
-                            '<b>50 GB NVMe</b>',
+                            '<b>20 GB NVMe</b>',
                             '5 cuentas de email',
                             'Redis Object Cache (habilitado)',
                             'LiteSpeed &bull; HTTP/3 &bull; Brotli',
@@ -58,6 +59,7 @@ class Replanta_Prices_Cache {
                         'name'       => 'Roble',
                         'subtitle'   => 'Corporativo',
                         'featured'   => true,
+                        'sustainability_badge' => 'green_distribution',
                         'pid'        => '280d1639-e237-d439-6dea-54610589e572',
                         'price_m'    => 19.99,
                         'price_y'    => 199.00,
@@ -71,7 +73,7 @@ class Replanta_Prices_Cache {
                         ),
                         'features'   => array(
                             'Sitios y dominios ilimitados',
-                            '<b>100 GB NVMe</b> — Email ilimitado',
+                            '<b>20 GB NVMe</b> — 20 cuentas email',
                             'Redis Object Cache (tuning básico)',
                             '2 vCPU / 2 GB RAM',
                             'Smart Updates programadas',
@@ -88,6 +90,7 @@ class Replanta_Prices_Cache {
                         'name'       => 'Cedro',
                         'subtitle'   => 'WooCommerce',
                         'featured'   => false,
+                        'sustainability_badge' => 'green_origin_certificado',
                         'pid'        => 'e2e071d9-31d5-e460-555a-646028758396',
                         'price_m'    => 29.99,
                         'price_y'    => 299.00,
@@ -101,10 +104,12 @@ class Replanta_Prices_Cache {
                         ),
                         'features'   => array(
                             'WooCommerce y sitios ilimitados',
-                            '<b>200 GB NVMe</b> — Email ilimitado',
-                            'Redis optimizado Woo',
+                            '<b>30 GB NVMe</b> — 4 GB RAM garantizados',
+                            'OpenLiteSpeed + LSCache (stack top para WordPress)',
+                            'CyberPanel + monitorización Prometheus',
+                            '5 buzones profesionales con MXroute (10 GB por buzón)',
+                            'Infraestructura 100% verde de extremo a extremo',
                             '2 vCPU / 4 GB RAM',
-                            'Turnstile + WPO inicial',
                             'WAF opcional (CF Pro)',
                         ),
                         'features_extra' => array(
@@ -115,10 +120,11 @@ class Replanta_Prices_Cache {
                         'cta_text'      => 'Comenzar ahora',
                     ),
                 ),
+                'footer_note' => '* Green Distribution (Sauce y Roble): distribución optimizada con Cloudflare en la capa edge. 100% verde (Cedro): infraestructura completa de origen renovable. Sin greenwashing: son niveles distintos de sostenibilidad.',
             ),
             'mantenimiento' => array(
                 'title'    => 'Planes de mantenimiento WordPress',
-                'subtitle' => 'Operado con CARE Hub. Todos los planes incluyen uptime monitoring, informe mensual automatizado y backups externos verificados.',
+                'subtitle' => 'Operado con Replanta Care. Todos los planes incluyen uptime monitoring, informe mensual automatizado y backups externos verificados.',
                 'billing'  => 'monthly', // monthly only
                 'plans'    => array(
                     'semilla' => array(
@@ -137,12 +143,11 @@ class Replanta_Prices_Cache {
                             'PEN' => array( 'm' => 189, 'y' => 0 ),
                         ),
                         'features'   => array(
-                            array( 'text' => 'Actualizaciones <strong>mensuales</strong> (WP, plugins y temas)', 'tip' => 'Ventana primera semana del mes. Backup verificado + snapshot de auditoría antes de actualizar.' ),
-                            array( 'text' => 'Rollback automático + verificación post-update', 'tip' => 'Check frontal automático: HTTP 200, errores JS críticos y tiempo de carga. Si algo falla, rollback y propuesta alternativa.' ),
-                            array( 'text' => 'Backups externos <strong>semanales</strong> (4 semanas)', 'tip' => 'Off-site en Backuply/Backblaze con verificación diaria del último backup y alerta si falla.' ),
-                            array( 'text' => 'Uptime monitoring cada 5 min + alerta SSL', 'tip' => 'Alerta si caída superior a 3 min y aviso SSL 15 días antes de expirar.' ),
-                            array( 'text' => 'Informe mensual automatizado (CARE Hub)', 'tip' => 'Backups, uptime, updates aplicados, TTFB/LCP/Performance y alertas resueltas del mes.' ),
-                            array( 'text' => 'Soporte por email (SLA 48h laborables)', 'tip' => 'Cobertura de incidencias asociadas a los servicios del plan.' ),
+                            array( 'text' => 'Actualizaciones <strong>mensuales</strong> (WP, plugins y temas)', 'tip' => 'Backup previo + punto de restauracion. Prueba rapida del frontal tras actualizar. Si algo falla, revertimos y proponemos alternativa segura. Mantenemos versionado estable para evitar caidas, errores 500 y perdida de posicionamiento SEO por indisponibilidad.' ),
+                            array( 'text' => 'Copias de seguridad <strong>semanales</strong> fuera del servidor', 'tip' => 'Backups externos con Backuply. Restauracion granular (archivos/BD/correo) en 1 clic. Conservamos historial para recuperar contenido, URLs y metadatos criticos en caso de incidencia.' ),
+                            array( 'text' => 'Optimización básica WPO', 'tip' => 'Presets de LSCache, limpieza de base de datos mensual y control de medios huerfanos. Mejoramos tiempos de carga y estabilidad para reducir rebote y apoyar senales Core Web Vitals que impactan en SEO.' ),
+                            array( 'text' => 'Revisión trimestral de rendimiento', 'tip' => 'Informe con metricas clave (TTFB/LCP/Core Web Vitals) y 2-3 acciones recomendadas priorizadas por impacto. Incluye observaciones de rastreabilidad tecnica para proteger indexacion y experiencia de usuario.' ),
+                            array( 'text' => 'Soporte por email', 'tip' => 'Te acompanamos en incidencias habituales (errores tras actualizacion, dudas de configuracion, etc.). Respuesta en horario laboral con contexto tecnico para resolver rapido sin romper UX ni conversion.' ),
                         ),
                         'features_extra' => array(),
                         'cta_text'      => 'Contratar este plan',
@@ -164,13 +169,13 @@ class Replanta_Prices_Cache {
                             'PEN' => array( 'm' => 349, 'y' => 0 ),
                         ),
                         'features'   => array(
-                            array( 'text' => 'Todo lo del plan Semilla', 'tip' => '' ),
-                            array( 'text' => 'Actualizaciones <strong>semanales</strong> (miércoles 23:00–02:00)', 'tip' => 'Backup + snapshot + análisis de riesgo de changelog con IA (Claude). Staging condicional para updates críticos.' ),
-                            array( 'text' => 'Backups externos <strong>diarios</strong> (30 días)', 'tip' => 'Verificación diaria + alerta si no existe backup válido en menos de 26 horas.' ),
-                            array( 'text' => 'Monitorización 24/7 avanzada', 'tip' => 'Checks cada 1 min + alertas de 5xx, SSL, uptime y umbral TTFB con actuación prioritaria.' ),
-                            array( 'text' => 'Revisión SEO técnico + WPO <strong>mensual</strong>', 'tip' => 'Auditoría operativa de robots, sitemap, hreflang, CWV, 404s y redirecciones con acciones priorizadas.' ),
-                            array( 'text' => 'Cloudflare gestionado + informe ampliado', 'tip' => 'Revisión mensual de reglas, headers y caché. Incluye amenazas bloqueadas, hit rate y recomendaciones IA.' ),
-                            array( 'text' => 'Soporte prioritario (SLA 24h / críticos 4h)', 'tip' => 'Cola separada para incidencias de negocio en horario laboral y aviso inmediato fuera de él.' ),
+                            array( 'text' => 'Todo lo del plan Semilla', 'tip' => 'Incluye toda la base operativa de mantenimiento, backup y soporte para partir de una web estable y segura.' ),
+                            array( 'text' => 'Actualizaciones <strong>semanales</strong> (miercoles 23:00-02:00)', 'tip' => 'Backup + snapshot + analisis de riesgo de changelog. En plugins criticos aplicamos validacion previa para minimizar regresiones que puedan afectar SEO tecnico o conversion.' ),
+                            array( 'text' => 'Backups externos <strong>diarios</strong> (30 dias)', 'tip' => 'Verificacion diaria + alerta si no existe backup valido en menos de 26 horas. Historico suficiente para recuperar versiones estables tras incidencias complejas.' ),
+                            array( 'text' => 'Monitorizacion 24/7 avanzada', 'tip' => 'Checks cada 1 minuto en uptime, 5xx, SSL y umbral TTFB con actuacion prioritaria. Detectamos degradaciones antes de que escalen a perdida de trafico organico.' ),
+                            array( 'text' => 'Revision SEO tecnico + WPO <strong>mensual</strong>', 'tip' => 'Auditoria operativa de robots, sitemap, hreflang, CWV, 404s y redirecciones. Entregamos plan de accion priorizado para mantener indexacion limpia y rendimiento competitivo.' ),
+                            array( 'text' => 'Cloudflare gestionado + informe ampliado', 'tip' => 'Revision mensual de reglas, headers y cache. Incluye amenazas bloqueadas, hit rate y recomendaciones para mejorar latencia y robustez de la capa edge.' ),
+                            array( 'text' => 'Soporte prioritario (SLA 24h / criticos 4h)', 'tip' => 'Cola separada para incidencias de negocio y respuesta acelerada. Menor tiempo de caida, menor riesgo en ventas y posicionamiento.' ),
                         ),
                         'features_extra' => array(),
                         'cta_text'      => 'Empezar con este plan',
@@ -192,21 +197,21 @@ class Replanta_Prices_Cache {
                             'PEN' => array( 'm' => 589, 'y' => 0 ),
                         ),
                         'features'   => array(
-                            array( 'text' => 'Todo lo del plan Raíz', 'tip' => '' ),
-                            array( 'text' => 'Staging <strong>siempre</strong> antes de actualizar', 'tip' => 'No depende del risk score. Todas las actualizaciones pasan por staging y validación previa.' ),
-                            array( 'text' => 'Backups diarios x2 con retención 60 días', 'tip' => 'Copia en servidor propio + réplica Backblaze. Dos ubicaciones distintas para resiliencia real.' ),
-                            array( 'text' => '<strong>Hosting Cedro incluido</strong> + onboarding', 'tip' => 'NVMe + LiteSpeed + Redis con migración sin caídas y stack integrado con CARE Hub.' ),
-                            array( 'text' => 'Auditoría SEO/WPO <strong>trimestral</strong> profunda', 'tip' => 'Crawling completo, arquitectura interna, análisis por plantillas y comparativa con trimestre anterior.' ),
-                            array( 'text' => 'Consultoría técnica <strong>trimestral</strong> (60 min)', 'tip' => 'Roadmap técnico, priorización por impacto en negocio y seguimiento de ejecución.' ),
-                            array( 'text' => 'Soporte prioritario (SLA 8h / críticos 2h)', 'tip' => 'Canal directo por Slack/WhatsApp según acuerdo para incidencias de máxima prioridad.' ),
+                            array( 'text' => 'Todo lo del plan Raiz', 'tip' => 'Mantienes la cobertura del plan intermedio y escalas a una operacion mas proactiva para proyectos con dependencia alta del canal web.' ),
+                            array( 'text' => 'Staging <strong>siempre</strong> antes de actualizar', 'tip' => 'Todas las actualizaciones pasan por staging y validacion previa. Evitamos impactos directos en UX, checkout e indexacion por cambios no controlados.' ),
+                            array( 'text' => 'Backups diarios x2 con retencion 60 dias', 'tip' => 'Copia en servidor propio + replica externa. Doble capa de resiliencia para contingencias tecnicas, errores humanos o corrupcion de datos.' ),
+                            array( 'text' => '<strong>Hosting Cedro incluido</strong> + onboarding', 'tip' => 'NVMe + LiteSpeed + Redis con migracion sin caidas y stack integrado con Replanta Care para operaciones continuas.' ),
+                            array( 'text' => 'Auditoria SEO/WPO <strong>trimestral</strong> profunda', 'tip' => 'Crawling completo, arquitectura interna, analisis por plantillas y comparativa trimestral. Detectamos cuellos de botella que frenan trafico y conversion.' ),
+                            array( 'text' => 'Consultoria tecnica <strong>trimestral</strong> (60 min)', 'tip' => 'Roadmap tecnico con priorizacion por impacto de negocio: estabilidad, rendimiento, SEO tecnico y deuda operacional.' ),
+                            array( 'text' => 'Soporte prioritario (SLA 8h / criticos 2h)', 'tip' => 'Canal directo segun acuerdo para incidencias de maxima prioridad en proyectos estrategicos.' ),
                         ),
                         'features_extra' => array(),
                         'cta_text'      => 'Solicitar este plan',
                         'cta_secondary' => '',
                     ),
                     'ecommerce' => array(
-                        'name'       => 'Modificador Ecommerce',
-                        'subtitle'   => 'Add-on para cualquier plan base',
+                        'name'       => 'Impulso Ecommerce',
+                        'subtitle'   => 'Add-on para tiendas WooCommerce',
                         'featured'   => false,
                         'is_addon'   => true,
                         'pid'        => '',
@@ -230,11 +235,11 @@ class Replanta_Prices_Cache {
                             array( 'text' => 'SLA crítico checkout: <strong>30 min</strong>', 'tip' => 'Prioridad máxima cuando hay errores en proceso de compra o pasarela.' ),
                         ),
                         'features_extra' => array(),
-                        'cta_text'      => 'Añadir modificador',
+                        'cta_text'      => 'Añadir Impulso Ecommerce',
                         'cta_secondary' => '',
                     ),
                 ),
-                'footer_note' => '* Precios sin IVA. El Modificador Ecommerce (+35€/mes) se añade sobre cualquier plan base. WAF perimetral de Cloudflare Pro opcional.',
+                'footer_note' => '* Precios sin IVA. Impulso Ecommerce (+35€/mes) se añade sobre cualquier plan base. WAF perimetral de Cloudflare Pro opcional.',
             ),
             'sapwoo' => array(
                 'title'    => 'Conector SAP ↔ WooCommerce',
@@ -363,10 +368,69 @@ class Replanta_Prices_Cache {
             return $defaults;
         }
 
-        // Inject any new default categories not yet present in saved data.
-        $missing = array_diff_key( $defaults, $data );
-        if ( ! empty( $missing ) ) {
-            $data = array_merge( $data, $missing );
+        $changed = false;
+
+        // Inject missing categories and missing plan keys from defaults.
+        foreach ( $defaults as $type => $default_category ) {
+            if ( ! isset( $data[ $type ] ) || ! is_array( $data[ $type ] ) ) {
+                $data[ $type ] = $default_category;
+                $changed = true;
+                continue;
+            }
+
+            foreach ( $default_category as $cat_key => $cat_value ) {
+                if ( ! array_key_exists( $cat_key, $data[ $type ] ) ) {
+                    $data[ $type ][ $cat_key ] = $cat_value;
+                    $changed = true;
+                }
+            }
+
+            if ( isset( $default_category['plans'] ) && is_array( $default_category['plans'] ) ) {
+                if ( ! isset( $data[ $type ]['plans'] ) || ! is_array( $data[ $type ]['plans'] ) ) {
+                    $data[ $type ]['plans'] = $default_category['plans'];
+                    $changed = true;
+                } else {
+                    foreach ( $default_category['plans'] as $slug => $default_plan ) {
+                        if ( ! isset( $data[ $type ]['plans'][ $slug ] ) || ! is_array( $data[ $type ]['plans'][ $slug ] ) ) {
+                            $data[ $type ]['plans'][ $slug ] = $default_plan;
+                            $changed = true;
+                            continue;
+                        }
+                        foreach ( $default_plan as $plan_key => $plan_value ) {
+                            if ( ! array_key_exists( $plan_key, $data[ $type ]['plans'][ $slug ] ) ) {
+                                $data[ $type ]['plans'][ $slug ][ $plan_key ] = $plan_value;
+                                $changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Commercial rename migration for mantenimiento ecommerce add-on.
+        if ( isset( $data['mantenimiento']['plans']['ecommerce'] ) && is_array( $data['mantenimiento']['plans']['ecommerce'] ) ) {
+            $addon = &$data['mantenimiento']['plans']['ecommerce'];
+            if ( isset( $addon['name'] ) && 'Modificador Ecommerce' === $addon['name'] ) {
+                $addon['name'] = 'Impulso Ecommerce';
+                $changed = true;
+            }
+            if ( isset( $addon['subtitle'] ) && 'Add-on para cualquier plan base' === $addon['subtitle'] ) {
+                $addon['subtitle'] = 'Add-on para tiendas WooCommerce';
+                $changed = true;
+            }
+            if ( isset( $addon['cta_text'] ) && 'Añadir modificador' === $addon['cta_text'] ) {
+                $addon['cta_text'] = 'Añadir Impulso Ecommerce';
+                $changed = true;
+            }
+            unset( $addon );
+
+            if ( isset( $data['mantenimiento']['footer_note'] ) && false !== strpos( $data['mantenimiento']['footer_note'], 'Modificador Ecommerce' ) ) {
+                $data['mantenimiento']['footer_note'] = str_replace( 'Modificador Ecommerce', 'Impulso Ecommerce', $data['mantenimiento']['footer_note'] );
+                $changed = true;
+            }
+        }
+
+        if ( $changed ) {
             update_option( self::OPT_PRODUCTS, $data, true );
         }
 

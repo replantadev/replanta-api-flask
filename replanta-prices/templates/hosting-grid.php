@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) || exit;
 $plans    = $category['plans'];
 $first    = reset( $plans );
 $currency = Replanta_Prices_Cache::get_effective_currency( $first );
+$footer_note = isset( $category['footer_note'] ) ? $category['footer_note'] : '';
 ?>
 <section class="replanta-plans replanta-plans--hosting<?php if ( $discount > 0 ) echo ' replanta-plans--discount'; ?>">
 
@@ -113,6 +114,10 @@ $currency = Replanta_Prices_Cache::get_effective_currency( $first );
         </div>
         <?php endforeach; ?>
     </div>
+
+    <?php if ( ! empty( $footer_note ) ) : ?>
+        <p class="replanta-plans-footer"><?php echo wp_kses_post( $footer_note ); ?></p>
+    <?php endif; ?>
 </section>
 <script>
 (function() {

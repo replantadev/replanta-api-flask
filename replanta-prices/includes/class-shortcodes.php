@@ -190,13 +190,13 @@ class Replanta_Prices_Shortcodes {
             'green_distribution' => array(
                 'class' => 'rep-plan-badge--green-distribution',
                 'label' => __( 'Green Distribution', 'replanta-prices' ),
-                'tip'   => __( 'Distribución 100% renovable verificada por The Green Web Foundation a través de Cloudflare CDN, con compensación de emisiones del origen vía proyectos certificados.', 'replanta-prices' ),
+                'tip'   => __( 'Green Distribution: optimización y distribución en capa edge con Cloudflare. Mejora eficiencia y latencia, pero no implica que el origen completo sea 100% renovable.', 'replanta-prices' ),
                 'icon'  => 'ph-bold ph-cloud',
             ),
             'green_origin_certificado' => array(
                 'class' => 'rep-plan-badge--green-origin',
                 'label' => __( 'Green Origin certificado', 'replanta-prices' ),
-                'tip'   => __( 'Infraestructura verificada por The Green Web Foundation. Cadena completa verde de extremo a extremo. Apto para reporting CSRD y Scope 3.', 'replanta-prices' ),
+                'tip'   => __( '100% verde de origen: la infraestructura principal opera sobre energía renovable en toda la cadena técnica del plan.', 'replanta-prices' ),
                 'icon'  => 'ph-bold ph-seal-check',
             ),
         );
@@ -632,8 +632,9 @@ class Replanta_Prices_Shortcodes {
         // Imagen del producto (logo de Replanta o imagen específica)
         $product_image = self::get_product_image( $type );
         
-        // URL base para ofertas
-        $base_url = home_url( '/' );
+        // URL base del contenido donde se renderiza el shortcode.
+        // Evita schemas apuntando a home cuando los planes viven en una landing específica.
+        $base_url = self::get_schema_base_url();
         
         foreach ( $category['plans'] as $slug => $plan ) {
             $product_schema = self::build_single_product_schema(
@@ -680,8 +681,8 @@ class Replanta_Prices_Shortcodes {
             $price_yearly  = round( $price_yearly * $multiplier, 2 );
         }
         
-        // URL del producto
-        $product_url = $base_url . '#' . $slug;
+        // URL del producto (anchor del card en la landing).
+        $product_url = untrailingslashit( $base_url ) . '#plan-' . $slug;
         
         // Construir schema base
         $schema = array(
@@ -749,6 +750,7 @@ class Replanta_Prices_Shortcodes {
     private static function build_offers( $slug, $plan, $price_monthly, $price_yearly, $url, $currency = 'EUR' ) {
         $offers = array();
         $valid_until = gmdate( 'Y-m-d', strtotime( '+1 year' ) );
+        $offer_url = ! empty( $plan['cta_url'] ) ? esc_url_raw( $plan['cta_url'] ) : $url;
         
         // Seller info (recomendado por Google)
         $seller = array(
@@ -765,7 +767,7 @@ class Replanta_Prices_Shortcodes {
                 'price'           => number_format( $price_monthly, 2, '.', '' ),
                 'priceCurrency'   => $currency,
                 'availability'    => 'https://schema.org/InStock',
-                'url'             => $url,
+                'url'             => $offer_url,
                 'priceValidUntil' => $valid_until,
                 'seller'          => $seller,
                 'priceSpecification' => array(
@@ -790,7 +792,7 @@ class Replanta_Prices_Shortcodes {
                 'price'           => number_format( $price_yearly, 2, '.', '' ),
                 'priceCurrency'   => $currency,
                 'availability'    => 'https://schema.org/InStock',
-                'url'             => $url,
+                'url'             => $offer_url,
                 'priceValidUntil' => $valid_until,
                 'seller'          => $seller,
                 'priceSpecification' => array(
@@ -913,5 +915,21 @@ class Replanta_Prices_Shortcodes {
         
         // 5. Último fallback: placeholder (mejor que nada, pero deberías subir un logo)
         return 'https://replanta.net/wp-content/uploads/replanta-logo.png';
+    }
+
+    /**
+     * URL base para el schema (página actual cuando exista).
+     *
+     * @return string
+     */
+    private static function get_schema_base_url() {
+        if ( is_singular() ) {
+            $permalink = get_permalink();
+            if ( $permalink ) {
+                return $permalink;
+            }
+        }
+
+        return home_url( '/' );
     }
 }

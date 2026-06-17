@@ -99,6 +99,9 @@
     margin: 6px 0;
     padding: 0;
 }
+.replanta-plans .replanta-pricing-card ul li[hidden] {
+    display: none !important;
+}
 .replanta-plans .replanta-pricing-card ul li::before { display: none !important; }
 .replanta-plans .replanta-pricing-card ul li svg.tick {
     flex-shrink: 0;
@@ -269,24 +272,458 @@
 
 /* (tick flex layout now handled by the shared .replanta-pricing-card ul li rule above) */
 
-.replanta-plans--mantenimiento .replanta-pricing-addon {
-    border: 2px dashed rgba(65, 153, 159, 0.45) !important;
-    background: linear-gradient(180deg, rgba(65, 153, 159, 0.06) 0%, rgba(255, 255, 255, 0.95) 100%) !important;
+/* Tooltip readability in mantenimiento: prevent icon overlap across rows/cards */
+.replanta-plans--mantenimiento .plans-grid,
+.replanta-plans--mantenimiento .replanta-pricing-card,
+.replanta-plans--mantenimiento .plan-list,
+.replanta-plans--mantenimiento .plan-list li,
+.replanta-plans--mantenimiento .plan-list li > span {
+    overflow: visible;
 }
 
+.replanta-plans--mantenimiento .replanta-pricing-card {
+    position: relative;
+    z-index: 1;
+    background: #ffffff;
+    color: var(--rep-text-primary, #1e2f23);
+    border: 1px solid rgba(30, 47, 35, 0.12);
+    box-shadow: 0 14px 28px -26px rgba(30, 47, 35, 0.6);
+}
+
+.pricing .replanta-plans--mantenimiento .replanta-pricing-card {
+    background: #ffffff;
+    color: var(--rep-text-primary, #1e2f23);
+}
+
+.pricing .replanta-plans--mantenimiento .replanta-pricing-card .plan-subtitle,
+.pricing .replanta-plans--mantenimiento .replanta-pricing-card .rep-text-body,
+.pricing .replanta-plans--mantenimiento .replanta-pricing-card .rep-text-small {
+    color: var(--rep-text-muted, #5e6a63);
+}
+
+.pricing .replanta-plans--mantenimiento .replanta-pricing-card .rep-heading-3,
+.pricing .replanta-plans--mantenimiento .replanta-pricing-card .price {
+    color: var(--rep-forest, #1e2f23);
+}
+
+/* ==========================================================================
+   ADDON TOGGLE — Power switch inside each plan card
+   ========================================================================== */
+
+.replanta-plans--mantenimiento .rep-addon-toggle {
+    margin: 12px 0 8px;
+    padding: 0;
+    position: relative;
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0; height: 0;
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 11px 9px 12px;
+    border: 1px solid rgba(65, 153, 159, 0.2);
+    border-radius: 10px;
+    background: rgba(65, 153, 159, 0.04);
+    cursor: pointer;
+    transition: border-color .18s, background .18s, box-shadow .18s;
+    user-select: none;
+    position: relative;
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__label:hover {
+    border-color: rgba(65, 153, 159, 0.4);
+    background: rgba(65, 153, 159, 0.07);
+}
+
+/* Left dot indicator */
+.replanta-plans--mantenimiento .rep-addon-toggle__label::before {
+    content: '';
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(65, 153, 159, 0.35);
+    transition: background .18s, box-shadow .18s;
+    order: -1;
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__title {
+    flex: 1;
+    font: 600 .84rem/1.2 var(--rep-font-body, Inter, sans-serif);
+    color: var(--rep-forest, #1e2f23);
+    letter-spacing: -.01em;
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__hint {
+    font: 600 .78rem/1 var(--rep-font-body, Inter, sans-serif);
+    color: var(--rep-teal, #41999F);
+    white-space: nowrap;
+    background: rgba(65, 153, 159, 0.1);
+    padding: 3px 7px;
+    border-radius: 5px;
+    transition: background .18s;
+}
+
+/* Pill toggle track — thumb via radial-gradient */
+.replanta-plans--mantenimiento .rep-addon-toggle__label::after {
+    content: '';
+    flex-shrink: 0;
+    width: 34px;
+    height: 19px;
+    border-radius: 10px;
+    /* Thumb off-state: circle at left */
+    background:
+        radial-gradient(circle 7px at 10px center, #fff 100%, transparent 0),
+        rgba(65, 153, 159, 0.28);
+    border: 1px solid rgba(65, 153, 159, 0.25);
+    transition: background .22s ease;
+}
+
+/* Checked state */
+.replanta-plans--mantenimiento .rep-addon-toggle__input:checked + .rep-addon-toggle__label {
+    border-color: rgba(65, 153, 159, 0.5);
+    background: rgba(147, 241, 201, 0.12);
+    box-shadow: 0 2px 12px -6px rgba(65, 153, 159, 0.5);
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__input:checked + .rep-addon-toggle__label::before {
+    background: var(--rep-teal, #41999F);
+    box-shadow: 0 0 0 2px rgba(65, 153, 159, 0.25);
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__input:checked + .rep-addon-toggle__label::after {
+    /* Thumb on-state: circle at right */
+    background:
+        radial-gradient(circle 7px at calc(100% - 10px) center, #fff 100%, transparent 0),
+        var(--rep-teal, #41999F);
+    border-color: var(--rep-teal, #41999F);
+}
+
+.replanta-plans--mantenimiento .rep-addon-toggle__input:checked + .rep-addon-toggle__label .rep-addon-toggle__hint {
+    background: rgba(65, 153, 159, 0.18);
+}
+
+/* Focus ring */
+.replanta-plans--mantenimiento .rep-addon-toggle__input:focus-visible + .rep-addon-toggle__label {
+    outline: 2px solid var(--rep-teal, #41999F);
+    outline-offset: 2px;
+}
+
+/* Price change */
+.replanta-plans--mantenimiento .rep-price-with-addon {
+    color: var(--rep-teal, #41999F);
+}
+
+.replanta-plans--mantenimiento .is-addon-active .rep-price-base {
+    opacity: .38;
+    font-size: .9em;
+    text-decoration: line-through;
+    text-decoration-color: rgba(65, 153, 159, 0.5);
+}
+
+.replanta-plans--mantenimiento .rep-addon-feature-hint {
+    margin: 8px 0 0;
+    color: var(--rep-text-muted, #5e6a63);
+    font-size: .82rem;
+    line-height: 1.4;
+}
+
+.replanta-plans--mantenimiento .replanta-pricing-card:hover,
+.replanta-plans--mantenimiento .replanta-pricing-card:focus-within {
+    z-index: 16;
+}
+
+.replanta-plans--mantenimiento .plan-list li {
+    position: relative;
+    z-index: 1;
+}
+
+.replanta-plans--mantenimiento .plan-list li:hover,
+.replanta-plans--mantenimiento .plan-list li:focus-within {
+    z-index: 40;
+}
+
+.replanta-plans--mantenimiento .rep-tipwrap {
+    position: relative;
+    z-index: 2;
+}
+
+.replanta-plans--mantenimiento .rep-tip {
+    position: relative;
+    z-index: 3;
+}
+
+.replanta-plans--mantenimiento .rep-tooltip {
+    position: absolute;
+    z-index: 80;
+}
+
+/* ==========================================================================
+   ADDON STACK WRAPPER — connector line + layout
+   ========================================================================== */
+
 .replanta-plans--mantenimiento .rep-plan-addon-label {
+    display: none; /* replaced by new topbar label */
+}
+
+.replanta-plans--mantenimiento .plans-addon-stack {
+    position: relative;
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+/* Connector: dashed vertical line from grid to module panel */
+.replanta-plans--mantenimiento .plans-addon-stack::before {
+    content: '';
+    width: 1px;
+    height: 24px;
+    background: linear-gradient(to bottom, transparent, rgba(65, 153, 159, 0.4));
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   ADDON BAND — Dark hi-tech module panel
+   ========================================================================== */
+
+.replanta-plans--mantenimiento .replanta-addon-band {
+    width: min(960px, 100%);
+    border-radius: 18px;
+    background: var(--rep-forest, #1E2F23);
+    color: #fff;
+    border: 1px solid rgba(147, 241, 201, 0.1);
+    overflow: visible;
+    position: relative;
+    z-index: 20;
+    box-shadow:
+        0 0 0 1px rgba(147, 241, 201, 0.06),
+        0 24px 48px -20px rgba(10, 20, 14, 0.7);
+}
+
+/* Subtle tech grid pattern overlay */
+.replanta-plans--mantenimiento .replanta-addon-band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(147, 241, 201, 0.032) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(147, 241, 201, 0.032) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Top color rail — teal → green → sun */
+.replanta-plans--mantenimiento .replanta-addon-band::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+        var(--rep-teal, #41999F) 0%,
+        var(--rep-green, #93F1C9) 60%,
+        var(--rep-sun, #F7D450) 100%);
+    z-index: 2;
+}
+
+/* -- Top bar -------------------------------------------------------- */
+.replanta-plans--mantenimiento .replanta-addon-band__topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 24px 12px 20px;
+    border-bottom: 1px solid rgba(147, 241, 201, 0.08);
+    position: relative;
+    z-index: 1;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__module-label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(65, 153, 159, 0.35);
-    color: var(--rep-teal, #41999F);
-    background: rgba(65, 153, 159, 0.1);
-    font: 700 11px/1.2 var(--rep-font-body, Inter, sans-serif);
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
+    font: 700 .68rem/1 var(--rep-font-body, Inter, sans-serif);
+    letter-spacing: .12em;
     text-transform: uppercase;
+    color: rgba(147, 241, 201, 0.75);
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__module-label svg {
+    color: var(--rep-teal, #41999F);
+    flex-shrink: 0;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__sep {
+    opacity: .4;
+    font-weight: 400;
+    margin: 0 1px;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__topbar-price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__topbar-label {
+    font: 400 .72rem/1 var(--rep-font-body, Inter, sans-serif);
+    color: rgba(255, 255, 255, 0.35);
+    white-space: nowrap;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__topbar-amount {
+    font: 700 1.15rem/1 var(--rep-font-display, Sora, sans-serif);
+    color: var(--rep-green, #93F1C9);
+    letter-spacing: -.02em;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__topbar-period {
+    font: 500 .72rem/1 var(--rep-font-body, Inter, sans-serif);
+    color: rgba(255, 255, 255, 0.38);
+    margin-left: 1px;
+}
+
+/* -- Body row ------------------------------------------------------- */
+.replanta-plans--mantenimiento .replanta-addon-band__body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px 28px;
+    align-items: center;
+    padding: 22px 24px 20px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__title {
+    margin: 0 0 6px;
+    font: 700 clamp(1.15rem, 1.8vw, 1.45rem)/1.15 var(--rep-font-display, Sora, sans-serif) !important;
+    color: #fff !important;
+    letter-spacing: -.02em;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__lede {
+    margin: 0;
+    font: 400 .88rem/1.6 var(--rep-font-body, Inter, sans-serif);
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 52ch;
+}
+
+/* Action column: note + CTA */
+.replanta-plans--mantenimiento .replanta-addon-band__action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 190px;
+    max-width: 220px;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__action-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 0;
+    font: 400 .78rem/1.45 var(--rep-font-body, Inter, sans-serif);
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__action-note svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: rgba(147, 241, 201, 0.5);
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__cta {
+    width: 100%;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+/* -- Feature chips -------------------------------------------------- */
+.replanta-plans--mantenimiento .replanta-addon-band__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    list-style: none;
+    margin: 0;
+    padding: 14px 20px 20px;
+    border-top: 1px solid rgba(147, 241, 201, 0.07);
+    position: relative;
+    z-index: 1;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: rgba(147, 241, 201, 0.07);
+    border: 1px solid rgba(147, 241, 201, 0.13);
+    font: 500 .79rem/1 var(--rep-font-body, Inter, sans-serif);
+    color: rgba(255, 255, 255, 0.82);
+    transition: background .15s, border-color .15s;
+    cursor: default;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__chip:hover {
+    background: rgba(147, 241, 201, 0.13);
+    border-color: rgba(147, 241, 201, 0.25);
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__chip svg {
+    flex-shrink: 0;
+    color: var(--rep-teal, #41999F);
+}
+
+/* Chip tooltips */
+.replanta-plans--mantenimiento .replanta-addon-band__chip .rep-tipwrap {
+    position: relative;
+    z-index: 5;
+}
+
+.replanta-plans--mantenimiento .replanta-addon-band__chip .rep-tooltip {
+    position: absolute;
+    z-index: 120;
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--rep-forest, #1e2f23);
+    border: 1px solid rgba(65, 153, 159, 0.2);
+}
+
+/* -- Responsive ----------------------------------------------------- */
+@media (max-width: 860px) {
+    .replanta-plans--mantenimiento .replanta-addon-band {
+        width: 100%;
+    }
+
+    .replanta-plans--mantenimiento .replanta-addon-band__body {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .replanta-plans--mantenimiento .replanta-addon-band__action {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .replanta-plans--mantenimiento .replanta-addon-band__cta {
+        width: auto;
+    }
+
+    .replanta-plans--mantenimiento .replanta-addon-band__topbar {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
 }
 
 

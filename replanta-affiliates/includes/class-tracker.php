@@ -43,6 +43,12 @@ class Raff_Tracker {
             return;
         }
 
+        // Avoid polluting internal QA/admin browsing with coupons in visible URLs.
+        // Keep rewriting only for public visitors (and affiliate role when logged in).
+        if ( is_user_logged_in() && ! current_user_can( 'affiliate' ) ) {
+            return;
+        }
+
         $ref = '';
 
         /* From URL param (current page load) */

@@ -6,6 +6,13 @@ El formato estÃ¡ basado en [Keep a Changelog](https://keepachangelog.com/es-ES
 y este proyecto adhiere a [Versionado SemÃ¡ntico](https://semver.org/lang/es/).
 
 ---
+## [1.2.45] - 2026-06-17
+
+### Corregido
+
+- **`cURL error 28` en health check cuando SAP está lento** — el endpoint `/health` hace login a SAP (timeout 20s por defecto); el CC esperaba solo 10s → timeout falso aunque el sitio estuviera OK. Fix: timeout del CC en health elevado a 25s. El timeout del login SAP en contexto health se limita a 5s via `sapwc_api_login_args` filter (suite v2.19.2), garantizando que la respuesta siempre llegue antes del timeout del CC.
+
+---
 ## [1.2.44] - 2026-06-16
 
 ### Corregido

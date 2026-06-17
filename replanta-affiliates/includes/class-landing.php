@@ -13,15 +13,103 @@ class Raff_Landing {
 
     public static function init() {
         add_shortcode( 'replanta_affiliate_landing', array( __CLASS__, 'shortcode' ) );
+        add_action( 'template_redirect', array( __CLASS__, 'maybe_redirect_to_dashboard' ) );
         add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
+        add_filter( 'body_class', array( __CLASS__, 'add_body_class' ) );
+        add_filter( 'astra_the_title_enabled', array( __CLASS__, 'disable_astra_title' ) );
+    }
+
+    /**
+     * Add a scoped body class to target theme-level markup safely.
+     *
+     * @param array $classes Body classes.
+     * @return array
+     */
+    public static function add_body_class( $classes ) {
+        if ( self::is_landing_request() ) {
+            $classes[] = 'raff-landing-shortcode';
+        }
+
+        if ( self::is_page_with_any_shortcode() ) {
+            $classes[] = 'raff-page-with-shortcode';
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Hide Astra page title for landing pages rendered by shortcode.
+     *
+     * @param bool $enabled Whether Astra title is enabled.
+     * @return bool
+     */
+    public static function disable_astra_title( $enabled ) {
+        if ( self::is_page_with_any_shortcode() ) {
+            return false;
+        }
+
+        return $enabled;
+    }
+
+    /**
+     * Check if current request is a singular page containing any shortcode.
+     */
+    private static function is_page_with_any_shortcode() {
+        if ( ! is_singular( 'page' ) ) {
+            return false;
+        }
+
+        global $post;
+        if ( ! $post || empty( $post->post_content ) ) {
+            return false;
+        }
+
+        return (bool) preg_match( '/\[[^\]]+\]/', $post->post_content );
+    }
+
+    /**
+     * Redirect authenticated affiliate sessions before any output is sent.
+     */
+    public static function maybe_redirect_to_dashboard() {
+        if ( ! self::is_landing_request() ) {
+            return;
+        }
+
+        if ( empty( $_GET['raff_token'] ) && empty( $_COOKIE['raff_session'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+            return;
+        }
+
+        wp_safe_redirect( self::get_dashboard_url() );
+        exit;
+    }
+
+    /**
+     * Check if current singular content contains the landing shortcode.
+     */
+    private static function is_landing_request() {
+        if ( ! is_singular() ) {
+            return false;
+        }
+
+        global $post;
+        return $post && has_shortcode( $post->post_content, 'replanta_affiliate_landing' );
+    }
+
+    /**
+     * Build dashboard URL preserving token if provided.
+     */
+    private static function get_dashboard_url() {
+        $dashboard_url = home_url( Raff_DB::get_setting( 'dashboard_path', '/afiliados/dashboard/' ) );
+
+        if ( ! empty( $_GET['raff_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+            $dashboard_url = add_query_arg( 'raff_token', sanitize_text_field( wp_unslash( $_GET['raff_token'] ) ), $dashboard_url ); // phpcs:ignore WordPress.Security.NonceVerification
+        }
+
+        return $dashboard_url;
     }
 
     public static function enqueue() {
-        if ( ! is_singular() ) {
-            return;
-        }
-        global $post;
-        if ( $post && has_shortcode( $post->post_content, 'replanta_affiliate_landing' ) ) {
+        if ( self::is_landing_request() ) {
             wp_enqueue_style( 'raff-landing-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap', array(), null );
             wp_enqueue_style( 'raff-landing', RAFF_URL . 'assets/css/landing.css', array( 'raff-landing-fonts' ), RAFF_VERSION );
             wp_enqueue_script( 'raff-landing', RAFF_URL . 'assets/js/landing.js', array(), RAFF_VERSION, true );
@@ -36,20 +124,10 @@ class Raff_Landing {
     }
 
     public static function shortcode() {
-        /* If authenticated affiliate → redirect to dashboard */
-        if ( ! empty( $_GET['raff_token'] ) || ! empty( $_COOKIE['raff_session'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-            $dashboard_url = home_url( Raff_DB::get_setting( 'dashboard_path', '/afiliados/dashboard/' ) );
-            if ( ! empty( $_GET['raff_token'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-                $dashboard_url = add_query_arg( 'raff_token', sanitize_text_field( wp_unslash( $_GET['raff_token'] ) ), $dashboard_url ); // phpcs:ignore WordPress.Security.NonceVerification
-            }
-            wp_safe_redirect( $dashboard_url );
-            exit;
-        }
-
         /* Handle registration POST */
         $errors = array();
         $registered = isset( $_GET['raff_registered'] ); // phpcs:ignore WordPress.Security.NonceVerification
-        if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['raff_register_nonce'] ) ) {
+        if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['raff_register_nonce'] ) ) {
             if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['raff_register_nonce'] ) ), 'raff_register' ) ) {
                 $errors[] = __( 'Error de seguridad. Recarga la página.', 'replanta-affiliates' );
             } else {
