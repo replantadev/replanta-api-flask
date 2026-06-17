@@ -6,6 +6,13 @@ El formato estÃ¡ basado en [Keep a Changelog](https://keepachangelog.com/es-ES
 y este proyecto adhiere a [Versionado SemÃ¡ntico](https://semver.org/lang/es/).
 
 ---
+## [1.2.47] - 2026-06-17
+
+### Añadido
+
+- **Botón "Exportado #N" en alertas classified_failures del Vigilante** — para cada pedido en una alerta de error de sincronización (`failure_type_*`) aparece el botón que llama a `control/mark-exported` del sitio remoto. Marca el pedido como exportado manualmente, limpia el estado de reintentos y lo excluye de futuros crons. Útil cuando el pedido ya existe en SAP (creado por el operador) y el Vigilante sigue alertando por el error anterior. Requiere SAP Woo Suite >= 2.19.3.
+
+---
 ## [1.2.45] - 2026-06-17
 
 ### Corregido

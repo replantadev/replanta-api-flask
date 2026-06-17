@@ -270,6 +270,16 @@ $sites_with_issues = count( $vig_results ) - $sites_ok;
                             </button>
                             <?php endforeach; ?>
                         <?php endif; ?>
+                        <?php if ( str_starts_with( $issue['type'], 'failure_type_' ) && ! $is_resolved && ! empty( $issue['context']['orders'] ) ) : ?>
+                            <?php foreach ( $issue['context']['orders'] as $_fail ) : ?>
+                            <button class="button button-small sapwcc-vig-mark-exported-btn"
+                                    data-site-key="<?php echo esc_attr( $site_key ); ?>"
+                                    data-order-id="<?php echo esc_attr( $_fail['order_id'] ); ?>"
+                                    title="Marcar #<?php echo esc_attr( $_fail['order_id'] ); ?> como exportado manualmente (excluir de futuros intentos)">
+                                <span class="dashicons dashicons-migrate"></span> Exportado #<?php echo esc_html( $_fail['order_id'] ); ?>
+                            </button>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php if ( $ai_configured ) : ?>

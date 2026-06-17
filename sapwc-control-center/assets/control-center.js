@@ -959,6 +959,34 @@
         });
     });
 
+    // Mark a classified-failure order as manually exported (excludes from future cron attempts)
+    $(document).on('click', '.sapwcc-vig-mark-exported-btn', function () {
+        var $btn    = $(this);
+        var siteKey = $btn.data('site-key');
+        var orderId = $btn.data('order-id');
+        if (!confirm('Marcar pedido #' + orderId + ' como exportado manualmente?\n\nEsto excluirá el pedido de futuros intentos de sincronización. Úsalo solo si el pedido ya existe en SAP (creado manualmente).')) {
+            return;
+        }
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> #' + orderId);
+        remoteAction(siteKey, 'control/mark-exported', 'POST', { order_id: orderId }, function (res) {
+            if (res.success) {
+                var d = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+                if (d.success) {
+                    $btn.html('<span class="dashicons dashicons-migrate"></span> #' + orderId + ' OK')
+                        .css({ background: '#d4edda', borderColor: '#28a745', color: '#155724' });
+                } else {
+                    $btn.html('<span class="dashicons dashicons-warning"></span> ' + (d.message || 'Error'))
+                        .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24', 'font-size': '11px' })
+                        .prop('disabled', false);
+                }
+            } else {
+                $btn.html('<span class="dashicons dashicons-warning"></span> Error')
+                    .css({ background: '#f8d7da', borderColor: '#dc3545', color: '#721c24' })
+                    .prop('disabled', false);
+            }
+        });
+    });
+
     // Resolve a Vigilante SAP task remotely
     $(document).on('click', '.sapwcc-vig-resolve-btn', function () {
         var $btn       = $(this);

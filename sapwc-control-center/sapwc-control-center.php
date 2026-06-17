@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SAP Woo Control Center
  * Description: Panel de operador para gestionar instalaciones remotas de SAP Woo Suite.
- * Version:     1.2.46
+ * Version:     1.2.47
  * Author:      Replanta
  * Text Domain: sapwcc
  * Requires PHP: 8.0
@@ -462,6 +462,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/mark-order-completed',
         'control/resolve-task',
         'control/unresolve-task',
+        'control/mark-exported',
     ];
 
     if ( ! in_array( $endpoint, $allowed_endpoints, true ) ) {
@@ -520,6 +521,7 @@ add_action( 'wp_ajax_sapwcc_remote_action', function () {
         'control/set-flags-hmac-secret'  => 'set_flags_hmac_secret',
         'control/resolve-task'           => 'resolve_task',
         'control/unresolve-task'         => 'unresolve_task',
+        'control/mark-exported'          => 'mark_exported',
     ];
     $audit_action = $audit_map[ $endpoint ] ?? 'remote_action';
     SAPWCC_Audit::log( $audit_action, "HTTP {$code} - {$endpoint}", $site['label'] );
