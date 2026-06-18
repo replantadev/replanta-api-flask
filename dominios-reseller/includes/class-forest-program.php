@@ -144,14 +144,10 @@ class Dominios_Reseller_Forest_Program {
             domain_id BIGINT UNSIGNED NOT NULL,
             domain VARCHAR(255) NOT NULL,
             queue_id BIGINT UNSIGNED DEFAULT NULL,
-            
-            -- Tree-Nation response data
             tree_nation_id BIGINT UNSIGNED DEFAULT NULL,
             token VARCHAR(32) DEFAULT NULL,
             collect_url VARCHAR(512) DEFAULT NULL,
             certificate_url VARCHAR(512) DEFAULT NULL,
-            
-            -- Tree details
             species_id INT UNSIGNED DEFAULT NULL,
             species_name VARCHAR(255) DEFAULT NULL,
             project_id INT UNSIGNED DEFAULT NULL,
@@ -159,21 +155,14 @@ class Dominios_Reseller_Forest_Program {
             project_url VARCHAR(512) DEFAULT NULL,
             country VARCHAR(100) DEFAULT NULL,
             co2_lifetime DECIMAL(10,2) DEFAULT NULL,
-            
-            -- Client info snapshot
             client_email VARCHAR(255) DEFAULT NULL,
             client_name VARCHAR(255) DEFAULT NULL,
-            
-            -- Timestamps
             planted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             email_sent_at DATETIME DEFAULT NULL,
             email_status ENUM('pending','sent','failed') DEFAULT 'pending',
             verified_at DATETIME DEFAULT NULL,
             verification_status ENUM('unverified','ok','missing','error') DEFAULT 'unverified',
-            
-            -- For annual tracking
             renewal_year YEAR DEFAULT NULL,
-            
             PRIMARY KEY (id),
             KEY idx_domain (domain_id),
             KEY idx_tree_nation (tree_nation_id),
