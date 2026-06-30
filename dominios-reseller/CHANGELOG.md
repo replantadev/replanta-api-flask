@@ -1,5 +1,13 @@
 # Changelog - Plugin Dominios Reseller
 
+## [1.7.3] - 2026-06-22
+### Production readiness for Hub operations
+- Fixed Cloudflare onboarding final states: domains whose real NS do not point to Cloudflare remain in `pending_ns` instead of being marked as `onboarded`.
+- Registered the custom WP-Cron interval before scheduling the queue worker, avoiding silent schedule failures on first load.
+- Allowed retry/requeue from recoverable states (`partial`, `needs_manual_ns`, `pending_ns`) and blocked duplicate runs for active states.
+- Made onboarding logs tolerate system-level entries without a run id.
+- Updated Cloudflare User-Agent versioning and hardened zone sync update formats.
+
 ## [1.6.44] - 2025-12-21
 ### 🚀 **HTTP Detection Avanzada para Modal PHP**
 

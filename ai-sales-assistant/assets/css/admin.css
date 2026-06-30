@@ -1,0 +1,246 @@
+/* Replanta AI Chat — Admin styles */
+
+.replanta-settings .nav-tab-wrapper {
+  margin-bottom: 20px;
+}
+
+.replanta-settings .form-table th {
+  width: 220px;
+}
+
+.replanta-field-table {
+  margin-top: 12px;
+}
+
+.replanta-field-table th,
+.replanta-field-table td {
+  padding: 8px 10px;
+}
+
+.replanta-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.replanta-remove-meta {
+  flex-shrink: 0;
+}
+
+#replanta-add-meta {
+  margin-top: 4px;
+}
+
+/* Status badges */
+.replanta-license-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.replanta-license-active   { background: #dcfce7; color: #166534; }
+.replanta-license-inactive { background: #f3f4f6; color: #374151; }
+.replanta-license-expired  { background: #fef3c7; color: #92400e; }
+.replanta-license-invalid  { background: #fee2e2; color: #991b1b; }
+
+/* Indexing page */
+.replanta-index-status {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+
+.replanta-progress-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.replanta-progress-fill {
+  height: 100%;
+  background: #2d6a4f;
+  border-radius: 4px;
+  transition: width .3s ease;
+}
+
+.replanta-index-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.replanta-log-box {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 6px;
+  padding: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 24px;
+}
+
+.replanta-log-box pre {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: inherit;
+  background: none;
+}
+
+/* Stats grid */
+.replanta-stats-grid {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.replanta-stat-card {
+  flex: 1;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.replanta-stat-card--green {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.replanta-stat-number {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.replanta-stat-card--green .replanta-stat-number { color: #15803d; }
+
+.replanta-stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Badges */
+.replanta-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.replanta-badge--green { background: #dcfce7; color: #166534; }
+.replanta-badge--gray  { background: #f3f4f6; color: #9ca3af; }
+.replanta-badge--blue  { background: #dbeafe; color: #1d4ed8; }
+
+/* Conversations table */
+.replanta-conv-table .replanta-conv-row { cursor: default; }
+
+.replanta-conv-detail > td {
+  padding: 0 !important;
+  background: #f9fafb;
+  border-top: none !important;
+}
+
+.replanta-thread-wrap {
+  padding: 0 16px 16px;
+  border-left: 3px solid #e5e7eb;
+  margin: 0 16px 0 40px;
+}
+
+.replanta-thread-loading { color: #6b7280; padding: 12px 0; }
+
+.replanta-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.replanta-thread-msg {
+  max-width: 90%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.replanta-thread-msg--user { align-self: flex-end; }
+.replanta-thread-msg--assistant { align-self: flex-start; }
+
+.replanta-thread-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #f3f4f6;
+  font-size: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.replanta-thread-msg--user .replanta-thread-meta { background: #eff6ff; }
+
+.replanta-thread-content {
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  background: #fff;
+  word-break: break-word;
+}
+
+.replanta-thread-rating { font-size: 14px; }
+
+/* Empty state */
+.replanta-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Status chips */
+.replanta-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.replanta-status-completed { background: #dcfce7; color: #166534; }
+.replanta-status-running   { background: #dbeafe; color: #1d4ed8; }
+.replanta-status-failed    { background: #fee2e2; color: #991b1b; }
+.replanta-status-pending   { background: #f3f4f6; color: #374151; }
+
+/* Outcome chips */
+.replanta-outcome {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.replanta-outcome-converted  { background: #dcfce7; color: #166534; }
+.replanta-outcome-escalated  { background: #fef3c7; color: #92400e; }
+.replanta-outcome-resolved   { background: #dbeafe; color: #1d4ed8; }
+.replanta-outcome-abandoned  { background: #f3f4f6; color: #374151; }

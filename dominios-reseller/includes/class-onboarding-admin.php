@@ -69,6 +69,7 @@ class Dominios_Reseller_Onboarding_Admin {
         add_action('wp_ajax_dr_get_php_info', [$this, 'ajax_get_php_info']);
         add_action('wp_ajax_dr_get_cf_config', [$this, 'ajax_get_cf_config']);
         add_action('wp_ajax_dr_update_cf_setting', [$this, 'ajax_update_cf_setting']);
+        add_action('wp_ajax_dr_import_dns', [$this, 'ajax_import_dns']);
         
         // Nuevos AJAX handlers
         add_action('wp_ajax_dr_refresh_all_php_info', [$this, 'ajax_refresh_all_php_info']);
@@ -414,14 +415,47 @@ class Dominios_Reseller_Onboarding_Admin {
         $op_configured = class_exists('Dominios_Reseller_Openprovider_Service') && 
                         Dominios_Reseller_Openprovider_Service::get_instance()->is_configured();
 
-        // Header con toggle de vista
-        echo '<div class="dr-domains-header">';
-        echo '<h2 style="margin:0;">🌐 Dominios (' . count($domains) . ')</h2>';
-        echo '<div class="dr-view-toggle">';
-        echo '<button type="button" class="dr-view-btn active" data-view="cards" title="Vista Cards">🃏 Cards</button>';
-        echo '<button type="button" class="dr-view-btn" data-view="list" title="Vista Lista SEMrush">📋 Lista</button>';
+        // --- Calcular stats para banner ---
+        $stats = ['total' => count($domains), 'ok' => 0, 'sin_cf' => 0, 'alertas' => 0, 'ns_pendiente' => 0, 'procesando' => 0];
+        foreach ($domains as $domain) {
+            $pd = $domain['primary_domain'];
+            $st = $onboarding_states[$pd]['state'] ?? 'none';
+            $cfm = $cf_matches[$pd] ?? null;
+            if (in_array($st, ['onboarded', 'completed']))                                                             $stats['ok']++;
+            elseif (in_array($st, ['error', 'partial']))                                                               $stats['alertas']++;
+            elseif (in_array($st, ['pending_ns', 'needs_manual_ns']))                                                  $stats['ns_pendiente']++;
+            elseif (in_array($st, ['pending', 'running', 'queued', 'zone_check', 'zone_wait_ns', 'preset_apply', 'ns_update'])) $stats['procesando']++;
+            elseif ($st === 'none' && !$cfm)                                                                           $stats['sin_cf']++;
+        }
+
+        // --- Banner resumen ---
+        echo '<div class="dr-stats-banner">';
+        echo '<div class="dr-stat-pill dr-filter-btn active" data-filter="all" title="Todos los dominios">';
+        echo '<span class="dr-stat-num">' . $stats['total'] . '</span><span class="dr-stat-lbl">Total</span></div>';
+        echo '<div class="dr-stat-pill dr-filter-btn dr-stat-ok" data-filter="ok" title="Onboarding completado">';
+        echo '<span class="dr-stat-num">' . $stats['ok'] . '</span><span class="dr-stat-lbl">OK ✓</span></div>';
+        if ($stats['sin_cf'] > 0) {
+            echo '<div class="dr-stat-pill dr-filter-btn dr-stat-warn" data-filter="sin_cf" title="Sin zona Cloudflare">';
+            echo '<span class="dr-stat-num">' . $stats['sin_cf'] . '</span><span class="dr-stat-lbl">Sin CF</span></div>';
+        }
+        if ($stats['ns_pendiente'] > 0) {
+            echo '<div class="dr-stat-pill dr-filter-btn dr-stat-warn" data-filter="ns_pendiente" title="Esperando cambio de NS">';
+            echo '<span class="dr-stat-num">' . $stats['ns_pendiente'] . '</span><span class="dr-stat-lbl">NS pendiente</span></div>';
+        }
+        if ($stats['alertas'] > 0) {
+            echo '<div class="dr-stat-pill dr-filter-btn dr-stat-error" data-filter="alertas" title="Dominios con error o parciales">';
+            echo '<span class="dr-stat-num">' . $stats['alertas'] . '</span><span class="dr-stat-lbl">Alertas</span></div>';
+        }
+        if ($stats['procesando'] > 0) {
+            echo '<div class="dr-stat-pill dr-filter-btn dr-stat-processing" data-filter="procesando" title="Onboarding en curso">';
+            echo '<span class="dr-stat-num">' . $stats['procesando'] . '</span><span class="dr-stat-lbl">Procesando</span></div>';
+        }
+        // Toggle de vista al final del banner
+        echo '<div class="dr-view-toggle" style="margin-left:auto;">';
+        echo '<button type="button" class="dr-view-btn active" data-view="cards" title="Vista Cards">🃏</button>';
+        echo '<button type="button" class="dr-view-btn" data-view="list" title="Vista Lista">📋</button>';
         echo '</div>';
-        echo '</div>';
+        echo '</div>'; // end stats-banner
 
         // === VISTA CARDS ===
         echo '<div id="dr-view-cards" class="dr-domains-grid">';
@@ -429,8 +463,16 @@ class Dominios_Reseller_Onboarding_Admin {
             $pd = $domain['primary_domain'];
             $state = $onboarding_states[$pd] ?? null;
             $cf_match = $cf_matches[$pd] ?? null;
-            
-            $this->render_domain_card($domain, $state, $cf_match, $presets, $op_configured);
+            $st = $state['state'] ?? 'none';
+            // Data attrs para filtrado JS
+            $filter_bucket = 'none';
+            if (in_array($st, ['onboarded', 'completed']))                                                    $filter_bucket = 'ok';
+            elseif (in_array($st, ['error', 'partial']))                                                      $filter_bucket = 'alertas';
+            elseif (in_array($st, ['pending_ns', 'needs_manual_ns']))                                         $filter_bucket = 'ns_pendiente';
+            elseif (in_array($st, ['pending', 'running', 'queued', 'zone_check', 'zone_wait_ns', 'preset_apply', 'ns_update'])) $filter_bucket = 'procesando';
+            elseif ($st === 'none' && !$cf_match)                                                             $filter_bucket = 'sin_cf';
+
+            $this->render_domain_card($domain, $state, $cf_match, $presets, $op_configured, $filter_bucket);
         }
         echo '</div>';
 
@@ -537,7 +579,11 @@ class Dominios_Reseller_Onboarding_Admin {
             if (in_array($onboarding_state, ['none', 'error', 'partial', 'needs_manual_ns', 'pending_ns'])) {
                 echo '<button class="dr-btn-apply dr-btn-mini" data-domain="' . esc_attr($pd) . '" title="Aplicar onboarding">Aplicar</button>';
                 if ($op_configured) {
-                    $auto_checked = ($state && !empty($state['auto_update_ns'])) ? 'checked' : '';
+                    if ($state && array_key_exists('auto_update_ns', $state)) {
+                        $auto_checked = !empty($state['auto_update_ns']) ? 'checked' : '';
+                    } else {
+                        $auto_checked = 'checked';
+                    }
                     echo '<label class="dr-auto-ns-mini" title="AutoNS">';
                     echo '<input type="checkbox" class="dr-auto-ns-check" data-domain="' . esc_attr($pd) . '" ' . $auto_checked . '>';
                     echo '</label>';
@@ -559,23 +605,23 @@ class Dominios_Reseller_Onboarding_Admin {
     /**
      * Renderizar card de dominio - Estilo Semrush condensado
      */
-    private function render_domain_card(array $domain, ?array $state, ?array $cf_match, array $presets, bool $op_configured): void {
+    private function render_domain_card(array $domain, ?array $state, ?array $cf_match, array $presets, bool $op_configured, string $filter_bucket = 'none'): void {
         global $wpdb;
         $pd = $domain['primary_domain'];
         $onboarding_state = $state['state'] ?? 'none';
         $target_ns = !empty($state['nameservers']) ? json_decode($state['nameservers'], true) : [];
-        
+
         // Obtener datos del endpoint de la BD
         $table = $wpdb->prefix . 'dominios_reseller';
         $endpoint_data = $wpdb->get_row($wpdb->prepare(
             "SELECT endpoint_token, wp_readiness_score, php_info_updated_at FROM {$table} WHERE primary_domain = %s AND is_primary = 1",
             $pd
         ));
-        
+
         // Determinar indicador de estado
         $status_indicator = $this->get_status_indicator($onboarding_state, $cf_match);
 
-        echo '<div class="dr-card" data-domain="' . esc_attr($pd) . '">';
+        echo '<div class="dr-card" data-domain="' . esc_attr($pd) . '" data-filter="' . esc_attr($filter_bucket) . '">';
         
         // === ROW 1: Dominio + badges + action ===
         echo '<div class="dr-card-row dr-card-main">';
@@ -605,12 +651,17 @@ class Dominios_Reseller_Onboarding_Admin {
         
         // Action button
         echo '<div class="dr-card-actions-mini">';
-        if (in_array($onboarding_state, ['none', 'error', 'partial', 'needs_manual_ns', 'pending_ns'])) {
+        $needs_onboarding = in_array($onboarding_state, ['none', 'error', 'partial', 'needs_manual_ns', 'pending_ns']);
+        $is_done          = in_array($onboarding_state, ['onboarded', 'completed']);
+        $is_processing    = in_array($onboarding_state, ['pending', 'running', 'queued', 'zone_check', 'zone_wait_ns', 'preset_apply', 'ns_update']);
+        // Completado pero sin zona CF activa → permitir re-aplicar
+        $zone_missing = $is_done && empty($state['zone_id']) && !$cf_match;
+        if ($needs_onboarding || $zone_missing) {
             echo '<button class="dr-btn-apply" data-domain="' . esc_attr($pd) . '" title="Aplicar onboarding">▶</button>';
-        } elseif ($onboarding_state === 'onboarded') {
+        } elseif ($is_done) {
             echo '<span class="dr-check" title="Completado">✓</span>';
-        } elseif (in_array($onboarding_state, ['pending', 'running'])) {
-            echo '<span class="dr-spinner" title="Procesando"></span>';
+        } elseif ($is_processing) {
+            echo '<span class="dr-spinner" title="Procesando: ' . esc_attr($onboarding_state) . '"></span>';
         }
         
         // PHP Config button (always visible)
@@ -622,6 +673,12 @@ class Dominios_Reseller_Onboarding_Admin {
         // Reactivar zona en CF (útil cuando está en estado moved/pending tras cambiar NS)
         if (!empty($state['zone_id']) && in_array($onboarding_state, ['pending_ns', 'needs_manual_ns', 'partial', 'error'])) {
             echo '<button class="dr-btn-reactivate" data-domain="' . esc_attr($pd) . '" data-zone-id="' . esc_attr($state['zone_id']) . '" title="Pedir a Cloudflare que vuelva a comprobar los NS (zona moved/pending)"><span class="dashicons dashicons-update-alt"></span> Reactivar CF</button>';
+        }
+
+        // Importar DNS: solo cuando la zona existe pero el dominio no está completamente onboarded
+        // (en onboarded/completed el DNS ya fue importado automáticamente durante el proceso)
+        if (!empty($state['zone_id']) && !$is_done) {
+            echo '<button class="dr-btn-import-dns" data-domain="' . esc_attr($pd) . '" title="Importar registros DNS del servidor hosting a Cloudflare" style="font-size:13px;padding:3px 7px;">DNS↑</button>';
         }
 
         echo '</div>';
@@ -637,24 +694,30 @@ class Dominios_Reseller_Onboarding_Admin {
         echo '<div class="dr-card-row dr-controls-row">';
         
         // Selector preset inline
-        if (in_array($onboarding_state, ['none', 'error', 'partial', 'needs_manual_ns', 'pending_ns'])) {
+        $show_preset_selector = in_array($onboarding_state, ['none', 'error', 'partial', 'needs_manual_ns', 'pending_ns']) || $zone_missing;
+        if ($show_preset_selector) {
             echo '<select class="dr-preset-mini" data-domain="' . esc_attr($pd) . '">';
             foreach ($presets as $preset) {
                 $selected = ($state && ($state['preset_key'] ?? '') === $preset['preset_key']) ? 'selected' : '';
                 echo '<option value="' . esc_attr($preset['preset_key']) . '" ' . $selected . '>' . esc_html($preset['name']) . '</option>';
             }
             echo '</select>';
-            
-            // Toggle auto NS si Openprovider está configurado
+
             if ($op_configured) {
-                $auto_checked = ($state && !empty($state['auto_update_ns'])) ? 'checked' : '';
+                // Default: checked para primer onboarding; respeta elección previa en re-runs
+                if ($state && array_key_exists('auto_update_ns', $state)) {
+                    $auto_checked = !empty($state['auto_update_ns']) ? 'checked' : '';
+                } else {
+                    $auto_checked = 'checked';
+                }
                 echo '<label class="dr-auto-ns-mini" title="Cambiar NS automáticamente en Openprovider">';
                 echo '<input type="checkbox" class="dr-auto-ns-check" data-domain="' . esc_attr($pd) . '" ' . $auto_checked . '>';
                 echo '<span>AutoNS</span>';
                 echo '</label>';
             }
-        } elseif ($onboarding_state === 'onboarded') {
-            echo '<span class="dr-status-text success">✓ Completado</span>';
+        } elseif (in_array($onboarding_state, ['onboarded', 'completed'])) {
+            $preset_label = $state['preset_key'] ?? '';
+            echo '<span class="dr-status-text success">✓ Completado' . ($preset_label ? ' · ' . esc_html($preset_label) : '') . '</span>';
         } elseif (in_array($onboarding_state, ['pending', 'running'])) {
             echo '<span class="dr-status-text processing">⏳ Procesando...</span>';
         }
@@ -690,10 +753,10 @@ class Dominios_Reseller_Onboarding_Admin {
      * Obtener indicador de estado para el punto de color
      */
     private function get_status_indicator(string $state, ?array $cf_match): array {
-        if ($state === 'onboarded') {
+        if ($state === 'onboarded' || $state === 'completed') {
             return ['class' => 'dr-dot-success', 'title' => 'Onboarding completado'];
         }
-        if ($state === 'running' || $state === 'pending') {
+        if (in_array($state, ['running', 'pending', 'queued', 'zone_check', 'zone_wait_ns', 'preset_apply', 'ns_update'])) {
             return ['class' => 'dr-dot-processing', 'title' => 'En proceso'];
         }
         if ($state === 'error' || $state === 'needs_manual_ns') {
@@ -706,7 +769,7 @@ class Dominios_Reseller_Onboarding_Admin {
             return ['class' => 'dr-dot-warning', 'title' => 'Parcialmente completado'];
         }
         if ($cf_match) {
-            return ['class' => 'dr-dot-cf', 'title' => 'Ya en Cloudflare'];
+            return ['class' => 'dr-dot-cf', 'title' => 'Ya en Cloudflare (sin onboarding)'];
         }
         return ['class' => 'dr-dot-none', 'title' => 'Sin procesar'];
     }
@@ -720,7 +783,8 @@ class Dominios_Reseller_Onboarding_Admin {
             'in_cf'          => 'Ya en CF',
             'pending'        => 'En cola',
             'running'        => 'Procesando',
-            'onboarded'      => 'Completado',
+            'onboarded',
+            'completed'      => 'Completado',
             'error'          => 'Error',
             'needs_manual_ns'=> 'NS manual',
             'pending_ns'     => 'NS pendientes',
@@ -2555,6 +2619,46 @@ class Dominios_Reseller_Onboarding_Admin {
         .dr-php-modal-close-btn {
             padding: 8px 20px !important;
         }
+
+        /* === STATS BANNER + FILTROS === */
+        .dr-stats-banner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+        .dr-stat-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            min-width: 54px;
+            cursor: default;
+        }
+        .dr-filter-btn {
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .dr-filter-btn:hover { border-color: #6b7280; background: #f3f4f6; }
+        .dr-filter-btn.active { border-color: #3b82f6; background: #eff6ff; box-shadow: 0 0 0 2px #bfdbfe; }
+        .dr-stat-num { font-size: 20px; font-weight: 700; line-height: 1; color: #111827; }
+        .dr-stat-lbl { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+        .dr-stat-ok   { border-color: #bbf7d0; }
+        .dr-stat-ok   .dr-stat-num { color: #16a34a; }
+        .dr-stat-warn { border-color: #fde68a; }
+        .dr-stat-warn .dr-stat-num { color: #d97706; }
+        .dr-stat-error { border-color: #fecaca; }
+        .dr-stat-error .dr-stat-num { color: #dc2626; }
+        .dr-stat-processing .dr-stat-num { color: #2563eb; }
+        .dr-card.dr-hidden { display: none !important; }
         </style>
         
         <!-- Modal Preview Preset -->
@@ -2656,7 +2760,26 @@ class Dominios_Reseller_Onboarding_Admin {
             if (savedView) {
                 $('.dr-view-btn[data-view="' + savedView + '"]').click();
             }
-            
+
+            // ===== FILTROS DE CARDS =====
+            var activeFilter = 'all';
+            function applyFilter(filter) {
+                activeFilter = filter;
+                $('.dr-filter-btn').removeClass('active');
+                $('.dr-filter-btn[data-filter="' + filter + '"]').addClass('active');
+                if (filter === 'all') {
+                    $('.dr-card').removeClass('dr-hidden');
+                } else {
+                    $('.dr-card').each(function() {
+                        var bucket = $(this).data('filter');
+                        $(this).toggleClass('dr-hidden', bucket !== filter);
+                    });
+                }
+            }
+            $(document).on('click', '.dr-filter-btn', function() {
+                applyFilter($(this).data('filter'));
+            });
+
             // ===== CARGA DE NS Y PILOTOS POR AJAX =====
             function loadDomainInfo() {
                 // Buscar dominios tanto en cards como en tabla
@@ -2835,16 +2958,17 @@ class Dominios_Reseller_Onboarding_Admin {
             $(document).on('click', '.dr-btn-apply', function() {
                 var $btn = $(this);
                 var domain = $btn.data('domain');
-                // Buscar en card o en row de tabla
-                var $container = $btn.closest('.dr-card');
-                if ($container.length === 0) {
-                    $container = $btn.closest('.dr-row');
-                }
-                var preset = $container.find('.dr-preset-mini').val() || 'wp';
-                var autoNs = $container.find('.dr-auto-ns-check').is(':checked') ? 1 : 0;
-                
+                var $card = $btn.closest('.dr-card');
+                if ($card.length === 0) $card = $btn.closest('.dr-row');
+                var preset = $card.find('.dr-preset-mini').val() || 'wp';
+                var autoNs = $card.find('.dr-auto-ns-check').is(':checked') ? 1 : 0;
+
+                // Mostrar estado de carga en la card entera
                 $btn.prop('disabled', true).text('⏳');
-                
+                $card.find('.dr-card-row.dr-card-main').css('opacity', '0.7');
+                var $nsRow = $card.find('.dr-ns-row');
+                $nsRow.html('<span style="color:#6b7280;font-size:11px;">⏳ Aplicando onboarding a ' + $('<span>').text(domain).text() + '…</span>');
+
                 $.post(ajaxurl, {
                     action: 'dr_onboarding_enqueue',
                     _nonce: nonce,
@@ -2852,15 +2976,54 @@ class Dominios_Reseller_Onboarding_Admin {
                     preset: preset,
                     auto_ns: autoNs
                 }, function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert('Error: ' + response.data);
+                    $card.find('.dr-card-row.dr-card-main').css('opacity', '1');
+
+                    if (!response.success) {
+                        var errMsg = typeof response.data === 'string' ? response.data : 'Error desconocido';
                         $btn.prop('disabled', false).text('▶');
+                        $nsRow.html('<span class="dr-error-text" style="color:#dc2626;font-size:11px;">❌ ' + $('<span>').text(errMsg).html() + '</span>');
+                        return;
+                    }
+
+                    var data = response.data;
+                    var state = data.state || 'error';
+                    var $dot = $card.find('.dr-status-dot');
+                    var $actions = $card.find('.dr-card-actions-mini');
+                    var $controls = $card.find('.dr-card-row.dr-card-controls');
+
+                    if (state === 'onboarded' || state === 'completed') {
+                        $dot.removeClass().addClass('dr-status-dot dr-dot-success').attr('title', 'Onboarding completado');
+                        $actions.find('.dr-btn-apply').replaceWith('<span class="dr-check" title="Completado">✓</span>');
+                        $controls.html('<span class="dr-status-text success">✓ Completado · ' + $('<span>').text(data.preset_key || preset).text() + '</span>');
+                        $nsRow.html('<span style="color:#16a34a;font-size:11px;">✓ Zona CF activa · zone_id: ' + $('<span>').text(data.zone_id || '').text() + '</span>');
+                        // Actualizar data-filter del card para los filtros
+                        $card.attr('data-filter', 'ok');
+
+                    } else if (state === 'pending_ns') {
+                        $dot.removeClass().addClass('dr-status-dot dr-dot-warning').attr('title', 'NS pendientes de apuntar a Cloudflare');
+                        $btn.prop('disabled', false).text('▶');
+                        var ns = Array.isArray(data.nameservers) ? data.nameservers : [];
+                        var nsText = ns.length ? ns.join(' / ') : '(ver en Cloudflare)';
+                        $nsRow.html('<span style="color:#d97706;font-size:11px;">⚠ Apunta los NS a CF: <code style="background:#fef3c7;padding:1px 4px;border-radius:3px;">' + $('<span>').text(nsText).html() + '</code></span>');
+                        $card.attr('data-filter', 'ns_pendiente');
+
+                    } else if (state === 'partial') {
+                        $dot.removeClass().addClass('dr-status-dot dr-dot-warning').attr('title', 'Parcialmente completado');
+                        $btn.prop('disabled', false).text('▶');
+                        $nsRow.html('<span style="color:#d97706;font-size:11px;">⚠ Parcial: ' + $('<span>').text(data.last_error || '').html() + '</span>');
+                        $card.attr('data-filter', 'alertas');
+
+                    } else {
+                        // error u otro — mostrar mensaje y restaurar botón
+                        $dot.removeClass().addClass('dr-status-dot dr-dot-error').attr('title', data.last_error || 'Error');
+                        $btn.prop('disabled', false).text('▶');
+                        $nsRow.html('<span style="color:#dc2626;font-size:11px;">❌ ' + $('<span>').text(data.last_error || 'Error').html() + '</span>');
+                        $card.attr('data-filter', 'alertas');
                     }
                 }).fail(function() {
-                    alert('Error de conexión');
+                    $card.find('.dr-card-row.dr-card-main').css('opacity', '1');
                     $btn.prop('disabled', false).text('▶');
+                    $nsRow.html('<span style="color:#dc2626;font-size:11px;">❌ Error de conexión con el servidor</span>');
                 });
             });
             
@@ -2929,6 +3092,43 @@ class Dominios_Reseller_Onboarding_Admin {
                     alert('Error de conexión al reactivar la zona.' + detail +
                           '\n\nPosibles causas: plugin no actualizado en el server, nonce caducado (recarga la página), o admin-ajax.php bloqueado por WAF/cache.');
                     $btn.prop('disabled', false).html(originalText);
+                });
+            });
+
+            // ========================================
+            // IMPORT DNS: traer registros del servidor hosting a CF
+            // ========================================
+            $(document).on('click', '.dr-btn-import-dns', function() {
+                var $btn = $(this);
+                var domain = $btn.data('domain');
+                if (!domain) return;
+
+                var originalHtml = $btn.html();
+                $btn.prop('disabled', true).html('⏳');
+
+                var $card = $btn.closest('.dr-card, tr');
+                var $nsRow = $card.find('.dr-ns-row');
+
+                $.post(ajaxurl, {
+                    action: 'dr_import_dns',
+                    _nonce: nonce,
+                    domain: domain
+                }, function(response) {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    if (response.success) {
+                        var d = response.data;
+                        var msg = '✓ DNS importados de ' + d.server + ': ' + d.imported + ' añadidos, ' + d.skipped + ' ya existían';
+                        if (d.errors && d.errors.length) {
+                            msg += ', ' + d.errors.length + ' errores';
+                        }
+                        $nsRow.html('<span style="color:#16a34a;font-size:11px;">' + msg + '</span>');
+                    } else {
+                        var errMsg = typeof response.data === 'string' ? response.data : 'Error desconocido';
+                        $nsRow.html('<span style="color:#dc2626;font-size:11px;">❌ ' + $('<span>').text(errMsg).html() + '</span>');
+                    }
+                }).fail(function() {
+                    $btn.prop('disabled', false).html(originalHtml);
+                    $nsRow.html('<span style="color:#dc2626;font-size:11px;">❌ Error de conexión</span>');
                 });
             });
 
@@ -4257,44 +4457,92 @@ class Dominios_Reseller_Onboarding_Admin {
      */
     public function ajax_enqueue(): void {
         check_ajax_referer('dr_onboarding_nonce', '_nonce');
-        
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Permisos insuficientes');
         }
 
-        $domain = sanitize_text_field($_POST['domain'] ?? '');
-        $preset = sanitize_text_field($_POST['preset'] ?? 'wp');
+        $domain  = sanitize_text_field($_POST['domain'] ?? '');
+        $preset  = sanitize_text_field($_POST['preset'] ?? 'wp');
         $auto_ns = (bool) ($_POST['auto_ns'] ?? false);
 
         if (empty($domain)) {
             wp_send_json_error('Dominio requerido');
         }
 
-        // Verificar si el dominio ya está en Cloudflare
-        $cf_service = Dominios_Reseller_Cloudflare_Service::get_instance();
-        $existing_zone = $cf_service->get_zone($domain);
-        
-        if ($existing_zone) {
-            // El dominio ya está en CF, verificar estado de onboarding
-            $current_state = Dominios_Reseller_Onboarding_DB::get_onboarding_state($domain);
-            
-            if ($current_state && in_array($current_state['state'], ['onboarded', 'completed'])) {
-                wp_send_json_error('El dominio ya está completamente configurado en Cloudflare');
-                return;
-            }
-            
-            // Permitir aplicar preset a zona existente
-            // Podríamos aquí obtener la configuración actual y mostrar diferencias
-            // Pero por ahora, procedemos con el onboarding normal
-        }
+        // Dar tiempo suficiente: creación de zona CF + aplicación de preset puede tardar ~20-30s
+        @set_time_limit(120);
 
-        $result = $this->get_worker()->enqueue($domain, $preset, $auto_ns);
+        // Ejecutar síncronamente para dar feedback inmediato al usuario
+        $result = $this->get_worker()->run_now($domain, $preset, $auto_ns);
 
         if ($result['success']) {
             wp_send_json_success($result);
         } else {
-            wp_send_json_error($result['error']);
+            wp_send_json_error($result['error'] ?? 'Error desconocido');
         }
+    }
+
+    /**
+     * AJAX: Importar registros DNS desde el servidor hosting a Cloudflare.
+     */
+    public function ajax_import_dns(): void {
+        check_ajax_referer('dr_onboarding_nonce', '_nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Permisos insuficientes');
+        }
+
+        $domain = sanitize_text_field($_POST['domain'] ?? '');
+        if (empty($domain)) {
+            wp_send_json_error('Dominio requerido');
+        }
+
+        $state = Dominios_Reseller_Onboarding_DB::get_onboarding_state($domain);
+        $zone_id = $state['zone_id'] ?? '';
+
+        if (empty($zone_id)) {
+            wp_send_json_error('No hay zona Cloudflare registrada para este dominio. Aplica el onboarding primero.');
+        }
+
+        @set_time_limit(60);
+
+        // Determinar servidor del dominio
+        global $wpdb;
+        $server = $wpdb->get_var($wpdb->prepare(
+            "SELECT server FROM {$wpdb->prefix}dominios_reseller WHERE primary_domain = %s AND is_primary = 1 LIMIT 1",
+            $domain
+        )) ?? '';
+
+        $cf = Dominios_Reseller_Cloudflare_Service::get_instance();
+        $records = [];
+
+        if ($server === 'cedro') {
+            $records = Dominios_Reseller_Cedro_Service::get_instance()->get_dns_records($domain);
+        } elseif (in_array($server, ['uk', 'usa'])) {
+            if (function_exists('dominios_reseller_get_whm_dns_records')) {
+                $records = dominios_reseller_get_whm_dns_records($domain, $server);
+            }
+        }
+
+        if (empty($records)) {
+            $server_ip = function_exists('dominios_reseller_get_server_ip') ? dominios_reseller_get_server_ip($server) : '?';
+            wp_send_json_error(
+                "No se obtuvieron registros DNS del servidor '$server' ($server_ip). " .
+                "Revisa el error_log del servidor PHP para el detalle exacto. " .
+                "Causas habituales: token WHM caducado, zona no encontrada, o addon domain sin zona propia."
+            );
+        }
+
+        $result = $cf->import_dns_records($zone_id, $records);
+
+        wp_send_json_success([
+            'imported' => $result['imported'],
+            'skipped'  => $result['skipped'],
+            'errors'   => $result['errors'],
+            'server'   => $server,
+            'total'    => count($records),
+        ]);
     }
 
     /**

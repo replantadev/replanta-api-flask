@@ -1,0 +1,239 @@
+================================================================================
+PLAN CEDRO — CREDENCIALES SERVIDOR
+cedro-fsn1-1 / 178.105.220.233
+Actualizado: 2026-06-23
+================================================================================
+
+SERVIDOR LINUX
+--------------
+IP:           178.105.220.233
+Hostname:     cedro-fsn1-1
+Usuario SSH:  replanta
+Password:     Lorenzo2020*_*
+Sudo:         NOPASSWD (sin password para sudo)
+SSH Key:      C:\Users\Luis Javier\.ssh\replanta_hetzner
+              (info@replanta.dev, gestionada por Windows ssh-agent)
+
+Conectar:
+  ssh replanta@178.105.220.233
+Tunnel paneles:
+  .\scripts\server-setup\ssh-tunnel.ps1 -ServerIP 178.105.220.233
+
+DEPLOY PLUGINS (workflow oficial):
+  # Desde local: push a GitHub
+  cd REPOS\hub              && git push origin main
+  cd REPOS\dominios-reseller && git push origin main
+  # En servidor: pull automático
+  ssh replanta@178.105.220.233 "replanta-deploy.sh all"   # ambos
+  ssh replanta@178.105.220.233 "replanta-deploy.sh hub"   # solo hub
+  ssh replanta@178.105.220.233 "replanta-deploy.sh dr"    # solo dominios-reseller
+
+Deploy keys servidor (repla1030 — /home/replanta.net/.ssh/):
+  github_deploy      → github-dr  → replantadev/dominios-reseller (read-only)
+  github_deploy_hub  → github-hub → replantadev/hub               (read-only)
+
+
+CYBERPANEL
+----------
+URL pública:  https://cedro.replanta.net:8090
+URL tunnel:   https://localhost:8090  (requiere tunnel SSH activo)
+Usuario:      admin
+Password:     ReplantaAdmin2024x
+API:          habilitada
+
+Usuario sitio replanta.net:
+  Usuario:    replantanet
+  Password:   ReplantaSite2024x
+
+
+OPENLITESPEED (OLS Admin)
+-------------------------
+URL:          https://localhost:7080  (requiere tunnel SSH activo)
+Usuario:      admin
+Password:     [mismo que CyberPanel o resetear via /usr/local/lsws/admin/misc/admpass.sh]
+
+
+GRAFANA
+-------
+URL:          http://localhost:3001  (requiere tunnel SSH activo)
+Usuario:      admin
+Password:     ReplantaGrafana2024x
+Dashboard CSRD: uid = replanta-csrd-v1
+
+
+PROMETHEUS
+----------
+URL:          http://localhost:9090  (requiere tunnel SSH activo)
+Sin autenticacion (solo accesible por tunnel)
+
+
+MARIADB
+-------
+Autenticacion: socket (sin password para root desde servidor)
+Acceso:        sudo mysql -u root
+               o: mysql -u root (como usuario replanta con sudo)
+
+
+BACKBLAZE B2
+------------
+Bucket:          cedro-fsn1-1
+Endpoint:        s3.eu-central-003.backblazeb2.com  (Frankfurt)
+Account ID:      60bdad1b1904
+Application Key: 003a6f9cf528d3dd2683c0ad9141ad7a2537303dd9
+Tipo clave:      Master Application Key
+                 PENDIENTE: crear key restringida solo al bucket cedro-fsn1-1
+
+rclone config:   /root/.config/rclone/rclone.conf (en servidor)
+Backup script:   /usr/local/bin/cedro-backup.sh
+Cron:            /etc/cron.d/cedro-backup  (03:00 AM diario)
+Log backup:      /var/log/replanta/backup.log
+
+
+ALERTAS GRAFANA
+---------------
+Contact point:   info@replanta.dev  (pendiente SMTP — ver abajo)
+Alertas activas:
+  - Disco /  >80%  (warning,  5 min)
+  - RAM      >88%  (warning,  10 min)
+  - CPU      >90%  (critical, 10 min)
+  - Node down      (critical,  2 min)
+Repeticion:      cada 4 horas
+
+
+SMTP ALERTAS (ACTIVO — Stablepoint relay temporal)
+--------------------------------------------------
+Host:       mail.replanta.dev:465  (SSL implicito)
+Usuario:    info@replanta.dev
+Password:   Lorenzo2020!
+From name:  Cedro Monitoring
+Configurado en: /etc/grafana/grafana.ini — seccion [smtp]
+PENDIENTE: migrar a MXroute cuando este disponible la cuenta
+
+
+PLAN CEDRO — APROVISIONAMIENTO
+--------------------------------
+Webhook:      https://replanta.net/wp-json/rphub/v1/webhooks/upmind
+Trigger:      contract_product_activated_hook (Upmind)
+Secret:       hAZ68pWTVJqVonKRLDMqtVPx12hQfhos
+Producto ID:  e2e071d9-31d5-e460-555a-646028758396
+Paquete CP:   cedro (30 GB disco, 50 email, 10 BD, PHP 8.3, SSL+DKIM auto)
+
+Nameservers para clientes:
+  ns1.replanta.net → 178.105.220.233  (Cloudflare DNS-only, ACTIVO)
+  ns2.replanta.net → 178.105.220.233  (Cloudflare DNS-only, ACTIVO)
+  Glue records registrados en OpenProvider — DONE 2026-06-21
+
+Glue records (ACTIVOS en OpenProvider):
+  ns1.replanta.net → 178.105.220.233
+  ns2.replanta.net → 178.105.220.233
+
+DNSSEC replanta.net (ACTIVO):
+  Registrador:  OpenProvider
+  Cloudflare:   CSK (ZSK+KSK misma clave)
+  Algoritmo:    13 (ECDSA Curve P-256)
+  Key tag:      2371
+  DS digest:    83C28BE9A11179EF363F2FBBE32D6DB04BAC42F5C960C5639DB0CF677F31190A
+  Tipo digest:  2 (SHA-256)
+
+Panel para clientes:
+  URL:          https://cedro.replanta.net:8090
+  cedro.replanta.net → 178.105.220.233 (Cloudflare DNS-only, ACTIVO)
+  Usuario/pass: generados al provisionar, enviados por email al cliente
+
+Registros almacenados (WordPress option rphub_upmind_provisioned):
+  order_id, domain, email, name, cp_user, linux_user, cp_pass, ts
+Registros pendientes (WP option rphub_upmind_pending):
+  órdenes con dominio o email faltante para revisión manual
+
+Email bienvenida: enviado a cliente + info@replanta.dev al provisionar
+
+
+SITIO REPLANTA.NET
+------------------
+Web root:      /home/replanta.net/public_html/
+Linux user:    repla1030
+PHP:           8.3 (lsphp83)
+LSCache:       habilitado
+WordPress:     MIGRADO 2026-06-20 (24489 ficheros, 107 tablas)
+DNS:           ACTIVO — Cloudflare A replanta.net + www → 178.105.220.233
+SSL:           ACTIVO — Let's Encrypt (expira 2026-09-18, autorenovacion activa)
+               Cert:    /etc/letsencrypt/live/replanta.net/fullchain.pem
+               Key:     /etc/letsencrypt/live/replanta.net/privkey.pem
+               Email:   info@replanta.dev (cuenta certbot)
+
+BD WordPress (local en Hetzner):
+  DB name:    replantanet_wp
+  DB user:    replantanet_u
+  DB pass:    ReplantaDB2024x
+  Host:       localhost
+
+BD WordPress (Stablepoint origen, ya no necesaria):
+  DB name:    replanta_net
+  DB user:    replanta_wp_72ri3
+  DB pass:    MYB67N!45&zzNB~a
+  Host:       localhost (Stablepoint)
+  Table prefix: rep_
+
+
+PENDIENTES
+----------
+[x] SMTP Grafana con Stablepoint relay (info@replanta.dev) — DONE 2026-06-20
+[x] Migrar WordPress replanta.net desde Stablepoint — DONE 2026-06-20
+[x] Cloudflare DNS: A replanta.net + www -> 178.105.220.233 — DONE 2026-06-20
+[x] Let's Encrypt SSL replanta.net — DONE 2026-06-20 (expira 2026-09-18)
+[x] Webhook Upmind → CyberPanel aprovisionamiento automático — DONE 2026-06-21
+[x] Cloudflare DNS: cedro.replanta.net → 178.105.220.233 (DNS-only) — DONE 2026-06-21
+[x] Cloudflare DNS: ns1/ns2.replanta.net → 178.105.220.233 (DNS-only) — DONE 2026-06-21
+[x] Transferir replanta.net de Moniker a OpenProvider — DONE 2026-06-21
+[x] Glue records ns1/ns2.replanta.net en OpenProvider — DONE 2026-06-21
+[x] DNSSEC activado (Cloudflare CSK algo 13 / keytag 2371) — DONE 2026-06-21
+[x] Let's Encrypt SSL cedro.replanta.net:8090 — DONE 2026-06-22 (expira 2026-09-20)
+         Cert: /etc/letsencrypt/live/cedro.replanta.net/fullchain.pem
+         Key:  /etc/letsencrypt/live/cedro.replanta.net/privkey.pem
+         Creds CF: /etc/letsencrypt/cloudflare.ini (token restringido zona replanta.net)
+         Deploy hook: /etc/letsencrypt/renewal-hooks/deploy/cyberpanel-cedro.sh
+[ ] ModSecurity WAF (CyberPanel UI > Security > ModSecurity > Enable)
+[ ] MXroute DNS (BLOQUEADO: sin cuenta aun)
+[ ] Verificacion Green Web Foundation para IP 178.105.220.233
+[ ] Key B2 restringida al bucket cedro-fsn1-1
+
+HOJA DE RUTA — AUTOMAINTENANCE & AUTOMATIZACION CEDRO
+------------------------------------------------------
+[x] FASE 0 — Emergencia: dominios-reseller roto (symlink → git clone) — DONE 2026-06-23
+[x] FASE 1 — Deploy workflow: GitHub + deploy keys SSH + replanta-deploy.sh — DONE 2026-06-23
+         Repos: replantadev/hub, replantadev/dominios-reseller
+         Deploy keys: /home/replanta.net/.ssh/github_deploy(_hub)
+         Script: /usr/local/bin/replanta-deploy.sh [hub|dr|all]
+
+[ ] FASE 2 — Arquitectura Cedro en dominios-reseller
+         - Reescribir class-upmind-integration.php (payload real hook_code + object)
+         - Nuevo class-cedro-service.php (CyberPanel provision/suspend/cancel)
+         - Nuevo class-cedro-emails.php (emails ciclo de vida)
+         - Eliminar codigo Upmind/CyberPanel del hub
+         - Actualizar URL webhook en Upmind: /wp-json/dominios-reseller/v1/webhook/upmind
+         - WHM preservado para clientes actuales
+
+[ ] SPRINT 2 — Infraestructura server
+         - Uptime monitor por dominio cliente (HTTP check cada 5 min, alerta a ops)
+         - Unattended-upgrades verificado + limpieza cron semanal
+         - Fail2ban activo con reglas WP (xmlrpc, wp-login brute force)
+
+[ ] SPRINT 3 — Seguridad activa
+         - ModSecurity WAF (ya en lista arriba)
+         - Malware scan semanal ClamAV → alerta info@replanta.dev
+         - SSL watch: alerta si cert cliente expira en <30 dias
+
+[ ] SPRINT 4 — WordPress cliente
+         - WP-CLI auto-updates (core minor + plugins) con politica definida
+         - DB optimize semanal (wp db optimize)
+         - Deteccion WP desactualizado (>30 dias sin actualizar = alerta)
+
+[ ] SPRINT 5 — Reporting
+         - Informe mensual ops: clientes activos, disk usage, incidencias, renewals
+         - Cron verificacion backup B2 (descarga + descomprime ultimo backup)
+
+================================================================================
+SEGURIDAD: Este fichero contiene credenciales en texto plano.
+No subir a git. No compartir. Guardar en ubicacion segura o
+migrar a gestor de passwords (Bitwarden, 1Password, etc.)
+================================================================================

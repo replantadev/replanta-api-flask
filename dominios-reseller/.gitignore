@@ -1,0 +1,31 @@
+# Deployment archives
+*.zip
+*.tar.gz
+
+# Backups
+*.backup-*
+*.bak
+
+# Windows scripts (not needed on server)
+*.bat
+*.ps1
+
+# Local test / diagnostic files (not part of plugin)
+test-*.php
+diagnostic.php
+debug-whm-api.php
+load-test-data.php
+verify-*.php
+fix-*.php
+update-presets.php
+validate-preset.php
+create-test-preset.php
+test-api-endpoint.php
+
+# Composer
+/vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp

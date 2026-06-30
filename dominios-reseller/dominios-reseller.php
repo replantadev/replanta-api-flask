@@ -2,11 +2,11 @@
 /*
 Plugin Name: Dominios Reseller
 Description: Certifica dominios ecológicos desde WHM, muestra árboles plantados y CO2 evitado. Integración con Cloudflare.
-Version: 1.7.2
+Version: 1.7.3
 Author: Replanta
 */
 
-define('DOMINIOS_RESELLER_VERSION', '1.7.2');
+define('DOMINIOS_RESELLER_VERSION', '1.7.3');
 define('DOMINIOS_RESELLER_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 /**
@@ -740,6 +740,8 @@ foreach ([
     'includes/class-debug-hub.php',
     // Nuevas integraciones v1.6.0
     'includes/class-auto-discovery.php',
+    // Servidor Cedro (CyberPanel) v1.8.0 — debe cargarse antes de upmind-integration
+    'includes/class-cedro-service.php',
     'includes/class-upmind-integration.php',
     'includes/class-integration-settings.php',
     'includes/class-monitoring-dashboard.php',
@@ -775,23 +777,23 @@ add_action('admin_menu', function () {
     $cf_icon = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="#F38020"><path d="M38.804 29.561l-.01-.04a1.089 1.089 0 00-1.05-.81H15.198a.545.545 0 01-.455-.845l1.305-2a1.09 1.09 0 01.91-.49h23.07c2.855 0 5.336-2 5.88-4.79a6.366 6.366 0 00-4.495-7.385 9.093 9.093 0 00-17.34-2.58 6.355 6.355 0 00-10.06 4.63 6.287 6.287 0 00.22 2.115A9.552 9.552 0 003.5 26.07a9.458 9.458 0 001.09 4.43c.187.34.548.555.943.555h32.21a1.09 1.09 0 001.06-1.49v-.005zm3.335-.375a.86.86 0 01-.05.425 1.09 1.09 0 01-1.045.775h-2.99a.545.545 0 01-.455-.845l1.305-2a1.09 1.09 0 01.91-.49h1.16c.515 0 .98.36 1.085.865.04.19.06.365.075.545a3.28 3.28 0 01.005.725z"/></svg>');
     
     add_menu_page(
-        'Dominios Reseller',
-        'Dominios Reseller',
+        'Gestionar Dominio',
+        'Gestionar Dominio',
         'manage_options',
         'dominios-reseller',
         'dominios_reseller_admin_page',
         $cf_icon,
         56
     );
-    
-    // Submenu: Impacto Ecológico (Tree Nation)
+
+    // Submenu: Dominios (UK / USA / Cedro)
     add_submenu_page(
         'dominios-reseller',
-        '🌱 Impacto Ecológico',
-        '🌱 Impacto Ecológico',
+        'Dominios',
+        'Dominios',
         'manage_options',
-        'dominios-reseller-tree-nation',
-        ['Dominios_Reseller_Tree_Nation', 'render_page']
+        'dominios-reseller-simple',
+        'dominios_reseller_simple_page'
     );
 
     // Submenu de diagnóstico (oculto, solo accesible por URL)

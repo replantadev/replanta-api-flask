@@ -1,0 +1,465 @@
+<?php
+/**
+ * Integración con JetBackup para gestión de copias de seguridad
+ * Maneja backups, restauraciones y monitoreo de copias
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class RP_Hub_JetBackup_Integration {
+    
+    private $jetbackup_api_url;
+    private $jetbackup_api_key;
+    
+    public function __construct() {
+        $this->jetbackup_api_url = get_option('rphub_jetbackup_api_url', '');
+        $this->jetbackup_api_key = get_option('rphub_jetbackup_api_key', '');
+        
+        // AJAX handlers
+        add_action('wp_ajax_rphub_jetbackup_get_backups', array($this, 'ajax_get_backups'));
+        add_action('wp_ajax_rphub_jetbackup_create_backup', array($this, 'ajax_create_backup'));
+        add_action('wp_ajax_rphub_jetbackup_restore_backup', array($this, 'ajax_restore_backup'));
+        add_action('wp_ajax_rphub_jetbackup_delete_backup', array($this, 'ajax_delete_backup'));
+        add_action('wp_ajax_rphub_jetbackup_get_schedule', array($this, 'ajax_get_schedule'));
+        add_action('wp_ajax_rphub_jetbackup_update_schedule', array($this, 'ajax_update_schedule'));
+        
+        // Cron jobs
+        add_action('rphub_jetbackup_daily_check', array($this, 'run_daily_backup_check'));
+        add_action('rphub_jetbackup_sync_status', array($this, 'sync_backup_status'));
+        
+        // Settings
+        add_action('admin_init', array($this, 'register_settings'));
+    }
+
+    /**
+     * Registra configuraciones de JetBackup
+     */
+    public function register_settings() {
+        register_setting('rphub_settings', 'rphub_jetbackup_api_url');
+        register_setting('rphub_settings', 'rphub_jetbackup_api_key');
+        register_setting('rphub_settings', 'rphub_jetbackup_auto_monitor');
+        register_setting('rphub_settings', 'rphub_jetbackup_retention_days');
+        register_setting('rphub_settings', 'rphub_jetbackup_alert_failed');
+    }
+
+    /**
+     * Realiza llamada a la API de JetBackup
+     */
+    private function jetbackup_api_call($method, $endpoint, $data = array()) {
+        if (empty($this->jetbackup_api_url) || empty($this->jetbackup_api_key)) {
+            throw new Exception('API de JetBackup no configurada');
+        }
+
+        $url = rtrim($this->jetbackup_api_url, '/') . '/api/v1/' . ltrim($endpoint, '/');
+        
+        $args = array(
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $this->jetbackup_api_key,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ),
+            'timeout' => 60 // Backups pueden tardar más
+        );
+
+        if (!empty($data) && in_array($method, array('POST', 'PUT', 'PATCH'))) {
+            $args['body'] = json_encode($data);
+        }
+
+        $response = wp_remote_request($url, $args);
+
+        if (is_wp_error($response)) {
+            throw new Exception('Error de conexión: ' . $response->get_error_message());
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
+        if ($code >= 400) {
+            throw new Exception('Error de API: ' . ($data['message'] ?? 'Error desconocido'));
+        }
+
+        return $data;
+    }
+
+    /**
+     * Obtiene el ID de cuenta JetBackup para un dominio
+     */
+    private function get_jetbackup_account_id($domain) {
+        try {
+            $accounts = $this->jetbackup_api_call('GET', 'accounts');
+            
+            foreach ($accounts['data'] as $account) {
+                if ($account['domain'] === $domain || in_array($domain, $account['domains'] ?? array())) {
+                    return $account['id'];
+                }
+            }
+            
+            return null;
+        } catch (Exception $e) {
+            error_log('JetBackup Account ID Error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene lista de backups para un sitio
+     */
+    public function get_site_backups($site_id) {
+        $site = RPHUB_Database::get_site($site_id);
+        $site_url = $site ? $site->url : '';
+        $domain = parse_url($site_url, PHP_URL_HOST);
+        
+        $account_id = $this->get_jetbackup_account_id($domain);
+        
+        if (!$account_id) {
+            return array();
+        }
+
+        try {
+            $response = $this->jetbackup_api_call('GET', "accounts/{$account_id}/backups");
+            
+            $backups = array();
+            
+            foreach ($response['data'] as $backup) {
+                $backups[] = array(
+                    'id' => $backup['id'],
+                    'type' => $backup['type'], // full, incremental, differential
+                    'status' => $backup['status'], // completed, running, failed, queued
+                    'size' => $backup['size'],
+                    'size_formatted' => $this->format_bytes($backup['size']),
+                    'created_at' => $backup['created_at'],
+                    'completed_at' => $backup['completed_at'],
+                    'duration' => $backup['duration'],
+                    'includes' => $backup['includes'], // files, databases, etc.
+                    'retention_until' => $backup['retention_until'],
+                    'download_url' => $backup['download_url'] ?? null
+                );
+            }
+            
+            return $backups;
+            
+        } catch (Exception $e) {
+            error_log('JetBackup Get Backups Error: ' . $e->getMessage());
+            return array();
+        }
+    }
+
+    /**
+     * Obtiene estadísticas de backup para un sitio
+     */
+    public function get_backup_stats($site_id) {
+        $backups = $this->get_site_backups($site_id);
+        
+        $stats = array(
+            'total_backups' => count($backups),
+            'successful_backups' => 0,
+            'failed_backups' => 0,
+            'last_backup' => null,
+            'next_backup' => null,
+            'total_size' => 0,
+            'oldest_backup' => null,
+            'backup_frequency' => 'unknown'
+        );
+
+        foreach ($backups as $backup) {
+            if ($backup['status'] === 'completed') {
+                $stats['successful_backups']++;
+            } elseif ($backup['status'] === 'failed') {
+                $stats['failed_backups']++;
+            }
+            
+            $stats['total_size'] += $backup['size'];
+            
+            // Último backup exitoso
+            if ($backup['status'] === 'completed' && !$stats['last_backup']) {
+                $stats['last_backup'] = $backup['completed_at'];
+            }
+            
+            // Backup más antiguo
+            $stats['oldest_backup'] = $backup['created_at'];
+        }
+
+        // Obtener programación
+        $schedule = $this->get_backup_schedule($site_id);
+        if ($schedule) {
+            $stats['next_backup'] = $schedule['next_run'];
+            $stats['backup_frequency'] = $schedule['frequency'];
+        }
+
+        return $stats;
+    }
+
+    /**
+     * Obtiene la programación de backups
+     */
+    public function get_backup_schedule($site_id) {
+        $site = RPHUB_Database::get_site($site_id);
+        $site_url = $site ? $site->url : '';
+        $domain = parse_url($site_url, PHP_URL_HOST);
+        
+        $account_id = $this->get_jetbackup_account_id($domain);
+        
+        if (!$account_id) {
+            return null;
+        }
+
+        try {
+            $response = $this->jetbackup_api_call('GET', "accounts/{$account_id}/schedule");
+            
+            return array(
+                'enabled' => $response['enabled'],
+                'frequency' => $response['frequency'], // daily, weekly, monthly
+                'time' => $response['time'],
+                'retention_days' => $response['retention_days'],
+                'backup_type' => $response['backup_type'], // full, incremental
+                'includes' => $response['includes'],
+                'next_run' => $response['next_run']
+            );
+            
+        } catch (Exception $e) {
+            error_log('JetBackup Schedule Error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Actualiza información de backup en el sitio
+     */
+    public function update_site_backup_info($site_id) {
+        $stats = $this->get_backup_stats($site_id);
+        $schedule = $this->get_backup_schedule($site_id);
+        
+        // Guardar estadísticas
+        RPHUB_Database::update_site_meta($site_id, 'backup_stats', json_encode($stats));
+        RPHUB_Database::update_site_meta($site_id, 'backup_schedule', json_encode($schedule));
+        RPHUB_Database::update_site_meta($site_id, 'last_backup', $stats['last_backup']);
+        RPHUB_Database::update_site_meta($site_id, 'backup_total_size', $stats['total_size']);
+        RPHUB_Database::update_site_meta($site_id, 'backup_success_rate', 
+            $stats['total_backups'] > 0 ? round(($stats['successful_backups'] / $stats['total_backups']) * 100) : 0
+        );
+        
+        RPHUB_Database::update_site_meta($site_id, 'last_jetbackup_sync', current_time('mysql'));
+
+        // Alertas
+        $this->check_backup_alerts($site_id, $stats);
+
+        return true;
+    }
+
+    /**
+     * Verifica alertas de backup
+     */
+    private function check_backup_alerts($site_id, $stats) {
+        $alert_failed = get_option('rphub_jetbackup_alert_failed', true);
+        
+        if (!$alert_failed) {
+            return;
+        }
+
+        $alerts = array();
+
+        // Sin backups recientes
+        if ($stats['last_backup']) {
+            $last_backup_time = strtotime($stats['last_backup']);
+            $hours_since = (time() - $last_backup_time) / 3600;
+            
+            if ($hours_since > 48) { // Más de 48 horas
+                $alerts[] = array(
+                    'type' => 'warning',
+                    'message' => 'No se han realizado backups en las últimas 48 horas',
+                    'created_at' => current_time('mysql')
+                );
+            }
+        } else {
+            $alerts[] = array(
+                'type' => 'error',
+                'message' => 'No se encontraron backups para este sitio',
+                'created_at' => current_time('mysql')
+            );
+        }
+
+        // Backups fallidos
+        if ($stats['failed_backups'] > 0) {
+            $alerts[] = array(
+                'type' => 'error',
+                'message' => "Se encontraron {$stats['failed_backups']} backups fallidos",
+                'created_at' => current_time('mysql')
+            );
+        }
+
+        // Guardar alertas
+        if (!empty($alerts)) {
+            $existing_alerts = RPHUB_Database::get_site_meta($site_id, 'backup_alerts');
+            $existing_alerts = $existing_alerts ? json_decode($existing_alerts, true) : array();
+            
+            $all_alerts = array_merge($existing_alerts, $alerts);
+            $all_alerts = array_slice($all_alerts, -10); // Mantener solo las últimas 10
+            
+            RPHUB_Database::update_site_meta($site_id, 'backup_alerts', json_encode($all_alerts));
+        }
+    }
+
+    /**
+     * AJAX: Obtener lista de backups
+     */
+    public function ajax_get_backups() {
+        if (!wp_verify_nonce($_POST['nonce'], 'rphub_dashboard_nonce')) {
+            wp_die('Security check failed');
+        }
+
+        $site_id = intval($_POST['site_id']);
+        
+        try {
+            $backups = $this->get_site_backups($site_id);
+            $stats = $this->get_backup_stats($site_id);
+            
+            wp_send_json_success(array(
+                'backups' => $backups,
+                'stats' => $stats
+            ));
+            
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    /**
+     * AJAX: Crear backup manual
+     */
+    public function ajax_create_backup() {
+        if (!wp_verify_nonce($_POST['nonce'], 'rphub_dashboard_nonce')) {
+            wp_die('Security check failed');
+        }
+
+        $site_id = intval($_POST['site_id']);
+        $backup_type = sanitize_text_field($_POST['backup_type'] ?? 'full');
+        
+        $site = RPHUB_Database::get_site($site_id);
+        $site_url = $site ? $site->url : '';
+        $domain = parse_url($site_url, PHP_URL_HOST);
+        
+        $account_id = $this->get_jetbackup_account_id($domain);
+        
+        if (!$account_id) {
+            wp_send_json_error('Cuenta de JetBackup no encontrada');
+            return;
+        }
+
+        try {
+            $result = $this->jetbackup_api_call('POST', "accounts/{$account_id}/backups", array(
+                'type' => $backup_type,
+                'description' => 'Backup manual desde Replanta Hub',
+                'includes' => array('files', 'databases', 'emails')
+            ));
+
+            wp_send_json_success(array(
+                'message' => 'Backup iniciado correctamente',
+                'backup_id' => $result['backup_id'],
+                'estimated_duration' => $result['estimated_duration'] ?? 'unknown'
+            ));
+
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    /**
+     * AJAX: Restaurar backup
+     */
+    public function ajax_restore_backup() {
+        if (!wp_verify_nonce($_POST['nonce'], 'rphub_dashboard_nonce')) {
+            wp_die('Security check failed');
+        }
+
+        $site_id = intval($_POST['site_id']);
+        $backup_id = sanitize_text_field($_POST['backup_id']);
+        $restore_options = $_POST['restore_options'] ?? array();
+        
+        $site = RPHUB_Database::get_site($site_id);
+        $site_url = $site ? $site->url : '';
+        $domain = parse_url($site_url, PHP_URL_HOST);
+        
+        $account_id = $this->get_jetbackup_account_id($domain);
+        
+        if (!$account_id) {
+            wp_send_json_error('Cuenta de JetBackup no encontrada');
+            return;
+        }
+
+        try {
+            $result = $this->jetbackup_api_call('POST', "accounts/{$account_id}/restore", array(
+                'backup_id' => $backup_id,
+                'restore_files' => in_array('files', $restore_options),
+                'restore_databases' => in_array('databases', $restore_options),
+                'restore_emails' => in_array('emails', $restore_options),
+                'overwrite_existing' => true
+            ));
+
+            wp_send_json_success(array(
+                'message' => 'Restauración iniciada correctamente',
+                'restore_id' => $result['restore_id'],
+                'estimated_duration' => $result['estimated_duration'] ?? 'unknown'
+            ));
+
+        } catch (Exception $e) {
+            wp_send_json_error($e->getMessage());
+        }
+    }
+
+    /**
+     * Formato de bytes legible
+     */
+    private function format_bytes($bytes, $precision = 2) {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
+    }
+
+    /**
+     * Chequeo diario de backups
+     */
+    public function run_daily_backup_check() {
+        $auto_monitor = get_option('rphub_jetbackup_auto_monitor', false);
+        
+        if (!$auto_monitor) {
+            return;
+        }
+
+        // Obtener todos los sitios
+        $sites = RPHUB_Database::get_all_sites();
+
+        foreach ($sites as $site) {
+            // Actualizar información de backup
+            $this->update_site_backup_info($site->id);
+            
+            // Esperar entre sitios
+            sleep(3);
+        }
+    }
+
+    /**
+     * Sincronización de estado de backups
+     */
+    public function sync_backup_status() {
+        // Obtener sitios con backups en progreso
+        $sites = RPHUB_Database::get_all_sites();
+        $sites = array_filter($sites, function($site) {
+            return RPHUB_Database::get_site_meta($site->id, 'backup_in_progress') === 'yes';
+        });
+
+        foreach ($sites as $site) {
+            $this->update_site_backup_info($site->id);
+        }
+    }
+}
+
+// Inicializar la integración
+new RP_Hub_JetBackup_Integration();

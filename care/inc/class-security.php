@@ -1,0 +1,306 @@
+<?php
+/**
+ * Security and authentication class
+ */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class RP_Care_Security {
+    
+    private static $token_expiry = 365 * DAY_IN_SECONDS; // 1 year
+    
+    public static function generate_token($site_data = []) {
+        $payload = [
+            'site_url' => get_site_url(),
+            'domain' => parse_url(get_site_url(), PHP_URL_HOST),
+            'issued_at' => time(),
+            'expires_at' => time() + self::$token_expiry,
+            'plan' => RP_Care_Plan::get_current(),
+            'version' => RPCARE_VERSION
+        ];
+        
+        if (!empty($site_data)) {
+            $payload = array_merge($payload, $site_data);
+        }
+        
+        $header = wp_json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+        $payload_json = wp_json_encode($payload);
+        
+        $base64_header = self::base64url_encode($header);
+        $base64_payload = self::base64url_encode($payload_json);
+        
+        $signature = self::sign($base64_header . '.' . $base64_payload);
+        
+        return $base64_header . '.' . $base64_payload . '.' . $signature;
+    }
+    
+    public static function validate_token($token) {
+        if (empty($token)) {
+            return false;
+        }
+        
+        $parts = explode('.', $token);
+        if (count($parts) !== 3) {
+            return false;
+        }
+        
+        [$header, $payload, $signature] = $parts;
+        
+        // Verify signature
+        $expected_signature = self::sign($header . '.' . $payload);
+        if (!hash_equals($signature, $expected_signature)) {
+            return false;
+        }
+        
+        // Decode payload
+        $payload_data = json_decode(self::base64url_decode($payload), true);
+        if (!$payload_data) {
+            return false;
+        }
+        
+        // Check expiration
+        if (isset($payload_data['expires_at']) && $payload_data['expires_at'] < time()) {
+            return false;
+        }
+        
+        // Verify site URL
+        if (isset($payload_data['site_url']) && $payload_data['site_url'] !== get_site_url()) {
+            return false;
+        }
+        
+        return $payload_data;
+    }
+    
+    public static function refresh_token() {
+        $current_token = get_option('rpcare_token', '');
+        $payload_data = self::validate_token($current_token);
+        
+        if (!$payload_data) {
+            return false;
+        }
+        
+        // Generate new token with existing data
+        $new_token = self::generate_token([
+            'plan' => $payload_data['plan'] ?? RP_Care_Plan::get_current(),
+            'hub_assigned' => $payload_data['hub_assigned'] ?? false
+        ]);
+        
+        update_option('rpcare_token', $new_token);
+        
+        RP_Care_Utils::log('security', 'info', 'Token refreshed successfully');
+        
+        return $new_token;
+    }
+    
+    public static function validate_request($request) {
+        $auth_header = $request->get_header('authorization');
+        if (!$auth_header) {
+            return new WP_Error('no_auth', 'No authorization header', ['status' => 401]);
+        }
+
+        if (strpos($auth_header, 'Bearer ') !== 0) {
+            return new WP_Error('invalid_auth_format', 'Invalid authorization format', ['status' => 401]);
+        }
+
+        $token = substr($auth_header, 7);
+
+        // Primary: simple opaque-token comparison against the Hub-assigned site token.
+        // The admin copies the token from Hub and pastes it into Care → Settings → Token del Sitio.
+        // Using hash_equals to prevent timing attacks.
+        $options    = get_option('rpcare_options', []);
+        $site_token = $options['site_token'] ?? '';
+        if (!empty($site_token) && hash_equals($site_token, $token)) {
+            $request->set_param('_rpcare_payload', [
+                'plan'     => RP_Care_Plan::get_current(),
+                'site_url' => get_site_url(),
+            ]);
+            return self::apply_ip_whitelist($request);
+        }
+
+        // Fallback: JWT validation (tokens generated via gen-token.php or set_activation_data).
+        $payload = self::validate_token($token);
+        if (!$payload) {
+            return new WP_Error('invalid_token', 'Invalid or expired token', ['status' => 401]);
+        }
+
+        $request->set_param('_rpcare_payload', $payload);
+        return self::apply_ip_whitelist($request);
+    }
+
+    /**
+     * Checks the IP whitelist if configured. Returns true or WP_Error.
+     */
+    private static function apply_ip_whitelist($request) {
+        $allowed_ips = get_option('rpcare_allowed_ips', []);
+        if (!empty($allowed_ips)) {
+            $client_ip = RP_Care_Utils::get_client_ip();
+            if (!in_array($client_ip, $allowed_ips, true)) {
+                RP_Care_Utils::log('security', 'warning', "Blocked request from unauthorized IP: $client_ip");
+                return new WP_Error('ip_not_allowed', 'IP not in whitelist', ['status' => 403]);
+            }
+        }
+        return true;
+    }
+    
+    public static function can_execute_task($task, $payload = null) {
+        if (!$payload) {
+            return false;
+        }
+
+        // Authenticated self-update must remain available even if a site's plan
+        // cache is broken or still being synced from the Hub.
+        if ($task === 'self_update') {
+            return true;
+        }
+        
+        $plan = $payload['plan'] ?? '';
+        // Normalize old English names to canonical Spanish names
+        $plan = RP_Care_Plan::normalize_plan($plan);
+        if (!RP_Care_Plan::is_valid_plan($plan)) {
+            return false;
+        }
+
+        if ($task === 'staging_clone' && class_exists('RP_Care_Addon_Manager')) {
+            $addons = RP_Care_Addon_Manager::get();
+            $ecom_cfg = $addons->get_config('ecommerce');
+            if ($addons->is_active('ecommerce') && !empty($ecom_cfg['staging_required'])) {
+                return true;
+            }
+        }
+        
+        // Delegate to unified feature map
+        return RP_Care_Plan::can_access_feature($task, $plan);
+    }
+    
+    public static function set_activation_data($token, $plan, $hub_url = '') {
+        $payload = self::validate_token($token);
+        if (!$payload) {
+            return new WP_Error('invalid_token', 'Token de activación inválido');
+        }
+        
+        if (!RP_Care_Plan::is_valid_plan($plan)) {
+            return new WP_Error('invalid_plan', 'Plan no válido');
+        }
+        
+        // Store activation data
+        update_option('rpcare_token', $token);
+        update_option('rpcare_plan', $plan);
+        update_option('rpcare_activated', true);
+        
+        if (!empty($hub_url)) {
+            update_option('rpcare_hub_url', $hub_url);
+        }
+        
+        // Set up initial schedules
+        $scheduler = new RP_Care_Scheduler($plan);
+        $scheduler->ensure();
+        
+        RP_Care_Utils::log('activation', 'success', "Plugin activated with plan: $plan");
+        
+        return true;
+    }
+    
+    public static function deactivate() {
+        // Clear sensitive data but keep logs for debugging
+        update_option('rpcare_activated', false);
+        delete_option('rpcare_token');
+        
+        // Clear scheduled tasks
+        $scheduler = new RP_Care_Scheduler('');
+        $scheduler->clear_all();
+        
+        RP_Care_Utils::log('activation', 'info', 'Plugin deactivated');
+        
+        return true;
+    }
+    
+    public static function generate_api_key() {
+        return wp_generate_password(32, false);
+    }
+    
+    public static function hash_api_key($key) {
+        return wp_hash($key);
+    }
+    
+    public static function verify_nonce($nonce, $action = 'rpcare_admin') {
+        return wp_verify_nonce($nonce, $action);
+    }
+    
+    public static function sanitize_settings($settings) {
+        $sanitized = [];
+        
+        $allowed_settings = [
+            'rpcare_plan' => 'sanitize_text_field',
+            'rpcare_token' => 'sanitize_text_field',
+            'rpcare_hub_url' => 'esc_url_raw',
+            'rpcare_allowed_ips' => 'array',
+            'rpcare_email_reports' => 'sanitize_email',
+            'rpcare_report_frequency' => 'sanitize_text_field',
+            'rpcare_branding_logo' => 'esc_url_raw',
+            'rpcare_branding_color' => 'sanitize_hex_color',
+            'rpcare_exclude_plugins'  => 'array',
+            'rpcare_exclude_themes'   => 'array',
+            'rpcare_b2_key_id'        => 'sanitize_text_field',
+            'rpcare_b2_app_key'       => 'sanitize_text_field',
+            'rpcare_b2_bucket_id'     => 'sanitize_text_field',
+            'rpcare_b2_bucket_name'   => 'sanitize_text_field',
+            'rpcare_b2_prefix'        => 'sanitize_text_field',
+        ];
+        
+        foreach ($settings as $key => $value) {
+            if (isset($allowed_settings[$key])) {
+                $sanitizer = $allowed_settings[$key];
+                
+                if ($sanitizer === 'array') {
+                    $sanitized[$key] = is_array($value) ? array_map('sanitize_text_field', $value) : [];
+                } else {
+                    $sanitized[$key] = call_user_func($sanitizer, $value);
+                }
+            }
+        }
+        
+        return $sanitized;
+    }
+    
+    private static function base64url_encode($data) {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+    
+    private static function base64url_decode($data) {
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+    }
+    
+    private static function sign($data) {
+        $secret = self::get_secret_key();
+        return self::base64url_encode(hash_hmac('sha256', $data, $secret, true));
+    }
+    
+    private static function get_secret_key() {
+        $secret = get_option('rpcare_secret_key');
+        
+        if (!$secret) {
+            $secret = wp_generate_password(64, true, true);
+            update_option('rpcare_secret_key', $secret);
+        }
+        
+        return $secret;
+    }
+    
+    public static function log_security_event($event, $details = []) {
+        $ip = RP_Care_Utils::get_client_ip();
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        
+        $log_data = [
+            'event' => $event,
+            'ip' => $ip,
+            'user_agent' => $user_agent,
+            'timestamp' => time(),
+            'details' => $details
+        ];
+        
+        RP_Care_Utils::log('security', 'info', "Security event: $event", $log_data);
+    }
+}

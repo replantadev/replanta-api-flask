@@ -1,0 +1,21 @@
+{
+  "name": "replanta/ai-sales-assistant",
+  "description": "WooCommerce AI chatbot con RAG antihalución, carrito y pedidos",
+  "type": "wordpress-plugin",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Replanta\\AiChat\\": "includes/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "platform": {
+      "php": "8.1"
+    }
+  }
+}

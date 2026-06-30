@@ -60,8 +60,10 @@ class Dominios_Reseller_Monitoring_Dashboard {
      * Agregar menú de monitoreo
      */
     public function add_monitoring_menu(): void {
+        // Oculto del menú — accesible por URL directa (?page=dr-monitoring)
+        // La monitorización está centralizada en Replanta Hub
         add_submenu_page(
-            'dominios-reseller-admin',
+            null,
             'Monitoreo en Tiempo Real',
             '📊 Monitoreo',
             'manage_options',

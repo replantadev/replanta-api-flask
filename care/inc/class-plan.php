@@ -1,0 +1,610 @@
+<?php
+/**
+ * Plan management class
+ */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class RP_Care_Plan {
+    
+    // Canonical plan names (Spanish — match replanta.net pricing)
+    const PLAN_SEMILLA = 'semilla';
+    const PLAN_RAIZ = 'raiz';
+    const PLAN_ECOSISTEMA = 'ecosistema';
+
+    // Legacy aliases — kept for backwards compat only
+    const PLAN_BASIC = 'basic';
+    const PLAN_ADVANCED = 'advanced';
+    const PLAN_PREMIUM = 'premium';
+
+    /**
+     * Normalize any plan slug to the canonical (Spanish) name.
+     */
+    public static function normalize_plan($plan) {
+        $map = [
+            'basic'    => self::PLAN_SEMILLA,
+            'advanced' => self::PLAN_RAIZ,
+            'premium'  => self::PLAN_ECOSISTEMA,
+        ];
+        return $map[$plan] ?? $plan;
+    }
+    
+    /**
+     * Get Hub URL from options with fallback
+     * @return string
+     */
+    public static function get_hub_url() {
+        $options = get_option('rpcare_options', []);
+        return !empty($options['hub_url']) ? rtrim($options['hub_url'], '/') : 'https://sitios.replanta.dev';
+    }
+    
+    // @deprecated Use get_hub_url() instead
+    const HUB_URL = 'https://sitios.replanta.dev';
+    
+    private static $plan_configs = [
+        self::PLAN_BASIC => [
+            'name' => 'Plan Básico',
+            'price' => '49€/mes',
+            'updates' => 'monthly',
+            'backups' => 'weekly',
+            'wpo' => 'basic',
+            'reviews' => 'quarterly',
+            'monitoring' => false,
+            'priority_support' => false,
+            'features' => [
+                'Actualizaciones mensuales',
+                'Copias de seguridad semanales',
+                'Optimización básica WPO',
+                'Revisión trimestral de rendimiento',
+                'Soporte por email'
+            ]
+        ],
+        self::PLAN_ADVANCED => [
+            'name' => 'Plan Avanzado',
+            'price' => '89€/mes',
+            'updates' => 'weekly',
+            'backups' => 'weekly',
+            'wpo' => 'advanced',
+            'reviews' => 'monthly',
+            'monitoring' => true,
+            'priority_support' => true,
+            'features' => [
+                'Todo lo del plan Básico',
+                'Actualizaciones semanales',
+                'Soporte prioritario',
+                'Monitorización 24/7',
+                'Revisión SEO + WPO mensual',
+                'Informes de estado mensuales'
+            ]
+        ],
+        self::PLAN_PREMIUM => [
+            'name' => 'Plan Premium',
+            'price' => '149€/mes',
+            'updates' => 'weekly',
+            'backups' => 'daily',
+            'wpo' => 'premium',
+            'reviews' => 'quarterly_audit',
+            'monitoring' => true,
+            'priority_support' => true,
+            'hosting_included' => true,
+            'features' => [
+                'Todo lo del plan Avanzado',
+                'Consultoría técnica trimestral',
+                'Hosting ecológico incluido',
+                'Auditoría SEO/WPO trimestral',
+                'CDN y optimización avanzada'
+            ]
+        ],
+        self::PLAN_SEMILLA => [
+            'name' => 'Plan Semilla',
+            'price' => '49€/mes',
+            'updates' => 'monthly',
+            'backups' => 'weekly',
+            'wpo' => 'basic',
+            'reviews' => 'quarterly',
+            'monitoring' => false,
+            'priority_support' => false,
+            'features' => [
+                'Actualizaciones mensuales',
+                'Copias de seguridad semanales',
+                'Optimización básica WPO',
+                'Revisión trimestral de rendimiento',
+                'Soporte por email'
+            ]
+        ],
+        self::PLAN_RAIZ => [
+            'name' => 'Plan Raíz',
+            'price' => '89€/mes',
+            'updates' => 'weekly',
+            'backups' => 'daily',
+            'backup_retention_days' => 30,
+            'wpo' => 'advanced',
+            'reviews' => 'monthly',
+            'monitoring' => true,
+            'priority_support' => true,
+            'features' => [
+                'Todo lo del plan Semilla',
+                'Actualizaciones semanales',
+                'Soporte prioritario',
+                'Monitorización 24/7',
+                'Revisión SEO + WPO mensual',
+                'Informes de estado mensuales'
+            ]
+        ],
+        self::PLAN_ECOSISTEMA => [
+            'name' => 'Plan Ecosistema',
+            'price' => '149€/mes',
+            'updates' => 'weekly',
+            'backups' => 'daily',
+            'backup_retention_days' => 60,
+            'wpo' => 'premium',
+            'reviews' => 'quarterly_audit',
+            'monitoring' => true,
+            'priority_support' => true,
+            'hosting_included' => true,
+            'features' => [
+                'Todo lo del plan Raíz',
+                'Consultoría técnica trimestral',
+                'Hosting ecológico incluido',
+                'Auditoría SEO/WPO trimestral',
+                'CDN y optimización avanzada'
+            ]
+        ]
+    ];
+    
+    public static function get_current() {
+        // 1. Check transient cache first (avoids HTTP call on every page load)
+        $cached_plan = get_transient('rpcare_plan_cache');
+        if ($cached_plan !== false) {
+            return $cached_plan;
+        }
+        
+        // 2. Try to detect from Hub (only runs when transient expired)
+        $plan = self::detect_plan_from_hub();
+        if ($plan) {
+            update_option('rpcare_plan', $plan);
+            update_option('rpcare_detected_plan', $plan);
+            // Cache for 6 hours to avoid hitting Hub on every request
+            set_transient('rpcare_plan_cache', $plan, 6 * HOUR_IN_SECONDS);
+            return $plan;
+        }
+        
+        // 3. Fallback to previously detected plan (from DB)
+        $detected_plan = get_option('rpcare_detected_plan', '');
+        if ($detected_plan) {
+            // Cache the fallback too so we don't keep trying
+            set_transient('rpcare_plan_cache', $detected_plan, 1 * HOUR_IN_SECONDS);
+            return $detected_plan;
+        }
+        
+        $saved_plan = get_option('rpcare_plan', '');
+        if ($saved_plan) {
+            set_transient('rpcare_plan_cache', $saved_plan, 1 * HOUR_IN_SECONDS);
+        }
+        return $saved_plan;
+    }
+    
+    /**
+     * Force refresh plan from Hub (manual sync button)
+     */
+    public static function refresh() {
+        delete_transient('rpcare_plan_cache');
+        delete_transient('rpcare_hub_backoff');
+        delete_option('rpcare_hub_failures');
+        return self::get_current();
+    }
+    
+    public static function set_current($plan) {
+        $plan = self::normalize_plan($plan);
+        if (self::is_valid_plan($plan)) {
+            update_option('rpcare_plan', $plan);
+            update_option('rpcare_detected_plan', $plan);
+            set_transient('rpcare_plan_cache', $plan, 6 * HOUR_IN_SECONDS);
+            return true;
+        }
+        return false;
+    }
+    
+    public static function is_valid_plan($plan) {
+        return in_array($plan, [self::PLAN_BASIC, self::PLAN_ADVANCED, self::PLAN_PREMIUM, self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA]);
+    }
+    
+    /**
+     * Detect plan from Replanta hub
+     */
+    public static function detect_plan_from_hub($hub_url = null, $site_token = null) {
+        // Check if we should skip hub detection temporarily (backoff)
+        $backoff_key = 'rpcare_hub_backoff';
+        $backoff_time = get_transient($backoff_key);
+        
+        if ($backoff_time !== false) {
+            // Still in backoff period, don't attempt connection
+            return false;
+        }
+        
+        // Get hub settings - use provided parameters or fall back to options
+        // Settings UI stores creds under rpcare_options[hub_url|site_token]; legacy code used standalone options.
+        $options = get_option('rpcare_options', []);
+        $hub_url = $hub_url ?: ($options['hub_url'] ?? get_option('rpcare_hub_url', ''));
+        $site_token = $site_token ?: ($options['site_token'] ?? get_option('rpcare_site_token', ''));
+        
+        if (empty($hub_url) || empty($site_token)) {
+            // No hub configured, can't detect plan
+            return false;
+        }
+        
+        $site_url = get_site_url();
+        
+        // Clean and normalize hub URL
+        $hub_url = rtrim($hub_url, '/');
+        // Remove common incorrect paths that users might add
+        $hub_url = preg_replace('#/(api/test-connection|wp-admin/admin-ajax\.php)$#', '', $hub_url);
+        
+        $response = wp_remote_post($hub_url . '/wp-admin/admin-ajax.php', [
+            'body' => [
+                'action' => 'rphub_get_site_plan',
+                'site_token' => $site_token,
+                'site_url' => $site_url
+            ],
+            'timeout' => 5
+        ]);
+        
+        if (is_wp_error($response)) {
+            error_log('Care Plugin: Error detecting plan from hub: ' . $response->get_error_message());
+            
+            // Implement exponential backoff: start with 5 minutes, max 1 hour
+            $failure_count = get_option('rpcare_hub_failures', 0) + 1;
+            update_option('rpcare_hub_failures', $failure_count);
+            
+            $backoff_seconds = min(300 * pow(2, $failure_count - 1), 3600); // 5min, 10min, 20min, 40min, 1hour
+            set_transient($backoff_key, time() + $backoff_seconds, $backoff_seconds);
+            
+            return false;
+        }
+        
+        $response_code = wp_remote_retrieve_response_code($response);
+        if ($response_code !== 200) {
+            error_log('Care Plugin: Hub returned HTTP ' . $response_code);
+            
+            // Implement backoff for HTTP errors too
+            $failure_count = get_option('rpcare_hub_failures', 0) + 1;
+            update_option('rpcare_hub_failures', $failure_count);
+            
+            $backoff_seconds = min(300 * pow(2, $failure_count - 1), 3600);
+            set_transient($backoff_key, time() + $backoff_seconds, $backoff_seconds);
+            
+            return false;
+        }
+        
+        // Success! Reset failure count
+        delete_option('rpcare_hub_failures');
+        
+        $body = wp_remote_retrieve_body($response);
+        if (substr($body, 0, 3) === "\xEF\xBB\xBF") {
+            $body = substr($body, 3);
+        }
+        $body = trim($body);
+        $data = json_decode($body, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log('Care Plugin: Invalid JSON response from hub: ' . $body);
+            return false;
+        }
+        
+        // Handle WordPress AJAX response format
+        if (isset($data['success']) && $data['success'] && isset($data['data']['plan'])) {
+            $plan = $data['data']['plan'];
+            if (self::is_valid_plan($plan)) {
+                // Mark as activated automatically
+                update_option('rpcare_activated', true);
+                update_option('rpcare_hub_connected', true);
+                update_option('rpcare_detected_plan', $plan);
+                update_option('rpcare_hub_last_check', current_time('mysql'));
+                
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log('Care Plugin: Successfully detected plan ' . $plan . ' for site ' . $site_url);
+                }
+                return $plan;
+            }
+        }
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Care Plugin: Invalid plan response from hub: ' . print_r($data, true));
+        }
+        return false;
+    }
+    
+    public static function get_plan_config($plan = null) {
+        if ($plan === null) {
+            $plan = self::get_current();
+        }
+        $plan = self::normalize_plan($plan);
+        
+        return self::$plan_configs[$plan] ?? null;
+    }
+    
+    public static function get_all_plans() {
+        return self::$plan_configs;
+    }
+    
+    /**
+     * @deprecated Use get_current() instead — kept as alias.
+     */
+    public static function get_current_plan() {
+        return self::normalize_plan(self::get_current());
+    }
+    
+    public static function get_plan_features($plan = null) {
+        if ($plan === null) {
+            $plan = self::get_current_plan();
+        }
+        
+        $all_features = [
+            'auto_updates' => false,
+            'backup' => false,
+            'security_monitoring' => false,
+            'performance_optimization' => false,
+            'seo_monitoring' => false,
+            'uptime_monitoring' => false,
+            'malware_scanning' => false,
+            'staging_environment' => false,
+            'priority_support' => false,
+            'white_label_reports' => false
+        ];
+        
+        switch ($plan) {
+            case self::PLAN_SEMILLA:
+            case 'semilla':
+                $all_features['auto_updates'] = true;
+                $all_features['backup'] = true;
+                $all_features['security_monitoring'] = true;
+                break;
+                
+            case self::PLAN_RAIZ:
+            case 'raiz':
+                $all_features['auto_updates'] = true;
+                $all_features['backup'] = true;
+                $all_features['security_monitoring'] = true;
+                $all_features['performance_optimization'] = true;
+                $all_features['seo_monitoring'] = true;
+                break;
+                
+            case self::PLAN_ECOSISTEMA:
+            case 'ecosistema':
+                foreach ($all_features as $feature => $value) {
+                    $all_features[$feature] = true;
+                }
+                break;
+                
+            case self::PLAN_BASIC:
+            case 'basic':
+                $all_features['auto_updates'] = true;
+                $all_features['backup'] = true;
+                $all_features['security_monitoring'] = true;
+                $all_features['performance_optimization'] = true;
+                break;
+                
+            case self::PLAN_ADVANCED:
+            case 'advanced':
+                $all_features['auto_updates'] = true;
+                $all_features['backup'] = true;
+                $all_features['security_monitoring'] = true;
+                $all_features['performance_optimization'] = true;
+                $all_features['seo_monitoring'] = true;
+                $all_features['uptime_monitoring'] = true;
+                $all_features['priority_support'] = true;
+                break;
+                
+            case self::PLAN_PREMIUM:
+            case 'premium':
+                foreach ($all_features as $feature => $value) {
+                    $all_features[$feature] = true;
+                }
+                break;
+        }
+        
+        return $all_features;
+    }
+    
+    public static function get_update_frequency($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['updates'] ?? 'monthly';
+    }
+
+    public static function get_update_window($plan = null) {
+        $plan = self::normalize_plan($plan ?: self::get_current());
+
+        $default = [
+            'day' => null,
+            'start_hour' => 2,
+            'end_hour' => 6,
+        ];
+
+        if (in_array($plan, [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA], true)) {
+            $default = [
+                'day' => 3, // Wednesday, PHP date('w') format.
+                'start_hour' => 23,
+                'end_hour' => 2,
+            ];
+        }
+
+        $saved_day = get_option('rpcare_update_window_day', null);
+        $saved_start = get_option('rpcare_update_window_start_hour', null);
+        $saved_end = get_option('rpcare_update_window_end_hour', null);
+
+        return [
+            'day' => ($saved_day === '' || $saved_day === null) ? $default['day'] : max(0, min(6, (int) $saved_day)),
+            'start_hour' => ($saved_start === '' || $saved_start === null) ? $default['start_hour'] : max(0, min(23, (int) $saved_start)),
+            'end_hour' => ($saved_end === '' || $saved_end === null) ? $default['end_hour'] : max(0, min(23, (int) $saved_end)),
+        ];
+    }
+    
+    public static function get_backup_frequency($plan = null) {
+        $override = get_option('rpcare_backup_frequency_override', '');
+        if (in_array($override, ['hourly', 'twicedaily', 'daily', 'weekly', 'monthly', 'quarterly'], true)) {
+            return $override;
+        }
+
+        $config = self::get_plan_config($plan);
+        return $config['backups'] ?? 'weekly';
+    }
+    
+    public static function get_wpo_level($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['wpo'] ?? 'basic';
+    }
+    
+    public static function get_review_frequency($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['reviews'] ?? 'quarterly';
+    }
+    
+    public static function has_monitoring($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['monitoring'] ?? false;
+    }
+    
+    public static function has_priority_support($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['priority_support'] ?? false;
+    }
+    
+    public static function has_hosting_included($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['hosting_included'] ?? false;
+    }
+    
+    public static function get_plan_name($plan = null) {
+        $config = self::get_plan_config($plan);
+        return $config['name'] ?? 'Plan Desconocido';
+    }
+    
+    public static function get_features($plan = null) {
+        if (!$plan) {
+            $plan = self::get_current();
+        }
+        
+        $config = self::get_plan_config($plan);
+        
+        // Return basic features plus additional configuration
+        $features = [
+            'update_control' => true, // All plans have update control
+            'automatic_updates' => true,
+            'backup' => true,
+            'monitoring' => $config['monitoring'] ?? false,
+            'priority_support' => $config['priority_support'] ?? false,
+            'hosting_included' => $config['hosting_included'] ?? false,
+            'updates_frequency' => $config['updates'] ?? 'monthly',
+            'update_window' => self::get_update_window($plan),
+            'backup_frequency' => self::get_backup_frequency($plan),
+            'backup_retention_days' => $config['backup_retention_days'] ?? null,
+            'wpo_level' => $config['wpo'] ?? 'basic',
+            'review_frequency' => $config['reviews'] ?? 'quarterly'
+        ];
+        
+        return $features;
+    }
+    
+    public static function can_access_feature($feature, $plan = null) {
+        if ($plan === null) {
+            $plan = self::get_current();
+        }
+
+        // Always normalize to canonical names so old slugs still work
+        $plan = self::normalize_plan($plan);
+
+        if (!self::is_valid_plan($plan)) {
+            return false;
+        }
+
+        $features_by_plan = [
+            'updates'              => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'backups'              => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'backup'               => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA], // alias
+            'health'               => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'report'               => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            '404_cleanup'          => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'orphan_media_scan'    => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'self_update'          => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'wpo'                  => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'wpo_basic'            => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'wpo_advanced'         => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'wpo_premium'          => [self::PLAN_ECOSISTEMA],
+            'monitor'              => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'monitoring'           => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'priority_support'     => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'seo_review'           => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'seo_reviews'          => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'seo_audit'            => [self::PLAN_ECOSISTEMA],
+            'seo_basic'            => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'seo_advanced'         => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'quarterly_audit'      => [self::PLAN_ECOSISTEMA],
+            'audit'                => [self::PLAN_ECOSISTEMA], // alias
+            'cdn_optimization'     => [self::PLAN_ECOSISTEMA],
+            'cloudflare_configure' => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'cdn_config'           => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'anomaly'              => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'anomaly_detection'    => [self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'staging'              => [self::PLAN_ECOSISTEMA],
+            'staging_clone'        => [self::PLAN_ECOSISTEMA],
+            'cwv'                  => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'cwv_reports'          => [self::PLAN_SEMILLA, self::PLAN_RAIZ, self::PLAN_ECOSISTEMA],
+            'technical_consulting' => [self::PLAN_ECOSISTEMA],
+        ];
+
+        return in_array($plan, $features_by_plan[$feature] ?? []);
+    }
+    
+    public static function get_schedule_intervals() {
+        return [
+            'one_minute' => MINUTE_IN_SECONDS,
+            'fifteen_minutes' => 15 * MINUTE_IN_SECONDS,
+            'hourly' => HOUR_IN_SECONDS,
+            'twicedaily' => 12 * HOUR_IN_SECONDS,
+            'daily' => DAY_IN_SECONDS,
+            'weekly' => 7 * DAY_IN_SECONDS,
+            'monthly' => 30 * DAY_IN_SECONDS,
+            'quarterly' => 90 * DAY_IN_SECONDS
+        ];
+    }
+    
+    public static function upgrade_plan($new_plan) {
+        $current_plan = self::get_current();
+        
+        if (!self::is_valid_plan($new_plan)) {
+            return new WP_Error('invalid_plan', 'Plan no válido');
+        }
+        
+        $plan_hierarchy = [
+            self::PLAN_SEMILLA     => 1,
+            self::PLAN_RAIZ        => 2,
+            self::PLAN_ECOSISTEMA  => 3,
+            // Legacy aliases
+            self::PLAN_BASIC       => 1,
+            self::PLAN_ADVANCED    => 2,
+            self::PLAN_PREMIUM     => 3,
+        ];
+
+        $current_level = $plan_hierarchy[self::normalize_plan($current_plan)] ?? 0;
+        $new_level = $plan_hierarchy[self::normalize_plan($new_plan)] ?? 0;
+        
+        if ($new_level < $current_level) {
+            return new WP_Error('downgrade_not_allowed', 'No se permite degradar el plan automáticamente');
+        }
+        
+        self::set_current($new_plan);
+        
+        // Re-schedule tasks based on new plan
+        $scheduler = new RP_Care_Scheduler($new_plan);
+        $scheduler->clear_all();
+        $scheduler->ensure();
+        
+        // Log the upgrade
+        RP_Care_Utils::log('plan_upgrade', 'success', "Plan actualizado de $current_plan a $new_plan");
+        
+        return true;
+    }
+}

@@ -7,6 +7,10 @@
  *   y renderiza el hero personalizado de la página Huella Digital.
  *   Si no detecta ningún dominio cliente, muestra un hero genérico.
  *
+ *   Badge de plan:
+ *     - cedro         → Green Origin  (infraestructura propia Replanta)
+ *     - roble / sauce → Green Distrib. (red de hosting verde distribuida)
+ *
  * Uso en Elementor: Shortcode Widget o HTML Widget con do_shortcode().
  */
 
@@ -24,12 +28,11 @@ function dr_obtener_datos_dominio_actual(): ?array {
     global $wpdb;
     $table = $wpdb->prefix . 'dominios_reseller';
 
-    // 1. Parámetro GET explícito → ?dominio= | ?domain= (badge sello) | ?sitio= (Schema.org sello)
+    // 1. Parámetro GET explícito → ?dominio= | ?domain= | ?sitio=
     $detected = '';
     foreach ( [ 'dominio', 'domain', 'sitio' ] as $param ) {
         if ( ! empty( $_GET[ $param ] ) ) {
             $detected = sanitize_text_field( wp_unslash( $_GET[ $param ] ) );
-            // Eliminar www. y normalizar
             $detected = preg_replace( '/^www\./i', '', strtolower( trim( $detected ) ) );
             break;
         }
@@ -40,8 +43,7 @@ function dr_obtener_datos_dominio_actual(): ?array {
         $host = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ), PHP_URL_HOST );
         if ( $host ) {
             $host = preg_replace( '/^www\./i', '', strtolower( trim( $host ) ) );
-            // No usar nuestro propio dominio como origen
-            $own = preg_replace( '/^www\./i', '', strtolower( wp_parse_url( home_url(), PHP_URL_HOST ) ?? '' ) );
+            $own  = preg_replace( '/^www\./i', '', strtolower( wp_parse_url( home_url(), PHP_URL_HOST ) ?? '' ) );
             if ( $host !== $own ) {
                 $detected = $host;
             }
@@ -55,7 +57,8 @@ function dr_obtener_datos_dominio_actual(): ?array {
     // Búsqueda exacta primero, luego dominio raíz (sin subdominio)
     $row = $wpdb->get_row(
         $wpdb->prepare(
-            "SELECT domain, server, trees_planted, co2_evaded, fecha_emision, startdate, status
+            "SELECT domain, server, trees_planted, co2_evaded, fecha_emision, startdate, status,
+                    COALESCE(upmind_product_slug, '') AS plan
                FROM {$table}
               WHERE domain = %s AND status = 'Activo'
               LIMIT 1",
@@ -64,14 +67,14 @@ function dr_obtener_datos_dominio_actual(): ?array {
         ARRAY_A
     );
 
-    // Si no coincide exactamente, buscar por dominio raíz ignorando subdominios
     if ( ! $row ) {
         $parts = explode( '.', $detected );
         if ( count( $parts ) > 2 ) {
             $root = implode( '.', array_slice( $parts, -2 ) );
-            $row = $wpdb->get_row(
+            $row  = $wpdb->get_row(
                 $wpdb->prepare(
-                    "SELECT domain, server, trees_planted, co2_evaded, fecha_emision, startdate, status
+                    "SELECT domain, server, trees_planted, co2_evaded, fecha_emision, startdate, status,
+                            COALESCE(upmind_product_slug, '') AS plan
                        FROM {$table}
                       WHERE domain LIKE %s AND status = 'Activo'
                       LIMIT 1",
@@ -82,7 +85,68 @@ function dr_obtener_datos_dominio_actual(): ?array {
         }
     }
 
-    return $row ?: null;
+    if ( ! $row ) {
+        return null;
+    }
+
+    // Árbol count real desde Forest Program (más preciso que trees_planted en tabla principal)
+    $trees_table = $wpdb->prefix . 'dr_planted_trees';
+    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+    $table_exists = $wpdb->get_var( "SHOW TABLES LIKE '{$trees_table}'" ) === $trees_table;
+    if ( $table_exists ) {
+        $fp_trees = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM `{$trees_table}` WHERE domain = %s",
+                $row['domain']
+            )
+        );
+        if ( $fp_trees > 0 ) {
+            $row['trees_planted'] = $fp_trees;
+        }
+    }
+
+    return $row;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper: resolver badge de plan (Green Origin / Green Distrib.)
+// ─────────────────────────────────────────────────────────────────────────────
+function dr_resolve_plan_info( array $d ): array {
+    $plan = strtolower( trim( $d['plan'] ?? '' ) );
+
+    // Fallback por servidor si el slug de producto no está disponible
+    if ( empty( $plan ) && isset( $d['server'] ) && strtolower( $d['server'] ) === 'cedro' ) {
+        $plan = 'cedro';
+    }
+
+    if ( $plan === 'cedro' ) {
+        return [
+            'badge_class'    => 'md-plan-badge--origin',
+            'badge_icon'     => 'ph-planet',
+            'badge_label'    => 'Green Origin',
+            'badge_sublabel' => 'Infraestructura propia Replanta',
+            'hero_sub'       => 'Tu sitio está alojado directamente en nuestra infraestructura verde certificada en Europa. Cero emisiones netas, 100&nbsp;% energía renovable, PUE&nbsp;1.1.',
+        ];
+    }
+
+    if ( in_array( $plan, [ 'roble', 'sauce' ], true ) ) {
+        return [
+            'badge_class'    => 'md-plan-badge--distrib',
+            'badge_icon'     => 'ph-arrows-out-line-horizontal',
+            'badge_label'    => 'Green Distrib.',
+            'badge_sublabel' => 'Red certificada de hosting verde',
+            'hero_sub'       => 'Tu sitio forma parte de la red distribuida de Replanta con centros de datos certificados de energía renovable y reforestación activa.',
+        ];
+    }
+
+    // Plan desconocido — hero genérico sin badge de plan
+    return [
+        'badge_class'    => '',
+        'badge_icon'     => '',
+        'badge_label'    => '',
+        'badge_sublabel' => '',
+        'hero_sub'       => 'Este sitio web está alojado en servidores de energía 100&nbsp;% renovable. Por cada plan activo, Replanta planta un árbol real en proyectos de reforestación verificados.',
+    ];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -96,8 +160,7 @@ function dr_shortcode_mostrar_dominio( $atts ): string {
     $datos       = dr_obtener_datos_dominio_actual();
     $mostrar_cta = filter_var( $atts['mostrar_cta'], FILTER_VALIDATE_BOOLEAN );
 
-    /* ── Opciones fallback configuradas en el admin ── */
-    $opts          = get_option( 'dominios_reseller_options', [] );
+    $opts           = get_option( 'dominios_reseller_options', [] );
     $fallback_title = esc_html( $opts['hero_title'] ?? 'Hosting Ecológico con Impacto Positivo' );
     $fallback_desc  = esc_html( $opts['hero_description'] ?? 'Nuestro hosting funciona con energía 100 % renovable y contribuye activamente a la reforestación del planeta.' );
 
@@ -112,13 +175,13 @@ function dr_shortcode_mostrar_dominio( $atts ): string {
 // Render: hero personalizado (dominio detectado)
 // ─────────────────────────────────────────────────────────────────────────────
 function dr_render_hero_dominio( array $d, bool $mostrar_cta ): string {
-    $domain        = esc_html( $d['domain'] );
-    $trees         = (int) $d['trees_planted'];
-    $co2_kg        = (float) $d['co2_evaded'];
-    $fecha_inicio  = ! empty( $d['fecha_emision'] ) ? $d['fecha_emision'] : null;
-    $is_new        = ( $trees === 0 );
+    $domain       = esc_html( $d['domain'] );
+    $trees        = (int) $d['trees_planted'];
+    $co2_kg       = (float) $d['co2_evaded'];
+    $fecha_inicio = ! empty( $d['fecha_emision'] ) ? $d['fecha_emision'] : null;
+    $is_new       = ( $trees === 0 );
 
-    /* Formateos */
+    /* Formateos numéricos */
     $trees_fmt = $trees > 0 ? number_format( $trees ) . '+' : '0';
     if ( $co2_kg >= 1000 ) {
         $co2_fmt = number_format( $co2_kg / 1000, 1, ',', '.' ) . ' t';
@@ -128,21 +191,36 @@ function dr_render_hero_dominio( array $d, bool $mostrar_cta ): string {
 
     $desde_html = '';
     if ( $fecha_inicio ) {
-        $ts        = strtotime( $fecha_inicio );
-        $desde_fmt = $ts ? wp_date( 'M Y', $ts ) : esc_html( $fecha_inicio );
+        $ts         = strtotime( $fecha_inicio );
+        $desde_fmt  = $ts ? wp_date( 'M Y', $ts ) : esc_html( $fecha_inicio );
         $desde_html = '<span class="md-since"><i class="ph-bold ph-calendar-blank"></i> Carbono negativo desde ' . esc_html( $desde_fmt ) . '</span>';
     }
 
-    /* Mensaje para dominios nuevos sin árboles aún */
-    $opts           = get_option( 'dominios_reseller_options', [] );
-    $new_msg        = esc_html( $opts['new_domain_message'] ?? '' );
-    $trees_row      = $is_new
+    $opts    = get_option( 'dominios_reseller_options', [] );
+    $new_msg = esc_html( $opts['new_domain_message'] ?? '' );
+
+    $trees_row = $is_new
         ? '<p class="md-new-msg"><i class="ph-bold ph-leaf"></i> ' . ( $new_msg ?: 'Pronto plantaremos el primer árbol para este dominio. ¡Gracias por ser parte del cambio!' ) . '</p>'
         : '';
 
-    /* Ticker */
     $ticker_trees = $is_new ? '—' : esc_html( $trees_fmt );
     $ticker_co2   = $is_new ? '—' : esc_html( $co2_fmt );
+
+    /* Resolución de plan y badge */
+    $plan_info = dr_resolve_plan_info( $d );
+
+    $plan_badge_html = '';
+    if ( ! empty( $plan_info['badge_label'] ) ) {
+        $plan_badge_html = sprintf(
+            '<div class="md-plan-badge %s"><i class="ph-bold %s"></i><span>%s</span><span class="md-plan-sub">%s</span></div>',
+            esc_attr( $plan_info['badge_class'] ),
+            esc_attr( $plan_info['badge_icon'] ),
+            esc_html( $plan_info['badge_label'] ),
+            esc_html( $plan_info['badge_sublabel'] )
+        );
+    }
+
+    $hero_sub = $plan_info['hero_sub'];
 
     $cta_html = '';
     if ( $mostrar_cta ) {
@@ -175,15 +253,14 @@ function dr_render_hero_dominio( array $d, bool $mostrar_cta ): string {
           Has pulsado el sello correcto
         </div>
 
+        <?php echo $plan_badge_html; ?>
+
         <h1 class="md-hero__title">
           <span class="md-domain-name"><?php echo $domain; ?></span><br>
           es <em class="md-grad">carbono negativo</em>
         </h1>
 
-        <p class="md-hero__sub">
-          Este sitio web está alojado en servidores de energía 100 % renovable.
-          Por cada plan activo, Replanta planta un árbol real en proyectos de reforestación verificados.
-        </p>
+        <p class="md-hero__sub"><?php echo wp_kses_post( $hero_sub ); ?></p>
 
         <?php echo $desde_html; ?>
         <?php echo $trees_row; ?>
@@ -330,10 +407,7 @@ function dr_shortcode_hero_styles(): void {
       position: relative;
       animation: md-glow 3s ease-in-out infinite;
     }
-    .md-seal-tree {
-      width: auto; height: 26px;
-      display: block;
-    }
+    .md-seal-tree { width: auto; height: 26px; display: block; }
     .md-seal-ring {
       position: absolute; inset: -8px;
       border: 1px solid rgba(147,241,201,.15);
@@ -349,7 +423,7 @@ function dr_shortcode_hero_styles(): void {
       50%      { transform: scale(1.07); opacity: .2; }
     }
 
-    /* Badge */
+    /* Badge "Has pulsado el sello correcto" */
     .md-badge {
       display: inline-flex; align-items: center; gap: 7px;
       font: 600 .75rem/1 'Inter',system-ui,sans-serif;
@@ -357,9 +431,33 @@ function dr_shortcode_hero_styles(): void {
       padding: 6px 14px; border-radius: 999px;
       background: rgba(247,212,80,.12);
       border: 1px solid rgba(247,212,80,.3);
-      color: #F7D450; margin-bottom: 1.4rem;
+      color: #F7D450; margin-bottom: 1rem;
     }
     .md-badge--sun { /* same, default */ }
+
+    /* Plan badge — Green Origin / Green Distrib. */
+    .md-plan-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px 6px 12px; border-radius: 999px;
+      font: 600 .78rem/1 'Inter',system-ui,sans-serif;
+      margin-bottom: 1.1rem;
+      letter-spacing: .04em;
+    }
+    .md-plan-badge--origin {
+      background: rgba(147,241,201,.12);
+      border: 1px solid rgba(147,241,201,.35);
+      color: #93F1C9;
+    }
+    .md-plan-badge--distrib {
+      background: rgba(129,203,255,.10);
+      border: 1px solid rgba(129,203,255,.30);
+      color: #81CBFF;
+    }
+    .md-plan-sub {
+      font-weight: 400;
+      opacity: .7;
+      font-size: .72rem;
+    }
 
     /* Title */
     .md-hero__title {
@@ -371,11 +469,7 @@ function dr_shortcode_hero_styles(): void {
       letter-spacing: -.022em;
       margin-bottom: 1.2rem !important;
     }
-    .md-domain-name {
-      display: inline-block;
-      color: #93F1C9;
-      font-style: normal;
-    }
+    .md-domain-name { display: inline-block; color: #93F1C9; font-style: normal; }
     .md-grad {
       font-style: normal;
       background: linear-gradient(90deg, #93F1C9 0%, #41999F 55%, #2A6B70 100%);
@@ -393,10 +487,10 @@ function dr_shortcode_hero_styles(): void {
 
     /* Since / new msg */
     .md-since {
-      display: inline-flex; align-items: center; gap: 7px;
+      display: block;
       font: 600 .8rem/1 'Inter',system-ui,sans-serif;
       color: rgba(255,255,255,.35);
-      margin-bottom: 1.5rem; display: block;
+      margin-bottom: 1.5rem;
     }
     .md-new-msg {
       font-size: .9rem; color: rgba(255,255,255,.45);
@@ -437,9 +531,7 @@ function dr_shortcode_hero_styles(): void {
     }
 
     /* CTAs */
-    .md-cta-row {
-      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
-    }
+    .md-cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
     .md-btn {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 13px 26px; border-radius: 14px; border: none; cursor: pointer;
@@ -447,23 +539,16 @@ function dr_shortcode_hero_styles(): void {
       text-decoration: none !important; white-space: nowrap;
       transition: all .22s ease;
     }
-    .md-btn--primary {
-      background: #41999F; color: #fff !important;
-    }
+    .md-btn--primary { background: #41999F; color: #fff !important; }
     .md-btn--primary:hover {
-      background: #37878d;
-      transform: translateY(-2px);
+      background: #37878d; transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(65,153,159,.4);
     }
     .md-btn--ghost {
-      background: transparent;
-      color: #93F1C9 !important;
+      background: transparent; color: #93F1C9 !important;
       border: 1.5px solid rgba(147,241,201,.4);
     }
-    .md-btn--ghost:hover {
-      border-color: #93F1C9;
-      background: rgba(147,241,201,.08);
-    }
+    .md-btn--ghost:hover { border-color: #93F1C9; background: rgba(147,241,201,.08); }
 
     /* Responsive */
     @media (max-width: 600px) {
@@ -480,7 +565,6 @@ function dr_shortcode_hero_styles(): void {
 // ─────────────────────────────────────────────────────────────────────────────
 add_action( 'wp_footer', 'dr_shortcode_hero_script' );
 function dr_shortcode_hero_script(): void {
-    // Solo cargar si el shortcode está en la página
     if ( ! has_shortcode( get_post_field( 'post_content', get_the_ID() ), 'mostrar_dominio' ) ) {
         return;
     }

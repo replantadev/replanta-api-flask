@@ -1,0 +1,753 @@
+/* ===========================================================================
+   REPLANTA · Página /politica-energetica/ — Custom CSS
+   Pegar en la caja "Custom CSS" del mismo widget HTML de Elementor
+   Asume que el global.css ya está cargado (variables --rep-*, Phosphor, fuentes)
+   =========================================================================== */
+
+/* ===== Container base ===== */
+.rpl-energy{font-family:var(--rep-font-body);color:var(--rep-text-secondary);line-height:1.6;}
+.rpl-energy *,.rpl-energy *::before,.rpl-energy *::after{box-sizing:border-box;}
+.rpl-energy ul,.rpl-energy ol{list-style:none;margin:0;padding:0;}
+.rpl-energy a{text-decoration:none;color:inherit;}
+.rpl-energy .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+/* ===== Tipografía override interna ===== */
+.rpl-energy h1,.rpl-energy h2,.rpl-energy h3,.rpl-energy h4{
+  font-family:var(--rep-font-display)!important;
+  line-height:1.15!important;margin:0;
+}
+.rpl-energy h2{font-size:clamp(1.9rem,3.5vw,2.6rem)!important;font-weight:600!important;color:var(--rep-forest);letter-spacing:-.01em;}
+.rpl-energy h3{font-size:clamp(1.1rem,1.8vw,1.35rem)!important;font-weight:600!important;color:var(--rep-forest);}
+.rpl-energy h4{font-size:clamp(.95rem,1.5vw,1.15rem)!important;font-weight:600!important;color:var(--rep-forest);}
+
+/* ===== Reveal ===== */
+.rpl-energy .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+.rpl-energy .reveal.is-visible{opacity:1;transform:translateY(0);}
+.rpl-energy .reveal[data-delay="1"]{transition-delay:.1s;}
+.rpl-energy .reveal[data-delay="2"]{transition-delay:.2s;}
+.rpl-energy .reveal[data-delay="3"]{transition-delay:.3s;}
+.rpl-energy .reveal[data-delay="4"]{transition-delay:.4s;}
+
+
+/* =============================================================
+   1. HERO
+   ============================================================= */
+.rpl-energy .rpe-hero{
+  position:relative;
+  min-height:80vh;display:flex;align-items:center;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 100%,rgba(65,153,159,.08) 0%,transparent 50%),
+    linear-gradient(160deg,#050B07 0%,#0D1B12 40%,#16291D 70%,#0E1D13 100%);
+  overflow:hidden;
+  padding:120px 0 100px;
+}
+.rpl-energy .rpe-hero-grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(147,241,201,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(147,241,201,.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000 30%,transparent 90%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000 30%,transparent 90%);
+  pointer-events:none;
+}
+.rpl-energy .rpe-hero-glow{
+  position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;
+}
+.rpl-energy .rpe-hero-glow--1{
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(65,153,159,.35),transparent 70%);
+  top:-100px;right:-150px;
+}
+.rpl-energy .rpe-hero-glow--2{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(147,241,201,.18),transparent 70%);
+  bottom:-50px;left:10%;
+}
+.rpl-energy .rpe-hero-inner{
+  position:relative;z-index:1;text-align:center;
+  max-width:920px;margin:0 auto;
+}
+
+.rpl-energy .rpe-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:8px 16px;
+  border:1px solid rgba(147,241,201,.22);
+  background:rgba(147,241,201,.06);
+  border-radius:var(--rep-radius-full);
+  font:600 .75rem/1 var(--rep-font-body);
+  color:var(--rep-green);
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:32px;
+}
+.rpl-energy .rpe-eyebrow-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--rep-green);
+  box-shadow:0 0 0 3px rgba(147,241,201,.2);
+  animation:rpe-pulse 2s ease-in-out infinite;
+}
+@keyframes rpe-pulse{0%,100%{box-shadow:0 0 0 3px rgba(147,241,201,.2);}50%{box-shadow:0 0 0 6px rgba(147,241,201,.05);}}
+
+.rpl-energy .rpe-h1{
+  font-size:clamp(2.4rem,5.5vw,3.8rem)!important;
+  font-weight:700!important;
+  color:#fff!important;
+  letter-spacing:-.02em;
+  margin-bottom:24px;
+}
+.rpl-energy .rpe-hero-sub{
+  font-size:1.1rem;
+  color:rgba(255,255,255,.7);
+  line-height:1.75;
+  margin:0 auto 40px;
+  max-width:720px;
+}
+
+.rpl-energy .rpe-hero-pillars{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+}
+.rpl-energy .rpe-pillar{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;
+  border-radius:var(--rep-radius-full);
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  font:500 .82rem/1 var(--rep-font-body);
+  color:rgba(255,255,255,.85);
+  transition:all .25s;
+}
+.rpl-energy .rpe-pillar:hover{
+  background:rgba(147,241,201,.08);
+  border-color:rgba(147,241,201,.3);
+}
+.rpl-energy .rpe-pillar i{color:var(--rep-green);font-size:14px;}
+
+
+/* =============================================================
+   2. CADENA ENERGÉTICA
+   ============================================================= */
+.rpl-energy .rpe-chain{padding:100px 0;background:#fff;}
+.rpl-energy .rpe-chain-head{text-align:center;max-width:740px;margin:0 auto 64px;}
+.rpl-energy .rpe-chain-head h2{margin-bottom:18px;}
+.rpl-energy .rpe-chain-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+
+.rpl-energy .rpe-chain-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  position:relative;
+}
+.rpl-energy .rpe-chain-grid::before{
+  content:"";position:absolute;
+  top:50%;left:8%;right:8%;height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(65,153,159,.2) 20%,rgba(65,153,159,.2) 80%,transparent 100%);
+  z-index:0;
+}
+
+.rpl-energy .rpe-layer{
+  position:relative;z-index:1;
+  background:var(--rep-bg-light);
+  border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-xl);
+  padding:36px 28px 28px;
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+}
+.rpl-energy .rpe-layer:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--rep-shadow-lg);
+  border-color:rgba(65,153,159,.3);
+}
+.rpl-energy .rpe-layer--featured{
+  background:linear-gradient(155deg,#fff 0%,#F0FBF6 100%);
+  border:2px solid var(--rep-teal);
+  box-shadow:0 8px 24px -8px rgba(65,153,159,.25);
+}
+
+.rpl-energy .rpe-layer-num{
+  font:700 .85rem/1 var(--rep-font-display);
+  color:var(--rep-text-muted);
+  letter-spacing:.15em;
+  margin-bottom:18px;
+}
+.rpl-energy .rpe-layer-ico{
+  width:56px;height:56px;border-radius:var(--rep-radius-lg);
+  background:linear-gradient(135deg,rgba(147,241,201,.15),rgba(65,153,159,.1));
+  color:var(--rep-teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;margin-bottom:20px;
+}
+.rpl-energy .rpe-layer--featured .rpe-layer-ico{
+  background:linear-gradient(135deg,var(--rep-green),var(--rep-teal));
+  color:#fff;
+}
+
+.rpl-energy .rpe-layer h3{margin-bottom:6px!important;}
+.rpl-energy .rpe-layer-prov{
+  font:600 .85rem/1 var(--rep-font-body);
+  color:var(--rep-teal);
+  margin:0 0 16px;
+}
+.rpl-energy .rpe-layer p{
+  font-size:.92rem;color:var(--rep-text-tertiary);
+  line-height:1.65;margin:0 0 20px;
+}
+
+.rpl-energy .rpe-layer-verify{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid var(--rep-border);
+  border-left:3px solid var(--rep-green);
+  border-radius:var(--rep-radius-sm);
+}
+.rpl-energy .rpe-layer--featured .rpe-layer-verify{
+  background:rgba(147,241,201,.08);
+  border-color:rgba(147,241,201,.3);
+}
+.rpl-energy .rpe-layer-verify i{
+  color:var(--rep-teal);font-size:18px;margin-top:1px;flex-shrink:0;
+}
+.rpl-energy .rpe-layer-verify strong{
+  display:block;font:600 .85rem/1.3 var(--rep-font-body);
+  color:var(--rep-forest);margin-bottom:3px;
+}
+.rpl-energy .rpe-layer-verify a,
+.rpl-energy .rpe-layer-verify span{
+  font-size:.78rem;
+  color:var(--rep-text-tertiary);
+  display:inline-flex;align-items:center;gap:4px;
+  transition:color .2s;
+}
+.rpl-energy .rpe-layer-verify a:hover{color:var(--rep-teal);}
+.rpl-energy .rpe-layer-verify a i{font-size:11px;color:inherit;margin:0;}
+
+
+/* =============================================================
+   3. VERIFICACIÓN POR TERCEROS
+   ============================================================= */
+.rpl-energy .rpe-verify{padding:100px 0;background:var(--rep-bg-light);}
+.rpl-energy .rpe-verify-head{text-align:center;max-width:740px;margin:0 auto 56px;}
+.rpl-energy .rpe-verify-head h2{margin-bottom:18px;}
+.rpl-energy .rpe-verify-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+
+.rpl-energy .rpe-verify-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:20px;
+}
+.rpl-energy .rpe-vcard{
+  background:#fff;
+  border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-xl);
+  padding:32px 28px;
+  transition:transform .3s,box-shadow .3s;
+}
+.rpl-energy .rpe-vcard:hover{transform:translateY(-3px);box-shadow:var(--rep-shadow-lg);}
+
+.rpl-energy .rpe-vcard-head{
+  display:flex;align-items:center;gap:14px;margin-bottom:18px;
+}
+.rpl-energy .rpe-vcard-ico{
+  width:52px;height:52px;border-radius:var(--rep-radius-lg);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+}
+.rpl-energy .rpe-vcard-ico--gwf{background:rgba(147,241,201,.18);color:#2A6B70;}
+.rpl-energy .rpe-vcard-ico--iso{background:rgba(65,153,159,.15);color:var(--rep-teal);}
+.rpl-energy .rpe-vcard-ico--tree{background:rgba(146,241,203,.18);color:#2A6B70;}
+.rpl-energy .rpe-vcard-ico--co2{background:rgba(247,212,80,.18);color:#8C7320;}
+.rpl-energy .rpe-vcard-head strong{
+  display:block;font:600 1.05rem/1.3 var(--rep-font-display);
+  color:var(--rep-forest);margin-bottom:3px;
+}
+.rpl-energy .rpe-vcard-head span{
+  font-size:.8rem;color:var(--rep-text-muted);
+}
+.rpl-energy .rpe-vcard p{
+  font-size:.92rem;color:var(--rep-text-tertiary);
+  line-height:1.65;margin:0 0 18px;
+}
+.rpl-energy .rpe-vcard-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font:600 .85rem/1 var(--rep-font-body);
+  color:var(--rep-teal);
+  transition:gap .2s,color .2s;
+}
+.rpl-energy .rpe-vcard-link:hover{
+  gap:10px;color:#368F95;
+}
+.rpl-energy .rpe-vcard-link i{font-size:14px;}
+
+
+/* =============================================================
+   4. SELLO CARBON-NEGATIVE
+   ============================================================= */
+.rpl-energy .rpe-seal{
+  position:relative;
+  padding:110px 0;
+  background:linear-gradient(160deg,#0D1B12 0%,var(--rep-forest) 50%,#16291D 100%);
+  overflow:hidden;
+}
+.rpl-energy .rpe-seal-glow{
+  position:absolute;
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(147,241,201,.15),transparent 65%);
+  filter:blur(100px);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.rpl-energy .rpe-seal-head{
+  position:relative;z-index:1;
+  text-align:center;max-width:780px;margin:0 auto 64px;
+}
+.rpl-energy .rpe-seal-head h2{color:#fff!important;margin-bottom:18px;}
+.rpl-energy .rpe-seal-highlight{color:var(--rep-green);}
+.rpl-energy .rpe-seal-head p{
+  color:rgba(255,255,255,.7);font-size:1.05rem;
+  line-height:1.75;margin:0 auto;
+}
+.rpl-energy .kicker--light{color:var(--rep-green)!important;}
+
+.rpl-energy .rpe-seal-inner{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center;
+}
+
+/* Browser mockup */
+.rpl-energy .rpe-mockup-browser{
+  position:relative;
+  background:#fff;
+  border-radius:var(--rep-radius-lg);
+  overflow:hidden;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.1);
+}
+.rpl-energy .rpe-mockup-bar{
+  display:flex;align-items:center;gap:6px;
+  padding:12px 16px;
+  background:#F3F5F4;
+  border-bottom:1px solid #E6E9E8;
+}
+.rpl-energy .rpe-mockup-dot{
+  width:11px;height:11px;border-radius:50%;
+  background:#D8DBDA;
+}
+.rpl-energy .rpe-mockup-dot:nth-child(1){background:#FF5F57;}
+.rpl-energy .rpe-mockup-dot:nth-child(2){background:#FFBD2E;}
+.rpl-energy .rpe-mockup-dot:nth-child(3){background:#28C840;}
+.rpl-energy .rpe-mockup-url{
+  flex:1;margin-left:14px;
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;
+  background:#fff;
+  border:1px solid #E6E9E8;
+  border-radius:var(--rep-radius-sm);
+  font:500 .75rem/1 var(--rep-font-body);
+  color:var(--rep-text-muted);
+}
+.rpl-energy .rpe-mockup-url i{font-size:12px;color:var(--rep-teal);}
+
+.rpl-energy .rpe-mockup-content{
+  padding:32px 28px 80px;min-height:340px;
+  background:#fff;position:relative;
+}
+.rpl-energy .rpe-mockup-skel{
+  background:linear-gradient(90deg,#E8EDEB 0%,#F0F4F2 50%,#E8EDEB 100%);
+  background-size:200% 100%;
+  animation:rpe-shimmer 3s ease-in-out infinite;
+  border-radius:4px;height:14px;margin-bottom:10px;
+}
+.rpl-energy .rpe-mockup-skel--title{height:22px;width:75%;margin-bottom:18px;}
+.rpl-energy .rpe-mockup-skel--text{width:100%;}
+.rpl-energy .rpe-mockup-skel--short{width:62%;}
+.rpl-energy .rpe-mockup-skel--medium{width:88%;}
+.rpl-energy .rpe-mockup-spacer{height:18px;}
+.rpl-energy .rpe-mockup-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+.rpl-energy .rpe-mockup-card{
+  height:60px;border-radius:var(--rep-radius-sm);
+  background:linear-gradient(135deg,#F0F4F2 0%,#E8EDEB 100%);
+  border:1px solid #E6E9E8;
+}
+@keyframes rpe-shimmer{0%,100%{background-position:200% 0;}50%{background-position:-200% 0;}}
+
+.rpl-energy .rpe-mockup-badge{
+  position:absolute;bottom:20px;right:20px;
+  width:90px;height:90px;
+  display:flex;align-items:center;justify-content:center;
+  z-index:2;
+  cursor:pointer;
+  transition:transform .25s;
+}
+.rpl-energy .rpe-mockup-badge:hover{transform:scale(1.08);}
+.rpl-energy .rpe-mockup-badge img{
+  width:100%;height:100%;
+  position:relative;z-index:2;
+  filter:drop-shadow(0 8px 20px rgba(30,47,35,.25));
+}
+.rpl-energy .rpe-mockup-badge-pulse{
+  position:absolute;inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(147,241,201,.4),transparent 70%);
+  animation:rpe-badge-pulse 2.5s ease-in-out infinite;
+}
+@keyframes rpe-badge-pulse{
+  0%,100%{transform:scale(1);opacity:.6;}
+  50%{transform:scale(1.3);opacity:0;}
+}
+
+.rpl-energy .rpe-seal-caption{
+  margin-top:20px;
+  display:flex;align-items:center;gap:8px;
+  justify-content:center;
+  font:500 .82rem/1.4 var(--rep-font-body);
+  color:rgba(255,255,255,.6);
+}
+.rpl-energy .rpe-seal-caption i{color:var(--rep-green);font-size:14px;}
+
+/* Seal features */
+.rpl-energy .rpe-seal-features{display:flex;flex-direction:column;gap:24px;}
+.rpl-energy .rpe-seal-feat{display:flex;gap:18px;align-items:flex-start;}
+.rpl-energy .rpe-seal-feat-num{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--rep-green),var(--rep-teal));
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font:700 .9rem/1 var(--rep-font-display);
+}
+.rpl-energy .rpe-seal-feat h4{
+  color:#fff!important;margin-bottom:6px!important;
+}
+.rpl-energy .rpe-seal-feat p{
+  color:rgba(255,255,255,.65);
+  font-size:.9rem;line-height:1.65;margin:0;
+}
+
+
+/* =============================================================
+   5. METODOLOGÍA
+   ============================================================= */
+.rpl-energy .rpe-method{padding:100px 0;background:#fff;}
+.rpl-energy .rpe-method-head{text-align:center;max-width:740px;margin:0 auto 56px;}
+.rpl-energy .rpe-method-head h2{margin-bottom:18px;}
+.rpl-energy .rpe-method-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+
+.rpl-energy .rpe-method-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px;
+}
+.rpl-energy .rpe-method-card{
+  background:var(--rep-bg-light);
+  border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-xl);
+  padding:32px 28px;
+  transition:transform .3s,box-shadow .3s;
+}
+.rpl-energy .rpe-method-card:hover{transform:translateY(-4px);box-shadow:var(--rep-shadow-lg);}
+
+.rpl-energy .rpe-method-ico{
+  width:52px;height:52px;border-radius:var(--rep-radius-lg);
+  background:linear-gradient(135deg,rgba(147,241,201,.18),rgba(65,153,159,.12));
+  color:var(--rep-teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:20px;
+}
+.rpl-energy .rpe-method-card h3{margin-bottom:12px!important;}
+.rpl-energy .rpe-method-card p{
+  font-size:.92rem;color:var(--rep-text-tertiary);
+  line-height:1.65;margin:0 0 18px;
+}
+.rpl-energy .rpe-method-list{display:flex;flex-direction:column;gap:8px;}
+.rpl-energy .rpe-method-list li{
+  position:relative;padding-left:18px;
+  font-size:.85rem;color:var(--rep-text-tertiary);
+  line-height:1.55;
+}
+.rpl-energy .rpe-method-list li::before{
+  content:"";position:absolute;left:0;top:8px;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--rep-sun);
+}
+
+.rpl-energy .rpe-method-cta{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:32px;flex-wrap:wrap;
+  padding:36px 40px;
+  background:linear-gradient(135deg,var(--rep-forest) 0%,#16291D 100%);
+  border-radius:var(--rep-radius-xl);
+  position:relative;overflow:hidden;
+}
+.rpl-energy .rpe-method-cta::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 100% at 100% 50%,rgba(147,241,201,.08),transparent 70%);
+  pointer-events:none;
+}
+.rpl-energy .rpe-method-cta > div{position:relative;z-index:1;flex:1;min-width:280px;}
+.rpl-energy .rpe-method-cta h3{color:#fff!important;margin-bottom:8px!important;}
+.rpl-energy .rpe-method-cta p{
+  color:rgba(255,255,255,.65);font-size:.92rem;
+  margin:0;line-height:1.6;max-width:520px;
+}
+.rpl-energy .rpe-method-cta .btn{position:relative;z-index:1;}
+.rpl-energy .rpe-method-cta .btn-primary{background:var(--rep-sun);color:var(--rep-forest);}
+.rpl-energy .rpe-method-cta .btn-primary:hover{background:#f5cc3d;transform:translateY(-2px);box-shadow:var(--rep-shadow-md);}
+
+
+/* =============================================================
+   6. REFORESTACIÓN
+   ============================================================= */
+.rpl-energy .rpe-forest{padding:100px 0;background:var(--rep-bg-light);}
+.rpl-energy .rpe-forest-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+
+.rpl-energy .rpe-forest-content h2{margin-bottom:18px;}
+.rpl-energy .rpe-forest-content p{
+  color:var(--rep-text-tertiary);
+  line-height:1.75;margin:0 0 18px;
+  font-size:.98rem;
+}
+
+.rpl-energy .rpe-forest-actions{
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;
+}
+
+.rpl-energy .rpe-forest-visual{
+  display:grid;grid-template-columns:1fr;gap:12px;
+}
+.rpl-energy .rpe-forest-stat{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 22px;
+  background:#fff;
+  border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-lg);
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+}
+.rpl-energy .rpe-forest-stat:hover{
+  transform:translateX(4px);
+  border-color:rgba(65,153,159,.3);
+  box-shadow:var(--rep-shadow-md);
+}
+.rpl-energy .rpe-forest-stat-ico{
+  width:44px;height:44px;border-radius:var(--rep-radius-md);flex-shrink:0;
+  background:linear-gradient(135deg,rgba(147,241,201,.15),rgba(65,153,159,.1));
+  color:var(--rep-teal);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.rpl-energy .rpe-forest-stat strong{
+  display:block;font:600 .95rem/1.25 var(--rep-font-display);
+  color:var(--rep-forest);margin-bottom:3px;
+}
+.rpl-energy .rpe-forest-stat span{
+  font-size:.83rem;color:var(--rep-text-muted);line-height:1.4;
+}
+
+
+/* =============================================================
+   7. ROADMAP
+   ============================================================= */
+.rpl-energy .rpe-roadmap{padding:100px 0;background:#fff;}
+.rpl-energy .rpe-roadmap-head{text-align:center;max-width:740px;margin:0 auto 56px;}
+.rpl-energy .rpe-roadmap-head h2{margin-bottom:18px;}
+.rpl-energy .rpe-roadmap-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+
+.rpl-energy .rpe-roadmap-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+}
+.rpl-energy .rpe-roadmap-card{
+  background:var(--rep-bg-light);
+  border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-xl);
+  padding:32px 28px;
+  transition:transform .3s,box-shadow .3s;
+  position:relative;
+}
+.rpl-energy .rpe-roadmap-card:hover{transform:translateY(-4px);box-shadow:var(--rep-shadow-lg);}
+
+.rpl-energy .rpe-roadmap-card--done{
+  background:linear-gradient(160deg,#fff 0%,#F0FBF6 100%);
+  border-color:rgba(147,241,201,.4);
+}
+.rpl-energy .rpe-roadmap-card--progress{
+  background:linear-gradient(160deg,#fff 0%,#FEF8E1 100%);
+  border-color:rgba(247,212,80,.4);
+}
+.rpl-energy .rpe-roadmap-card--future{
+  background:linear-gradient(160deg,#fff 0%,#EEF6F7 100%);
+  border-color:rgba(65,153,159,.3);
+}
+
+.rpl-energy .rpe-roadmap-status{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:var(--rep-radius-full);
+  font:600 .72rem/1 var(--rep-font-body);
+  letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:16px;
+}
+.rpl-energy .rpe-roadmap-card--done .rpe-roadmap-status{
+  background:rgba(147,241,201,.18);color:#2A6B70;
+}
+.rpl-energy .rpe-roadmap-card--progress .rpe-roadmap-status{
+  background:rgba(247,212,80,.18);color:#8C7320;
+}
+.rpl-energy .rpe-roadmap-card--future .rpe-roadmap-status{
+  background:rgba(65,153,159,.13);color:var(--rep-teal);
+}
+.rpl-energy .rpe-roadmap-status i{font-size:14px;}
+
+.rpl-energy .rpe-roadmap-card h3{margin-bottom:18px!important;}
+.rpl-energy .rpe-roadmap-card ul{
+  display:flex;flex-direction:column;gap:10px;
+}
+.rpl-energy .rpe-roadmap-card ul li{
+  position:relative;padding-left:22px;
+  font-size:.9rem;color:var(--rep-text-tertiary);
+  line-height:1.5;
+}
+.rpl-energy .rpe-roadmap-card ul li::before{
+  content:"";position:absolute;left:0;top:8px;
+  width:8px;height:8px;border-radius:2px;
+  background:var(--rep-sun);
+  transform:rotate(45deg);
+}
+.rpl-energy .rpe-roadmap-card--done ul li::before{background:var(--rep-green);}
+.rpl-energy .rpe-roadmap-card--progress ul li::before{background:var(--rep-sun);}
+.rpl-energy .rpe-roadmap-card--future ul li::before{background:var(--rep-teal);}
+
+
+/* =============================================================
+   8. FAQ
+   ============================================================= */
+.rpl-energy .rpe-faq{padding:100px 0;background:var(--rep-bg-light);}
+.rpl-energy .rpe-faq-head{text-align:center;max-width:740px;margin:0 auto 48px;}
+.rpl-energy .rpe-faq-head h2{margin-bottom:18px;}
+.rpl-energy .rpe-faq-head p{font-size:1.05rem;color:var(--rep-text-tertiary);}
+
+.rpl-energy .rpe-faq-list{
+  max-width:880px;margin:0 auto;
+  display:flex;flex-direction:column;gap:14px;
+}
+.rpl-energy .rpe-faq-item{
+  background:#fff;
+  border:1px solid var(--rep-border);
+  border-radius:var(--rep-radius-lg);
+  overflow:hidden;
+  transition:border-color .25s,box-shadow .25s;
+}
+.rpl-energy .rpe-faq-item:hover{border-color:rgba(65,153,159,.3);}
+.rpl-energy .rpe-faq-item[open]{
+  box-shadow:var(--rep-shadow-md);
+  border-color:rgba(65,153,159,.3);
+}
+
+.rpl-energy .rpe-faq-item summary{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:20px 26px;
+  cursor:pointer;
+  list-style:none;
+  font:600 1.02rem/1.4 var(--rep-font-display);
+  color:var(--rep-forest);
+  transition:color .25s;
+}
+.rpl-energy .rpe-faq-item summary::-webkit-details-marker{display:none;}
+.rpl-energy .rpe-faq-item summary:hover{color:var(--rep-teal);}
+.rpl-energy .rpe-faq-icon{
+  font-size:18px;color:var(--rep-teal);
+  flex-shrink:0;
+  transition:transform .25s;
+}
+.rpl-energy .rpe-faq-item[open] .rpe-faq-icon{
+  transform:rotate(45deg);
+}
+.rpl-energy .rpe-faq-content{
+  padding:0 26px 22px;
+  animation:rpe-faq-open .35s ease;
+}
+.rpl-energy .rpe-faq-content p{
+  margin:0;font-size:.95rem;
+  color:var(--rep-text-tertiary);
+  line-height:1.75;
+}
+@keyframes rpe-faq-open{
+  from{opacity:0;transform:translateY(-6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+
+/* =============================================================
+   9. CTA FINAL
+   ============================================================= */
+.rpl-energy .rpe-cta{
+  position:relative;
+  padding:100px 0;text-align:center;
+  background:linear-gradient(135deg,#0D1B12 0%,var(--rep-forest) 50%,#16291D 100%);
+  overflow:hidden;
+}
+.rpl-energy .rpe-cta-glow{
+  position:absolute;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(65,153,159,.18),transparent 70%);
+  filter:blur(100px);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.rpl-energy .rpe-cta-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+.rpl-energy .rpe-cta h2{color:#fff!important;margin-bottom:18px;}
+.rpl-energy .rpe-cta-highlight{color:var(--rep-green);}
+.rpl-energy .rpe-cta p{
+  color:rgba(255,255,255,.65);
+  font-size:1.05rem;line-height:1.7;
+  margin-bottom:36px;
+}
+.rpl-energy .rpe-cta-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+.rpl-energy .rpe-cta .btn-accent{background:var(--rep-sun);color:var(--rep-forest);}
+.rpl-energy .rpe-cta .btn-accent:hover{background:#f5cc3d;transform:translateY(-2px);box-shadow:var(--rep-shadow-md);}
+.rpl-energy .rpe-cta .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.2);}
+.rpl-energy .rpe-cta .btn-ghost:hover{background:rgba(255,255,255,.14);border-color:rgba(147,241,201,.4);}
+
+
+/* =============================================================
+   RESPONSIVE
+   ============================================================= */
+@media(max-width:1024px){
+  .rpl-energy .rpe-chain-grid,
+  .rpl-energy .rpe-method-grid,
+  .rpl-energy .rpe-roadmap-grid{grid-template-columns:1fr;}
+  .rpl-energy .rpe-chain-grid::before{display:none;}
+  .rpl-energy .rpe-verify-grid{grid-template-columns:1fr;}
+  .rpl-energy .rpe-seal-inner,
+  .rpl-energy .rpe-forest-inner{grid-template-columns:1fr;gap:48px;}
+}
+
+@media(max-width:900px){
+  .rpl-energy .rpe-hero{min-height:auto;padding:80px 0 60px;}
+  .rpl-energy .rpe-chain,
+  .rpl-energy .rpe-verify,
+  .rpl-energy .rpe-seal,
+  .rpl-energy .rpe-method,
+  .rpl-energy .rpe-forest,
+  .rpl-energy .rpe-roadmap,
+  .rpl-energy .rpe-faq,
+  .rpl-energy .rpe-cta{padding:72px 0;}
+  .rpl-energy .rpe-method-cta{padding:28px;flex-direction:column;text-align:center;align-items:stretch;}
+  .rpl-energy .rpe-method-cta > div{min-width:0;}
+}
+
+@media(max-width:600px){
+  .rpl-energy .wrap{padding:0 18px;}
+  .rpl-energy .rpe-hero-pillars{gap:8px;}
+  .rpl-energy .rpe-pillar{padding:8px 14px;font-size:.78rem;}
+  .rpl-energy .rpe-layer,
+  .rpl-energy .rpe-vcard,
+  .rpl-energy .rpe-method-card,
+  .rpl-energy .rpe-roadmap-card{padding:28px 22px;}
+  .rpl-energy .rpe-mockup-badge{width:72px;height:72px;}
+  .rpl-energy .rpe-faq-item summary{padding:18px 20px;font-size:.95rem;}
+  .rpl-energy .rpe-faq-content{padding:0 20px 18px;}
+  .rpl-energy .rpe-forest-actions{flex-direction:column;}
+  .rpl-energy .rpe-forest-actions .btn{width:100%;justify-content:center;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .rpl-energy .reveal{opacity:1;transform:none;}
+  .rpl-energy .rpe-eyebrow-dot,
+  .rpl-energy .rpe-mockup-skel,
+  .rpl-energy .rpe-mockup-badge-pulse{animation:none;}
+}

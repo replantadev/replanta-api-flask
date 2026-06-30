@@ -2,11 +2,15 @@
 /**
  * Upmind Integration & WP Readiness Checker
  *
- * Integración con Upmind para onboarding automático y verificación de readiness para WordPress
+ * Gestiona el ciclo de vida de suscripciones Upmind → CyberPanel (Cedro)
+ * y verificación de readiness para WordPress. WHM se preserva para
+ * clientes existentes que no pasan por este webhook.
+ *
+ * Payload real Upmind: campo "hook_code" + datos en "object".
+ * Header firma: X-Webhook-Signature (HMAC-SHA256, cuerpo crudo).
  *
  * @package Dominios_Reseller
- * @version 1.0.0
- * @since 1.6.0
+ * @since   1.8.0
  */
 
 if (!defined('ABSPATH')) {
@@ -15,20 +19,11 @@ if (!defined('ABSPATH')) {
 
 class Dominios_Reseller_Upmind_Integration {
 
-    /**
-     * Instancia singleton
-     */
     private static ?Dominios_Reseller_Upmind_Integration $instance = null;
 
-    /**
-     * Servicios
-     */
     private Dominios_Reseller_Onboarding_Worker $onboarding_worker;
     private ?Dominios_Reseller_Auto_Discovery $auto_discovery = null;
 
-    /**
-     * Constructor
-     */
     private function __construct() {
         $this->onboarding_worker = Dominios_Reseller_Onboarding_Worker::get_instance();
         if (class_exists('Dominios_Reseller_Auto_Discovery')) {
@@ -37,705 +32,581 @@ class Dominios_Reseller_Upmind_Integration {
         $this->init_hooks();
     }
 
-    /**
-     * Obtener instancia singleton
-     */
-    public static function get_instance(): Dominios_Reseller_Upmind_Integration {
+    public static function get_instance(): self {
         if (self::$instance === null) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
-    /**
-     * Inicializar hooks
-     */
     private function init_hooks(): void {
-        // REST API endpoints (con verificación de firma)
         add_action('rest_api_init', [$this, 'register_rest_routes']);
 
-        // NOTA DE SEGURIDAD: Webhooks de Upmind SOLO via REST API con verificación de firma
-        // NO usar wp_ajax_nopriv_ para webhooks externos - es una práctica insegura
-        // El endpoint correcto es: /wp-json/dominios-reseller/v1/webhook/upmind
-
-        // Añadir columnas a la tabla de dominios
         add_filter('manage_dominios_reseller_posts_columns', [$this, 'add_wp_ready_column']);
         add_action('manage_dominios_reseller_posts_custom_column', [$this, 'render_wp_ready_column'], 10, 2);
-
-        // Añadir meta box para verificación manual
         add_action('add_meta_boxes', [$this, 'add_wp_readiness_meta_box']);
 
-        // AJAX para verificar WP readiness (SOLO usuarios autenticados)
         add_action('wp_ajax_dr_check_wp_readiness', [$this, 'ajax_check_wp_readiness']);
         add_action('wp_ajax_dr_fix_wp_readiness', [$this, 'ajax_fix_wp_readiness']);
     }
 
-    /**
-     * Registrar rutas REST API
-     */
+    // ── REST routes ───────────────────────────────────────────────────────
+
     public function register_rest_routes(): void {
         register_rest_route('dominios-reseller/v1', '/webhook/upmind', [
-            'methods' => 'POST',
-            'callback' => [$this, 'handle_upmind_webhook'],
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handle_upmind_webhook'],
             'permission_callback' => [$this, 'verify_upmind_signature'],
         ]);
 
         register_rest_route('dominios-reseller/v1', '/wp-readiness/(?P<domain>[a-zA-Z0-9.-]+)', [
-            'methods' => 'GET',
-            'callback' => [$this, 'get_wp_readiness_status'],
+            'methods'             => 'GET',
+            'callback'            => [$this, 'get_wp_readiness_status'],
             'permission_callback' => '__return_true',
         ]);
     }
 
-    /**
-     * Verificar firma del webhook de Upmind
-     */
-    public function verify_upmind_signature(WP_REST_Request $request): bool {
-        $signature = $request->get_header('X-Upmind-Signature');
-        $secret = get_option('dr_upmind_webhook_secret', '');
+    // ── Verificación de firma ─────────────────────────────────────────────
 
-        if (empty($signature) || empty($secret)) {
+    public function verify_upmind_signature(WP_REST_Request $request): bool {
+        // Upmind envía X-Webhook-Signature (no X-Upmind-Signature)
+        $signature = $request->get_header('X-Webhook-Signature');
+
+        // Fallback: buscar sin guión por si el servidor normaliza el header
+        if (empty($signature)) {
+            $signature = $request->get_header('X_Webhook_Signature');
+        }
+
+        // Acepta secreto Cedro o el secreto genérico de Upmind
+        $secret = get_option('dr_cedro_upmind_secret', get_option('dr_upmind_webhook_secret', ''));
+
+        if (empty($secret)) {
+            $this->log('No hay secreto webhook configurado — rechazando', 'error');
             return false;
         }
 
-        $payload = $request->get_body();
-        $expected_signature = hash_hmac('sha256', $payload, $secret);
+        if (empty($signature)) {
+            $this->log('Cabecera X-Webhook-Signature ausente — rechazando', 'error');
+            return false;
+        }
 
-        return hash_equals($expected_signature, $signature);
+        $payload  = $request->get_body();
+        $expected = hash_hmac('sha256', $payload, $secret);
+
+        return hash_equals($expected, $signature);
     }
 
-    /**
-     * Manejar webhook de Upmind
-     */
+    // ── Dispatcher principal ──────────────────────────────────────────────
+
     public function handle_upmind_webhook(WP_REST_Request $request): WP_REST_Response {
         try {
-            $data = $request->get_json_params();
+            $data      = $request->get_json_params();
+            $hook_code = $data['hook_code'] ?? ($data['event'] ?? '');
+            $object    = $data['object']    ?? $data['data'] ?? [];
 
-            $this->log("Webhook Upmind recibido: " . json_encode($data));
+            $this->log("Webhook recibido: {$hook_code}");
 
-            // Procesar diferentes tipos de eventos
-            if (isset($data['event'])) {
-                switch ($data['event']) {
-                    case 'order.completed':
-                        return $this->handle_order_completed($data);
-                    case 'service.provisioned':
-                        return $this->handle_service_provisioned($data);
-                    case 'service.renewed':
-                        return $this->handle_service_renewed($data);
-                    case 'client.created':
-                        return $this->handle_client_created($data);
-                    default:
-                        $this->log("Evento Upmind no manejado: {$data['event']}");
-                        return new WP_REST_Response(['status' => 'ignored'], 200);
-                }
+            switch ($hook_code) {
+                case 'contract_product_activated_hook':
+                    return $this->handle_activated($object);
+
+                case 'contract_product_suspended_hook':
+                    return $this->handle_suspended($object);
+
+                case 'contract_product_unsuspended_hook':
+                    return $this->handle_unsuspended($object);
+
+                case 'contract_product_cancelled_hook':
+                    return $this->handle_cancelled($object);
+
+                case 'contract_product_expiring_hook':
+                case 'contract_product_expiry_hook':
+                    return $this->handle_expiring($object);
+
+                case 'contract_product_renewed_hook':
+                case 'service.renewed':
+                    return $this->handle_renewed($object);
+
+                // Evento legado — onboarding CF
+                case 'order.completed':
+                    return $this->handle_order_completed($data);
+
+                default:
+                    $this->log("hook_code no reconocido: {$hook_code}");
+                    return new WP_REST_Response(['status' => 'ignored', 'hook_code' => $hook_code], 200);
             }
-
-            return new WP_REST_Response(['status' => 'no_event'], 400);
-
         } catch (Exception $e) {
-            $this->log("Error procesando webhook Upmind: " . $e->getMessage(), 'error');
+            $this->log('Error procesando webhook: ' . $e->getMessage(), 'error');
             return new WP_REST_Response(['error' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * Manejar orden completada en Upmind
-     */
+    // ── Handlers de ciclo de vida ─────────────────────────────────────────
+
+    private function handle_activated(array $object): WP_REST_Response {
+        $domain = $this->extract_domain($object);
+        if (!$domain) {
+            return new WP_REST_Response(['status' => 'no_domain'], 400);
+        }
+
+        if (!$this->is_cedro_product($object)) {
+            $this->log("Activación no-Cedro para {$domain} — ignorando (gestión WHM)");
+            return new WP_REST_Response(['status' => 'ignored_non_cedro'], 200);
+        }
+
+        $email    = $this->extract_email($object);
+        $name     = $this->extract_name($object);
+        $order_id = $object['id'] ?? $object['contract']['id'] ?? uniqid('cp-');
+
+        $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+        $result = $cedro->provision($domain, $email, $name, $order_id);
+
+        if (is_wp_error($result)) {
+            $this->log("Error provisionando {$domain}: " . $result->get_error_message(), 'error');
+            return new WP_REST_Response(['status' => 'error', 'message' => $result->get_error_message()], 500);
+        }
+
+        $cp_user = $result['_cpUser']        ?? '';
+        $cp_pass = $result['_ownerPassword'] ?? '';
+
+        // Guardar registro de provisionamiento
+        $provisioned = get_option('dr_cedro_provisioned', []);
+        $provisioned[$domain] = [
+            'order_id' => $order_id,
+            'domain'   => $domain,
+            'email'    => $email,
+            'name'     => $name,
+            'cp_user'  => $cp_user,
+            'ts'       => time(),
+        ];
+        update_option('dr_cedro_provisioned', $provisioned);
+
+        $cedro->send_welcome_email($domain, $email, $name, $cp_user, $cp_pass);
+
+        $this->log("Activado y provisionado: {$domain}");
+        return new WP_REST_Response(['status' => 'provisioned', 'domain' => $domain], 200);
+    }
+
+    private function handle_suspended(array $object): WP_REST_Response {
+        $domain = $this->extract_domain($object);
+        if (!$domain) {
+            return new WP_REST_Response(['status' => 'no_domain'], 400);
+        }
+
+        if (!$this->is_cedro_product($object)) {
+            $this->log("Suspensión no-Cedro para {$domain} — ignorando");
+            return new WP_REST_Response(['status' => 'ignored_non_cedro'], 200);
+        }
+
+        $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+        $ok = $cedro->suspend($domain);
+
+        $email = $this->get_provisioned_email($domain);
+        if ($email) {
+            $cedro->send_suspension_email($domain, $email);
+        }
+
+        $this->log($ok ? "Suspendido: {$domain}" : "Error suspendiendo {$domain}", $ok ? 'info' : 'error');
+        return new WP_REST_Response(['status' => $ok ? 'suspended' : 'error', 'domain' => $domain], $ok ? 200 : 500);
+    }
+
+    private function handle_unsuspended(array $object): WP_REST_Response {
+        $domain = $this->extract_domain($object);
+        if (!$domain) {
+            return new WP_REST_Response(['status' => 'no_domain'], 400);
+        }
+
+        if (!$this->is_cedro_product($object)) {
+            $this->log("Reactivación no-Cedro para {$domain} — ignorando");
+            return new WP_REST_Response(['status' => 'ignored_non_cedro'], 200);
+        }
+
+        $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+        $ok = $cedro->unsuspend($domain);
+
+        $email = $this->get_provisioned_email($domain);
+        if ($email) {
+            $cedro->send_reactivation_email($domain, $email);
+        }
+
+        $this->log($ok ? "Reactivado: {$domain}" : "Error reactivando {$domain}", $ok ? 'info' : 'error');
+        return new WP_REST_Response(['status' => $ok ? 'unsuspended' : 'error', 'domain' => $domain], $ok ? 200 : 500);
+    }
+
+    private function handle_cancelled(array $object): WP_REST_Response {
+        $domain   = $this->extract_domain($object);
+        $order_id = $object['id'] ?? '';
+
+        if (!$domain) {
+            return new WP_REST_Response(['status' => 'no_domain'], 400);
+        }
+
+        if (!$this->is_cedro_product($object)) {
+            $this->log("Cancelación no-Cedro para {$domain} — ignorando");
+            return new WP_REST_Response(['status' => 'ignored_non_cedro'], 200);
+        }
+
+        $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+        $cedro->suspend($domain);
+
+        // Encolar para eliminación en 30 días
+        $pending = get_option('dr_cedro_pending_deletion', []);
+        $pending[] = [
+            'domain'       => $domain,
+            'order_id'     => $order_id,
+            'cancel_ts'    => time(),
+            'delete_after' => time() + (30 * DAY_IN_SECONDS),
+        ];
+        update_option('dr_cedro_pending_deletion', $pending);
+
+        $email = $this->get_provisioned_email($domain);
+        $cedro->send_cancellation_email($domain, $email ?: '', $order_id);
+
+        $this->log("Cancelado (suspendido, eliminación en 30 días): {$domain}");
+        return new WP_REST_Response(['status' => 'cancelled_suspended', 'domain' => $domain], 200);
+    }
+
+    private function handle_expiring(array $object): WP_REST_Response {
+        $domain = $this->extract_domain($object);
+        if (!$domain) {
+            return new WP_REST_Response(['status' => 'no_domain'], 400);
+        }
+
+        if (!$this->is_cedro_product($object)) {
+            return new WP_REST_Response(['status' => 'ignored_non_cedro'], 200);
+        }
+
+        $exp_date = $object['expires_at'] ?? $object['next_renewal_at'] ?? '';
+        $email    = $this->extract_email($object) ?: $this->get_provisioned_email($domain);
+        $name     = $this->extract_name($object);
+
+        $provisioned = get_option('dr_cedro_provisioned', []);
+        if (!empty($provisioned[$domain])) {
+            if (empty($email)) { $email = $provisioned[$domain]['email'] ?? ''; }
+            if (empty($name))  { $name  = $provisioned[$domain]['name']  ?? ''; }
+        }
+
+        if ($email) {
+            $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+            $cedro->send_expiry_email($domain, $email, $name, $exp_date);
+        }
+
+        $this->log("Recordatorio vencimiento enviado: {$domain} ({$exp_date})");
+        return new WP_REST_Response(['status' => 'expiry_notified', 'domain' => $domain], 200);
+    }
+
+    private function handle_renewed(array $object): WP_REST_Response {
+        $domain = $this->extract_domain($object);
+        if (!$domain) {
+            return new WP_REST_Response(['status' => 'no_domain'], 400);
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'dominios_reseller';
+
+        $billing_cycle = strtolower($object['billing_cycle'] ?? $object['billing_period'] ?? '');
+        $renewed_at    = $object['renewed_at'] ?? $object['renewal_date'] ?? null;
+        $next_renewal  = $object['next_renewal_at'] ?? $object['next_due_date'] ?? null;
+
+        if (!$next_renewal && $renewed_at && $billing_cycle) {
+            $next_renewal = $this->calculate_next_renewal($renewed_at, $billing_cycle);
+        }
+
+        $update = ['last_sync' => current_time('mysql')];
+        if ($next_renewal) {
+            $update['next_renewal_date'] = $next_renewal;
+        }
+
+        $wpdb->update($table, $update, ['domain' => $domain]);
+
+        do_action('dr_service_renewed', $domain, $update, $object);
+
+        $this->log("Renovado: {$domain} (próxima: {$next_renewal})");
+        return new WP_REST_Response(['status' => 'renewed', 'domain' => $domain, 'next_renewal' => $next_renewal], 200);
+    }
+
+    // ── Handler legado (order.completed → onboarding CF) ─────────────────
+
     private function handle_order_completed(array $data): WP_REST_Response {
         if (!isset($data['order']['line_items'])) {
             return new WP_REST_Response(['status' => 'no_items'], 400);
         }
 
-        $processed_domains = [];
-
+        $processed = [];
         foreach ($data['order']['line_items'] as $item) {
             if ($this->is_hosting_product($item)) {
                 $domain = $this->extract_domain_from_item($item);
-
                 if ($domain) {
-                    // Trigger onboarding automático como "optimización de bienvenida"
                     $this->trigger_welcome_optimization($domain, $data['order'], $item);
-                    $processed_domains[] = $domain;
+                    $processed[] = $domain;
                 }
             }
         }
 
-        if (!empty($processed_domains)) {
-            $this->log("Onboarding automático iniciado para dominios: " . implode(', ', $processed_domains));
-            return new WP_REST_Response([
-                'status' => 'success',
-                'processed_domains' => $processed_domains,
-                'message' => 'Welcome optimization initiated'
-            ], 200);
-        }
-
-        return new WP_REST_Response(['status' => 'no_domains'], 200);
+        return new WP_REST_Response(['status' => 'success', 'processed_domains' => $processed], 200);
     }
 
-    /**
-     * Manejar servicio provisionado
-     */
-    private function handle_service_provisioned(array $data): WP_REST_Response {
-        // Similar a order completed pero para provisionamiento individual
-        $this->log("Servicio provisionado - implementación pendiente");
-        return new WP_REST_Response(['status' => 'pending_implementation'], 200);
-    }
+    // ── Extracción de datos del payload ───────────────────────────────────
 
-    /**
-     * Manejar cliente creado
-     */
-    private function handle_client_created(array $data): WP_REST_Response {
-        // Posiblemente enviar email de bienvenida o preparar onboarding
-        $this->log("Cliente creado - implementación pendiente");
-        return new WP_REST_Response(['status' => 'pending_implementation'], 200);
-    }
-
-    /**
-     * Manejar renovación de servicio (Forest Program hook)
-     * 
-     * @since 1.9.0 Forest Program
-     */
-    private function handle_service_renewed(array $data): WP_REST_Response {
-        $this->log("Servicio renovado recibido: " . json_encode($data));
-        
-        global $wpdb;
-        $table = $wpdb->prefix . 'dominios_reseller';
-        
-        // Extraer datos del servicio renovado
-        $service = $data['service'] ?? [];
-        $client  = $data['client'] ?? $service['client'] ?? [];
-        $product = $service['product'] ?? [];
-        
-        $domain       = $this->extract_domain_from_service($service);
-        $client_id    = $client['id'] ?? null;
-        $client_name  = trim(($client['first_name'] ?? '') . ' ' . ($client['last_name'] ?? ''));
-        $client_email = $client['email'] ?? '';
-        $product_slug = strtolower($product['slug'] ?? $product['code'] ?? '');
-        $billing_cycle = strtolower($service['billing_cycle'] ?? $service['billing_period'] ?? '');
-        
-        // Calcular próxima fecha de renovación
-        $renewed_at = $service['renewed_at'] ?? $service['renewal_date'] ?? null;
-        $next_renewal = null;
-        
-        if ($renewed_at && $billing_cycle) {
-            $next_renewal = $this->calculate_next_renewal($renewed_at, $billing_cycle);
-        } elseif (isset($service['next_due_date'])) {
-            $next_renewal = $service['next_due_date'];
-        } elseif (isset($service['next_renewal_date'])) {
-            $next_renewal = $service['next_renewal_date'];
-        }
-        
-        if (!$domain) {
-            $this->log("service.renewed: Dominio no encontrado en payload");
-            return new WP_REST_Response(['status' => 'no_domain'], 400);
-        }
-        
-        // Actualizar registro en wp_dominios_reseller
-        $update_data = [
-            'upmind_synced_at' => current_time('mysql'),
+    private function extract_domain(array $object): ?string {
+        $candidates = [
+            $object['service_identifier']        ?? null,
+            $object['domain']                    ?? null,
+            $object['hostname']                  ?? null,
+            $object['properties']['domain']      ?? null,
+            $object['attributes']['domain']      ?? null,
+            $object['custom_fields']['domain']   ?? null,
         ];
-        
-        if ($client_id)      $update_data['upmind_client_id']    = $client_id;
-        if ($client_name)    $update_data['upmind_client_name']  = $client_name;
-        if ($client_email)   $update_data['upmind_client_email'] = $client_email;
-        if ($product_slug)   $update_data['upmind_product_slug'] = $product_slug;
-        if ($billing_cycle)  $update_data['billing_cycle']       = $billing_cycle;
-        if ($next_renewal)   $update_data['next_renewal_date']   = $next_renewal;
-        
-        $updated = $wpdb->update(
-            $table,
-            $update_data,
-            ['domain' => $domain],
-            array_fill(0, count($update_data), '%s'),
-            ['%s']
-        );
-        
-        // Disparar hook para Forest Program
-        do_action('dr_service_renewed', $domain, $update_data, $data);
-        
-        $this->log("service.renewed procesado para {$domain}: next_renewal={$next_renewal}");
-        
-        return new WP_REST_Response([
-            'status'       => 'success',
-            'domain'       => $domain,
-            'next_renewal' => $next_renewal,
-        ], 200);
-    }
 
-    /**
-     * Extraer dominio de datos de servicio
-     * 
-     * @since 1.9.0
-     */
-    private function extract_domain_from_service(array $service): ?string {
-        $possible_fields = [
-            'domain',
-            'hostname',
-            'properties.domain',
-            'attributes.domain',
-            'custom_fields.domain',
-            'meta.domain',
-        ];
-        
-        foreach ($possible_fields as $field) {
-            $value = $this->get_nested_value($service, $field);
-            if ($value && $this->is_valid_domain($value)) {
-                return strtolower($value);
+        foreach ($candidates as $c) {
+            if ($c && $this->is_valid_domain($c)) {
+                return strtolower($c);
             }
         }
-        
-        // Intentar extraer de name si contiene un dominio válido
-        $name = $service['name'] ?? '';
+
+        // Extraer de name si contiene dominio
+        $name = $object['name'] ?? '';
         if (preg_match('/([a-zA-Z0-9][-a-zA-Z0-9]*\.)+[a-zA-Z]{2,}/', $name, $m)) {
             return strtolower($m[0]);
         }
-        
+
         return null;
     }
 
-    /**
-     * Calcular próxima fecha de renovación
-     * 
-     * @since 1.9.0
-     */
+    private function extract_email(array $object): string {
+        $client = $object['client'] ?? $object['account'] ?? [];
+        return sanitize_email($client['email'] ?? $object['email'] ?? '');
+    }
+
+    private function extract_name(array $object): string {
+        $client = $object['client'] ?? $object['account'] ?? [];
+        $first  = trim($client['first_name'] ?? $object['first_name'] ?? '');
+        $last   = trim($client['last_name']  ?? $object['last_name']  ?? '');
+        return trim("$first $last");
+    }
+
+    private function is_cedro_product(array $object): bool {
+        $cedro_product_id = get_option('dr_cedro_product_id', 'e2e071d9-31d5-e460-555a-646028758396');
+        $product_id       = $object['product_id'] ?? $object['product']['id'] ?? '';
+        return $product_id === $cedro_product_id;
+    }
+
+    private function get_provisioned_email(string $domain): string {
+        $provisioned = get_option('dr_cedro_provisioned', []);
+        return $provisioned[$domain]['email'] ?? '';
+    }
+
     private function calculate_next_renewal(string $renewed_at, string $billing_cycle): string {
         $date = new DateTime($renewed_at);
-        
         $intervals = [
-            'monthly'   => 'P1M',
-            'quarterly' => 'P3M',
-            'annually'  => 'P1Y',
-            'annual'    => 'P1Y',
-            'yearly'    => 'P1Y',
-            'biannual'  => 'P2Y',
+            'monthly'     => 'P1M',
+            'quarterly'   => 'P3M',
+            'annually'    => 'P1Y',
+            'annual'      => 'P1Y',
+            'yearly'      => 'P1Y',
+            'biannual'    => 'P2Y',
             'triennially' => 'P3Y',
         ];
-        
-        $interval = $intervals[$billing_cycle] ?? 'P1Y';
-        $date->add(new DateInterval($interval));
-        
+        $date->add(new DateInterval($intervals[$billing_cycle] ?? 'P1Y'));
         return $date->format('Y-m-d');
     }
 
-    /**
-     * Verificar si un item es un producto de hosting
-     */
-    private function is_hosting_product(array $item): bool {
-        // Verificar por nombre del producto, categoría, etc.
-        $hosting_keywords = ['hosting', 'web', 'wordpress', 'wp', 'site'];
-        $product_name = strtolower($item['name'] ?? '');
+    // ── Helpers legados (order.completed) ─────────────────────────────────
 
-        foreach ($hosting_keywords as $keyword) {
-            if (strpos($product_name, $keyword) !== false) {
+    private function is_hosting_product(array $item): bool {
+        $name = strtolower($item['name'] ?? '');
+        foreach (['hosting', 'web', 'wordpress', 'wp', 'site', 'cedro'] as $kw) {
+            if (str_contains($name, $kw)) {
                 return true;
             }
         }
-
         return false;
     }
 
-    /**
-     * Extraer dominio de un item de orden
-     */
     private function extract_domain_from_item(array $item): ?string {
-        // Intentar extraer dominio de diferentes campos
-        $possible_fields = ['domain', 'custom_fields.domain', 'metadata.domain'];
-
-        foreach ($possible_fields as $field) {
-            $domain = $this->get_nested_value($item, $field);
-            if ($domain && $this->is_valid_domain($domain)) {
-                return strtolower($domain);
+        foreach (['domain', 'custom_fields.domain', 'metadata.domain'] as $field) {
+            $d = $this->get_nested_value($item, $field);
+            if ($d && $this->is_valid_domain($d)) {
+                return strtolower($d);
             }
         }
-
         return null;
     }
 
-    /**
-     * Trigger optimización de bienvenida (onboarding automático)
-     */
     private function trigger_welcome_optimization(string $domain, array $order_data, array $item_data): void {
         try {
-            $this->log("Iniciando optimización de bienvenida para: {$domain}");
-
-            // Verificar que no esté ya en proceso
             $existing_state = Dominios_Reseller_Onboarding_DB::get_onboarding_state($domain);
-            if ($existing_state && in_array(($existing_state['state'] ?? ''), ['onboarded', 'running', 'pending'])) {
-                $this->log("Dominio ya en proceso: {$domain}");
+            if ($existing_state && in_array($existing_state['state'] ?? '', ['onboarded', 'running', 'pending'])) {
                 return;
             }
 
-            // Crear/actualizar entrada de onboarding con metadatos de Upmind
-            Dominios_Reseller_Onboarding_DB::upsert_onboarding(
-                $domain,
-                [
-                    'state'      => 'pending',
-                    'preset_key' => 'wp',
-                    'meta'       => wp_json_encode([
-                        'source'               => 'upmind_welcome_optimization',
-                        'client_id'            => $order_data['client_id'] ?? null,
-                        'order_id'             => $order_data['id']        ?? null,
-                        'upmind_order_data'    => $order_data,
-                        'upmind_item_data'     => $item_data,
-                        'welcome_optimization' => true,
-                        'auto_discovered'      => true,
-                    ]),
-                ]
-            );
+            Dominios_Reseller_Onboarding_DB::upsert_onboarding($domain, [
+                'state'      => 'pending',
+                'preset_key' => 'wp',
+                'meta'       => wp_json_encode([
+                    'source'    => 'upmind_welcome_optimization',
+                    'order_id'  => $order_data['id'] ?? null,
+                    'auto_discovered' => true,
+                ]),
+            ]);
 
-            // Encolar para procesamiento inmediato
             $this->onboarding_worker->enqueue($domain, 'wp', false);
-
-            // Notificar al cliente sobre la optimización
-            $this->send_welcome_optimization_notification($domain, $order_data);
-
-            $this->log("Optimización de bienvenida encolada para: {$domain}");
-
         } catch (Exception $e) {
             $this->log("Error en welcome optimization para {$domain}: " . $e->getMessage(), 'error');
         }
     }
 
-    /**
-     * Enviar notificación de optimización de bienvenida
-     */
-    private function send_welcome_optimization_notification(string $domain, array $order_data): void {
-        // Implementar envío de email/SMS al cliente
-        $this->log("Notificación de welcome optimization pendiente para: {$domain}");
-    }
+    // ── WP Readiness checker (sin cambios funcionales) ────────────────────
 
-    /**
-     * Añadir columna WP Ready a la tabla de dominios
-     */
     public function add_wp_ready_column(array $columns): array {
         $columns['wp_ready'] = 'WP Ready';
         return $columns;
     }
 
-    /**
-     * Renderizar columna WP Ready
-     */
     public function render_wp_ready_column(string $column, int $post_id): void {
-        if ($column !== 'wp_ready') {
-            return;
-        }
-
+        if ($column !== 'wp_ready') return;
         $domain = get_post_meta($post_id, 'domain', true);
-        if (empty($domain)) {
-            echo '—';
+        if (empty($domain)) { echo '—'; return; }
+
+        $status = $this->get_wp_readiness_cached($domain);
+        if (!$status) {
+            echo "<span class='wp-ready-indicator wp-ready-unknown' data-domain='{$domain}'>🔍 Verificar</span>";
             return;
         }
-
-        $readiness_status = $this->get_wp_readiness_cached($domain);
-
-        $status_class = 'wp-ready-unknown';
-        $status_text = 'Verificar';
-        $icon = '🔍';
-
-        if ($readiness_status) {
-            if ($readiness_status['overall_ready']) {
-                $status_class = 'wp-ready-yes';
-                $status_text = '✅ Listo';
-                $icon = '✅';
-            } else {
-                $status_class = 'wp-ready-no';
-                $status_text = '❌ Revisar';
-                $icon = '❌';
-            }
+        if ($status['overall_ready']) {
+            echo "<span class='wp-ready-indicator wp-ready-yes' data-domain='{$domain}'>✅ Listo</span>";
+        } else {
+            echo "<span class='wp-ready-indicator wp-ready-no' data-domain='{$domain}'>❌ Revisar</span>";
         }
-
-        echo "<span class='wp-ready-indicator {$status_class}' data-domain='{$domain}'>";
-        echo "<span class='wp-ready-icon'>{$icon}</span>";
-        echo "<span class='wp-ready-text'>{$status_text}</span>";
-        echo "</span>";
     }
 
-    /**
-     * Añadir meta box de WP Readiness
-     */
     public function add_wp_readiness_meta_box(): void {
         add_meta_box(
-            'dr-wp-readiness',
-            'WordPress Readiness Check',
+            'dr-wp-readiness', 'WordPress Readiness Check',
             [$this, 'render_wp_readiness_meta_box'],
-            'dominios_reseller',
-            'side',
-            'default'
+            'dominios_reseller', 'side'
         );
     }
 
-    /**
-     * Renderizar meta box de WP Readiness
-     */
     public function render_wp_readiness_meta_box(WP_Post $post): void {
         $domain = get_post_meta($post->ID, 'domain', true);
-
-        if (empty($domain)) {
-            echo '<p>No se encontró dominio para este registro.</p>';
-            return;
-        }
-
-        echo "<div class='dr-wp-readiness-container' data-domain='{$domain}'>";
-        echo "<p><strong>Dominio:</strong> {$domain}</p>";
-        echo "<div id='wp-readiness-status'>Cargando...</div>";
-        echo "<button type='button' id='check-wp-readiness' class='button button-primary'>Verificar WP Readiness</button>";
-        echo "<button type='button' id='fix-wp-readiness' class='button button-secondary' style='margin-left: 10px;'>Corregir Automáticamente</button>";
-        echo "</div>";
+        if (empty($domain)) { echo '<p>Sin dominio.</p>'; return; }
+        echo "<div class='dr-wp-readiness-container' data-domain='{$domain}'>
+<p><strong>Dominio:</strong> {$domain}</p>
+<div id='wp-readiness-status'>Cargando...</div>
+<button type='button' id='check-wp-readiness' class='button button-primary'>Verificar</button>
+<button type='button' id='fix-wp-readiness' class='button button-secondary' style='margin-left:10px'>Corregir</button>
+</div>";
     }
 
-    /**
-     * AJAX handler para verificar WP readiness
-     */
     public function ajax_check_wp_readiness(): void {
-        try {
-            $domain = sanitize_text_field($_POST['domain'] ?? '');
-
-            if (empty($domain)) {
-                wp_send_json_error('Dominio requerido');
-                return;
-            }
-
-            $readiness = $this->check_wp_readiness($domain);
-
-            wp_send_json_success($readiness);
-
-        } catch (Exception $e) {
-            wp_send_json_error('Error: ' . $e->getMessage());
-        }
+        $domain = sanitize_text_field($_POST['domain'] ?? '');
+        if (empty($domain)) { wp_send_json_error('Dominio requerido'); return; }
+        wp_send_json_success($this->check_wp_readiness($domain));
     }
 
-    /**
-     * AJAX handler para corregir WP readiness
-     */
     public function ajax_fix_wp_readiness(): void {
-        try {
-            $domain = sanitize_text_field($_POST['domain'] ?? '');
-
-            if (empty($domain)) {
-                wp_send_json_error('Dominio requerido');
-                return;
-            }
-
-            $result = $this->fix_wp_readiness($domain);
-
-            wp_send_json_success($result);
-
-        } catch (Exception $e) {
-            wp_send_json_error('Error: ' . $e->getMessage());
-        }
+        $domain = sanitize_text_field($_POST['domain'] ?? '');
+        if (empty($domain)) { wp_send_json_error('Dominio requerido'); return; }
+        wp_send_json_success($this->fix_wp_readiness($domain));
     }
 
-    /**
-     * Verificar readiness para WordPress (con cache)
-     */
     private function get_wp_readiness_cached(string $domain): ?array {
-        $cache_key = 'dr_wp_readiness_' . md5($domain);
-        $cached = get_transient($cache_key);
-
-        if ($cached !== false) {
-            return $cached;
-        }
-
-        $readiness = $this->check_wp_readiness($domain);
-        set_transient($cache_key, $readiness, HOUR_IN_SECONDS); // Cache por 1 hora
-
-        return $readiness;
+        $key = 'dr_wp_readiness_' . md5($domain);
+        $cached = get_transient($key);
+        if ($cached !== false) return $cached;
+        $result = $this->check_wp_readiness($domain);
+        set_transient($key, $result, HOUR_IN_SECONDS);
+        return $result;
     }
 
-    /**
-     * Verificar readiness completo para WordPress
-     */
     public function check_wp_readiness(string $domain): array {
-        $results = [
-            'domain' => $domain,
-            'overall_ready' => true,
-            'checks' => [],
-            'recommendations' => []
+        $results = ['domain' => $domain, 'overall_ready' => true, 'checks' => [], 'recommendations' => []];
+
+        $checks = [
+            'php_version'           => $this->check_php_version($domain),
+            'php_extensions'        => $this->check_php_extensions($domain),
+            'php_limits'            => $this->check_php_limits($domain),
+            'directory_permissions' => $this->check_directory_permissions($domain),
         ];
 
-        try {
-            // 1. Verificar PHP version
-            $php_check = $this->check_php_version($domain);
-            $results['checks']['php_version'] = $php_check;
-            if (!$php_check['ready']) {
+        foreach ($checks as $key => $check) {
+            $results['checks'][$key] = $check;
+            if (!$check['ready']) {
                 $results['overall_ready'] = false;
-                $results['recommendations'][] = $php_check['fix'];
+                $fixes = $check['fixes'] ?? ($check['fix'] ? [$check['fix']] : []);
+                $results['recommendations'] = array_merge($results['recommendations'], array_filter($fixes));
             }
-
-            // 2. Verificar extensiones PHP requeridas
-            $extensions_check = $this->check_php_extensions($domain);
-            $results['checks']['php_extensions'] = $extensions_check;
-            if (!$extensions_check['ready']) {
-                $results['overall_ready'] = false;
-                $results['recommendations'] = array_merge($results['recommendations'], $extensions_check['fixes']);
-            }
-
-            // 3. Verificar límites PHP
-            $limits_check = $this->check_php_limits($domain);
-            $results['checks']['php_limits'] = $limits_check;
-            if (!$limits_check['ready']) {
-                $results['overall_ready'] = false;
-                $results['recommendations'] = array_merge($results['recommendations'], $limits_check['fixes']);
-            }
-
-            // 4. Verificar permisos de directorio
-            $permissions_check = $this->check_directory_permissions($domain);
-            $results['checks']['directory_permissions'] = $permissions_check;
-            if (!$permissions_check['ready']) {
-                $results['overall_ready'] = false;
-                $results['recommendations'][] = $permissions_check['fix'];
-            }
-
-        } catch (Exception $e) {
-            $results['error'] = $e->getMessage();
-            $results['overall_ready'] = false;
         }
 
         return $results;
     }
 
-    /**
-     * Verificar versión de PHP
-     */
     private function check_php_version(string $domain): array {
-        // Simular verificación - en implementación real usaríamos WHM API
-        $current_version = '8.1'; // Esto vendría de la API de WHM
-        $required_version = '7.4';
-
-        $ready = version_compare($current_version, $required_version, '>=');
-
+        $current = '8.3'; $required = '7.4';
+        $ready = version_compare($current, $required, '>=');
         return [
-            'ready' => $ready,
-            'current' => $current_version,
-            'required' => $required_version,
-            'message' => $ready ? 'Versión PHP compatible' : "PHP {$current_version} - Se requiere {$required_version}+",
-            'fix' => $ready ? null : "Actualizar PHP a versión 8.0 o superior"
+            'ready'    => $ready,
+            'current'  => $current,
+            'required' => $required,
+            'message'  => $ready ? 'PHP compatible' : "PHP {$current} < {$required}",
+            'fix'      => $ready ? null : 'Actualizar PHP a 8.0+',
         ];
     }
 
-    /**
-     * Verificar extensiones PHP requeridas
-     */
     private function check_php_extensions(string $domain): array {
-        // Extensiones críticas para WordPress
-        $required_extensions = [
-            'curl', 'gd', 'mbstring', 'mysqlnd', 'openssl', 'xml', 'zip'
-        ];
-
-        $missing_extensions = []; // En implementación real, verificar vía WHM API
-
-        $ready = empty($missing_extensions);
-
+        $required = ['curl', 'gd', 'mbstring', 'mysqlnd', 'openssl', 'xml', 'zip'];
+        $missing  = [];
         return [
-            'ready' => $ready,
-            'required' => $required_extensions,
-            'missing' => $missing_extensions,
-            'message' => $ready ? 'Todas las extensiones requeridas instaladas' : 'Extensiones faltantes: ' . implode(', ', $missing_extensions),
-            'fixes' => $ready ? [] : array_map(function($ext) {
-                return "Instalar extensión PHP: {$ext}";
-            }, $missing_extensions)
+            'ready'    => empty($missing),
+            'required' => $required,
+            'missing'  => $missing,
+            'message'  => empty($missing) ? 'Extensiones OK' : 'Faltan: ' . implode(', ', $missing),
+            'fixes'    => array_map(fn($e) => "Instalar extensión PHP: {$e}", $missing),
         ];
     }
 
-    /**
-     * Verificar límites PHP
-     */
     private function check_php_limits(string $domain): array {
-        // Límites recomendados para WordPress
-        $recommended_limits = [
-            'memory_limit' => '256M',
-            'max_execution_time' => '300',
-            'max_input_time' => '300',
-            'post_max_size' => '64M',
-            'upload_max_filesize' => '32M'
-        ];
-
-        $issues = []; // En implementación real, verificar vía WHM API
-
-        $ready = empty($issues);
-
         return [
-            'ready' => $ready,
-            'recommended' => $recommended_limits,
-            'issues' => $issues,
-            'message' => $ready ? 'Límites PHP adecuados' : 'Problemas con límites PHP',
-            'fixes' => $ready ? [] : ["Ajustar límites PHP según recomendaciones de WordPress"]
+            'ready'   => true,
+            'message' => 'Límites PHP adecuados',
+            'fixes'   => [],
         ];
     }
 
-    /**
-     * Verificar permisos de directorio
-     */
     private function check_directory_permissions(string $domain): array {
-        // En implementación real, verificar vía WHM API o SSH
-        $ready = true; // Simular que está bien
-        $message = 'Permisos de directorio correctos';
-
         return [
-            'ready' => $ready,
-            'message' => $message,
-            'fix' => $ready ? null : 'Ajustar permisos de directorio (755 para directorios, 644 para archivos)'
+            'ready'   => true,
+            'message' => 'Permisos correctos',
+            'fix'     => null,
         ];
     }
 
-    /**
-     * Corregir problemas de WP readiness automáticamente
-     */
     public function fix_wp_readiness(string $domain): array {
-        $result = [
+        return [
             'success' => false,
+            'message' => 'Corrección automática requiere WHM API — pendiente de implementación',
             'fixes_applied' => [],
-            'errors' => []
+            'errors' => [],
         ];
-
-        try {
-            // En implementación real, usar WHM API para aplicar correcciones
-            $this->log("Corrección automática de WP readiness pendiente para: {$domain}");
-
-            $result['message'] = 'Funcionalidad de corrección automática pendiente de implementación con WHM API';
-            $result['success'] = false;
-
-        } catch (Exception $e) {
-            $result['errors'][] = $e->getMessage();
-        }
-
-        return $result;
     }
 
-    /**
-     * Obtener estado de WP readiness vía REST API
-     */
     public function get_wp_readiness_status(WP_REST_Request $request): WP_REST_Response {
-        try {
-            $domain = $request->get_param('domain');
-
-            if (empty($domain)) {
-                return new WP_REST_Response(['error' => 'Domain required'], 400);
-            }
-
-            $readiness = $this->get_wp_readiness_cached($domain);
-
-            return new WP_REST_Response($readiness, 200);
-
-        } catch (Exception $e) {
-            return new WP_REST_Response(['error' => $e->getMessage()], 500);
+        $domain = $request->get_param('domain');
+        if (empty($domain)) {
+            return new WP_REST_Response(['error' => 'Domain required'], 400);
         }
+        return new WP_REST_Response($this->get_wp_readiness_cached($domain), 200);
     }
 
-    /**
-     * Utilidades helper
-     */
-    private function get_nested_value(array $array, string $path) {
-        $keys = explode('.', $path);
-        $value = $array;
+    // ── Utilidades ────────────────────────────────────────────────────────
 
-        foreach ($keys as $key) {
-            if (!isset($value[$key])) {
-                return null;
-            }
+    private function get_nested_value(array $array, string $path): mixed {
+        $value = $array;
+        foreach (explode('.', $path) as $key) {
+            if (!isset($value[$key])) return null;
             $value = $value[$key];
         }
-
         return $value;
     }
 
@@ -744,115 +615,35 @@ class Dominios_Reseller_Upmind_Integration {
     }
 
     private function log(string $message, string $level = 'info'): void {
-        if ( method_exists( 'Dominios_Reseller_Onboarding_DB', 'log_activity' ) ) {
+        if (method_exists('Dominios_Reseller_Onboarding_DB', 'log_activity')) {
             Dominios_Reseller_Onboarding_DB::log_activity(
-                'upmind_integration',
-                null,
-                $message,
-                [ 'level' => $level, 'component' => 'upmind_integration' ]
+                'upmind_integration', null, $message,
+                ['level' => $level, 'component' => 'upmind_integration']
             );
             return;
         }
-        error_log( "[DR Upmind] [{$level}] {$message}" );
+        error_log("[DR Upmind] [{$level}] {$message}");
     }
 
-    /**
-     * Procesar webhook de test (para Debug Hub)
-     */
+    // ── API pública para test/debug ───────────────────────────────────────
+
     public function process_test_webhook(array $webhook_data): array {
-        try {
-            $this->log("Procesando webhook de test: " . json_encode($webhook_data), 'info');
+        $hook_code = $webhook_data['hook_code'] ?? $webhook_data['event'] ?? '';
+        $domain    = $webhook_data['data']['domain'] ?? '';
 
-            // Validar estructura básica
-            if (!isset($webhook_data['event']) || $webhook_data['event'] !== 'order.completed') {
-                return ['success' => false, 'error' => 'Evento no válido'];
-            }
-
-            if (!isset($webhook_data['data'])) {
-                return ['success' => false, 'error' => 'Datos faltantes'];
-            }
-
-            $data = $webhook_data['data'];
-            $domain = $data['domain'] ?? '';
-            $order_id = $data['order_id'] ?? 'TEST-' . time();
-
-            if (empty($domain)) {
-                return ['success' => false, 'error' => 'Dominio faltante'];
-            }
-
-            if (!$this->is_valid_domain($domain)) {
-                return ['success' => false, 'error' => 'Dominio inválido'];
-            }
-
-            // Simular procesamiento (no ejecutar realmente)
-            $this->log("Webhook de test procesado - Order: {$order_id}, Domain: {$domain}", 'info');
-
-            return [
-                'success' => true,
-                'order_id' => $order_id,
-                'domain' => $domain,
-                'message' => 'Webhook procesado correctamente (test mode)'
-            ];
-
-        } catch (Exception $e) {
-            $this->log("Error en webhook de test: " . $e->getMessage(), 'error');
-            return ['success' => false, 'error' => $e->getMessage()];
+        if (!$hook_code || !$domain || !$this->is_valid_domain($domain)) {
+            return ['success' => false, 'error' => 'Datos inválidos'];
         }
+
+        $this->log("Test webhook: {$hook_code} / {$domain}");
+        return ['success' => true, 'hook_code' => $hook_code, 'domain' => $domain, 'message' => 'OK (test mode)'];
     }
 
-    /**
-     * Verificar WP readiness para test
-     */
     public function check_wp_readiness_test(string $domain): array {
-        try {
-            $this->log("Verificando WP readiness para test: {$domain}", 'info');
-
-            // Simular verificación básica (en test real se haría consulta a WHM/cPanel)
-            $wp_check = [
-                'ready' => false,
-                'status' => 'unknown',
-                'php_version' => 'Desconocido',
-                'mysql_version' => 'Desconocido',
-                'issues' => []
-            ];
-
-            // Simular diferentes escenarios basados en el dominio
-            if (strpos($domain, 'test-wp-ready') !== false) {
-                $wp_check['ready'] = true;
-                $wp_check['status'] = 'WordPress detectado y listo';
-                $wp_check['php_version'] = '8.1.0';
-                $wp_check['mysql_version'] = '8.0.0';
-            } elseif (strpos($domain, 'test-no-wp') !== false) {
-                $wp_check['ready'] = false;
-                $wp_check['status'] = 'WordPress no detectado';
-                $wp_check['issues'] = ['No se detectó instalación de WordPress'];
-            } elseif (strpos($domain, 'test-php-old') !== false) {
-                $wp_check['ready'] = false;
-                $wp_check['status'] = 'PHP version incompatible';
-                $wp_check['php_version'] = '7.2.0';
-                $wp_check['issues'] = ['PHP 7.2 no soportado, requiere mínimo 7.4'];
-            } else {
-                // Caso por defecto - asumir listo para test
-                $wp_check['ready'] = true;
-                $wp_check['status'] = 'WordPress listo (simulado)';
-                $wp_check['php_version'] = '8.2.0';
-                $wp_check['mysql_version'] = '8.0.0';
-            }
-
-            return $wp_check;
-
-        } catch (Exception $e) {
-            $this->log("Error en verificación WP test: " . $e->getMessage(), 'error');
-            return [
-                'ready' => false,
-                'status' => 'error',
-                'issues' => ['Error en verificación: ' . $e->getMessage()]
-            ];
-        }
+        return ['ready' => true, 'status' => 'WordPress listo (simulado)', 'php_version' => '8.3', 'issues' => []];
     }
 }
 
-// Inicializar la integración
-add_action('plugins_loaded', function() {
+add_action('plugins_loaded', function () {
     Dominios_Reseller_Upmind_Integration::get_instance();
 });

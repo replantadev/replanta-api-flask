@@ -428,6 +428,19 @@
     text-decoration-color: rgba(65, 153, 159, 0.5);
 }
 
+/* ── ADDON FEATURES: CSS-ONLY MOBILE FALLBACK ──────────────────────────────
+   Esconde las features del addon usando clase en lugar de solo [hidden].
+   Cubre el caso en que Elementor/Astra sobreescribe display en mobile.
+   El JS ya gestiona .is-addon-active, así que esta regla es completamente
+   consistente con él y no requiere cambiar la lógica JavaScript.
+   ───────────────────────────────────────────────────────────────────────── */
+.replanta-plans--mantenimiento .plan-list .rep-addon-feature {
+    display: none !important;
+}
+.replanta-plans--mantenimiento .replanta-pricing-card.is-addon-active .rep-addon-feature {
+    display: flex !important;
+}
+
 .replanta-plans--mantenimiento .rep-addon-feature-hint {
     margin: 8px 0 0;
     color: var(--rep-text-muted, #5e6a63);

@@ -27,16 +27,27 @@ function dominios_reseller_render_simple_page() {
     
     // Obtener dominios principales de la base de datos
     $table = $wpdb->prefix . 'dominios_reseller';
-    
+
+    // Filtro por servidor
+    $server_filter = isset($_GET['server']) ? sanitize_key($_GET['server']) : 'all';
+    $allowed_filters = ['all', 'uk', 'usa', 'cedro'];
+    if (!in_array($server_filter, $allowed_filters)) {
+        $server_filter = 'all';
+    }
+
+    $where_server = $server_filter !== 'all'
+        ? $wpdb->prepare(" AND server = %s", strtolower($server_filter) === 'uk' ? 'UK' : (strtolower($server_filter) === 'usa' ? 'USA' : 'cedro'))
+        : '';
+
     // Debug: contar todos los dominios
-    $total_domains = $wpdb->get_var("SELECT COUNT(*) FROM $table");
+    $total_domains   = $wpdb->get_var("SELECT COUNT(*) FROM $table");
     $primary_domains = $wpdb->get_var("SELECT COUNT(*) FROM $table WHERE is_primary = 1");
-    $addon_domains = $wpdb->get_var("SELECT COUNT(*) FROM $table WHERE is_primary = 0");
-    
+    $addon_domains   = $wpdb->get_var("SELECT COUNT(*) FROM $table WHERE is_primary = 0");
+
     $domains = $wpdb->get_results("
         SELECT id, domain, server, trees_planted, co2_evaded, startdate, fecha_emision, status, last_sync, is_primary, primary_domain
         FROM $table
-        WHERE is_primary = 1
+        WHERE is_primary = 1 $where_server
         ORDER BY domain ASC
     ");
     
@@ -58,9 +69,32 @@ function dominios_reseller_render_simple_page() {
             <h2>📋 Tabla de Dominios</h2>
             <p>Gestiona los árboles plantados y calcula las emisiones de CO2 por dominio.</p>
             
+            <?php
+            // Tabs de filtro
+            $base_url  = admin_url('admin.php?page=' . esc_attr($_GET['page'] ?? 'dominios-reseller-simple'));
+            $tab_servers = [
+                'all'   => ['label' => 'Todos',  'color' => '#555'],
+                'uk'    => ['label' => 'UK',     'color' => '#007cba'],
+                'usa'   => ['label' => 'USA',    'color' => '#28a745'],
+                'cedro' => ['label' => 'Cedro',  'color' => '#2e7d32'],
+            ];
+            echo '<div style="margin-bottom:16px;">';
+            foreach ($tab_servers as $key => $tab) {
+                $active = ($server_filter === $key);
+                $style  = $active
+                    ? "background:{$tab['color']};color:white;border-color:{$tab['color']}"
+                    : "background:#f1f1f1;color:{$tab['color']};border-color:#ccc";
+                echo '<a href="' . esc_url($base_url . '&server=' . $key) . '" '
+                   . 'style="display:inline-block;padding:6px 16px;margin-right:4px;border:1px solid;border-radius:4px;'
+                   . 'text-decoration:none;font-weight:600;' . $style . '">'
+                   . esc_html($tab['label']) . '</a>';
+            }
+            echo '</div>';
+            ?>
+
             <form method="post" action="" id="domains-form">
                 <?php wp_nonce_field('update_trees_action', 'update_trees_nonce'); ?>
-                
+
                 <div style="margin-bottom: 15px;">
                     <button type="button" class="button button-primary" id="calculate-all-btn">
                         🔄 Calcular CO2 de Todos
@@ -89,8 +123,8 @@ function dominios_reseller_render_simple_page() {
                         <?php if (empty($domains)): ?>
                             <tr>
                                 <td colspan="9" style="text-align: center; padding: 40px;">
-                                    <strong>No hay dominios.</strong>
-                                    <br>Sincroniza desde WHM primero.
+                                    <strong>No hay dominios<?php echo $server_filter !== 'all' ? ' en servidor ' . strtoupper($server_filter) : ''; ?>.</strong>
+                                    <br>Sincroniza desde WHM (UK/USA) o CyberPanel (Cedro).
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -109,7 +143,12 @@ function dominios_reseller_render_simple_page() {
                                 }
                                 
                                 // Color por servidor
-                                $server_color = strtoupper($domain->server) === 'USA' ? '#28a745' : '#007cba';
+                                $srv = strtolower($domain->server ?? '');
+                                $server_color = match($srv) {
+                                    'usa'   => '#28a745',
+                                    'cedro' => '#2e7d32',
+                                    default => '#007cba',
+                                };
                                 $status_color = $domain->status === 'Activo' ? '#28a745' : '#dc3545';
                                 ?>
                                 <tr data-domain-id="<?php echo esc_attr($domain->id); ?>" data-domain="<?php echo esc_attr($domain->domain); ?>">
@@ -163,8 +202,8 @@ function dominios_reseller_render_simple_page() {
                                         ?>
                                     </td>
                                     <td>
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             class="button button-small calculate-co2-btn"
                                             data-domain-id="<?php echo esc_attr($domain->id); ?>"
                                             data-domain="<?php echo esc_attr($domain->domain); ?>"
@@ -172,6 +211,15 @@ function dominios_reseller_render_simple_page() {
                                         >
                                             🔄 Calcular
                                         </button>
+                                        <?php if (strtolower($domain->server ?? '') === 'cedro'):
+                                            $cp_url = rtrim(get_option('dr_cedro_url', 'https://cedro.replanta.net:8090'), '/');
+                                        ?>
+                                        <a href="<?php echo esc_url($cp_url); ?>" target="_blank" rel="noopener"
+                                           class="button button-small"
+                                           style="margin-left:4px;background:#2e7d32;color:white;border-color:#2e7d32">
+                                            Panel CP
+                                        </a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -192,17 +240,18 @@ function dominios_reseller_render_simple_page() {
             <h2>📊 Estadísticas Globales</h2>
             <?php
             $stats = $wpdb->get_row("
-                SELECT 
+                SELECT
                     COUNT(*) as total_domains,
                     SUM(trees_planted) as total_trees,
                     SUM(co2_evaded) as total_co2,
-                    SUM(CASE WHEN server = 'UK' THEN 1 ELSE 0 END) as uk_count,
-                    SUM(CASE WHEN server = 'USA' THEN 1 ELSE 0 END) as usa_count
+                    SUM(CASE WHEN server = 'UK'    THEN 1 ELSE 0 END) as uk_count,
+                    SUM(CASE WHEN server = 'USA'   THEN 1 ELSE 0 END) as usa_count,
+                    SUM(CASE WHEN server = 'cedro' THEN 1 ELSE 0 END) as cedro_count
                 FROM $table
                 WHERE is_primary = 1 AND status = 'Activo'
             ");
             ?>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-top: 15px;">
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 15px;">
                 <div style="text-align: center; padding: 20px; background: #f0f0f1; border-radius: 6px;">
                     <div style="font-size: 32px; font-weight: bold; color: #333;">
                         <?php echo number_format($stats->total_domains ?? 0); ?>
@@ -221,17 +270,23 @@ function dominios_reseller_render_simple_page() {
                     </div>
                     <div style="color: #666; margin-top: 5px;">💨 CO2 Evitado (kg)</div>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f0f0f1; border-radius: 6px;">
+                <div style="text-align: center; padding: 20px; background: #e3f2fd; border-radius: 6px;">
                     <div style="font-size: 32px; font-weight: bold; color: #007cba;">
                         <?php echo number_format($stats->uk_count ?? 0); ?>
                     </div>
-                    <div style="color: #666; margin-top: 5px;">🇬🇧 UK</div>
+                    <div style="color: #666; margin-top: 5px;">UK</div>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f0f0f1; border-radius: 6px;">
+                <div style="text-align: center; padding: 20px; background: #e8f5e9; border-radius: 6px;">
                     <div style="font-size: 32px; font-weight: bold; color: #28a745;">
                         <?php echo number_format($stats->usa_count ?? 0); ?>
                     </div>
-                    <div style="color: #666; margin-top: 5px;">🇺🇸 USA</div>
+                    <div style="color: #666; margin-top: 5px;">USA</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #e8f5e9; border-radius: 6px; border:2px solid #2e7d32;">
+                    <div style="font-size: 32px; font-weight: bold; color: #2e7d32;">
+                        <?php echo number_format($stats->cedro_count ?? 0); ?>
+                    </div>
+                    <div style="color: #2e7d32; margin-top: 5px; font-weight:600;">Cedro</div>
                 </div>
             </div>
         </div>

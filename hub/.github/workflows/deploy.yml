@@ -1,0 +1,87 @@
+name: Deploy Replanta Hub
+
+on:
+  push:
+    branches: [main]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  lint:
+    name: PHP Lint Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Lint all PHP files
+        run: |
+          ERRORS=0
+          while IFS= read -r file; do
+            if ! php -l "$file" > /dev/null 2>&1; then
+              php -l "$file"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done < <(find . -name "*.php" -not -path "./.git/*" -not -path "./vendor/*")
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "FAILED: $ERRORS PHP file(s) have syntax errors. Fix before releasing."
+            exit 1
+          fi
+
+          echo "All PHP files passed lint check."
+
+  deploy:
+    name: Release Hub
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: meta
+        run: |
+          VERSION=$(grep "^define('RPHUB_VERSION'" replanta-hub.php | sed "s/.*'\([0-9.]*\)'.*/\1/")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releasing v$VERSION"
+
+      - name: Build plugin zip
+        run: |
+          VERSION=${{ steps.meta.outputs.version }}
+          mkdir -p /tmp/build/replanta-hub
+
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='*.md' \
+            --exclude='config.php' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='config-sample.php' \
+            --exclude='update-info.json' \
+            ./ /tmp/build/replanta-hub/
+
+          cd /tmp/build
+          zip -r "$GITHUB_WORKSPACE/replanta-hub-${VERSION}.zip" replanta-hub/
+          echo "Built replanta-hub-${VERSION}.zip"
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.meta.outputs.version }}
+          name: Replanta Hub v${{ steps.meta.outputs.version }}
+          files: replanta-hub-${{ steps.meta.outputs.version }}.zip
+          make_latest: true
+          fail_on_unmatched_files: true
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

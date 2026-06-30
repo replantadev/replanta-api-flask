@@ -1,0 +1,575 @@
+/* Enhanced Hub Dashboard Styles */
+
+.rphub-sites-overview {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.rphub-widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.rphub-widget-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.rphub-widget-controls select {
+    min-width: 120px;
+}
+
+.rphub-bulk-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.rphub-sites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.rphub-site-card {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.rphub-site-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.rphub-site-card.selected {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.2);
+}
+
+.rphub-site-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.rphub-site-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #23282d;
+    margin: 0 0 5px 0;
+    text-decoration: none;
+}
+
+.rphub-site-title:hover {
+    color: #0073aa;
+}
+
+.rphub-site-url {
+    font-size: 13px;
+    color: #666;
+    text-decoration: none;
+}
+
+.rphub-site-checkbox {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+}
+
+.rphub-site-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rphub-site-status.online {
+    background: #d4edda;
+    color: #155724;
+}
+
+.rphub-site-status.warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.rphub-site-status.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.rphub-site-status.offline {
+    background: #f5f5f5;
+    color: #6c757d;
+}
+
+.rphub-site-plan {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rphub-plan-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.rphub-plan-semilla {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+.rphub-plan-raiz {
+    background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%);
+}
+
+.rphub-plan-ecosistema {
+    background: linear-gradient(135deg, #9C27B0 0%, #7b1fa2 100%);
+}
+
+.rphub-site-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.rphub-stat {
+    text-align: center;
+}
+
+.rphub-stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #23282d;
+}
+
+.rphub-stat-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.rphub-site-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    gap: 8px;
+}
+
+.rphub-site-actions .button {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.rphub-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid #e5e5e5;
+}
+
+.rphub-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.rphub-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0073aa;
+    border-radius: 50%;
+    animation: rphub-spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes rphub-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Maintenance Summary Widget */
+.rphub-maintenance-summary {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.rphub-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.rphub-summary-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.rphub-summary-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.rphub-card-icon {
+    margin-right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.rphub-card-backups .rphub-card-icon {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+.rphub-card-updates .rphub-card-icon {
+    background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%);
+}
+
+.rphub-card-issues .rphub-card-icon {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+}
+
+.rphub-card-revenue .rphub-card-icon {
+    background: linear-gradient(135deg, #9C27B0 0%, #7b1fa2 100%);
+}
+
+.rphub-card-content h3 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #23282d;
+}
+
+.rphub-card-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.rphub-recent-activities {
+    margin-top: 24px;
+}
+
+.rphub-recent-activities h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    color: #23282d;
+}
+
+.rphub-activity-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.rphub-activity-item {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rphub-activity-item:last-child {
+    border-bottom: none;
+}
+
+.rphub-activity-content {
+    flex: 1;
+}
+
+.rphub-activity-action {
+    font-weight: 600;
+    color: #23282d;
+    margin: 0 0 4px 0;
+}
+
+.rphub-activity-details {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+.rphub-activity-time {
+    font-size: 12px;
+    color: #999;
+    white-space: nowrap;
+    margin-left: 12px;
+}
+
+.rphub-loading-small {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+/* Revenue Stats Widget */
+.rphub-revenue-stats {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.rphub-stats-period {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.rphub-chart-container {
+    position: relative;
+    height: 200px;
+    margin-bottom: 24px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rphub-plan-breakdown h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    color: #23282d;
+}
+
+.rphub-plan-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.rphub-plan-stat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.rphub-plan-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.rphub-plan-semilla .rphub-plan-color {
+    background: #4CAF50;
+}
+
+.rphub-plan-raiz .rphub-plan-color {
+    background: #FF9800;
+}
+
+.rphub-plan-ecosistema .rphub-plan-color {
+    background: #9C27B0;
+}
+
+.rphub-plan-name {
+    flex: 1;
+    font-weight: 500;
+    color: #23282d;
+}
+
+.rphub-plan-count {
+    font-weight: bold;
+    color: #666;
+    min-width: 30px;
+    text-align: center;
+}
+
+.rphub-plan-revenue {
+    font-weight: bold;
+    color: #23282d;
+    min-width: 60px;
+    text-align: right;
+}
+
+.rphub-total-revenue {
+    padding: 12px 0;
+    border-top: 2px solid #e5e5e5;
+    text-align: right;
+    font-size: 16px;
+}
+
+.rphub-total-revenue span {
+    color: #0073aa;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .rphub-sites-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .rphub-sites-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .rphub-summary-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .rphub-widget-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .rphub-widget-controls {
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .rphub-bulk-actions {
+        flex-wrap: wrap;
+    }
+    
+    .rphub-plan-stat {
+        font-size: 14px;
+    }
+}
+
+/* Site detail modal styles */
+.rphub-site-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rphub-site-modal-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.rphub-site-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rphub-site-modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #23282d;
+}
+
+.rphub-site-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rphub-site-modal-close:hover {
+    color: #333;
+}
+
+.rphub-site-modal-body {
+    padding: 24px;
+}
+
+/* Animation classes */
+.rphub-fade-in {
+    animation: rphub-fadeIn 0.3s ease-in-out;
+}
+
+@keyframes rphub-fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility classes */
+.rphub-text-center {
+    text-align: center;
+}
+
+.rphub-text-success {
+    color: #28a745;
+}
+
+.rphub-text-warning {
+    color: #ffc107;
+}
+
+.rphub-text-danger {
+    color: #dc3545;
+}
+
+.rphub-text-muted {
+    color: #6c757d;
+}
+
+.rphub-mb-0 { margin-bottom: 0; }
+.rphub-mb-1 { margin-bottom: 8px; }
+.rphub-mb-2 { margin-bottom: 16px; }
+.rphub-mb-3 { margin-bottom: 24px; }
+
+.rphub-mt-0 { margin-top: 0; }
+.rphub-mt-1 { margin-top: 8px; }
+.rphub-mt-2 { margin-top: 16px; }
+.rphub-mt-3 { margin-top: 24px; }

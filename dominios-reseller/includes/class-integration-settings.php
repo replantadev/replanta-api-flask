@@ -51,6 +51,7 @@ class Dominios_Reseller_Integration_Settings {
         add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_ajax_dr_test_upmind_connection', [$this, 'ajax_test_upmind_connection']);
         add_action('wp_ajax_dr_test_whm_connection', [$this, 'ajax_test_whm_connection']);
+        add_action('wp_ajax_dr_test_cedro_connection', [$this, 'ajax_test_cedro_connection']);
     }
 
     /**
@@ -58,9 +59,9 @@ class Dominios_Reseller_Integration_Settings {
      */
     public function add_settings_menu(): void {
         add_submenu_page(
-            'dominios-reseller-admin',
+            'dominios-reseller',
             'Integraciones',
-            '🔗 Integraciones',
+            'Integraciones',
             'manage_options',
             self::PAGE_SLUG,
             [$this, 'render_settings_page']
@@ -84,6 +85,14 @@ class Dominios_Reseller_Integration_Settings {
         register_setting('dr_integration_settings', 'dr_whm_username');
         register_setting('dr_integration_settings', 'dr_whm_api_token');
         register_setting('dr_integration_settings', 'dr_whm_port');
+
+        // Cedro / CyberPanel Settings
+        register_setting('dr_integration_settings', 'dr_cedro_url');
+        register_setting('dr_integration_settings', 'dr_cedro_admin');
+        register_setting('dr_integration_settings', 'dr_cedro_pass');
+        register_setting('dr_integration_settings', 'dr_cedro_product_id');
+        register_setting('dr_integration_settings', 'dr_cedro_package');
+        register_setting('dr_integration_settings', 'dr_cedro_upmind_secret');
 
         // Auto-Discovery Settings
         register_setting('dr_integration_settings', 'dr_auto_discovery_enabled');
@@ -116,19 +125,19 @@ class Dominios_Reseller_Integration_Settings {
         $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'settings';
         ?>
         <div class="wrap">
-            <h1>🔗 Configuración de Integraciones</h1>
+            <h1>Integraciones</h1>
 
             <div class="dr-integration-container">
                 <!-- Navigation Tabs -->
                 <nav class="nav-tab-wrapper">
                     <a href="?page=<?php echo self::PAGE_SLUG; ?>&tab=settings" class="nav-tab <?php echo $active_tab === 'settings' ? 'nav-tab-active' : ''; ?>">
-                        ⚙️ Configuración
+                        Configuracion
                     </a>
                     <a href="?page=<?php echo self::PAGE_SLUG; ?>&tab=documentation" class="nav-tab <?php echo $active_tab === 'documentation' ? 'nav-tab-active' : ''; ?>">
-                        📚 Documentación
+                        Documentacion
                     </a>
                     <a href="?page=<?php echo self::PAGE_SLUG; ?>&tab=operation" class="nav-tab <?php echo $active_tab === 'operation' ? 'nav-tab-active' : ''; ?>">
-                        🚀 Operación
+                        Operacion
                     </a>
                 </nav>
 
@@ -139,7 +148,7 @@ class Dominios_Reseller_Integration_Settings {
 
                     <!-- Upmind Integration -->
                     <div class="dr-settings-section">
-                        <h2>🎯 Integración con Upmind</h2>
+                        <h2>Upmind</h2>
                         <p class="description">
                             Configura la integración con Upmind para onboarding automático como "optimización de bienvenida".
                         </p>
@@ -186,14 +195,14 @@ class Dominios_Reseller_Integration_Settings {
 
                         <p>
                             <button type="button" id="test-upmind-connection" class="button button-secondary">
-                                🧪 Probar Conexión con Upmind
+                                Probar conexion Upmind
                             </button>
                         </p>
                     </div>
 
                     <!-- WHM/cPanel Integration -->
                     <div class="dr-settings-section">
-                        <h2>🏠 Integración con WHM/cPanel</h2>
+                        <h2>WHM / cPanel</h2>
                         <p class="description">
                             Configura el acceso a WHM para verificación de WP readiness y gestión automática.
                         </p>
@@ -237,14 +246,84 @@ class Dominios_Reseller_Integration_Settings {
 
                         <p>
                             <button type="button" id="test-whm-connection" class="button button-secondary">
-                                🧪 Probar Conexión con WHM
+                                Probar conexion WHM
                             </button>
+                        </p>
+                    </div>
+
+                    <!-- Cedro / CyberPanel Integration -->
+                    <div class="dr-settings-section">
+                        <h2>Servidor Cedro (CyberPanel)</h2>
+                        <p class="description">
+                            Configuración del servidor verde Cedro (Hetzner CPX22, CyberPanel).
+                            Gestiona el ciclo de vida de clientes del Plan Cedro.
+                        </p>
+
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row">URL Panel CyberPanel</th>
+                                <td>
+                                    <input type="url" name="dr_cedro_url"
+                                           value="<?php echo esc_attr(get_option('dr_cedro_url', 'https://cedro.replanta.net:8090')); ?>"
+                                           class="regular-text" placeholder="https://cedro.replanta.net:8090">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Usuario Admin</th>
+                                <td>
+                                    <input type="text" name="dr_cedro_admin"
+                                           value="<?php echo esc_attr(get_option('dr_cedro_admin', '')); ?>"
+                                           class="regular-text" placeholder="admin">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Contraseña Admin</th>
+                                <td>
+                                    <input type="password" name="dr_cedro_pass"
+                                           value="<?php echo esc_attr(get_option('dr_cedro_pass', '')); ?>"
+                                           class="regular-text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Product ID Upmind</th>
+                                <td>
+                                    <input type="text" name="dr_cedro_product_id"
+                                           value="<?php echo esc_attr(get_option('dr_cedro_product_id', 'e2e071d9-31d5-e460-555a-646028758396')); ?>"
+                                           class="regular-text" placeholder="uuid-del-producto">
+                                    <p class="description">UUID del producto Cedro en Upmind (para identificar qué webhooks son Cedro)</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Paquete CyberPanel</th>
+                                <td>
+                                    <input type="text" name="dr_cedro_package"
+                                           value="<?php echo esc_attr(get_option('dr_cedro_package', 'cedro')); ?>"
+                                           class="small-text" placeholder="cedro">
+                                    <p class="description">Nombre del package en CyberPanel (30 GB, 50 email, PHP 8.3)</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Webhook Secret (Upmind)</th>
+                                <td>
+                                    <input type="password" name="dr_cedro_upmind_secret"
+                                           value="<?php echo esc_attr(get_option('dr_cedro_upmind_secret', '')); ?>"
+                                           class="regular-text">
+                                    <p class="description">Secreto HMAC para verificar la cabecera <code>X-Webhook-Signature</code> de Upmind</p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p>
+                            <button type="button" id="test-cedro-connection" class="button button-secondary">
+                                Probar conexion CyberPanel
+                            </button>
+                            <span id="cedro-connection-result" style="margin-left:12px;"></span>
                         </p>
                     </div>
 
                     <!-- Auto-Discovery Settings -->
                     <div class="dr-settings-section">
-                        <h2>🔍 Auto-Discovery</h2>
+                        <h2>Auto-Discovery</h2>
                         <p class="description">
                             Configura la detección automática de nuevos dominios.
                         </p>
@@ -294,44 +373,51 @@ class Dominios_Reseller_Integration_Settings {
 
                 <!-- Webhook URLs -->
                 <div class="dr-settings-section">
-                    <h2>🔗 URLs de Webhook</h2>
+                    <h2>URLs de Webhook</h2>
                     <p class="description">
                         Configura estas URLs en tu panel de Upmind para recibir notificaciones automáticas.
                     </p>
 
-                    <table class="widefat">
+                    <p><strong>URL (configurar en Upmind → Settings → Webhooks):</strong><br>
+                    <code><?php echo esc_url(rest_url('dominios-reseller/v1/webhook/upmind')); ?></code></p>
+
+                    <table class="widefat" style="margin-top:12px">
                         <thead>
                             <tr>
-                                <th>Servicio</th>
-                                <th>URL del Webhook</th>
-                                <th>Eventos</th>
+                                <th>Evento (<code>hook_code</code>)</th>
+                                <th>Acción en Cedro</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Upmind</td>
-                                <td><code><?php echo esc_url(rest_url('dominios-reseller/v1/webhook/upmind')); ?></code></td>
-                                <td>order.completed, service.provisioned, client.created</td>
-                            </tr>
+                            <tr><td><code>contract_product_activated_hook</code></td><td>Provisionar cuenta CyberPanel + email bienvenida</td></tr>
+                            <tr><td><code>contract_product_suspended_hook</code></td><td>Suspender website + email aviso</td></tr>
+                            <tr><td><code>contract_product_unsuspended_hook</code></td><td>Reactivar website + email aviso</td></tr>
+                            <tr><td><code>contract_product_cancelled_hook</code></td><td>Suspender + eliminación en 30 días</td></tr>
+                            <tr><td><code>contract_product_expiring_hook</code></td><td>Email recordatorio renovación</td></tr>
+                            <tr><td><code>contract_product_renewed_hook</code></td><td>Actualizar fecha renovación en BD</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- API Status -->
                 <div class="dr-settings-section">
-                    <h2>📊 Estado de APIs</h2>
+                    <h2>Estado de APIs</h2>
                     <div id="api-status-container">
                         <div class="api-status-item">
-                            <span class="status-indicator" id="upmind-status">🔄 Verificando...</span>
+                            <span class="status-indicator" id="upmind-status">Verificando...</span>
                             <span class="status-label">Upmind API</span>
                         </div>
                         <div class="api-status-item">
-                            <span class="status-indicator" id="whm-status">🔄 Verificando...</span>
+                            <span class="status-indicator" id="whm-status">Verificando...</span>
                             <span class="status-label">WHM API</span>
                         </div>
                         <div class="api-status-item">
-                            <span class="status-indicator" id="cloudflare-status">🔄 Verificando...</span>
+                            <span class="status-indicator" id="cloudflare-status">Verificando...</span>
                             <span class="status-label">Cloudflare API</span>
+                        </div>
+                        <div class="api-status-item">
+                            <span class="status-indicator" id="cedro-status">Verificando...</span>
+                            <span class="status-label">CyberPanel Cedro</span>
                         </div>
                     </div>
                 </div>
@@ -606,14 +692,51 @@ class Dominios_Reseller_Integration_Settings {
 
         <script>
         jQuery(document).ready(function($) {
-            // Auto-refresh API status
-            function updateApiStatus() {
-                // Implementar verificación de estado de APIs
-                console.log('Actualizando estado de APIs...');
-            }
+            // Test Upmind
+            $('#test-upmind-connection').on('click', function() {
+                var btn = $(this);
+                btn.prop('disabled', true).text('Probando...');
+                $.post(drIntegrationAjax.ajax_url, {
+                    action: 'dr_test_upmind_connection',
+                    nonce: drIntegrationAjax.nonce
+                }).done(function(r) {
+                    alert(r.success ? r.data : 'Error: ' + r.data);
+                }).always(function() {
+                    btn.prop('disabled', false).text('Probar conexion Upmind');
+                });
+            });
 
-            updateApiStatus();
-            setInterval(updateApiStatus, 30000); // Cada 30 segundos
+            // Test WHM
+            $('#test-whm-connection').on('click', function() {
+                var btn = $(this);
+                btn.prop('disabled', true).text('Probando...');
+                $.post(drIntegrationAjax.ajax_url, {
+                    action: 'dr_test_whm_connection',
+                    nonce: drIntegrationAjax.nonce
+                }).done(function(r) {
+                    alert(r.success ? r.data : 'Error: ' + r.data);
+                }).always(function() {
+                    btn.prop('disabled', false).text('Probar conexion WHM');
+                });
+            });
+
+            // Test Cedro
+            $('#test-cedro-connection').on('click', function() {
+                var btn = $(this);
+                var result = $('#cedro-connection-result');
+                btn.prop('disabled', true).text('Probando...');
+                result.text('').css('color', '');
+                $.post(drIntegrationAjax.ajax_url, {
+                    action: 'dr_test_cedro_connection',
+                    nonce: drIntegrationAjax.nonce
+                }).done(function(r) {
+                    result.text(r.data).css('color', r.success ? '#2e7d32' : '#c62828');
+                }).fail(function() {
+                    result.text('Error de conexión').css('color', '#c62828');
+                }).always(function() {
+                    btn.prop('disabled', false).text('Probar conexion CyberPanel');
+                });
+            });
         });
         </script>
         <?php
@@ -655,13 +778,13 @@ class Dominios_Reseller_Integration_Settings {
             $status_code = wp_remote_retrieve_response_code($response);
 
             if ($status_code === 200) {
-                wp_send_json_success('✅ Conexión exitosa con Upmind API');
+                wp_send_json_success('Conexion OK con Upmind API');
             } else {
-                wp_send_json_error("❌ Error HTTP {$status_code}: " . wp_remote_retrieve_response_message($response));
+                wp_send_json_error("Error HTTP {$status_code}: " . wp_remote_retrieve_response_message($response));
             }
 
         } catch (Exception $e) {
-            wp_send_json_error('❌ Error: ' . $e->getMessage());
+            wp_send_json_error('Error: ' . $e->getMessage());
         }
     }
 
@@ -705,17 +828,43 @@ class Dominios_Reseller_Integration_Settings {
             if ($status_code === 200) {
                 $body = json_decode(wp_remote_retrieve_body($response), true);
                 if (isset($body['version'])) {
-                    wp_send_json_success('✅ Conexión exitosa con WHM API (v' . $body['version'] . ')');
+                    wp_send_json_success('Conexion OK con WHM API v' . $body['version']);
                 } else {
-                    wp_send_json_success('✅ Conexión exitosa con WHM API');
+                    wp_send_json_success('Conexion OK con WHM API');
                 }
             } else {
-                wp_send_json_error("❌ Error HTTP {$status_code}: " . wp_remote_retrieve_response_message($response));
+                wp_send_json_error("Error HTTP {$status_code}: " . wp_remote_retrieve_response_message($response));
             }
 
         } catch (Exception $e) {
-            wp_send_json_error('❌ Error: ' . $e->getMessage());
+            wp_send_json_error('Error: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * AJAX test CyberPanel Cedro connection
+     */
+    public function ajax_test_cedro_connection(): void {
+        check_ajax_referer('dr_integration_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('No tienes permisos');
+        }
+
+        if (!class_exists('Dominios_Reseller_Cedro_Service')) {
+            wp_send_json_error('Clase CedroService no disponible');
+            return;
+        }
+
+        $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+        $result = $cedro->test_connection();
+
+        if (is_wp_error($result)) {
+            wp_send_json_error('❌ ' . $result->get_error_message());
+            return;
+        }
+
+        wp_send_json_success('Conexion OK con CyberPanel (' . get_option('dr_cedro_url', 'cedro.replanta.net') . ')');
     }
 }
 

@@ -1,0 +1,793 @@
+<!--
+  REPLANTA · Página Infraestructura v2
+  Listo para pegar en widget HTML de Elementor
+  El CSS específico va en la caja "Custom CSS" del mismo widget
+  Aprovecha tokens y utilities del global.css (Sora, Inter, Phosphor, variables --rep-*)
+-->
+
+<div class="rpl-infra">
+
+  <!-- ── 1. HERO ─────────────────────────────────────────────────── -->
+  <section class="inf-hero">
+    <div class="inf-hero-grid-bg"></div>
+    <div class="inf-hero-glow inf-hero-glow--1"></div>
+    <div class="inf-hero-glow inf-hero-glow--2"></div>
+
+    <div class="wrap">
+      <div class="inf-hero-inner">
+
+        <div class="inf-hero-content reveal">
+          <div class="inf-eyebrow">
+            <span class="inf-eyebrow-dot"></span>
+            <span>Infraestructura cloud</span>
+          </div>
+          <h1 class="inf-h1">
+            Hosting verde
+            <span class="grad-text">verificable</span>,
+            no marketing.
+          </h1>
+          <p class="inf-hero-sub">
+            Operamos dos capas de hosting con niveles de transparencia distintos:
+            <strong>Green Distribution</strong> para Sauce y Roble,
+            <strong>Green Origin certificado</strong> para Cedro en datacenter alemán con hidroeléctrica certificada.
+            Documentación auditable para tu reporting CSRD y Scope 3.
+          </p>
+
+          <div class="inf-hero-badges">
+            <span class="inf-badge"><i class="ph-bold ph-lightning"></i> LiteSpeed + HTTP/3</span>
+            <span class="inf-badge"><i class="ph-bold ph-globe"></i> Cloudflare verificada</span>
+            <span class="inf-badge"><i class="ph-bold ph-chart-line"></i> Dashboard CSRD propio</span>
+            <span class="inf-badge"><i class="ph-bold ph-certificate"></i> Datacenter ISO 27001</span>
+          </div>
+
+          <div class="inf-hero-btns">
+            <a href="/hosting-wordpress/" class="btn btn-primary">
+              <i class="ph-bold ph-rocket-launch"></i>
+              Ver planes de hosting
+            </a>
+            <a href="/planes/cedro/" class="btn btn-ghost">
+              <i class="ph-bold ph-leaf"></i>
+              Hosting para reporting CSRD
+            </a>
+          </div>
+        </div>
+
+        <div class="inf-hero-visual reveal" data-delay="2">
+          <div class="inf-uptime-card">
+            <div class="inf-uptime-dot"></div>
+            <div class="inf-uptime-text">
+              <strong>Todos los sistemas operativos</strong>
+              <small>Infraestructura monitorizada en tiempo real</small>
+            </div>
+          </div>
+
+          <div class="inf-stack-grid">
+            <div class="inf-tech-card">
+              <div class="inf-tech-ico inf-tech-ico--green">
+                <i class="ph-bold ph-lightning"></i>
+              </div>
+              <div>
+                <strong>OpenLiteSpeed</strong>
+                <span>Servidor web + LSCache</span>
+              </div>
+            </div>
+
+            <div class="inf-tech-card">
+              <div class="inf-tech-ico inf-tech-ico--teal">
+                <i class="ph-bold ph-database"></i>
+              </div>
+              <div>
+                <strong>Redis</strong>
+                <span>Caché objetos + sesiones</span>
+              </div>
+            </div>
+
+            <div class="inf-tech-card">
+              <div class="inf-tech-ico inf-tech-ico--sun">
+                <i class="ph-bold ph-shield-check"></i>
+              </div>
+              <div>
+                <strong>Cloudflare</strong>
+                <span>CDN + WAF + Turnstile</span>
+              </div>
+            </div>
+
+            <div class="inf-tech-card">
+              <div class="inf-tech-ico inf-tech-ico--white">
+                <i class="ph-bold ph-chart-line"></i>
+              </div>
+              <div>
+                <strong>Prometheus + Grafana</strong>
+                <span>Monitorización propia</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="inf-energy-card">
+            <div class="inf-energy-pulse"></div>
+            <div class="inf-energy-text">
+              <strong>Falkenstein, Alemania</strong>
+              <span>100% hidroeléctrica certificada</span>
+            </div>
+            <div class="inf-energy-pue">
+              <div class="inf-energy-pue-num">1.1</div>
+              <div class="inf-energy-pue-label">PUE</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── 2. CENTROS DE DATOS ─────────────────────────────────────── -->
+  <section class="inf-dcs">
+    <div class="wrap">
+
+      <div class="inf-dcs-head reveal">
+        <span class="kicker"><i class="ph-bold ph-buildings"></i> Centros de datos</span>
+        <h2>Tres ubicaciones, dos niveles de verde</h2>
+        <p class="muted">
+          Sauce y Roble operan desde infraestructura europea y americana con
+          <em>Green Distribution</em>. Cedro opera desde Falkenstein, Alemania,
+          con <em>Green Origin certificado</em>.
+        </p>
+      </div>
+
+      <div class="inf-dc-grid">
+
+        <div class="inf-dc reveal" data-delay="1">
+          <div class="inf-dc-tier inf-dc-tier--distrib">Green Distribution</div>
+          <div class="inf-dc-head">
+            <div class="inf-dc-loc">
+              <i class="ph-bold ph-map-pin"></i>
+              <div>
+                <strong>Londres, Reino Unido</strong>
+                <span>Europa · EU</span>
+              </div>
+            </div>
+          </div>
+          <p>
+            Datacenter europeo de clase empresarial. Latencia mínima para clientes
+            en España y resto de UE con cumplimiento RGPD por diseño.
+          </p>
+          <ul class="inf-dc-specs">
+            <li><i class="ph-bold ph-check-circle"></i> RGPD / GDPR compliant</li>
+            <li><i class="ph-bold ph-leaf"></i> Cloudflare CDN verificada delante</li>
+            <li><i class="ph-bold ph-network"></i> Uplink 10 Gbps redundante</li>
+            <li><i class="ph-bold ph-clock"></i> Latencia &lt;15ms en EU</li>
+          </ul>
+          <div class="inf-dc-plans">Para planes Sauce y Roble</div>
+        </div>
+
+        <div class="inf-dc reveal" data-delay="2">
+          <div class="inf-dc-tier inf-dc-tier--distrib">Green Distribution</div>
+          <div class="inf-dc-head">
+            <div class="inf-dc-loc">
+              <i class="ph-bold ph-map-pin"></i>
+              <div>
+                <strong>Dallas, Texas, EE.UU.</strong>
+                <span>América · LATAM</span>
+              </div>
+            </div>
+          </div>
+          <p>
+            Ubicación estratégica para clientes de Latinoamérica, México, Colombia
+            y Caribe. Conectividad premium hacia toda América con CDN delante.
+          </p>
+          <ul class="inf-dc-specs">
+            <li><i class="ph-bold ph-check-circle"></i> Optimizado LATAM</li>
+            <li><i class="ph-bold ph-leaf"></i> Cloudflare CDN verificada delante</li>
+            <li><i class="ph-bold ph-network"></i> Uplink 10 Gbps redundante</li>
+            <li><i class="ph-bold ph-clock"></i> Latencia óptima a México y Colombia</li>
+          </ul>
+          <div class="inf-dc-plans">Para planes Sauce y Roble</div>
+        </div>
+
+        <div class="inf-dc inf-dc--featured reveal" data-delay="3">
+          <div class="inf-dc-tier inf-dc-tier--origin">Green Origin certificado</div>
+          <div class="inf-dc-featured-badge">
+            <i class="ph-bold ph-star"></i>
+            <span>Nuevo</span>
+          </div>
+          <div class="inf-dc-head">
+            <div class="inf-dc-loc">
+              <i class="ph-bold ph-map-pin"></i>
+              <div>
+                <strong>Falkenstein, Alemania</strong>
+                <span>Europa · Datacenter certificado</span>
+              </div>
+            </div>
+          </div>
+          <p>
+            Servidor cloud dedicado en datacenter alemán certificado.
+            <strong>100% energía hidroeléctrica certificada</strong>,
+            verificado por The Green Web Foundation, ISO 27001:2022.
+            Apto para reporting CSRD y Scope 3.
+          </p>
+          <ul class="inf-dc-specs">
+            <li><i class="ph-bold ph-leaf"></i> Hidroeléctrica certificada</li>
+            <li><i class="ph-bold ph-certificate"></i> ISO 27001:2022</li>
+            <li><i class="ph-bold ph-check-circle"></i> Verificado por The Green Web Foundation</li>
+            <li><i class="ph-bold ph-chart-line"></i> Dashboard CSRD incluido</li>
+            <li><i class="ph-bold ph-clock"></i> Latencia &lt;30ms EU</li>
+          </ul>
+          <div class="inf-dc-plans">Para plan Cedro</div>
+        </div>
+
+      </div>
+
+      <div class="inf-cdn-band reveal">
+        <div class="inf-cdn-ico"><i class="ph-bold ph-globe-hemisphere-west"></i></div>
+        <div class="inf-cdn-text">
+          <h3>Cloudflare CDN delante de todo</h3>
+          <p>
+            Independientemente del plan, el contenido estático se entrega desde el nodo
+            más cercano al visitante. Cloudflare está
+            <strong>100% renovable verificada por The Green Web Foundation desde 2018</strong>.
+          </p>
+        </div>
+        <div class="inf-cdn-stat">
+          <div class="inf-cdn-stat-num">300+</div>
+          <div class="inf-cdn-stat-label">Puntos de presencia globales</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 3. NIVELES DE VERDE ─────────────────────────────────────── -->
+  <section class="inf-levels">
+    <div class="wrap">
+
+      <div class="inf-levels-head reveal">
+        <span class="kicker"><i class="ph-bold ph-leaf"></i> Niveles de sostenibilidad</span>
+        <h2>Dos niveles de verde,
+          <span class="grad-text">cero greenwashing</span>
+        </h2>
+        <p class="muted">
+          Diferenciamos lo que se puede verificar de lo que se compensa. Honestidad
+          antes que sellos inflables. Cada plan tiene su cadena documental.
+        </p>
+      </div>
+
+      <div class="inf-levels-grid">
+
+        <div class="inf-level inf-level--distrib reveal" data-delay="1">
+          <div class="inf-level-icon">
+            <i class="ph-bold ph-arrows-out-cardinal"></i>
+          </div>
+          <div class="inf-level-tier">Nivel 1</div>
+          <h3>Green Distribution</h3>
+          <p class="inf-level-tagline">Para Sauce y Roble</p>
+          <p class="inf-level-desc">
+            La mayor parte del tráfico se sirve desde infraestructura verde verificada
+            (Cloudflare CDN). El origen opera con compensación 2x de emisiones
+            mediante proyectos certificados.
+          </p>
+
+          <div class="inf-level-features">
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Cloudflare CDN 100% renovable verificada por GWF</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Compensación 2x de emisiones operativas</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Datacenters europeos y americanos</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle"></i>
+              <span>1 árbol al año vía Tree-Nation</span>
+            </div>
+          </div>
+
+          <div class="inf-level-suited">
+            <strong>Adecuado para:</strong>
+            <span>Webs informativas, blogs, pymes con tráfico modesto, autónomos.</span>
+          </div>
+        </div>
+
+        <div class="inf-level inf-level--origin reveal" data-delay="2">
+          <div class="inf-level-icon">
+            <i class="ph-bold ph-tree"></i>
+          </div>
+          <div class="inf-level-tier inf-level-tier--featured">Nivel 2</div>
+          <h3>Green Origin certificado</h3>
+          <p class="inf-level-tagline">Para Cedro</p>
+          <p class="inf-level-desc">
+            Cadena completa verde verificada de extremo a extremo.
+            Servidor en datacenter alemán con hidroeléctrica certificada.
+            Documentación auditable para reporting CSRD.
+          </p>
+
+          <div class="inf-level-features">
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle inf-level-feature-icon--featured"></i>
+              <span>Datacenter Falkenstein 100% hidroeléctrica certificada</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle inf-level-feature-icon--featured"></i>
+              <span>Datacenter verificado por The Green Web Foundation</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle inf-level-feature-icon--featured"></i>
+              <span>ISO 27001:2022 + PUE 1.1-1.2</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle inf-level-feature-icon--featured"></i>
+              <span>Dashboard CSRD con métricas en tiempo real</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle inf-level-feature-icon--featured"></i>
+              <span>Apto para Scope 3 y reporting CSRD</span>
+            </div>
+            <div class="inf-level-feature">
+              <i class="ph-bold ph-check-circle inf-level-feature-icon--featured"></i>
+              <span>1 árbol al año vía Tree-Nation</span>
+            </div>
+          </div>
+
+          <div class="inf-level-suited">
+            <strong>Adecuado para:</strong>
+            <span>Ecommerce WooCommerce serio, empresas con obligaciones ESG/CSRD, agencias que reportan a clientes corporativos.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 4. STACK TECNOLÓGICO ───────────────────────────────────── -->
+  <section class="inf-stack">
+    <div class="wrap">
+
+      <div class="inf-stack-head reveal">
+        <span class="kicker"><i class="ph-bold ph-cpu"></i> Stack tecnológico</span>
+        <h2>Cada capa con un propósito real</h2>
+        <p class="muted">
+          No apilamos tecnología por moda. Cada componente está elegido para ofrecer
+          el mejor rendimiento con el menor impacto ambiental posible.
+        </p>
+      </div>
+
+      <div class="inf-stack-cats">
+
+        <div class="inf-cat reveal" data-delay="1">
+          <div class="inf-cat-head">
+            <div class="inf-cat-ico inf-cat-ico--1">
+              <i class="ph-bold ph-lightning"></i>
+            </div>
+            <h3>Servidor y caché</h3>
+          </div>
+          <ul class="inf-cat-list">
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>OpenLiteSpeed + LSCache</strong>
+                <p>Servidor web alta eficiencia con HTTP/3 nativo y caché líder para WordPress y WooCommerce.</p>
+              </div>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>Redis Object Cache</strong>
+                <p>Caché en memoria RAM para objetos WordPress. Reduce drásticamente la carga sobre base de datos.</p>
+              </div>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>MariaDB + OpCache PHP</strong>
+                <p>Base de datos optimizada y bytecode PHP en RAM. Respuesta instantánea en sitios dinámicos.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="inf-cat reveal" data-delay="2">
+          <div class="inf-cat-head">
+            <div class="inf-cat-ico inf-cat-ico--2">
+              <i class="ph-bold ph-shield-check"></i>
+            </div>
+            <h3>Seguridad multicapa</h3>
+          </div>
+          <ul class="inf-cat-list">
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>Cloudflare WAF + Turnstile</strong>
+                <p>Mitigación DDoS automática y filtrado de bots maliciosos antes de llegar al servidor.</p>
+              </div>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>ModSecurity WAF</strong>
+                <p>Firewall de aplicación web a nivel servidor en Cedro. Capa adicional sobre Cloudflare.</p>
+              </div>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>SSL automático + Fail2ban</strong>
+                <p>Certificados Let's Encrypt con renovación sin intervención. Bloqueo automático de ataques de fuerza bruta.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="inf-cat reveal" data-delay="3">
+          <div class="inf-cat-head">
+            <div class="inf-cat-ico inf-cat-ico--3">
+              <i class="ph-bold ph-envelope-simple"></i>
+            </div>
+            <h3>Email y continuidad</h3>
+          </div>
+          <ul class="inf-cat-list">
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>Email premium white-label</strong>
+                <p>Buzones profesionales con anti-spam de nivel empresarial y deliverability garantizada.</p>
+              </div>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>Backups diarios offsite</strong>
+                <p>Copias encriptadas en ubicación remota con 30 días de retención y restauración bajo demanda.</p>
+              </div>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <div>
+                <strong>Migraciones sin downtime</strong>
+                <p>Trasladamos archivos, base de datos y DNS sin tiempo de inactividad ni coste adicional.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 5. CLOUDFLARE LAYER ────────────────────────────────────── -->
+  <section class="inf-cf">
+    <div class="inf-cf-glow"></div>
+    <div class="wrap">
+      <div class="inf-cf-inner">
+
+        <div class="inf-cf-content reveal">
+          <span class="kicker kicker--light"><i class="ph-bold ph-shield-check"></i> Capa Cloudflare</span>
+          <h2>Seguridad y velocidad
+            <span class="inf-cf-gradient-text">sin compromisos</span>
+          </h2>
+          <p>
+            Cloudflare actúa como escudo inteligente entre internet y tu servidor.
+            Cada petición pasa por su red antes de llegar a tu sitio, filtrando
+            amenazas y optimizando la entrega global.
+          </p>
+
+          <div class="inf-cf-grid">
+            <div class="inf-cf-item">
+              <i class="ph-bold ph-shield-plus"></i>
+              <strong>Reglas de caché</strong>
+              <p>Caché inteligente para assets estáticos con exclusiones para WP-admin y carritos WooCommerce.</p>
+            </div>
+            <div class="inf-cf-item">
+              <i class="ph-bold ph-lock-key"></i>
+              <strong>Headers SSL/TLS</strong>
+              <p>HSTS, HPKP y respuestas de seguridad configuradas por defecto en todos los sitios.</p>
+            </div>
+            <div class="inf-cf-item">
+              <i class="ph-bold ph-robot"></i>
+              <strong>Mitigación de bots</strong>
+              <p>Detección y bloqueo de tráfico malicioso antes de generar carga en el servidor.</p>
+            </div>
+            <div class="inf-cf-item">
+              <i class="ph-bold ph-fire"></i>
+              <strong>Protección DDoS</strong>
+              <p>Absorción automática de ataques volumétricos sin impacto en la disponibilidad.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="inf-cf-panel reveal" data-delay="2">
+          <div class="inf-cf-panel-head">
+            <i class="ph-bold ph-cloud-arrow-up"></i>
+            <h3>Red global de entrega</h3>
+          </div>
+          <div class="inf-cf-stats">
+            <div class="inf-cf-stat-row">
+              <div class="inf-cf-stat-ico"><i class="ph-bold ph-globe"></i></div>
+              <div>
+                <strong>+300 puntos de presencia globales</strong>
+                <span>Contenido entregado desde el nodo más cercano</span>
+              </div>
+            </div>
+            <div class="inf-cf-stat-row">
+              <div class="inf-cf-stat-ico"><i class="ph-bold ph-clock"></i></div>
+              <div>
+                <strong>Latencia media EU bajo 15ms</strong>
+                <span>Para assets cacheados en Cloudflare CDN</span>
+              </div>
+            </div>
+            <div class="inf-cf-stat-row">
+              <div class="inf-cf-stat-ico"><i class="ph-bold ph-shield-check"></i></div>
+              <div>
+                <strong>WAF activo en todos los planes</strong>
+                <span>Reglas específicas WordPress y WooCommerce</span>
+              </div>
+            </div>
+            <div class="inf-cf-stat-row">
+              <div class="inf-cf-stat-ico"><i class="ph-bold ph-leaf"></i></div>
+              <div>
+                <strong>100% renovable verificada por GWF</strong>
+                <span>Verificado por The Green Web Foundation desde 2018</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── 6. MONITORIZACIÓN CSRD (KILLER FEATURE) ────────────────── -->
+  <section class="inf-monit">
+    <div class="wrap">
+
+      <div class="inf-monit-head reveal">
+        <span class="kicker"><i class="ph-bold ph-chart-line-up"></i> Monitorización y reporting CSRD</span>
+        <h2>No solo decimos que somos verdes.
+          <span class="grad-text">Lo medimos.</span>
+        </h2>
+        <p class="muted">
+          Sistema propio de monitorización con Prometheus y Grafana. Dashboards con
+          métricas reales de consumo energético, huella de carbono y eficiencia.
+          Datos exportables para tu reporting CSRD y Scope 3.
+        </p>
+      </div>
+
+      <div class="inf-monit-dashboard reveal" data-delay="1">
+
+        <div class="inf-dash-header">
+          <div class="inf-dash-title">
+            <i class="ph-bold ph-chart-line-up"></i>
+            <span>Dashboard CSRD · Replanta Cedro</span>
+          </div>
+          <div class="inf-dash-status">
+            <span class="inf-dash-status-dot"></span>
+            <span>En vivo</span>
+          </div>
+        </div>
+
+        <div class="inf-dash-grid">
+
+          <div class="inf-dash-card inf-dash-card--big">
+            <div class="inf-dash-card-head">
+              <i class="ph-bold ph-leaf"></i>
+              <span>Huella de carbono</span>
+            </div>
+            <div class="inf-dash-card-value">0.34<small> g CO₂/visita</small></div>
+            <div class="inf-dash-card-meta">
+              <span class="inf-dash-trend inf-dash-trend--good">
+                <i class="ph-bold ph-arrow-down"></i> 78% bajo media sector
+              </span>
+            </div>
+            <div class="inf-dash-card-chart">
+              <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="gradGreen" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" stop-color="#93F1C9" stop-opacity=".6"/>
+                    <stop offset="1" stop-color="#93F1C9" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,45 L20,42 L40,38 L60,32 L80,28 L100,30 L120,22 L140,18 L160,20 L180,14 L200,10 L200,60 L0,60 Z"
+                      fill="url(#gradGreen)"/>
+                <path d="M0,45 L20,42 L40,38 L60,32 L80,28 L100,30 L120,22 L140,18 L160,20 L180,14 L200,10"
+                      stroke="#41999F" stroke-width="2" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="inf-dash-card">
+            <div class="inf-dash-card-head">
+              <i class="ph-bold ph-lightning"></i>
+              <span>Consumo energético</span>
+            </div>
+            <div class="inf-dash-card-value">12.4<small> kWh/día</small></div>
+            <div class="inf-dash-card-meta">
+              <span>100% hidroeléctrica</span>
+            </div>
+          </div>
+
+          <div class="inf-dash-card">
+            <div class="inf-dash-card-head">
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Uptime 30 días</span>
+            </div>
+            <div class="inf-dash-card-value">99.98<small>%</small></div>
+            <div class="inf-dash-card-meta">
+              <span>SLA 99.9% cumplido</span>
+            </div>
+          </div>
+
+          <div class="inf-dash-card">
+            <div class="inf-dash-card-head">
+              <i class="ph-bold ph-gauge"></i>
+              <span>PUE datacenter</span>
+            </div>
+            <div class="inf-dash-card-value">1.12</div>
+            <div class="inf-dash-card-meta">
+              <span>Media sector: 1.55</span>
+            </div>
+          </div>
+
+          <div class="inf-dash-card inf-dash-card--bars">
+            <div class="inf-dash-card-head">
+              <i class="ph-bold ph-chart-bar"></i>
+              <span>Eficiencia últimas 24h</span>
+            </div>
+            <div class="inf-dash-bars">
+              <div class="inf-dash-bar" style="--h:42%"></div>
+              <div class="inf-dash-bar" style="--h:58%"></div>
+              <div class="inf-dash-bar" style="--h:71%"></div>
+              <div class="inf-dash-bar" style="--h:64%"></div>
+              <div class="inf-dash-bar" style="--h:82%"></div>
+              <div class="inf-dash-bar" style="--h:76%"></div>
+              <div class="inf-dash-bar" style="--h:65%"></div>
+              <div class="inf-dash-bar" style="--h:54%"></div>
+              <div class="inf-dash-bar" style="--h:69%"></div>
+              <div class="inf-dash-bar" style="--h:78%"></div>
+              <div class="inf-dash-bar" style="--h:85%"></div>
+              <div class="inf-dash-bar" style="--h:72%"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="inf-monit-features reveal" data-delay="2">
+        <div class="inf-monit-feat">
+          <i class="ph-bold ph-database"></i>
+          <div>
+            <h4>Métricas en tiempo real</h4>
+            <p>Prometheus + Grafana monitorizando recursos, energía, uptime y respuesta del servidor segundo a segundo.</p>
+          </div>
+        </div>
+        <div class="inf-monit-feat">
+          <i class="ph-bold ph-file-text"></i>
+          <div>
+            <h4>Reporting CSRD listo</h4>
+            <p>Exporta datos directamente para integrarlos en tu reporte de sostenibilidad. Metodología CO2.js y Sustainable Web Design.</p>
+          </div>
+        </div>
+        <div class="inf-monit-feat">
+          <i class="ph-bold ph-bell"></i>
+          <div>
+            <h4>Alertas proactivas</h4>
+            <p>Notificación inmediata ante anomalías de recursos, downtime o eventos críticos. Resolvemos antes de que afecte.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 7. SOSTENIBILIDAD ──────────────────────────────────────── -->
+  <section class="inf-green">
+    <div class="wrap">
+      <div class="inf-green-inner">
+
+        <div class="inf-green-content reveal">
+          <span class="kicker"><i class="ph-bold ph-leaf"></i> Infraestructura verde</span>
+          <h2>Rendimiento que no cuesta al planeta</h2>
+          <p>
+            Elegimos solo proveedores y datacenters con compromisos reales de
+            sostenibilidad. No es una casilla marcada, es un criterio obligatorio
+            de selección para cada componente de la pila.
+          </p>
+
+          <ul class="inf-green-list">
+            <li>Cloudflare CDN 100% renovable verificada por The Green Web Foundation</li>
+            <li>Cedro en datacenter Falkenstein con energía hidroeléctrica certificada</li>
+            <li>PUE 1.1-1.2 en datacenter Falkenstein, muy por encima de la media del sector (1.55)</li>
+            <li>Compensación 2x de emisiones operativas en planes Sauce y Roble</li>
+            <li>Programa Tree-Nation: 1 árbol plantado al año por cliente activo</li>
+            <li>Dashboard CSRD propio con métricas auditables</li>
+          </ul>
+
+          <div class="inf-green-certs">
+            <span class="inf-cert"><i class="ph-bold ph-leaf"></i> Cloudflare verde GWF</span>
+            <span class="inf-cert"><i class="ph-bold ph-buildings"></i> Datacenter ISO 27001</span>
+            <span class="inf-cert"><i class="ph-bold ph-thermometer"></i> PUE 1.1-1.2</span>
+            <span class="inf-cert"><i class="ph-bold ph-tree"></i> Tree-Nation partner</span>
+          </div>
+        </div>
+
+        <div class="inf-green-stats reveal" data-delay="2">
+          <div class="inf-gstat">
+            <div class="inf-gstat-num">100%</div>
+            <div class="inf-gstat-desc">Hidroeléctrica certificada en Falkenstein (Cedro)</div>
+          </div>
+          <div class="inf-gstat">
+            <div class="inf-gstat-num">1.12</div>
+            <div class="inf-gstat-desc">PUE datacenter Cedro vs 1.55 media sector</div>
+          </div>
+          <div class="inf-gstat">
+            <div class="inf-gstat-num">2×</div>
+            <div class="inf-gstat-desc">CO₂ compensado vs CO₂ emitido en Sauce y Roble</div>
+          </div>
+          <div class="inf-gstat">
+            <div class="inf-gstat-num">CSRD</div>
+            <div class="inf-gstat-desc">Apto para reporting Scope 3 en plan Cedro</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── 8. FINAL CTA ───────────────────────────────────────────── -->
+  <section class="inf-cta">
+    <div class="inf-cta-glow"></div>
+    <div class="wrap">
+      <div class="inf-cta-inner reveal">
+        <span class="kicker kicker--light"><i class="ph-bold ph-rocket-launch"></i> Empieza hoy</span>
+        <h2>
+          Infraestructura de nivel empresarial
+          <span class="inf-cta-highlight">sin complejidad</span>
+        </h2>
+        <p>
+          Disfruta del stack más avanzado del mercado gestionado por nuestro equipo.
+          Tú te focalizas en tu negocio, nosotros nos ocupamos del servidor.
+        </p>
+        <div class="inf-cta-btns">
+          <a href="/hosting-wordpress/" class="btn btn-accent">
+            <i class="ph-bold ph-rocket-launch"></i>
+            Ver planes de hosting
+          </a>
+          <a href="/planes/cedro/" class="btn btn-ghost">
+            <i class="ph-bold ph-leaf"></i>
+            Hosting para reporting CSRD
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.1, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.rpl-infra .reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rpl-infra .reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+})();
+</script>

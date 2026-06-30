@@ -183,7 +183,7 @@ class Dominios_Reseller_Cloudflare_Service {
             return [
                 'Authorization' => 'Bearer ' . $token,
                 'Content-Type'  => 'application/json',
-                'User-Agent'    => 'WordPress/Dominios-Reseller/1.5.7'
+                'User-Agent'    => 'WordPress/Dominios-Reseller/' . (defined('DOMINIOS_RESELLER_VERSION') ? DOMINIOS_RESELLER_VERSION : '1.7.3')
             ];
         }
 
@@ -193,7 +193,7 @@ class Dominios_Reseller_Cloudflare_Service {
                 'X-Auth-Email'  => $email,
                 'X-Auth-Key'    => $global_key,
                 'Content-Type'  => 'application/json',
-                'User-Agent'    => 'WordPress/Dominios-Reseller/1.5.7'
+                'User-Agent'    => 'WordPress/Dominios-Reseller/' . (defined('DOMINIOS_RESELLER_VERSION') ? DOMINIOS_RESELLER_VERSION : '1.7.3')
             ];
         }
 
@@ -404,7 +404,7 @@ class Dominios_Reseller_Cloudflare_Service {
                         'deleted_at'   => null // Restaurar si estaba marcada como eliminada
                     ],
                     ['zone_id' => $zone['zone_id']],
-                    ['%s', '%s', '%s', '%s', '%s', '%d', '%s', null],
+                    ['%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s'],
                     ['%s']
                 );
                 $stats['zones_updated']++;
@@ -1373,6 +1373,7 @@ class Dominios_Reseller_Cloudflare_Service {
             'polish', 'mirage', 'image_resizing', 'prefetch_preload',
             '0rtt', 'h2_prioritization', 'webp',
             'origin_error_page_pass_thru', 'true_client_ip_header',
+            'challenge_ttl',
         ];
 
         // Settings deprecated by CF — skip silently
@@ -1397,7 +1398,7 @@ class Dominios_Reseller_Cloudflare_Service {
                 $error_msg = $apply_result->get_error_message();
                 
                 // Si el error es por plan (Free no soporta) o setting no disponible, registrar como degradación no crítica
-                if (in_array($setting_name, $pro_only_settings) || 
+                if (in_array($setting_name, $pro_only_settings) ||
                     stripos($error_msg, 'not available') !== false ||
                     stripos($error_msg, 'upgrade') !== false ||
                     stripos($error_msg, 'entitlement') !== false ||
@@ -1406,7 +1407,10 @@ class Dominios_Reseller_Cloudflare_Service {
                     stripos($error_msg, 'unknown setting') !== false ||
                     stripos($error_msg, 'invalid setting') !== false ||
                     stripos($error_msg, 'deprecated') !== false ||
-                    stripos($error_msg, 'not allowed') !== false) {
+                    stripos($error_msg, 'not allowed') !== false ||
+                    stripos($error_msg, 'reconocido') !== false ||
+                    stripos($error_msg, 'no disponible') !== false ||
+                    stripos($error_msg, 'no permitido') !== false) {
                     $results['settings_skipped'][] = $setting_name . ' (no disponible en este plan/zona)';
                 } else {
                     $results['settings_failed'][] = $setting_name;
@@ -1463,16 +1467,38 @@ class Dominios_Reseller_Cloudflare_Service {
         
         $expression = implode(' or ', $bot_patterns);
         
+        $ai_rule_name = 'AI Crawlers Block (Dominios Reseller)';
+
+        // Idempotencia: verificar si la regla ya existe
+        $ruleset_id = $this->get_or_create_firewall_ruleset($zone_id);
+        if (!is_wp_error($ruleset_id)) {
+            $existing = $this->api_get('/zones/' . $zone_id . '/rulesets/' . $ruleset_id);
+            if (!is_wp_error($existing)) {
+                foreach ($existing['result']['rules'] ?? [] as $existing_rule) {
+                    if (strtolower($existing_rule['description'] ?? '') === strtolower($ai_rule_name)) {
+                        $results['ai_crawlers'][] = 'Blocked (ya existe): ' . implode(', ', $blocked_bots);
+                        return;
+                    }
+                }
+            }
+        }
+
         // Crear regla de firewall
         $rule_result = $this->create_firewall_rule($zone_id, [
-            'name'       => 'AI Crawlers Block (Dominios Reseller)',
+            'name'       => $ai_rule_name,
             'expression' => $expression,
             'action'     => 'block'
         ]);
 
         if (is_wp_error($rule_result)) {
-            $results['errors'][] = 'AI Crawlers: ' . $rule_result->get_error_message();
-            $results['partial'] = true;
+            $err = $rule_result->get_error_message();
+            // Soft-skip si se alcanza el límite de plan
+            if (stripos($err, 'exceeded') !== false || stripos($err, 'maximum') !== false) {
+                $results['ai_crawlers'][] = 'Skipped (límite de plan alcanzado)';
+            } else {
+                $results['errors'][] = 'AI Crawlers: ' . $err;
+                $results['partial'] = true;
+            }
         } else {
             $results['ai_crawlers'][] = 'Blocked: ' . implode(', ', $blocked_bots);
         }
@@ -1503,11 +1529,18 @@ class Dominios_Reseller_Cloudflare_Service {
         ]);
 
         if (is_wp_error($result)) {
-            // Bot Management puede no estar disponible en Free
-            if (strpos($result->get_error_message(), 'not available') !== false) {
-                $results['bot_management'][] = 'Skipped (requiere plan superior)';
+            // Bot Management / SBFM solo disponible en Pro+
+            $err = $result->get_error_message();
+            $is_plan_error = stripos($err, 'not available') !== false
+                || stripos($err, 'Bad Request') !== false
+                || stripos($err, 'not entitled') !== false
+                || stripos($err, 'upgrade') !== false
+                || stripos($err, 'requires') !== false
+                || stripos($err, 'unauthorized') !== false;
+            if ($is_plan_error) {
+                $results['bot_management'][] = 'Skipped (requiere plan Pro o superior)';
             } else {
-                $results['errors'][] = 'Bot Management: ' . $result->get_error_message();
+                $results['errors'][] = 'Bot Management: ' . $err;
                 $results['partial'] = true;
             }
         } else {
@@ -1535,20 +1568,18 @@ class Dominios_Reseller_Cloudflare_Service {
         }
 
         // Construir action_parameters para los headers
+        // CF espera objeto keyed por nombre, no array indexado
         $header_actions = [];
         foreach ($headers as $header_name => $header_value) {
-            $header_actions[] = [
+            $header_actions[$header_name] = [
                 'operation' => 'set',
-                'header'    => [
-                    'name'  => $header_name,
-                    'value' => $header_value
-                ]
+                'value'     => $header_value,
             ];
         }
 
         // Crear regla de Transform
         $rule = [
-            'expression'  => 'true', // Aplicar a todas las respuestas
+            'expression'  => 'true',
             'description' => 'Security Headers (Dominios Reseller)',
             'action'      => 'rewrite',
             'action_parameters' => [
@@ -1601,26 +1632,48 @@ class Dominios_Reseller_Cloudflare_Service {
      */
     private function apply_firewall_rules(string $zone_id, array $config, array &$results): void {
         $rules = $config['rules'] ?? [];
-        
+
+        // Obtener reglas existentes para idempotencia (evita duplicados y límite de plan)
+        $existing_descriptions = [];
+        $ruleset_id = $this->get_or_create_firewall_ruleset($zone_id);
+        if (!is_wp_error($ruleset_id)) {
+            $existing = $this->api_get('/zones/' . $zone_id . '/rulesets/' . $ruleset_id);
+            if (!is_wp_error($existing)) {
+                foreach ($existing['result']['rules'] ?? [] as $existing_rule) {
+                    $existing_descriptions[] = strtolower($existing_rule['description'] ?? '');
+                }
+            }
+        }
+
         foreach ($rules as $rule) {
             if (!($rule['enabled'] ?? true)) {
                 $results['firewall_rules'][] = $rule['name'] . ' (skipped - disabled)';
                 continue;
             }
 
+            $dr_name = $rule['name'] . ' (DR)';
+
+            // Idempotencia: skip si ya existe una regla con la misma descripción
+            if (in_array(strtolower($dr_name), $existing_descriptions)) {
+                $results['firewall_rules'][] = $rule['name'] . ' (ya existe)';
+                continue;
+            }
+
             $result = $this->create_firewall_rule($zone_id, [
-                'name'       => $rule['name'] . ' (DR)',
+                'name'       => $dr_name,
                 'expression' => $rule['expression'],
                 'action'     => $rule['action']
             ]);
 
             if (is_wp_error($result)) {
                 $error_msg = $result->get_error_message();
-                
-                // Si ya existe una regla similar, saltar
-                if (strpos($error_msg, 'already exists') !== false || 
-                    strpos($error_msg, 'duplicate') !== false) {
-                    $results['firewall_rules'][] = $rule['name'] . ' (ya existe)';
+
+                // Soft-skip: regla duplicada o límite de plan alcanzado
+                if (stripos($error_msg, 'already exists') !== false ||
+                    stripos($error_msg, 'duplicate') !== false ||
+                    stripos($error_msg, 'exceeded') !== false ||
+                    stripos($error_msg, 'maximum') !== false) {
+                    $results['firewall_rules'][] = $rule['name'] . ' (ya existe o límite alcanzado)';
                 } else {
                     $results['errors'][] = "Firewall '{$rule['name']}': $error_msg";
                     $results['partial'] = true;
@@ -1735,16 +1788,18 @@ class Dominios_Reseller_Cloudflare_Service {
             $create_result = $this->create_cache_rule($zone_id, $rule);
             
             if (is_wp_error($create_result)) {
-                // Si falla por plan (Free no soporta algunas reglas), registrar como degradación
                 $error_msg = $create_result->get_error_message();
-                if (strpos($error_msg, 'not available') !== false || 
-                    strpos($error_msg, 'upgrade') !== false ||
-                    strpos($error_msg, 'entitlement') !== false) {
-                    $results['errors'][] = "Regla '$rule_name' no disponible en plan Free (degradación)";
+                // Soft-skip: plan limitation or rule limit reached
+                if (stripos($error_msg, 'not available') !== false ||
+                    stripos($error_msg, 'upgrade') !== false ||
+                    stripos($error_msg, 'entitlement') !== false ||
+                    stripos($error_msg, 'exceeded') !== false ||
+                    stripos($error_msg, 'maximum') !== false) {
+                    $results['skipped'][] = $rule_name . ' (límite de plan)';
                 } else {
                     $results['errors'][] = "Regla '$rule_name': $error_msg";
+                    $results['failed'][] = $rule_name;
                 }
-                $results['failed'][] = $rule_name;
             } else {
                 $results['applied'][] = $rule_name;
             }
@@ -1998,5 +2053,107 @@ class Dominios_Reseller_Cloudflare_Service {
             'valid'  => empty($errors),
             'errors' => $errors
         ];
+    }
+
+    // ── DNS Records ──────────────────────────────────────────────────────────
+
+    /**
+     * Listar registros DNS de una zona.
+     *
+     * @return array[]|WP_Error  Array de registros CF o WP_Error.
+     */
+    public function list_dns_records(string $zone_id): array|WP_Error {
+        $result = $this->api_get("/zones/{$zone_id}/dns_records", ['per_page' => 500]);
+        if (is_wp_error($result)) {
+            return $result;
+        }
+        return $result['result'] ?? [];
+    }
+
+    /**
+     * Crear un registro DNS en Cloudflare.
+     *
+     * @param string $zone_id
+     * @param array  $record  [type, name, content, ttl?, proxied?, priority?]
+     * @return array|WP_Error
+     */
+    public function create_dns_record(string $zone_id, array $record): array|WP_Error {
+        $payload = [
+            'type'    => strtoupper($record['type']),
+            'name'    => $record['name'],
+            'content' => $record['content'],
+            'ttl'     => $record['ttl'] ?? 1,      // 1 = Auto en CF
+            'proxied' => $record['proxied'] ?? false,
+        ];
+
+        if ($payload['type'] === 'MX') {
+            $payload['priority'] = $record['priority'] ?? 10;
+        }
+        if ($payload['type'] === 'SRV') {
+            $payload['data'] = $record['data'] ?? [];
+            unset($payload['content']);
+        }
+        // proxied solo aplica a A, AAAA y CNAME
+        if (!in_array($payload['type'], ['A', 'AAAA', 'CNAME'])) {
+            $payload['proxied'] = false;
+        }
+
+        return $this->api_post("/zones/{$zone_id}/dns_records", $payload);
+    }
+
+    /**
+     * Importar un conjunto de registros normalizados a una zona CF.
+     * Es idempotente: omite registros cuyo tipo+nombre+contenido ya exista.
+     *
+     * @param string $zone_id
+     * @param array  $records   Array de registros normalizados:
+     *                          [type, name, content, ttl?, proxied?, priority?]
+     * @return array            [imported, skipped, errors[]]
+     */
+    public function import_dns_records(string $zone_id, array $records): array {
+        $result = ['imported' => 0, 'skipped' => 0, 'errors' => []];
+
+        if (empty($records)) {
+            return $result;
+        }
+
+        // Obtener registros existentes para deduplicar
+        $existing = $this->list_dns_records($zone_id);
+        $existing_keys = [];
+        if (is_array($existing)) {
+            foreach ($existing as $r) {
+                $key = strtoupper($r['type']) . '|' . strtolower($r['name']) . '|' . strtolower($r['content'] ?? '');
+                $existing_keys[$key] = true;
+            }
+        }
+
+        foreach ($records as $rec) {
+            $type    = strtoupper($rec['type'] ?? '');
+            $name    = strtolower($rec['name'] ?? '');
+            $content = strtolower($rec['content'] ?? '');
+
+            // Skip SOA y NS — CF los gestiona
+            if (in_array($type, ['SOA', 'NS'])) {
+                $result['skipped']++;
+                continue;
+            }
+
+            $key = "{$type}|{$name}|{$content}";
+            if (isset($existing_keys[$key])) {
+                $result['skipped']++;
+                continue;
+            }
+
+            $cf_result = $this->create_dns_record($zone_id, $rec);
+            if (is_wp_error($cf_result)) {
+                $result['errors'][] = "{$type} {$rec['name']}: " . $cf_result->get_error_message();
+            } else {
+                $result['imported']++;
+                // Añadir al índice para que registros duplicados en el array fuente no se creen dos veces
+                $existing_keys[$key] = true;
+            }
+        }
+
+        return $result;
     }
 }

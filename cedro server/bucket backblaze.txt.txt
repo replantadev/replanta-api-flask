@@ -1,0 +1,6 @@
+keyID:
+60bdad1b1904
+keyName:
+Master Application Key
+applicationKey:
+003a6f9cf528d3dd2683c0ad9141ad7a2537303dd9 

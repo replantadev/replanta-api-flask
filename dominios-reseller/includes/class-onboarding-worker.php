@@ -101,6 +101,9 @@ class Dominios_Reseller_Onboarding_Worker {
     private function init_hooks(): void {
         // Hook del sistema legacy (cron)
         add_action(self::CRON_HOOK, [$this, 'process_queue']);
+
+        // Registrar intervalo personalizado antes de programar el cron.
+        add_filter('cron_schedules', [$this, 'add_cron_interval']);
         
         // Hooks del nuevo sistema async
         add_action(self::ACTION_ZONE_CHECK, [$this, 'action_zone_check'], 10, 2);
@@ -112,9 +115,6 @@ class Dominios_Reseller_Onboarding_Worker {
         if (!wp_next_scheduled(self::CRON_HOOK)) {
             wp_schedule_event(time(), 'every_minute', self::CRON_HOOK);
         }
-
-        // Registrar intervalo personalizado
-        add_filter('cron_schedules', [$this, 'add_cron_interval']);
     }
 
     /**
@@ -136,9 +136,9 @@ class Dominios_Reseller_Onboarding_Worker {
      * @param bool $auto_update_ns Actualizar NS en Openprovider automáticamente
      * @return array Resultado del encolado
      */
-    public function enqueue(string $primary_domain, string $preset_key, bool $auto_update_ns = false): array {
+    public function enqueue(string $primary_domain, string $preset_key, bool $auto_update_ns = false, bool $schedule_cron = true): array {
         $primary_domain = strtolower(trim($primary_domain));
-        
+
         // Validar preset
         $preset = Dominios_Reseller_Onboarding_DB::get_preset($preset_key);
         if (!$preset) {
@@ -151,75 +151,53 @@ class Dominios_Reseller_Onboarding_Worker {
         // Verificar estado actual
         $current_state = Dominios_Reseller_Onboarding_DB::get_onboarding_state($primary_domain);
 
-        // Lógica mejorada de estados
         if ($current_state) {
             $state = $current_state['state'];
 
             // Estados que permiten re-encolar
-            if (in_array($state, ['error', 'failed', 'needs_manual_ns', 'partial'])) {
-                // Permitir re-encolar si falló o está incompleto
+            if (in_array($state, ['error', 'failed', 'needs_manual_ns', 'partial', 'pending_ns'])) {
                 Dominios_Reseller_Onboarding_DB::log(
-                    null,
-                    $primary_domain,
-                    'enqueue',
-                    'info',
+                    null, $primary_domain, 'enqueue', 'info',
                     "Re-encolando dominio con estado '$state' - preset anterior: {$current_state['preset_key']}"
                 );
             }
-            // Estados activos - no permitir
-            elseif (in_array($state, [self::STATE_ZONE_CHECK, self::STATE_ZONE_WAIT_NS, self::STATE_PRESET_APPLY, self::STATE_NS_UPDATE])) {
+            // Estados activos - no permitir doble ejecución
+            elseif (in_array($state, ['pending', 'running', self::STATE_QUEUED, self::STATE_ZONE_CHECK, self::STATE_ZONE_WAIT_NS, self::STATE_PRESET_APPLY, self::STATE_NS_UPDATE])) {
                 return [
-                    'success' => false,
-                    'error'   => "El dominio está siendo procesado actualmente (estado: $state)",
+                    'success'       => false,
+                    'error'         => "El dominio está siendo procesado actualmente (estado: $state)",
                     'current_state' => $state,
-                    'can_retry' => false
+                    'can_retry'     => false
                 ];
             }
-            // Estados completados exitosamente - permitir actualizar configuración
+            // Completado con mismo preset — re-aplicar sin bloquear (idempotente)
             elseif (in_array($state, ['onboarded', 'completed'])) {
-                // Si el preset es diferente, permitir actualización
-                if ($current_state['preset_key'] !== $preset_key) {
-                    return [
-                        'success' => false,
-                        'error'   => "El dominio ya está configurado con preset '{$current_state['preset_key']}'. ¿Desea cambiar a preset '$preset_key'?",
-                        'current_state' => $state,
-                        'can_update' => true,
-                        'current_preset' => $current_state['preset_key'],
-                        'new_preset' => $preset_key
-                    ];
-                } else {
-                    return [
-                        'success' => false,
-                        'error'   => "El dominio ya está completamente configurado con el mismo preset. No se requieren cambios.",
-                        'current_state' => $state,
-                        'can_update' => false,
-                        'current_preset' => $current_state['preset_key']
-                    ];
-                }
+                Dominios_Reseller_Onboarding_DB::log(
+                    null, $primary_domain, 'enqueue', 'info',
+                    "Re-aplicando preset '$preset_key' sobre dominio ya completado"
+                );
             }
         }
 
         // Generar run_id
         $run_id = Dominios_Reseller_Onboarding_DB::generate_run_id();
 
-        // Inicializar estado en BD con nueva estructura
+        // Inicializar registro de run
         Dominios_Reseller_Onboarding_DB::init_onboarding_run($run_id, $primary_domain, [
-            'preset_key' => $preset_key,
+            'preset_key'     => $preset_key,
             'auto_update_ns' => $auto_update_ns,
-            'state' => self::STATE_QUEUED,
-            'started_at' => current_time('mysql'),
-            'retries' => 0
+            'state'          => self::STATE_QUEUED,
+            'started_at'     => current_time('mysql'),
+            'retries'        => 0
         ]);
 
-        // Programar primera acción: verificar/crear zona
-        wp_schedule_single_event(time() + 5, self::ACTION_ZONE_CHECK, [$run_id, $primary_domain]);
+        // Programar WP-Cron solo si se pide (para uso desde CLI/cron externo)
+        if ($schedule_cron) {
+            wp_schedule_single_event(time() + 5, self::ACTION_ZONE_CHECK, [$run_id, $primary_domain]);
+        }
 
-        // Log inicio
         Dominios_Reseller_Onboarding_DB::log(
-            $run_id,
-            $primary_domain,
-            'enqueue',
-            'info',
+            $run_id, $primary_domain, 'enqueue', 'info',
             "Dominio encolado para onboarding con preset '$preset_key'"
         );
 
@@ -227,6 +205,42 @@ class Dominios_Reseller_Onboarding_Worker {
             'success' => true,
             'run_id'  => $run_id,
             'message' => 'Dominio encolado correctamente'
+        ];
+    }
+
+    /**
+     * Ejecutar onboarding completo de forma síncrona y devolver el estado final.
+     * Úsalo desde AJAX para dar feedback inmediato al usuario.
+     */
+    public function run_now(string $domain, string $preset_key, bool $auto_ns = false): array {
+        // No usar WP-Cron — ejecutamos en el mismo request
+        $enqueue = $this->enqueue($domain, $preset_key, $auto_ns, false);
+
+        if (!$enqueue['success']) {
+            return $enqueue;
+        }
+
+        $run_id = $enqueue['run_id'];
+
+        // Ejecutar síncronamente (mismo flujo que process_queue pero sin lock de cola)
+        $this->process_single([
+            'primary_domain' => $domain,
+            'last_run_id'    => $run_id,
+            'preset_key'     => $preset_key,
+            'auto_update_ns' => $auto_ns,
+        ]);
+
+        // Leer estado final de BD
+        $final = Dominios_Reseller_Onboarding_DB::get_onboarding_state($domain);
+
+        return [
+            'success'     => true,
+            'run_id'      => $run_id,
+            'state'       => $final['state'] ?? 'error',
+            'zone_id'     => $final['zone_id'] ?? null,
+            'nameservers' => !empty($final['nameservers']) ? json_decode($final['nameservers'], true) : [],
+            'last_error'  => $final['last_error'] ?? null,
+            'preset_key'  => $final['preset_key'] ?? $preset_key,
         ];
     }
 
@@ -285,6 +299,7 @@ class Dominios_Reseller_Onboarding_Worker {
 
             $zone_id = $zone_result['zone_id'];
             $nameservers = $zone_result['nameservers'];
+            $ns_pending = !($zone_result['ns_verified'] ?? false);
 
             // Guardar zone_id y NS
             Dominios_Reseller_Onboarding_DB::upsert_onboarding($primary_domain, [
@@ -294,26 +309,26 @@ class Dominios_Reseller_Onboarding_Worker {
             ]);
 
             // Si la zona ya existía pero NS no apuntan a CF, marcar como pending_ns
-            if (($zone_result['existed'] ?? false) && !($zone_result['ns_verified'] ?? true)) {
-                $final_state = 'pending_ns';
-                $error_msg = 'Zona existe en CF pero los NS del dominio no apuntan a Cloudflare. ' 
+            if ($ns_pending) {
+                $error_msg = 'Zona en CF preparada, pero los NS del dominio no apuntan a Cloudflare. '
                            . ($zone_result['ns_message'] ?? 'Configura los NS en tu registrar.');
-                
-                Dominios_Reseller_Onboarding_DB::update_state($primary_domain, $final_state, $error_msg);
+
+                Dominios_Reseller_Onboarding_DB::update_state($primary_domain, 'pending_ns', $error_msg);
                 Dominios_Reseller_Onboarding_DB::log(
                     $run_id, $primary_domain, 'ns_pending', 'warning',
                     $error_msg,
                     ['zone_id' => $zone_id, 'ns_verified' => false]
                 );
-                
-                // Continuar con preset pero registrar que NS están pendientes
                 Dominios_Reseller_Onboarding_DB::log(
                     $run_id, $primary_domain, 'preset_info', 'info',
                     'Se aplicará preset aunque NS estén pendientes (se activará cuando el dominio migre sus NS).'
                 );
             }
 
-            // Paso 2: Aplicar preset
+            // Paso 2: Importar registros DNS desde el servidor de hosting
+            $this->step_import_dns_records($run_id, $primary_domain, $zone_id);
+
+            // Paso 3: Aplicar preset
             $preset_result = $this->step_apply_preset($run_id, $primary_domain, $zone_id, $preset_key);
             
             // Paso 3: Actualizar NS en Openprovider (si está habilitado)
@@ -323,8 +338,10 @@ class Dominios_Reseller_Onboarding_Worker {
             }
 
             // Determinar estado final
-            $final_state = 'onboarded';
-            $error_msg = null;
+            $final_state = $ns_pending ? 'pending_ns' : 'onboarded';
+            $error_msg = $ns_pending
+                ? 'Nameservers pendientes de verificacion. El preset ya se dejo preparado en Cloudflare.'
+                : null;
 
             if (!$preset_result['success']) {
                 if ($preset_result['partial']) {
@@ -499,7 +516,66 @@ class Dominios_Reseller_Onboarding_Worker {
     }
 
     /**
-     * Paso 2: Aplicar preset a la zona
+     * Paso 2: Importar registros DNS del servidor de hosting a la zona CF.
+     *
+     * - Detecta el servidor (cedro/uk/usa) del dominio en la BD.
+     * - Llama a la API del servidor para obtener los registros.
+     * - Los importa a CF de forma idempotente (no sobrescribe existentes).
+     * - No bloquea el onboarding si falla: solo loguea.
+     */
+    private function step_import_dns_records(string $run_id, string $primary_domain, string $zone_id): void {
+        Dominios_Reseller_Onboarding_DB::log($run_id, $primary_domain, 'import_dns', 'info', 'Importando registros DNS desde servidor de hosting');
+
+        try {
+            // Determinar servidor del dominio
+            global $wpdb;
+            $server = $wpdb->get_var($wpdb->prepare(
+                "SELECT server FROM {$wpdb->prefix}dominios_reseller WHERE primary_domain = %s AND is_primary = 1 LIMIT 1",
+                $primary_domain
+            )) ?? '';
+
+            $records = [];
+
+            if ($server === 'cedro') {
+                $cedro = Dominios_Reseller_Cedro_Service::get_instance();
+                $records = $cedro->get_dns_records($primary_domain);
+            } elseif (in_array($server, ['uk', 'usa'])) {
+                if (function_exists('dominios_reseller_get_whm_dns_records')) {
+                    $records = dominios_reseller_get_whm_dns_records($primary_domain, $server);
+                }
+            } else {
+                Dominios_Reseller_Onboarding_DB::log($run_id, $primary_domain, 'import_dns', 'warning',
+                    "Servidor desconocido o no encontrado en BD: '$server'. Se omite importación DNS."
+                );
+                return;
+            }
+
+            if (empty($records)) {
+                Dominios_Reseller_Onboarding_DB::log($run_id, $primary_domain, 'import_dns', 'warning',
+                    "No se obtuvieron registros DNS del servidor '$server'. La zona CF puede quedar vacía."
+                );
+                return;
+            }
+
+            $import = $this->cf_service->import_dns_records($zone_id, $records);
+
+            Dominios_Reseller_Onboarding_DB::log($run_id, $primary_domain, 'import_dns',
+                empty($import['errors']) ? 'info' : 'warning',
+                sprintf('DNS importados: %d añadidos, %d ya existían, %d errores',
+                    $import['imported'], $import['skipped'], count($import['errors'])),
+                ['imported' => $import['imported'], 'skipped' => $import['skipped'], 'errors' => $import['errors']]
+            );
+
+        } catch (\Exception $e) {
+            // No fallar el onboarding por un error de DNS
+            Dominios_Reseller_Onboarding_DB::log($run_id, $primary_domain, 'import_dns', 'error',
+                'Excepción importando DNS: ' . $e->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Paso 3: Aplicar preset a la zona
      */
     private function step_apply_preset(string $run_id, string $primary_domain, string $zone_id, string $preset_key): array {
         Dominios_Reseller_Onboarding_DB::log($run_id, $primary_domain, 'apply_preset', 'info', "Aplicando preset '$preset_key'");
@@ -773,7 +849,7 @@ class Dominios_Reseller_Onboarding_Worker {
         }
 
         // Solo se puede reintentar si falló o tiene error
-        if (!in_array($state['state'], ['failed', 'error', self::STATE_FAILED])) {
+        if (!in_array($state['state'], ['failed', 'error', self::STATE_FAILED, 'partial', 'needs_manual_ns', 'pending_ns'])) {
             return [
                 'success' => false,
                 'error' => "No se puede reintentar: estado actual es '{$state['state']}'"
@@ -991,6 +1067,9 @@ class Dominios_Reseller_Onboarding_Worker {
 
             $zone_id = $run_data['zone_id'];
             $preset_key = $run_data['preset_key'];
+
+            // Asegurar que los presets estén actualizados antes de cargar
+            Dominios_Reseller_Onboarding_DB::insert_default_presets();
 
             // Cargar preset desde DB
             $preset = Dominios_Reseller_Onboarding_DB::get_preset($preset_key);

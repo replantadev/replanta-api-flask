@@ -1,0 +1,820 @@
+<?php
+/**
+ * JetBackup Integration for Replanta Hub
+ * 
+ * Handles backup creation, restoration, scheduling and monitoring
+ * via JetBackup API
+ */
+
+class ReplantaHub_JetBackup_Integration {
+    
+    private $api_url;
+    private $api_key;
+    private $server_ip;
+    
+    public function __construct() {
+        $this->api_url = get_option('rphub_jetbackup_api_url', '');
+        $this->api_key = get_option('rphub_jetbackup_api_key', '');
+        $this->server_ip = get_option('rphub_server_ip', '');
+        
+        add_action('init', [$this, 'init']);
+    }
+    
+    public function init() {
+        // AJAX handlers
+        add_action('wp_ajax_rphub_jetbackup_create_backup', [$this, 'ajax_create_backup']);
+        add_action('wp_ajax_rphub_jetbackup_list_backups', [$this, 'ajax_list_backups']);
+        add_action('wp_ajax_rphub_jetbackup_restore_backup', [$this, 'ajax_restore_backup']);
+        add_action('wp_ajax_rphub_jetbackup_delete_backup', [$this, 'ajax_delete_backup']);
+        add_action('wp_ajax_rphub_jetbackup_download_backup', [$this, 'ajax_download_backup']);
+        add_action('wp_ajax_rphub_jetbackup_get_backup_details', [$this, 'ajax_get_backup_details']);
+        add_action('wp_ajax_rphub_jetbackup_schedule_backup', [$this, 'ajax_schedule_backup']);
+        
+        // Scheduled tasks
+        add_action('rphub_jetbackup_auto_backup', [$this, 'scheduled_auto_backup']);
+        add_action('rphub_jetbackup_cleanup_old_backups', [$this, 'scheduled_cleanup_backups']);
+        
+        // Schedule events
+        if (!wp_next_scheduled('rphub_jetbackup_auto_backup')) {
+            wp_schedule_event(time(), 'daily', 'rphub_jetbackup_auto_backup');
+        }
+        
+        if (!wp_next_scheduled('rphub_jetbackup_cleanup_old_backups')) {
+            wp_schedule_event(time(), 'weekly', 'rphub_jetbackup_cleanup_old_backups');
+        }
+    }
+    
+    /**
+     * Check if JetBackup integration is configured
+     */
+    public function is_configured() {
+        return !empty($this->api_url) && !empty($this->api_key);
+    }
+    
+    /**
+     * Create backup using JetBackup
+     */
+    public function create_backup($domain, $options = []) {
+        $default_options = [
+            'type' => 'full', // full, files, database
+            'compression' => 'gzip',
+            'exclude_cache' => true,
+            'exclude_logs' => true,
+            'description' => '',
+            'retention_days' => 30,
+            'priority' => 'normal' // low, normal, high
+        ];
+        
+        $options = array_merge($default_options, $options);
+        $options['description'] = $options['description'] ?: 'Backup automático - ' . date('Y-m-d H:i:s');
+        
+        $response = $this->make_api_request('POST', '/accounts/' . $domain . '/backups', $options);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $backup_data = [
+            'backup_id' => $response['backup_id'] ?? '',
+            'status' => $response['status'] ?? 'pending',
+            'type' => $options['type'],
+            'size' => $response['size'] ?? 0,
+            'progress' => $response['progress'] ?? 0,
+            'created_at' => current_time('mysql'),
+            'estimated_completion' => $response['estimated_completion'] ?? '',
+            'description' => $options['description']
+        ];
+        
+        // Store backup info in database
+        $this->store_backup_info($domain, $backup_data);
+        
+        return $backup_data;
+    }
+    
+    /**
+     * List all backups for a domain
+     */
+    public function list_backups($domain, $limit = 50) {
+        $response = $this->make_api_request('GET', '/accounts/' . $domain . '/backups?limit=' . $limit);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $backups = [];
+        
+        foreach ($response['backups'] ?? [] as $backup) {
+            $backups[] = [
+                'backup_id' => $backup['id'] ?? '',
+                'type' => $backup['type'] ?? 'full',
+                'status' => $backup['status'] ?? 'unknown',
+                'size' => $this->format_file_size($backup['size'] ?? 0),
+                'size_bytes' => $backup['size'] ?? 0,
+                'created_at' => $backup['created_at'] ?? '',
+                'completed_at' => $backup['completed_at'] ?? '',
+                'description' => $backup['description'] ?? '',
+                'retention_until' => $backup['retention_until'] ?? '',
+                'is_restorable' => $backup['status'] === 'completed',
+                'download_url' => $backup['download_url'] ?? '',
+                'files_count' => $backup['files_count'] ?? 0,
+                'databases_count' => $backup['databases_count'] ?? 0
+            ];
+        }
+        
+        // Sort by creation date (newest first)
+        usort($backups, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+        
+        return $backups;
+    }
+    
+    /**
+     * Get detailed backup information
+     */
+    public function get_backup_details($domain, $backup_id) {
+        $response = $this->make_api_request('GET', '/accounts/' . $domain . '/backups/' . $backup_id);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        return [
+            'backup_id' => $response['id'] ?? '',
+            'type' => $response['type'] ?? 'full',
+            'status' => $response['status'] ?? 'unknown',
+            'size' => $this->format_file_size($response['size'] ?? 0),
+            'size_bytes' => $response['size'] ?? 0,
+            'created_at' => $response['created_at'] ?? '',
+            'completed_at' => $response['completed_at'] ?? '',
+            'description' => $response['description'] ?? '',
+            'retention_until' => $response['retention_until'] ?? '',
+            'files_included' => $response['files_included'] ?? [],
+            'databases_included' => $response['databases_included'] ?? [],
+            'excluded_files' => $response['excluded_files'] ?? [],
+            'compression_ratio' => $response['compression_ratio'] ?? 0,
+            'backup_speed' => $response['backup_speed'] ?? '',
+            'storage_location' => $response['storage_location'] ?? '',
+            'checksum' => $response['checksum'] ?? '',
+            'can_restore' => $response['status'] === 'completed',
+            'can_download' => !empty($response['download_url']),
+            'download_url' => $response['download_url'] ?? '',
+            'restore_points' => $response['restore_points'] ?? []
+        ];
+    }
+    
+    /**
+     * Restore backup
+     */
+    public function restore_backup($domain, $backup_id, $options = []) {
+        $default_options = [
+            'restore_type' => 'full', // full, files, database, selective
+            'overwrite_existing' => true,
+            'create_backup_before_restore' => true,
+            'restore_location' => 'original',
+            'selected_files' => [],
+            'selected_databases' => []
+        ];
+        
+        $options = array_merge($default_options, $options);
+        
+        // Create pre-restore backup if requested
+        if ($options['create_backup_before_restore']) {
+            $pre_restore_backup = $this->create_backup($domain, [
+                'type' => 'full',
+                'description' => 'Pre-restore backup - ' . date('Y-m-d H:i:s')
+            ]);
+            
+            if (is_wp_error($pre_restore_backup)) {
+                return new WP_Error('pre_restore_backup_failed', 'No se pudo crear backup pre-restauración');
+            }
+        }
+        
+        $response = $this->make_api_request('POST', '/accounts/' . $domain . '/backups/' . $backup_id . '/restore', $options);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $restore_data = [
+            'restore_id' => $response['restore_id'] ?? '',
+            'status' => $response['status'] ?? 'pending',
+            'progress' => $response['progress'] ?? 0,
+            'estimated_completion' => $response['estimated_completion'] ?? '',
+            'started_at' => current_time('mysql'),
+            'pre_restore_backup_id' => $pre_restore_backup['backup_id'] ?? ''
+        ];
+        
+        // Store restore info
+        $this->store_restore_info($domain, $backup_id, $restore_data);
+        
+        return $restore_data;
+    }
+    
+    /**
+     * Delete backup
+     */
+    public function delete_backup($domain, $backup_id) {
+        $response = $this->make_api_request('DELETE', '/accounts/' . $domain . '/backups/' . $backup_id);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        // Remove from local database
+        $this->remove_backup_info($domain, $backup_id);
+        
+        return [
+            'deleted' => true,
+            'backup_id' => $backup_id,
+            'deleted_at' => current_time('mysql')
+        ];
+    }
+    
+    /**
+     * Schedule automated backups
+     */
+    public function schedule_backup($domain, $schedule) {
+        $default_schedule = [
+            'frequency' => 'daily', // daily, weekly, monthly
+            'time' => '02:00',
+            'backup_type' => 'full',
+            'retention_days' => 30,
+            'enabled' => true,
+            'exclude_cache' => true,
+            'exclude_logs' => true,
+            'email_notifications' => true
+        ];
+        
+        $schedule = array_merge($default_schedule, $schedule);
+        
+        $response = $this->make_api_request('POST', '/accounts/' . $domain . '/backup-schedules', $schedule);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        // Store schedule in local database
+        $this->store_backup_schedule($domain, $schedule);
+        
+        return [
+            'schedule_id' => $response['schedule_id'] ?? '',
+            'status' => 'active',
+            'next_backup' => $response['next_backup'] ?? '',
+            'created_at' => current_time('mysql')
+        ];
+    }
+    
+    /**
+     * Get backup statistics for dashboard
+     */
+    public function get_backup_stats($domain) {
+        $backups = $this->list_backups($domain);
+        
+        if (is_wp_error($backups)) {
+            return $backups;
+        }
+        
+        $stats = [
+            'total_backups' => count($backups),
+            'successful_backups' => 0,
+            'failed_backups' => 0,
+            'pending_backups' => 0,
+            'total_size' => 0,
+            'last_backup' => null,
+            'last_successful_backup' => null,
+            'backup_frequency' => $this->calculate_backup_frequency($backups),
+            'retention_compliance' => $this->check_retention_compliance($domain),
+            'storage_usage' => 0
+        ];
+        
+        foreach ($backups as $backup) {
+            $stats['total_size'] += $backup['size_bytes'];
+            
+            switch ($backup['status']) {
+                case 'completed':
+                    $stats['successful_backups']++;
+                    if (!$stats['last_successful_backup']) {
+                        $stats['last_successful_backup'] = $backup;
+                    }
+                    break;
+                case 'failed':
+                    $stats['failed_backups']++;
+                    break;
+                case 'pending':
+                case 'running':
+                    $stats['pending_backups']++;
+                    break;
+            }
+            
+            if (!$stats['last_backup']) {
+                $stats['last_backup'] = $backup;
+            }
+        }
+        
+        $stats['total_size_formatted'] = $this->format_file_size($stats['total_size']);
+        $stats['success_rate'] = $stats['total_backups'] > 0 ? 
+            round(($stats['successful_backups'] / $stats['total_backups']) * 100, 1) : 0;
+        
+        return $stats;
+    }
+    
+    /**
+     * Get backup health status
+     */
+    public function get_backup_health($domain) {
+        $stats = $this->get_backup_stats($domain);
+        
+        if (is_wp_error($stats)) {
+            return $stats;
+        }
+        
+        $health = [
+            'status' => 'good',
+            'score' => 100,
+            'issues' => [],
+            'recommendations' => []
+        ];
+        
+        // Check last backup age
+        if ($stats['last_successful_backup']) {
+            $last_backup_age = time() - strtotime($stats['last_successful_backup']['created_at']);
+            
+            if ($last_backup_age > 7 * DAY_IN_SECONDS) {
+                $health['issues'][] = 'Último backup exitoso hace más de 7 días';
+                $health['score'] -= 30;
+            } elseif ($last_backup_age > 3 * DAY_IN_SECONDS) {
+                $health['issues'][] = 'Último backup exitoso hace más de 3 días';
+                $health['score'] -= 15;
+            }
+        } else {
+            $health['issues'][] = 'No hay backups exitosos';
+            $health['score'] -= 50;
+        }
+        
+        // Check success rate
+        if ($stats['success_rate'] < 80) {
+            $health['issues'][] = 'Baja tasa de éxito en backups (' . $stats['success_rate'] . '%)';
+            $health['score'] -= 20;
+        }
+        
+        // Check pending backups
+        if ($stats['pending_backups'] > 2) {
+            $health['issues'][] = 'Múltiples backups pendientes';
+            $health['score'] -= 10;
+        }
+        
+        // Determine overall status
+        if ($health['score'] >= 80) {
+            $health['status'] = 'good';
+        } elseif ($health['score'] >= 60) {
+            $health['status'] = 'warning';
+        } else {
+            $health['status'] = 'critical';
+        }
+        
+        // Generate recommendations
+        $health['recommendations'] = $this->generate_backup_recommendations($stats, $health);
+        
+        return $health;
+    }
+    
+    /**
+     * Generate backup recommendations
+     */
+    private function generate_backup_recommendations($stats, $health) {
+        $recommendations = [];
+        
+        if ($stats['total_backups'] === 0) {
+            $recommendations[] = 'Configurar backup automático diario';
+        }
+        
+        if ($stats['success_rate'] < 90) {
+            $recommendations[] = 'Revisar configuración de backups - tasa de fallos alta';
+        }
+        
+        if (!$stats['last_successful_backup'] || 
+            time() - strtotime($stats['last_successful_backup']['created_at']) > 2 * DAY_IN_SECONDS) {
+            $recommendations[] = 'Ejecutar backup manual inmediatamente';
+        }
+        
+        if ($stats['total_backups'] > 50) {
+            $recommendations[] = 'Revisar política de retención - demasiados backups almacenados';
+        }
+        
+        if ($health['score'] < 70) {
+            $recommendations[] = 'Revisar logs de JetBackup para identificar problemas';
+        }
+        
+        return $recommendations;
+    }
+    
+    /**
+     * Calculate backup frequency
+     */
+    private function calculate_backup_frequency($backups) {
+        if (count($backups) < 2) {
+            return 'insufficient_data';
+        }
+        
+        $dates = array_map(function($backup) {
+            return strtotime($backup['created_at']);
+        }, array_slice($backups, 0, 10)); // Use last 10 backups
+        
+        sort($dates);
+        $intervals = [];
+        
+        for ($i = 1; $i < count($dates); $i++) {
+            $intervals[] = $dates[$i] - $dates[$i-1];
+        }
+        
+        $avg_interval = array_sum($intervals) / count($intervals);
+        
+        if ($avg_interval <= DAY_IN_SECONDS * 1.5) {
+            return 'daily';
+        } elseif ($avg_interval <= DAY_IN_SECONDS * 7 * 1.5) {
+            return 'weekly';
+        } elseif ($avg_interval <= DAY_IN_SECONDS * 30 * 1.5) {
+            return 'monthly';
+        } else {
+            return 'irregular';
+        }
+    }
+    
+    /**
+     * Check retention compliance
+     */
+    private function check_retention_compliance($domain) {
+        // Get backup schedule for domain
+        global $wpdb;
+        $table_schedules = $wpdb->prefix . 'rphub_backup_schedules';
+        
+        $schedule = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM $table_schedules WHERE domain = %s AND status = 'active'",
+            $domain
+        ), ARRAY_A);
+        
+        if (!$schedule) {
+            return 'no_policy';
+        }
+        
+        $retention_days = $schedule['retention_days'] ?? 30;
+        $backups = $this->list_backups($domain);
+        
+        if (is_wp_error($backups)) {
+            return 'error';
+        }
+        
+        $expired_backups = 0;
+        $cutoff_date = time() - ($retention_days * DAY_IN_SECONDS);
+        
+        foreach ($backups as $backup) {
+            if (strtotime($backup['created_at']) < $cutoff_date) {
+                $expired_backups++;
+            }
+        }
+        
+        return $expired_backups === 0 ? 'compliant' : 'non_compliant';
+    }
+    
+    /**
+     * Format file size
+     */
+    private function format_file_size($bytes) {
+        if ($bytes >= 1073741824) {
+            return number_format($bytes / 1073741824, 2) . ' GB';
+        } elseif ($bytes >= 1048576) {
+            return number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            return number_format($bytes / 1024, 2) . ' KB';
+        } else {
+            return $bytes . ' bytes';
+        }
+    }
+    
+    /**
+     * Store backup information in database
+     */
+    private function store_backup_info($domain, $backup_data) {
+        global $wpdb;
+        $table_backups = $wpdb->prefix . 'rphub_backups';
+        
+        $wpdb->insert($table_backups, [
+            'domain' => $domain,
+            'backup_id' => $backup_data['backup_id'],
+            'type' => $backup_data['type'],
+            'status' => $backup_data['status'],
+            'size' => $backup_data['size'],
+            'description' => $backup_data['description'],
+            'created_at' => $backup_data['created_at']
+        ]);
+    }
+    
+    /**
+     * Store restore information
+     */
+    private function store_restore_info($domain, $backup_id, $restore_data) {
+        global $wpdb;
+        $table_restores = $wpdb->prefix . 'rphub_restores';
+        
+        $wpdb->insert($table_restores, [
+            'domain' => $domain,
+            'backup_id' => $backup_id,
+            'restore_id' => $restore_data['restore_id'],
+            'status' => $restore_data['status'],
+            'started_at' => $restore_data['started_at']
+        ]);
+    }
+    
+    /**
+     * Store backup schedule
+     */
+    private function store_backup_schedule($domain, $schedule) {
+        global $wpdb;
+        $table_schedules = $wpdb->prefix . 'rphub_backup_schedules';
+        
+        // Deactivate existing schedules
+        $wpdb->update($table_schedules, 
+            ['status' => 'inactive'], 
+            ['domain' => $domain]
+        );
+        
+        // Insert new schedule
+        $wpdb->insert($table_schedules, [
+            'domain' => $domain,
+            'frequency' => $schedule['frequency'],
+            'backup_time' => $schedule['time'],
+            'backup_type' => $schedule['backup_type'],
+            'retention_days' => $schedule['retention_days'],
+            'status' => 'active',
+            'settings' => json_encode($schedule),
+            'created_at' => current_time('mysql')
+        ]);
+    }
+    
+    /**
+     * Remove backup info from database
+     */
+    private function remove_backup_info($domain, $backup_id) {
+        global $wpdb;
+        $table_backups = $wpdb->prefix . 'rphub_backups';
+        
+        $wpdb->delete($table_backups, [
+            'domain' => $domain,
+            'backup_id' => $backup_id
+        ]);
+    }
+    
+    /**
+     * Make API request to JetBackup
+     */
+    private function make_api_request($method, $endpoint, $data = []) {
+        if (empty($this->api_url) || empty($this->api_key)) {
+            return new WP_Error('missing_credentials', 'JetBackup API credentials not configured');
+        }
+        
+        $url = rtrim($this->api_url, '/') . $endpoint;
+        
+        $args = [
+            'method' => $method,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->api_key,
+                'Content-Type' => 'application/json'
+            ],
+            'timeout' => 60 // Longer timeout for backup operations
+        ];
+        
+        if (!empty($data) && in_array($method, ['POST', 'PUT', 'PATCH'])) {
+            $args['body'] = json_encode($data);
+        }
+        
+        $response = wp_remote_request($url, $args);
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
+        
+        $code = wp_remote_retrieve_response_code($response);
+        $body = wp_remote_retrieve_body($response);
+        
+        if ($code >= 400) {
+            return new WP_Error('api_error', 'JetBackup API error: ' . $code);
+        }
+        
+        return json_decode($body, true);
+    }
+    
+    /**
+     * AJAX Handlers
+     */
+    public function ajax_create_backup() {
+        check_ajax_referer('rphub_ajax', 'nonce');
+        
+        $domain = $_POST['domain'] ?? '';
+        $options = $_POST['options'] ?? [];
+        
+        if (empty($domain)) {
+            wp_send_json_error('Dominio requerido');
+        }
+        
+        $result = $this->create_backup($domain, $options);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+        
+        wp_send_json_success($result);
+    }
+    
+    public function ajax_list_backups() {
+        check_ajax_referer('rphub_ajax', 'nonce');
+        
+        $domain = $_POST['domain'] ?? '';
+        $limit = $_POST['limit'] ?? 50;
+        
+        if (empty($domain)) {
+            wp_send_json_error('Dominio requerido');
+        }
+        
+        $result = $this->list_backups($domain, $limit);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+        
+        wp_send_json_success($result);
+    }
+    
+    public function ajax_restore_backup() {
+        check_ajax_referer('rphub_ajax', 'nonce');
+        
+        $domain = $_POST['domain'] ?? '';
+        $backup_id = $_POST['backup_id'] ?? '';
+        $options = $_POST['options'] ?? [];
+        
+        if (empty($domain) || empty($backup_id)) {
+            wp_send_json_error('Dominio y ID de backup requeridos');
+        }
+        
+        $result = $this->restore_backup($domain, $backup_id, $options);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+        
+        wp_send_json_success($result);
+    }
+    
+    public function ajax_delete_backup() {
+        check_ajax_referer('rphub_ajax', 'nonce');
+        
+        $domain = $_POST['domain'] ?? '';
+        $backup_id = $_POST['backup_id'] ?? '';
+        
+        if (empty($domain) || empty($backup_id)) {
+            wp_send_json_error('Dominio y ID de backup requeridos');
+        }
+        
+        $result = $this->delete_backup($domain, $backup_id);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+        
+        wp_send_json_success($result);
+    }
+    
+    public function ajax_schedule_backup() {
+        check_ajax_referer('rphub_ajax', 'nonce');
+        
+        $domain = $_POST['domain'] ?? '';
+        $schedule = $_POST['schedule'] ?? [];
+        
+        if (empty($domain)) {
+            wp_send_json_error('Dominio requerido');
+        }
+        
+        $result = $this->schedule_backup($domain, $schedule);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+        
+        wp_send_json_success($result);
+    }
+    
+    public function ajax_get_backup_details() {
+        check_ajax_referer('rphub_ajax', 'nonce');
+        
+        $domain = $_POST['domain'] ?? '';
+        $backup_id = $_POST['backup_id'] ?? '';
+        
+        if (empty($domain) || empty($backup_id)) {
+            wp_send_json_error('Dominio y ID de backup requeridos');
+        }
+        
+        $result = $this->get_backup_details($domain, $backup_id);
+        
+        if (is_wp_error($result)) {
+            wp_send_json_error($result->get_error_message());
+        }
+        
+        wp_send_json_success($result);
+    }
+    
+    /**
+     * Scheduled Tasks
+     */
+    public function scheduled_auto_backup() {
+        global $wpdb;
+        $table_schedules = $wpdb->prefix . 'rphub_backup_schedules';
+        
+        $current_time = current_time('H:i');
+        $current_day = strtolower(current_time('l'));
+        
+        $schedules = $wpdb->get_results($wpdb->prepare("
+            SELECT * FROM $table_schedules 
+            WHERE status = 'active' 
+            AND backup_time = %s
+        ", $current_time), ARRAY_A);
+        
+        foreach ($schedules as $schedule) {
+            $should_backup = false;
+            
+            switch ($schedule['frequency']) {
+                case 'daily':
+                    $should_backup = true;
+                    break;
+                case 'weekly':
+                    $should_backup = ($current_day === 'sunday');
+                    break;
+                case 'monthly':
+                    $should_backup = (current_time('j') === '1');
+                    break;
+            }
+            
+            if ($should_backup) {
+                $settings = json_decode($schedule['settings'], true);
+                $this->create_backup($schedule['domain'], [
+                    'type' => $schedule['backup_type'],
+                    'description' => 'Backup automático programado',
+                    'retention_days' => $schedule['retention_days'],
+                    'exclude_cache' => $settings['exclude_cache'] ?? true,
+                    'exclude_logs' => $settings['exclude_logs'] ?? true
+                ]);
+            }
+        }
+    }
+    
+    public function scheduled_cleanup_backups() {
+        global $wpdb;
+        $table_schedules = $wpdb->prefix . 'rphub_backup_schedules';
+        
+        $schedules = $wpdb->get_results("
+            SELECT DISTINCT domain, retention_days FROM $table_schedules 
+            WHERE status = 'active'
+        ", ARRAY_A);
+        
+        foreach ($schedules as $schedule) {
+            $backups = $this->list_backups($schedule['domain']);
+            
+            if (!is_wp_error($backups)) {
+                $cutoff_date = time() - ($schedule['retention_days'] * DAY_IN_SECONDS);
+                
+                foreach ($backups as $backup) {
+                    if (strtotime($backup['created_at']) < $cutoff_date) {
+                        $this->delete_backup($schedule['domain'], $backup['backup_id']);
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Run hourly checks
+     */
+    public function run_hourly_checks() {
+        // Check backup status and send alerts if needed
+        $recent_backups = $this->list_backups(null, 1);
+        
+        if (empty($recent_backups) || count($recent_backups) == 0) {
+            // No recent backups found, might need alert
+            error_log('JetBackup: No recent backups found during hourly check');
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Check backups
+     */
+    public function check_backups() {
+        return $this->run_hourly_checks();
+    }
+}
+
+// Initialize JetBackup integration
+function rphub_jetbackup_init() {
+    return new ReplantaHub_JetBackup_Integration();
+}
+add_action('plugins_loaded', 'rphub_jetbackup_init');

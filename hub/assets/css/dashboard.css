@@ -1,0 +1,748 @@
+/* Dashboard Styles for Replanta Hub */
+
+.rphub-dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Hero Section */
+.rphub-hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 30px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.site-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+
+.site-url a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.site-url a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.site-meta {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.plan-badge, .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.plan-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.status-badge.status-activo {
+    background: #10b981;
+    color: white;
+}
+
+.status-badge.status-inactivo {
+    background: #ef4444;
+    color: white;
+}
+
+.connection-info {
+    text-align: right;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-indicator.connected {
+    background: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.status-indicator.error {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+.status-indicator.unknown {
+    background: #6b7280;
+}
+
+/* Health Section */
+.rphub-health-section {
+    margin-bottom: 30px;
+}
+
+.rphub-health-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #374151;
+}
+
+.health-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.health-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #374151;
+}
+
+.score-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.performance .score-circle {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+.security .score-circle {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.technical .status-indicator.good {
+    background: #10b981;
+}
+
+.technical .status-indicator.unknown {
+    background: #6b7280;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metric .label {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.metric .value {
+    font-weight: 600;
+    color: #374151;
+}
+
+.metric .value.alert {
+    color: #ef4444;
+}
+
+/* Actions Section */
+.rphub-actions-section {
+    margin-bottom: 30px;
+}
+
+.rphub-actions-section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #374151;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.rphub-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.rphub-btn.primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.rphub-btn.primary:hover {
+    background: #2563eb;
+}
+
+.rphub-btn.secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.rphub-btn.secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Details Section */
+.rphub-details-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.details-tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.tab-button {
+    padding: 15px 25px;
+    border: none;
+    background: none;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-button.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    background: white;
+}
+
+.tab-button:hover {
+    color: #374151;
+}
+
+.tab-content {
+    display: none;
+    padding: 30px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-inner h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #374151;
+}
+
+/* Performance Tab */
+.core-vitals {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.core-vitals h4 {
+    margin-top: 0;
+    color: #374151;
+}
+
+.core-vitals pre {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 15px;
+    font-size: 12px;
+    overflow-x: auto;
+}
+
+.score-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.score-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.score-bar label {
+    min-width: 80px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.bar {
+    flex: 1;
+    height: 20px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar .fill {
+    height: 100%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    transition: width 0.3s ease;
+}
+
+/* Security Tab */
+.vulnerability-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vulnerability-item {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 12px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+.no-vulnerabilities {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+.no-vulnerabilities p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Technical Tab */
+.tech-info {
+    display: grid;
+    gap: 20px;
+}
+
+.info-group h4 {
+    margin-bottom: 10px;
+    color: #374151;
+}
+
+.info-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-group li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.info-group li:last-child {
+    border-bottom: none;
+}
+
+/* Activity Tab */
+.activity-timeline {
+    position: relative;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.timeline-content h4 {
+    margin: 0 0 5px 0;
+    color: #374151;
+}
+
+.timeline-content p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.no-activity {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    color: white;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rphub-dashboard-container {
+        padding: 15px;
+    }
+    
+    .site-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .connection-info {
+        text-align: left;
+    }
+    
+    .health-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .details-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .score-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .score-bar label {
+        min-width: auto;
+    }
+}
+
+/* Care Integration Styles */
+.care-integration {
+    background: #f0fdf4 !important;
+    border: 1px solid #10b981 !important;
+    border-radius: 8px !important;
+}
+
+.care-integration .integration-name {
+    font-weight: 600;
+    color: #059669;
+}
+
+.care-plan {
+    background: #10b981;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.care-quick-actions {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.care-quick-actions h4 {
+    margin: 0 0 15px 0;
+    color: #1f2937;
+    font-size: 16px;
+}
+
+.care-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.care-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 10px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+
+.care-action-btn:hover {
+    background: #f9fafb;
+    border-color: #059669;
+    color: #059669;
+    text-decoration: none;
+}
+
+.care-action-btn .action-icon {
+    font-size: 20px;
+}
+
+.care-action-btn .action-text {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.care-upgrade-prompt {
+    margin-top: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border-radius: 8px;
+    border: 1px solid #10b981;
+    text-align: center;
+}
+
+.care-upgrade-prompt h4 {
+    margin: 0 0 10px 0;
+    color: #059669;
+    font-size: 18px;
+}
+
+.care-upgrade-prompt p {
+    margin: 0 0 15px 0;
+    color: #374151;
+    font-size: 14px;
+}
+
+.care-benefits {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.care-benefits .benefit {
+    background: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #059669;
+    border: 1px solid #10b981;
+}
+
+.care-upgrade-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.care-upgrade-actions .button {
+    margin: 0;
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* Integration status indicators */
+.status-indicator[data-status="connected"] {
+    color: #10b981;
+}
+
+.status-indicator[data-status="disconnected"] {
+    color: #ef4444;
+}
+
+.status-indicator[data-status="checking"] {
+    color: #f59e0b;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Navigation improvements */
+.replanta-hub-dashboard .wp-heading-inline {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.replanta-logo {
+    font-size: 32px;
+}
+
+/* Quick navigation to Care */
+.hub-care-nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hub-care-nav a {
+    background: #059669;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hub-care-nav a:hover {
+    background: #047857;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.hub-care-nav .nav-icon {
+    font-size: 16px;
+}
+
+/* Responsive adjustments for Care integration */
+@media (max-width: 768px) {
+    .care-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .care-benefits {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .care-upgrade-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hub-care-nav {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .hub-care-nav a {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+}

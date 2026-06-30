@@ -1,0 +1,564 @@
+/**
+ * Multi-site Administration CSS
+ * Styles for multi-site management interface
+ * 
+ * @package ReplantaHub
+ * @since 1.0.0
+ */
+
+/* Network Overview */
+.rphub-network-overview {
+    margin: 20px 0;
+}
+
+.rphub-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.rphub-stat-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.rphub-stat-card h3 {
+    font-size: 2.5em;
+    margin: 0 0 10px 0;
+    color: #2271b1;
+    font-weight: 600;
+}
+
+.rphub-stat-card p {
+    margin: 0;
+    color: #646970;
+    font-weight: 500;
+}
+
+/* Network Actions */
+.rphub-network-actions {
+    margin: 30px 0;
+}
+
+.rphub-action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.rphub-action-buttons .button {
+    padding: 8px 16px;
+}
+
+/* Site Groups */
+.rphub-groups-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.rphub-create-group,
+.rphub-existing-groups {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.rphub-groups-list {
+    display: grid;
+    gap: 20px;
+}
+
+.rphub-group-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    background: #f9f9f9;
+}
+
+.rphub-group-card h3 {
+    margin: 0 0 10px 0;
+    color: #2271b1;
+}
+
+.rphub-group-card p {
+    margin: 0 0 15px 0;
+    color: #646970;
+}
+
+.group-sites ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.group-sites li {
+    margin: 5px 0;
+}
+
+.group-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Bulk Operations */
+.rphub-bulk-operations-container {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.rphub-operation-selector,
+.rphub-target-selector,
+.rphub-operation-config {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.rphub-operation-config:last-child {
+    border-bottom: none;
+}
+
+/* Target Selection Tabs */
+.target-tabs {
+    display: flex;
+    border-bottom: 1px solid #c3c4c7;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
+}
+
+.tab-button.active {
+    border-bottom-color: #2271b1;
+    color: #2271b1;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Site Selection */
+.select-all-controls {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.sites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.site-checkbox,
+.group-checkbox {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.site-checkbox:hover,
+.group-checkbox:hover {
+    background-color: #f0f0f1;
+}
+
+.site-checkbox input,
+.group-checkbox input {
+    margin-bottom: 5px;
+}
+
+.site-name,
+.group-name {
+    font-weight: 600;
+    color: #2271b1;
+}
+
+.site-url,
+.group-description {
+    font-size: 0.9em;
+    color: #646970;
+}
+
+/* Groups Selection */
+.groups-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+/* Operation Configuration */
+.config-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.config-section h3 {
+    margin: 0 0 15px 0;
+    color: #2271b1;
+}
+
+.config-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.config-section input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.config-section input[type="text"],
+.config-section select {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 5px;
+}
+
+/* Operation Controls */
+.rphub-operation-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+/* Operation Results */
+.rphub-operation-results {
+    margin-top: 30px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.operation-progress {
+    text-align: center;
+    padding: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #f0f0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2271b1;
+    width: 0%;
+    animation: progressAnimation 2s infinite;
+}
+
+@keyframes progressAnimation {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+.preview-results,
+.execution-results {
+    padding: 15px;
+}
+
+.results-summary {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.results-summary p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.preview-warnings {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.preview-warnings h4 {
+    margin: 0 0 10px 0;
+    color: #856404;
+}
+
+.detailed-results {
+    margin-top: 20px;
+}
+
+/* Analytics Dashboard */
+.rphub-analytics-dashboard {
+    margin-top: 20px;
+}
+
+.analytics-filters {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.filter-row label {
+    min-width: 100px;
+    font-weight: 600;
+}
+
+.filter-row select {
+    min-width: 200px;
+}
+
+.analytics-summary,
+.analytics-charts,
+.top-performing-sites {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#network-summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.analytics-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+}
+
+.analytics-card h3 {
+    font-size: 2em;
+    margin: 0 0 10px 0;
+    color: #2271b1;
+}
+
+.analytics-card p {
+    margin: 0;
+    color: #646970;
+    font-weight: 500;
+}
+
+/* Configuration Templates */
+.rphub-templates-container {
+    margin-top: 20px;
+}
+
+.templates-actions {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.template-group {
+    margin-bottom: 30px;
+}
+
+.templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.template-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    position: relative;
+}
+
+.template-card h3 {
+    margin: 0 0 10px 0;
+    color: #2271b1;
+}
+
+.template-card p {
+    margin: 0 0 15px 0;
+    color: #646970;
+}
+
+.default-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #2271b1;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.template-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.template-actions .button {
+    padding: 6px 12px;
+    font-size: 0.9em;
+}
+
+/* Site Status Table */
+.rphub-network-sites,
+.rphub-recent-activity {
+    margin-top: 30px;
+}
+
+.status-indicator {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-completed {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.performance-score {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.score-excellent {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.score-good {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.score-poor {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rphub-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .rphub-groups-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sites-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .results-summary {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .rphub-action-buttons {
+        flex-direction: column;
+    }
+    
+    .rphub-operation-controls {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .rphub-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .templates-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .template-actions {
+        flex-direction: column;
+    }
+    
+    .group-actions {
+        flex-direction: column;
+    }
+}

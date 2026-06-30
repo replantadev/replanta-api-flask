@@ -251,46 +251,65 @@ $feature_kind_resolver = static function( $raw_text ) {
 </section>
 <script>
 (function() {
-    var sections = document.querySelectorAll('.replanta-plans--mantenimiento');
-    if (!sections.length) return;
+    function initAddonToggles() {
+        var sections = document.querySelectorAll('.replanta-plans--mantenimiento');
+        if (!sections.length) return;
 
-    sections.forEach(function(section) {
-        var cards = section.querySelectorAll('.replanta-pricing-card');
-        if (!cards.length) return;
+        sections.forEach(function(section) {
+            var cards = section.querySelectorAll('.replanta-pricing-card');
+            if (!cards.length) return;
 
-        cards.forEach(function(card) {
-            var toggle = card.querySelector('[data-addon-toggle="1"]');
-            if (!toggle) return;
+            cards.forEach(function(card) {
+                var toggle = card.querySelector('[data-addon-toggle="1"]');
+                if (!toggle) return;
 
-            var basePrice = card.querySelector('.rep-price-base');
-            var addonPrice = card.querySelector('.rep-price-with-addon');
-            var addonFeatures = card.querySelectorAll('.rep-addon-feature');
-            var baseBackupFeatures = card.querySelectorAll('.rep-feature--backup');
-            var addonBackupFeatures = card.querySelectorAll('.rep-addon-feature--backup');
-            var addonHint = card.querySelector('.rep-addon-feature-hint');
+                /* Avoid double-binding if Elementor re-runs init */
+                if (toggle.dataset.addonBound === '1') return;
+                toggle.dataset.addonBound = '1';
 
-            function syncCard() {
-                var on = !!toggle.checked;
-                if (basePrice) basePrice.hidden = on;
-                if (addonPrice) addonPrice.hidden = !on;
+                var basePrice = card.querySelector('.rep-price-base');
+                var addonPrice = card.querySelector('.rep-price-with-addon');
+                var addonFeatures = card.querySelectorAll('.rep-addon-feature');
+                var baseBackupFeatures = card.querySelectorAll('.rep-feature--backup');
+                var addonBackupFeatures = card.querySelectorAll('.rep-addon-feature--backup');
+                var addonHint = card.querySelector('.rep-addon-feature-hint');
 
-                addonFeatures.forEach(function(item) {
-                    item.hidden = !on;
-                });
+                function syncCard() {
+                    var on = !!toggle.checked;
+                    if (basePrice) basePrice.hidden = on;
+                    if (addonPrice) addonPrice.hidden = !on;
 
-                var hasAddonBackup = on && addonBackupFeatures.length > 0;
-                baseBackupFeatures.forEach(function(item) {
-                    item.hidden = hasAddonBackup;
-                });
+                    addonFeatures.forEach(function(item) {
+                        item.hidden = !on;
+                    });
 
-                if (addonHint) addonHint.hidden = on;
+                    var hasAddonBackup = on && addonBackupFeatures.length > 0;
+                    baseBackupFeatures.forEach(function(item) {
+                        item.hidden = hasAddonBackup;
+                    });
 
-                card.classList.toggle('is-addon-active', on);
-            }
+                    if (addonHint) addonHint.hidden = on;
 
-            toggle.addEventListener('change', syncCard);
-            syncCard();
+                    card.classList.toggle('is-addon-active', on);
+                }
+
+                toggle.addEventListener('change', syncCard);
+                syncCard();
+            });
         });
-    });
+    }
+
+    /* Run immediately if DOM is ready, otherwise wait */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAddonToggles);
+    } else {
+        initAddonToggles();
+    }
+
+    /* Re-run after Elementor frontend fully boots (handles deferred/lazy init) */
+    window.addEventListener('elementor/frontend/init', initAddonToggles);
+
+    /* Re-run on load as last-resort safety net */
+    window.addEventListener('load', initAddonToggles);
 })();
 </script>

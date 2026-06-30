@@ -182,7 +182,7 @@ class Dominios_Reseller_Onboarding_DB {
         // PRESET: WordPress Básico (sin WooCommerce) - v3.0
         // ================================================================
         $wp_preset = [
-            'version' => '3.0',
+            'version' => '3.1',
             
             // === SETTINGS DE ZONA ===
             'settings' => [
@@ -329,29 +329,25 @@ class Dominios_Reseller_Onboarding_DB {
         // PRESET: WooCommerce (Tienda Online) - v3.0
         // ================================================================
         $woo_preset = [
-            'version' => '3.0',
-            
+            'version' => '3.2',
+
             // === SETTINGS DE ZONA ===
             'settings' => [
                 // --- Rendimiento ---
                 'http3'                     => 'on',
                 'brotli'                    => 'on',
-                '0rtt'                      => 'on',
                 'rocket_loader'             => 'off',  // Obligatorio off
-                'polish'                    => 'lossless',
-                'mirage'                    => 'on',
                 'early_hints'               => 'on',
-                
+
                 // --- SSL/TLS (MÁS ESTRICTO) ---
                 'always_use_https'          => 'on',
                 'ssl'                       => 'strict',
                 'min_tls_version'           => '1.2',
                 'automatic_https_rewrites'  => 'on',
                 'opportunistic_encryption'  => 'on',
-                
+
                 // --- Seguridad (MÁS ALTA) ---
                 'security_level'            => 'high',
-                'challenge_ttl'             => 3600,
                 'browser_check'             => 'on',
                 'email_obfuscation'         => 'on',
                 'hotlink_protection'        => 'on',
@@ -479,7 +475,7 @@ class Dominios_Reseller_Onboarding_DB {
                 ],
                 [
                     'name'   => 'Bypass WooCommerce Dinamico',
-                    'if'     => '(http.request.uri.path contains "/cart") or (http.request.uri.path contains "/carrito") or (http.request.uri.path contains "/checkout") or (http.request.uri.path contains "/finalizar-compra") or (http.request.uri.path contains "/my-account") or (http.request.uri.path contains "/mi-cuenta")',
+                    'if'     => '(http.request.uri.path contains "/cart") or (http.request.uri.path contains "/carrito") or (http.request.uri.path contains "/checkout") or (http.request.uri.path contains "/finalizar-compra") or (http.request.uri.path contains "/my-account") or (http.request.uri.path contains "/mi-cuenta") or (http.request.uri.query contains "s=") or (http.request.uri.query contains "preview=true")',
                     'action' => 'bypass',
                     'enabled' => true
                 ],
@@ -515,7 +511,7 @@ class Dominios_Reseller_Onboarding_DB {
                 ]
             ],
             
-            'notes' => 'WooCommerce preset v3.0 - Seguridad alta, bypass checkout, AI restringido, firewall estricto.'
+            'notes' => 'WooCommerce preset v3.1 - Seguridad alta, bypass checkout, AI restringido, firewall estricto. Sin settings Pro-only.'
         ];
 
         // Insertar o ACTUALIZAR si ya existen
@@ -533,15 +529,15 @@ class Dominios_Reseller_Onboarding_DB {
                 'is_default'  => 1
             ]);
         } else {
-            // Actualizar a v3.0 si la versión es antigua
+            // Actualizar a v3.1 si la versión es antigua
             $current = $wpdb->get_var($wpdb->prepare(
                 "SELECT payload FROM $table WHERE preset_key = %s",
                 'wp'
             ));
             $current_data = json_decode($current, true);
-            if (($current_data['version'] ?? '1.0') < '3.0') {
+            if (($current_data['version'] ?? '1.0') < '3.1') {
                 $wpdb->update($table, [
-                    'description' => 'Configuración optimizada para sitios WordPress (v3.0 - AI, Bot, Firewall)',
+                    'description' => 'Configuración optimizada para sitios WordPress (v3.1 - sin settings Pro-only)',
                     'payload'     => json_encode($wp_preset)
                 ], ['preset_key' => 'wp']);
             }
@@ -566,9 +562,9 @@ class Dominios_Reseller_Onboarding_DB {
                 'woo'
             ));
             $current_data = json_decode($current, true);
-            if (($current_data['version'] ?? '1.0') < '3.0') {
+            if (($current_data['version'] ?? '1.0') < '3.2') {
                 $wpdb->update($table, [
-                    'description' => 'Configuración optimizada para tiendas WooCommerce (v3.0 - AI, Bot, Firewall)',
+                    'description' => 'Configuración optimizada para tiendas WooCommerce (v3.2 - bypass search/preview)',
                     'payload'     => json_encode($woo_preset)
                 ], ['preset_key' => 'woo']);
             }
@@ -646,9 +642,10 @@ class Dominios_Reseller_Onboarding_DB {
     /**
      * Registrar log de ejecución
      */
-    public static function log(string $run_id, string $primary_domain, string $step, string $level, string $message, ?array $data = null): void {
+    public static function log(?string $run_id, string $primary_domain, string $step, string $level, string $message, ?array $data = null): void {
         global $wpdb;
         $table = self::get_logs_table();
+        $run_id = $run_id ?: 'system';
 
         $wpdb->insert($table, [
             'run_id'         => $run_id,
@@ -973,10 +970,10 @@ class Dominios_Reseller_Onboarding_DB {
             $current_payload = json_decode($wp_preset['payload'], true);
             $current_version = $current_payload['version'] ?? '1.0';
 
-            // Si la versión es anterior a 3.0, actualizar
-            if (version_compare($current_version, '3.0', '<')) {
+            // Si la versión es anterior a 3.1, actualizar
+            if (version_compare($current_version, '3.1', '<')) {
                 self::insert_default_presets(); // Esto actualizará el preset existente
-                error_log('[DR Onboarding] Preset WP actualizado de v' . $current_version . ' a v3.0');
+                error_log('[DR Onboarding] Preset WP actualizado de v' . $current_version . ' a v3.1');
             }
         }
 
@@ -990,10 +987,10 @@ class Dominios_Reseller_Onboarding_DB {
             $current_payload = json_decode($debug_preset['payload'], true);
             $current_version = $current_payload['version'] ?? '1.0';
 
-            // Si la versión es anterior a 3.0, actualizar
-            if (version_compare($current_version, '3.0', '<')) {
+            // Si la versión es anterior a 3.1, actualizar
+            if (version_compare($current_version, '3.1', '<')) {
                 self::insert_default_presets(); // Esto actualizará el preset existente
-                error_log('[DR Onboarding] Preset debug-test actualizado de v' . $current_version . ' a v3.0');
+                error_log('[DR Onboarding] Preset debug-test actualizado de v' . $current_version . ' a v3.1');
             }
         }
     }
