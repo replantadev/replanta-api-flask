@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="es" data-font="tech" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAKEOFF MAIN CENTER — Playground de componentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Inter:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --ink-900:#1D252D;
+    --ink-800:#242C35;
+    --ink-700:#2E3842;
+    --ink-600:#3A4550;
+    --line:#3D4750;
+    --line-soft:#2B343D;
+    --paper:#FFFFFF;
+    --mist:#9AA5B0;
+    --mist-dim:#6E7882;
+    --mono:'JetBrains Mono', monospace;
+    --radius-hex:18px;
+    --radius-card:4px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --mx:-500px; --my:-500px;
+  }
+  /* ============ LIGHT MODE ============ */
+  html[data-theme="light"]{
+    --ink-900:#FFFFFF;
+    --ink-800:#F2F5F8;
+    --ink-700:#E8ECF1;
+    --ink-600:#DDE3EA;
+    --line:#DDE3EA;
+    --line-soft:#EEF1F5;
+    --paper:#1D252D;
+    --mist:#4A5568;
+    --mist-dim:#8A9AAB;
+  }
+  html[data-theme="light"] .site-header{ background:rgba(255,255,255,.96) !important; }
+  html[data-theme="light"] .hero{
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 0%, rgba(29,37,45,.05), transparent 60%),
+      repeating-linear-gradient(125deg, rgba(29,37,45,.04) 0 1px, transparent 1px 26px),
+      var(--ink-900) !important;
+    animation:none !important;
+  }
+  html[data-theme="light"] .hud-frame{ background:linear-gradient(165deg,#E8ECF1,#F2F5F8); color:var(--ink-600); }
+  html[data-theme="light"] .scanline{ background:rgba(29,37,45,.35); }
+  html[data-theme="light"] .pg-toolbar{ background:#1D252D; }
+  html[data-theme="light"] .logo-for-dark{ display:none !important; }
+  html[data-theme="light"] .logo-for-light{ display:block !important; }
+  html[data-theme="light"] .brands-strip{ background:var(--ink-800); }
+  html[data-theme="light"] .cta-final{ background:linear-gradient(135deg,#E2E8F0,#F2F5F8,#E2E8F0) !important; animation:none !important; }
+  html[data-theme="light"] body::before{ display:none !important; }
+  html[data-font="corp"]{ --font-head:'Manrope',sans-serif; --font-body:'Inter',sans-serif; --tracking-head:0; --weight-head:800; }
+  html[data-font="mixed"]{ --font-head:'Barlow Condensed',sans-serif; --font-body:'Inter',sans-serif; --tracking-head:.01em; --weight-head:700; }
+  html[data-font="industrial"]{ --font-head:'Rajdhani',sans-serif; --font-body:'Rajdhani',sans-serif; --tracking-head:.02em; --weight-head:700; }
+  html[data-font="tech"]{ --font-head:'Space Grotesk',sans-serif; --font-body:'Inter',sans-serif; --tracking-head:-.01em; --weight-head:600; }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--ink-900); color:var(--paper);
+    font-family:var(--font-body); -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  h1,h2,h3,.disp{
+    font-family:var(--font-head); font-weight:var(--weight-head);
+    letter-spacing:var(--tracking-head); text-transform:uppercase; margin:0;
+  }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+  button{ font-family:inherit; cursor:pointer; }
+  .mono{ font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+  .wrap{ max-width:1280px; margin:0 auto; padding:0 32px; }
+  @media (max-width:640px){ .wrap{ padding:0 20px; } }
+
+  /* ============ PLACEHOLDER VISUAL ============ */
+  .ph{
+    position:relative; overflow:hidden; background:
+      repeating-linear-gradient(135deg, var(--ink-700) 0 2px, var(--ink-800) 2px 14px);
+    border:1px solid var(--line); border-radius:var(--radius-card);
+    display:flex; align-items:center; justify-content:center; color:var(--mist-dim);
+  }
+  .ph::after{
+    content:attr(data-label); position:absolute; bottom:8px; left:8px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--mist-dim); background:rgba(29,37,45,.7); padding:3px 7px; border-radius:2px;
+  }
+  .ph svg{ width:34%; opacity:.55; }
+
+  /* ============ LOGO MARK ============ */
+  .logo-mark{ width:34px; height:34px; }
+  .logo-mark .hex{ fill:none; stroke:currentColor; stroke-width:7; stroke-linejoin:round; }
+  .logo-mark .pane{ fill:currentColor; }
+
+  /* ============ PLAYGROUND TOOLBAR ============ */
+  .pg-toolbar{
+    position:sticky; top:0; z-index:100; background:#11161B; border-bottom:1px solid var(--line);
+    padding:10px 20px; display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+    font-family:var(--mono); font-size:11px;
+  }
+  .pg-toolbar .pg-label{ color:var(--mist-dim); letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
+  .pg-group{ display:flex; gap:6px; flex-wrap:wrap; }
+  .pg-btn{
+    background:transparent; border:1px solid var(--line); color:var(--mist);
+    padding:6px 10px; border-radius:3px; font-size:11px; letter-spacing:.04em;
+    transition:all .15s var(--ease);
+  }
+  .pg-btn:hover{ border-color:var(--mist); color:var(--paper); }
+  .pg-btn.active{ background:var(--paper); color:var(--ink-900); border-color:var(--paper); }
+  .pg-chip{ color:var(--mist-dim); }
+  .pg-chip:hover{ color:var(--paper); }
+  .pg-spacer{ flex:1; }
+  .pg-note{ color:var(--mist-dim); }
+
+  /* ============ HEADER ============ */
+  .site-header{
+    position:sticky; top:37px; z-index:90; background:rgba(29,37,45,.92);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line-soft);
+  }
+  .site-header .bar{ display:flex; align-items:center; justify-content:space-between; padding:16px 0; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-text{ display:flex; flex-direction:column; line-height:1.05; }
+  .brand-text b{ font-family:var(--font-head); font-weight:var(--weight-head); font-size:16px; letter-spacing:.04em; }
+  .brand-text span{ font-family:var(--mono); font-size:9px; color:var(--mist-dim); letter-spacing:.18em; }
+  nav.main-nav{ display:flex; gap:28px; align-items:center; }
+  nav.main-nav a{ font-size:13px; color:var(--mist); transition:color .15s; }
+  nav.main-nav a:hover{ color:var(--paper); }
+  .cta-btn{
+    background:var(--paper); color:var(--ink-900); padding:11px 20px; border:none;
+    font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:2px; transition:transform .15s var(--ease), opacity .15s;
+  }
+  .cta-btn:hover{ opacity:.85; }
+  .cta-ghost{
+    background:transparent; border:1px solid var(--line); color:var(--paper);
+    padding:10px 19px; font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; border-radius:2px;
+  }
+  .cta-ghost:hover{ border-color:var(--paper); }
+  .nav-toggle{ display:none; background:none; border:1px solid var(--line); color:var(--paper); padding:8px 10px; border-radius:2px; }
+  @media (max-width:860px){
+    nav.main-nav{ display:none; }
+    .nav-toggle{ display:inline-flex; }
+  }
+
+  /* ============ MODULE KICKER (numbered sequence — review checklist) ============ */
+  .mod-kicker{
+    display:flex; align-items:center; gap:10px; margin-bottom:18px; color:var(--mist-dim);
+  }
+  .mod-kicker .num{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--mist); }
+  .mod-kicker .ln{ flex:0 0 28px; height:1px; background:var(--line); }
+  .mod-kicker .name{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; }
+
+  section{ padding:96px 0; border-bottom:1px solid var(--line-soft); scroll-margin-top:100px; }
+  @media (max-width:640px){ section{ padding:64px 0; } }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative; padding-top:64px; padding-bottom:80px;
+    animation:grid-drift 10s linear infinite;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 0%, rgba(255,255,255,.05), transparent 60%),
+      repeating-linear-gradient(125deg, rgba(255,255,255,.018) 0 1px, transparent 1px 26px),
+      var(--ink-900);
+  }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center; }
+  @media (max-width:920px){ .hero-grid{ grid-template-columns:1fr; } }
+  .eyebrow{ display:flex; align-items:center; gap:10px; margin-bottom:22px; color:var(--mist); }
+  .eyebrow .dot{ width:6px; height:6px; background:var(--paper); border-radius:1px; transform:rotate(45deg); }
+  .eyebrow span{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; }
+  .hero h1{ font-size:clamp(38px,5.4vw,68px); line-height:1.03; }
+  .hero h1 em{ font-style:normal; color:var(--mist); }
+  .hero .lede{ margin-top:22px; max-width:480px; color:var(--mist); font-size:16px; }
+  .hero .actions{ display:flex; gap:14px; margin-top:34px; flex-wrap:wrap; }
+  .hud-stats{ display:flex; gap:28px; margin-top:48px; padding-top:24px; border-top:1px solid var(--line-soft); flex-wrap:wrap; }
+  .hud-stats .stat .v{ font-family:var(--font-head); font-weight:var(--weight-head); font-size:24px; }
+  .hud-stats .stat .l{ font-family:var(--mono); font-size:10px; color:var(--mist-dim); letter-spacing:.1em; margin-top:4px; }
+
+  .hero-visual{ position:relative; }
+  .hud-frame{
+    position:relative; aspect-ratio:4/5; border:1px solid var(--line);
+    background:linear-gradient(165deg, var(--ink-800), var(--ink-900));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .hud-frame .corner{ position:absolute; width:18px; height:18px; border:2px solid var(--paper); opacity:.7; }
+  .hud-frame .c-tl{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .hud-frame .c-tr{ top:-1px; right:-1px; border-left:none; border-bottom:none; }
+  .hud-frame .c-bl{ bottom:-1px; left:-1px; border-right:none; border-top:none; }
+  .hud-frame .c-br{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+  .hud-frame .drone-icon{ width:58%; opacity:.85; position:relative; z-index:2; }
+  .hud-readout{
+    position:absolute; left:14px; top:14px; font-family:var(--mono); font-size:10px;
+    color:var(--mist); line-height:1.7; letter-spacing:.04em;
+  }
+  .hud-readout .ok{ color:var(--paper); }
+  .hud-readout-br{
+    position:absolute; right:14px; bottom:14px; font-family:var(--mono); font-size:10px;
+    color:var(--mist); text-align:right; line-height:1.7;
+  }
+  .scanline{
+    position:absolute; left:0; right:0; height:1px; background:rgba(255,255,255,.5);
+    top:20%; animation:scan 5s linear infinite;
+  }
+  @keyframes scan{ 0%{ top:6%; opacity:0; } 10%{ opacity:.6; } 50%{ top:92%; opacity:.6; } 60%{opacity:0;} 100%{ top:92%; opacity:0; } }
+  @media (prefers-reduced-motion: reduce){ .scanline{ animation:none; display:none; } }
+
+  /* ============ PRODUCT (ficha dron) ============ */
+  .product-grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:64px; }
+  @media (max-width:920px){ .product-grid{ grid-template-columns:1fr; } }
+  .product-gallery .ph{ aspect-ratio:1/1; }
+  .thumb-row{ display:flex; gap:10px; margin-top:10px; }
+  .thumb-row .ph{ aspect-ratio:1/1; flex:1; }
+  .thumb-row .ph svg{ width:46%; }
+  .badge-row{ display:flex; gap:8px; margin-bottom:16px; }
+  .badge{ font-family:var(--mono); font-size:10px; letter-spacing:.1em; border:1px solid var(--line); padding:4px 9px; color:var(--mist); border-radius:2px; }
+  .product-info h2{ font-size:clamp(28px,3.6vw,42px); }
+  .product-info .model-tag{ font-family:var(--mono); color:var(--mist-dim); font-size:12px; margin-top:6px; display:block; letter-spacing:.08em; }
+  .product-info .desc{ color:var(--mist); margin:20px 0 28px; max-width:520px; }
+  .spec-table{ border-top:1px solid var(--line); }
+  .spec-row{ display:flex; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--line-soft); font-size:14px; }
+  .spec-row .k{ color:var(--mist-dim); font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+  .spec-row .v{ font-weight:600; }
+  .spec-note{ font-family:var(--mono); font-size:10px; color:var(--mist-dim); margin-top:14px; letter-spacing:.03em; }
+  .product-actions{ display:flex; gap:14px; margin-top:30px; flex-wrap:wrap; }
+
+  /* ============ ACCESORIOS ============ */
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:44px; gap:24px; flex-wrap:wrap; }
+  .section-head h2{ font-size:clamp(26px,3.2vw,38px); }
+  .section-head p{ color:var(--mist); max-width:420px; font-size:14px; }
+  .acc-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media (max-width:860px){ .acc-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .acc-grid{ grid-template-columns:1fr; } }
+  .acc-card{ background:var(--ink-900); padding:30px 26px; transition:background .2s; position:relative; }
+  .acc-card:hover{ background:var(--ink-800); }
+  .acc-card svg{ width:30px; height:30px; margin-bottom:18px; opacity:.85; }
+  .acc-card h3{ font-size:16px; font-weight:600; text-transform:none; }
+  .acc-card p{ color:var(--mist-dim); font-size:13px; margin-top:8px; }
+  .acc-card .arrow{ position:absolute; right:24px; top:30px; color:var(--mist-dim); font-family:var(--mono); font-size:13px; }
+
+  /* ============ SERVICIOS + EQUIPO ============ */
+  .services-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-bottom:80px; }
+  @media (max-width:860px){ .services-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .services-grid{ grid-template-columns:1fr; } }
+  .svc-card{ background:var(--ink-900); padding:32px 26px; }
+  .svc-card .idx{ font-family:var(--mono); font-size:11px; color:var(--mist-dim); letter-spacing:.1em; }
+  .svc-card h3{ font-size:17px; font-weight:600; text-transform:none; margin-top:14px; }
+  .svc-card p{ color:var(--mist-dim); font-size:13px; margin-top:10px; line-height:1.6; }
+  .team-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+  @media (max-width:860px){ .team-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .team-grid{ grid-template-columns:1fr; } }
+  .team-card .ph{ aspect-ratio:3/4; margin-bottom:14px; }
+  .team-card .ph svg{ width:36%; }
+  .team-card h4{ font-size:15px; font-weight:600; text-transform:none; }
+  .team-card span{ font-family:var(--mono); font-size:10px; color:var(--mist-dim); letter-spacing:.08em; display:block; margin-top:4px; }
+
+  /* ============ FORMULARIO REPUESTOS ============ */
+  .form-wrap{ display:grid; grid-template-columns:.85fr 1.15fr; gap:64px; }
+  @media (max-width:920px){ .form-wrap{ grid-template-columns:1fr; } }
+  .form-side h2{ font-size:clamp(26px,3.2vw,36px); }
+  .form-side p{ color:var(--mist); margin-top:16px; max-width:380px; font-size:14px; }
+  .form-side .steps{ margin-top:36px; display:flex; flex-direction:column; gap:18px; }
+  .form-side .step{ display:flex; gap:14px; align-items:flex-start; }
+  .form-side .step .n{ font-family:var(--mono); font-size:11px; color:var(--mist-dim); padding-top:2px; }
+  .form-side .step .t{ font-size:13px; color:var(--mist); }
+  .form-side .step b{ color:var(--paper); display:block; font-size:14px; margin-bottom:2px; }
+
+  .form-card{ background:var(--ink-800); border:1px solid var(--line); padding:36px; border-radius:var(--radius-card); }
+  .f-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media (max-width:560px){ .f-row{ grid-template-columns:1fr; } }
+  .f-field{ display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+  .f-field label{ font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--mist-dim); }
+  .f-field input, .f-field select, .f-field textarea{
+    background:var(--ink-900); border:1px solid var(--line); color:var(--paper);
+    padding:11px 13px; font-family:var(--font-body); font-size:13px; border-radius:2px; resize:none;
+  }
+  .f-field input:focus, .f-field select:focus, .f-field textarea:focus{ outline:2px solid var(--paper); outline-offset:1px; border-color:var(--paper); }
+  .upload-zone{
+    border:1px dashed var(--line); padding:24px; text-align:center; border-radius:2px;
+    cursor:pointer; transition:border-color .15s;
+  }
+  .upload-zone:hover{ border-color:var(--mist); }
+  .upload-zone span{ display:block; font-family:var(--mono); font-size:11px; color:var(--mist-dim); letter-spacing:.04em; }
+  .upload-preview{ margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+  .upload-preview img{ width:64px; height:64px; object-fit:cover; border:1px solid var(--line); border-radius:2px; }
+  .f-check{ display:flex; gap:10px; align-items:flex-start; font-size:12px; color:var(--mist); margin:6px 0 22px; }
+  .f-check a{ text-decoration:underline; }
+  .form-submit{ width:100%; background:var(--paper); color:var(--ink-900); border:none; padding:14px; font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; border-radius:2px; }
+  .form-submit:hover{ opacity:.85; }
+  .form-toast{ margin-top:14px; font-family:var(--mono); font-size:11px; color:var(--mist-dim); display:none; }
+  .form-toast.show{ display:block; }
+
+  /* ============ FOOTER ============ */
+  .site-footer{ padding:72px 0 28px; }
+  .footer-top{ display:grid; grid-template-columns:1.2fr .8fr .8fr 1fr; gap:48px; padding-bottom:56px; border-bottom:1px solid var(--line-soft); }
+  @media (max-width:860px){ .footer-top{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .footer-top{ grid-template-columns:1fr; } }
+  .footer-brand p{ color:var(--mist-dim); font-size:13px; margin-top:14px; max-width:260px; }
+  .footer-col h5{ font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--mist-dim); margin-bottom:16px; text-transform:uppercase; }
+  .footer-col a, .footer-col p{ display:block; font-size:13px; color:var(--mist); margin-bottom:10px; }
+  .footer-col a:hover{ color:var(--paper); }
+  .footer-map .ph{ aspect-ratio:4/3; }
+  .footer-map .ph svg{ width:24%; }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:24px; flex-wrap:wrap; gap:12px; }
+  .footer-bottom .legal{ display:flex; gap:18px; font-size:12px; color:var(--mist-dim); flex-wrap:wrap; }
+  .footer-bottom .legal a:hover{ color:var(--paper); }
+  .footer-bottom .copy{ font-family:var(--mono); font-size:11px; color:var(--mist-dim); }
+  .social-row{ display:flex; gap:10px; margin-top:18px; }
+  .social-row a{ width:30px; height:30px; border:1px solid var(--line); border-radius:2px; display:flex; align-items:center; justify-content:center; }
+  .social-row a:hover{ border-color:var(--paper); }
+  .social-row svg{ width:14px; height:14px; }
+  .dji-strip{ display:flex; align-items:center; gap:14px; padding:18px 0; border-top:1px solid var(--line-soft); margin-top:24px; color:var(--mist-dim); font-family:var(--mono); font-size:10px; letter-spacing:.1em; }
+  .dji-strip .divider{ width:1px; height:14px; background:var(--line); }
+
+  /* ============ REVEAL ============ */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; transition:none; } }
+
+  /* ============ LOGO SWAP ============ */
+  .logo-full{ height:38px; width:auto; display:block; }
+  .logo-for-light{ display:none; }
+
+  /* ============ SPOTLIGHT (dark mode) ============ */
+  html[data-theme="dark"] body::before{
+    content:''; position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:9998;
+    background:radial-gradient(500px circle at var(--mx) var(--my), rgba(255,255,255,.042), transparent 50%);
+  }
+
+  /* ============ THEME TOGGLE ============ */
+  .pg-theme-toggle{
+    background:transparent; border:1px solid var(--line); color:var(--mist);
+    padding:6px 12px; border-radius:3px; font-size:11px; font-family:var(--mono);
+    letter-spacing:.06em; text-transform:uppercase; cursor:pointer;
+    transition:all .15s var(--ease); white-space:nowrap;
+  }
+  .pg-theme-toggle:hover{ border-color:var(--mist); color:var(--paper); }
+
+  /* ============ BRANDS STRIP ============ */
+  .brands-strip{ border-bottom:1px solid var(--line-soft); padding:13px 0; overflow:hidden; background:var(--ink-800); }
+  .brands-inner{ display:flex; align-items:center; gap:24px; }
+  .brands-label{ font-size:10px; letter-spacing:.14em; color:var(--mist-dim); white-space:nowrap; flex-shrink:0; }
+  .brands-track-wrap{ overflow:hidden; flex:1; -webkit-mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent); mask-image:linear-gradient(90deg,transparent,black 6%,black 94%,transparent); }
+  .brands-track{ display:flex; gap:28px; align-items:center; width:max-content; animation:marquee 22s linear infinite; }
+  .brand-tag{ font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--mist); white-space:nowrap; }
+  .brand-sep{ color:var(--line); }
+  @keyframes marquee{ 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
+  @media (prefers-reduced-motion:reduce){ .brands-track{ animation:none; } }
+
+  /* ============ RADAR (hero visual) ============ */
+  .radar-svg{
+    position:absolute; top:50%; left:50%; width:72%; aspect-ratio:1/1;
+    transform:translate(-50%,-50%); pointer-events:none; overflow:visible; z-index:1;
+  }
+  @keyframes radar-rotate{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+  .radar-arm{ transform-origin:100px 100px; animation:radar-rotate 4s linear infinite; }
+  @media (prefers-reduced-motion:reduce){ .radar-arm{ animation:none; } }
+
+  /* ============ HERO BG DRIFT ============ */
+  @keyframes grid-drift{ 0%{background-position:0 0;} 100%{background-position:26px 26px;} }
+  @media (prefers-reduced-motion:reduce){ .hero{ animation:none; } }
+
+  /* ============ PROCESO ============ */
+  .proceso-timeline{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:8px; }
+  @media (max-width:860px){ .proceso-timeline{ grid-template-columns:repeat(2,1fr); gap:40px 0; } }
+  @media (max-width:560px){ .proceso-timeline{ grid-template-columns:1fr; gap:28px; } }
+  .proceso-step{ padding-right:24px; }
+  .proceso-step:last-child{ padding-right:0; }
+  .ps-connector{ display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .ps-num{ font-size:11px; letter-spacing:.1em; color:var(--mist-dim); white-space:nowrap; }
+  .ps-line{ flex:1; height:1px; background:var(--line); }
+  .ps-dot{ width:7px; height:7px; background:var(--paper); border-radius:50%; flex-shrink:0; opacity:.65; }
+  .proceso-step:last-child .ps-line{ display:none; }
+  .proceso-step h3{ font-size:15px; font-weight:600; text-transform:none; margin-bottom:10px; }
+  .proceso-step p{ color:var(--mist-dim); font-size:13px; line-height:1.65; }
+
+  /* ============ CASOS DE USO ============ */
+  .casos-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media (max-width:860px){ .casos-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .casos-grid{ grid-template-columns:1fr; } }
+  .caso-card{ background:var(--ink-900); padding:36px 28px; transition:background .2s var(--ease); }
+  .caso-card:hover{ background:var(--ink-800); }
+  .caso-tag{ display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+  .caso-tag .dot{ width:5px; height:5px; background:var(--paper); border-radius:50%; opacity:.5; }
+  .caso-tag span{ font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--mist-dim); text-transform:uppercase; }
+  .caso-stat{ font-family:var(--font-head); font-weight:var(--weight-head); font-size:clamp(32px,4vw,50px); letter-spacing:var(--tracking-head); line-height:1.05; margin-bottom:12px; text-transform:uppercase; }
+  .caso-card h3{ font-size:16px; font-weight:600; text-transform:none; margin-bottom:8px; }
+  .caso-card p{ color:var(--mist-dim); font-size:13px; line-height:1.65; }
+
+  /* ============ VIDEO / MULTIMEDIA ============ */
+  .video-frame{ aspect-ratio:16/9; position:relative; cursor:pointer; }
+  .video-frame > svg{ width:56px; }
+  .play-overlay{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; background:rgba(0,0,0,.35); }
+  .play-btn-circle{ width:72px; height:72px; border:2px solid var(--paper); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--paper); font-size:24px; padding-left:4px; transition:transform .2s var(--ease), background .2s; }
+  .play-btn-circle:hover{ transform:scale(1.08); background:rgba(255,255,255,.12); }
+  .play-label{ font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--mist); text-transform:uppercase; }
+
+  /* ============ FAQ ============ */
+  .faq-wrap{ display:grid; grid-template-columns:.9fr 1.1fr; gap:64px; align-items:start; }
+  @media (max-width:860px){ .faq-wrap{ grid-template-columns:1fr; } }
+  .faq-intro h2{ font-size:clamp(26px,3.2vw,38px); }
+  .faq-intro p{ color:var(--mist); font-size:15px; margin-top:16px; }
+  .faq-item{ border-bottom:1px solid var(--line-soft); }
+  .faq-item summary{ padding:19px 0; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:14px; gap:16px; color:var(--paper); }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{ content:'+'; font-family:var(--mono); font-size:16px; color:var(--mist-dim); transition:transform .2s var(--ease); flex-shrink:0; }
+  .faq-item[open] summary::after{ transform:rotate(45deg); }
+  .faq-item > p{ padding:0 0 18px; color:var(--mist); font-size:13px; line-height:1.7; margin:0; }
+
+  /* ============ CTA FINAL ============ */
+  .cta-final{ padding:120px 0; text-align:center; position:relative; overflow:hidden; background:linear-gradient(135deg, var(--ink-800) 0%, var(--ink-900) 50%, var(--ink-800) 100%); background-size:200% 200%; animation:cta-pulse 8s ease infinite; border-bottom:none; }
+  @keyframes cta-pulse{ 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+  @media (prefers-reduced-motion:reduce){ .cta-final{ animation:none; } }
+  .cta-final::before{ content:''; position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 60px); }
+  .cta-inner{ position:relative; z-index:1; }
+  .cta-final h2{ font-size:clamp(38px,6vw,80px); }
+  .cta-final .sub{ color:var(--mist); font-size:16px; margin-top:18px; max-width:520px; margin-left:auto; margin-right:auto; }
+  .cta-actions{ display:flex; gap:14px; justify-content:center; margin-top:38px; flex-wrap:wrap; }
+
+  /* ============ SCRAMBLE (heading text effect) ============ */
+  h2[data-text]{ position:relative; }
+  h2[data-text].glitch-on::after{ content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; animation:glitch-slice .45s steps(1) forwards; color:rgba(100,200,255,.45); pointer-events:none; }
+  @keyframes glitch-slice{ 0%,88%,100%{ clip-path:none; transform:none; } 90%{ clip-path:polygon(0 18%,100% 18%,100% 38%,0 38%); transform:translate(-3px,0); } 92%{ clip-path:polygon(0 58%,100% 58%,100% 76%,0 76%); transform:translate(3px,0); } 94%{ clip-path:polygon(0 36%,100% 36%,100% 56%,0 56%); transform:translate(-1px,0); } }
+
+  /* ============ HEX PATTERN BACKGROUND (flat-top, brand-aligned) ============ */
+  /* Tile: 2 centre hexes + 4 corner halves → tila seamlessly at 60×35 px */
+  .hex-overlay-el{
+    position:absolute; inset:0; pointer-events:none; z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='35'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='.6'%3E%3Cpolygon points='50,17 40,0 20,0 10,17 20,35 40,35'/%3E%3Cpolygon points='20,0 10,-17 -10,-17 -20,0 -10,17 10,17'/%3E%3Cpolygon points='20,35 10,17 -10,17 -20,35 -10,52 10,52'/%3E%3Cpolygon points='80,0 70,-17 50,-17 40,0 50,17 70,17'/%3E%3Cpolygon points='80,35 70,17 50,17 40,35 50,52 70,52'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat:repeat; background-size:60px 35px; opacity:.055;
+  }
+  html[data-theme="light"] .hex-overlay-el{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='35'%3E%3Cg fill='none' stroke='%231D252D' stroke-width='.6'%3E%3Cpolygon points='50,17 40,0 20,0 10,17 20,35 40,35'/%3E%3Cpolygon points='20,0 10,-17 -10,-17 -20,0 -10,17 10,17'/%3E%3Cpolygon points='20,35 10,17 -10,17 -20,35 -10,52 10,52'/%3E%3Cpolygon points='80,0 70,-17 50,-17 40,0 50,17 70,17'/%3E%3Cpolygon points='80,35 70,17 50,17 40,35 50,52 70,52'/%3E%3C/g%3E%3C/svg%3E");
+    opacity:.07;
+  }
+
+  /* ============ ICON DESPEGUE (CSS puro, sin librerías) ============ */
+  /* Mobile header: muestra el mark animado en lugar del logo apaisado */
+  .brand-mark-icon{ height:38px; width:38px; color:var(--paper); flex-shrink:0; display:none; }
+  @media (max-width:620px){
+    .brand-mark-icon{ display:block; }
+    .logo-full{ display:none !important; }
+  }
+  /* Hex ring */
+  .anim-hex-ring{ fill:none; stroke:currentColor; stroke-width:5.5; stroke-linejoin:round; animation:tk-ring 3.6s ease-in-out infinite; }
+  @keyframes tk-ring{ 0%,68%,100%{ opacity:.6; } 28%,52%{ opacity:1; } }
+  /* Centro: motor principal, despega primero */
+  .anim-c{ fill:currentColor; transform-origin:60px 63px; animation:tk-lift-c 3.6s cubic-bezier(.4,0,.2,1) 0s infinite; }
+  /* Laterales: propulsores, lag progresivo */
+  .anim-l{ fill:currentColor; transform-origin:47px 63px; animation:tk-lift-l 3.6s cubic-bezier(.4,0,.2,1) .18s infinite; }
+  .anim-r{ fill:currentColor; transform-origin:73px 63px; animation:tk-lift-r 3.6s cubic-bezier(.4,0,.2,1) .36s infinite; }
+  @keyframes tk-lift-c{
+    0%,68%,100%{ transform:translateY(0); }
+    13%{ transform:translateY(3px); }
+    32%,56%{ transform:translateY(-13px); }
+  }
+  @keyframes tk-lift-l{
+    0%,70%,100%{ transform:translateY(0); }
+    14%{ transform:translateY(2px); }
+    34%,58%{ transform:translateY(-9px); }
+  }
+  @keyframes tk-lift-r{
+    0%,70%,100%{ transform:translateY(0); }
+    14%{ transform:translateY(2px); }
+    34%,58%{ transform:translateY(-9px); }
+  }
+  /* Líneas de empuje exhaust */
+  .anim-thrust{ stroke:currentColor; stroke-width:1.5; stroke-linecap:round; opacity:0; transform-origin:50% 0%; animation:tk-thrust 3.6s ease-out 0s infinite; }
+  .anim-thrust.tl{ animation-delay:.18s; }
+  .anim-thrust.tr{ animation-delay:.36s; }
+  @keyframes tk-thrust{
+    0%,11%,74%,100%{ opacity:0; transform:scaleY(0); }
+    18%,60%{ opacity:.7; transform:scaleY(1); }
+  }
+  /* Mark grande de fondo en CTA */
+  .cta-mark-anim{
+    position:absolute; right:-3%; bottom:-14%;
+    width:min(380px,56vw); pointer-events:none; color:var(--paper); opacity:.065;
+  }
+  html[data-theme="light"] .cta-mark-anim{ opacity:.045; }
+  @media (prefers-reduced-motion:reduce){
+    .anim-hex-ring,.anim-c,.anim-l,.anim-r,.anim-thrust{ animation:none !important; }
+  }
+
+  :focus-visible{ outline:2px solid var(--paper); outline-offset:2px; }
+</style>
+</head>
+<body data-font="tech">
+
+<!-- ============ LOGO SYMBOL (def) ============ -->
+<svg style="display:none">
+  <symbol id="mark" viewBox="0 0 120 120">
+    <polygon class="hex" points="32,9 88,9 114,60 88,111 32,111 6,60"/>
+    <polygon class="pane" points="40,38 54,32 54,88 40,94"/>
+    <polygon class="pane" points="56,28 64,28 64,90 60,98 56,90"/>
+    <polygon class="pane" points="80,38 66,32 66,88 80,94"/>
+  </symbol>
+  <symbol id="ic-drone" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+    <path d="M32 26 L14 12 M32 26 L50 12 M32 38 L14 52 M32 38 L50 52" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="14" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="50" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="14" cy="52" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="50" cy="52" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+    <rect x="26" y="34" width="12" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+  </symbol>
+  <symbol id="ic-battery" viewBox="0 0 64 64">
+    <rect x="10" y="20" width="38" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+    <rect x="48" y="27" width="6" height="10" fill="currentColor"/>
+    <rect x="17" y="27" width="8" height="10" fill="currentColor"/>
+    <rect x="29" y="27" width="8" height="10" fill="currentColor"/>
+  </symbol>
+  <symbol id="ic-charger" viewBox="0 0 64 64">
+    <path d="M34 10 L18 36 H30 L26 54 L46 28 H34 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-tank" viewBox="0 0 64 64">
+    <path d="M18 14 H46 V20 C46 20 52 26 52 38 C52 48 44 54 32 54 C20 54 12 48 12 38 C12 26 18 20 18 20 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+    <line x1="14" y1="38" x2="50" y2="38" stroke="currentColor" stroke-width="2"/>
+  </symbol>
+  <symbol id="ic-antenna" viewBox="0 0 64 64">
+    <line x1="32" y1="54" x2="32" y2="14" stroke="currentColor" stroke-width="2"/>
+    <circle cx="32" cy="12" r="3" fill="currentColor"/>
+    <path d="M22 24 a14 14 0 0 1 20 0" fill="none" stroke="currentColor" stroke-width="2"/>
+    <path d="M15 32 a24 24 0 0 1 34 0" fill="none" stroke="currentColor" stroke-width="2"/>
+  </symbol>
+  <symbol id="ic-hub" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="32" cy="12" r="4" fill="currentColor"/>
+    <circle cx="32" cy="52" r="4" fill="currentColor"/>
+    <circle cx="12" cy="32" r="4" fill="currentColor"/>
+    <circle cx="52" cy="32" r="4" fill="currentColor"/>
+    <line x1="32" y1="24" x2="32" y2="16" stroke="currentColor" stroke-width="2"/>
+    <line x1="32" y1="40" x2="32" y2="48" stroke="currentColor" stroke-width="2"/>
+    <line x1="24" y1="32" x2="16" y2="32" stroke="currentColor" stroke-width="2"/>
+    <line x1="40" y1="32" x2="48" y2="32" stroke="currentColor" stroke-width="2"/>
+  </symbol>
+  <symbol id="ic-box" viewBox="0 0 64 64">
+    <path d="M10 22 L32 12 L54 22 L32 32 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M10 22 V44 L32 54 V32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M54 22 V44 L32 54" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-photo" viewBox="0 0 64 64">
+    <rect x="8" y="14" width="48" height="36" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="22" cy="26" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+    <path d="M8 44 L22 32 L32 40 L44 26 L56 36 V50 H8 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ic-person" viewBox="0 0 64 64">
+    <circle cx="32" cy="22" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+    <path d="M12 54 C12 40 20 34 32 34 C44 34 52 40 52 54" fill="none" stroke="currentColor" stroke-width="2"/>
+  </symbol>
+</svg>
+
+<!-- ============ TOOLBAR DEL PLAYGROUND (no forma parte del sitio final) ============ -->
+<div class="pg-toolbar">
+  <span class="pg-label">⬡ PLAYGROUND — vista de componentes</span>
+  <div class="pg-group" id="fontSwitch">
+    <button class="pg-btn" data-font="corp">Corporativa</button>
+    <button class="pg-btn" data-font="mixed">Mixta</button>
+    <button class="pg-btn" data-font="industrial">Industrial</button>
+    <button class="pg-btn active" data-font="tech">Tech</button>
+  </div>
+  <button class="pg-theme-toggle" id="themeToggle">&#9728; Light</button>
+  <div class="pg-group">
+    <a class="pg-chip mono" href="#hero">01 Hero</a>
+    <a class="pg-chip mono" href="#producto">02 Producto</a>
+    <a class="pg-chip mono" href="#accesorios">03 Accesorios</a>
+    <a class="pg-chip mono" href="#servicios">04 Servicios</a>
+    <a class="pg-chip mono" href="#proceso">05 Proceso</a>
+    <a class="pg-chip mono" href="#casos">06 Casos</a>
+    <a class="pg-chip mono" href="#multimedia">07 Video</a>
+    <a class="pg-chip mono" href="#repuestos">08 Repuestos</a>
+    <a class="pg-chip mono" href="#faq">09 FAQ</a>
+    <a class="pg-chip mono" href="#cta">10 CTA</a>
+    <a class="pg-chip mono" href="#contacto">11 Footer</a>
+  </div>
+  <div class="pg-spacer"></div>
+  <span class="pg-note mono">Datos y fotos: placeholder · sustituir antes de WP</span>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="wrap bar">
+    <div class="brand">
+      <!-- Icono animado despegue: visible sólo en móvil (<620 px) -->
+      <svg class="brand-mark-icon" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+        <polygon class="anim-hex-ring" points="32,9 88,9 114,60 88,111 32,111 6,60"/>
+        <polygon class="anim-c" points="56,28 64,28 64,90 60,98 56,90"/>
+        <polygon class="anim-l" points="40,38 54,32 54,88 40,94"/>
+        <polygon class="anim-r" points="80,38 66,32 66,88 80,94"/>
+        <line class="anim-thrust" x1="60" y1="94" x2="60" y2="112"/>
+        <line class="anim-thrust tl" x1="47" y1="91" x2="44" y2="108"/>
+        <line class="anim-thrust tr" x1="73" y1="91" x2="76" y2="108"/>
+      </svg>
+      <img class="logo-full logo-for-dark" src="TAKEOFF-logo-a-b.svg" alt="Takeoff Main Center" height="40">
+      <img class="logo-full logo-for-light" src="TAKEOFF-logo-a-n.svg" alt="Takeoff Main Center" height="40">
+    </div>
+    <nav class="main-nav">
+      <a href="#producto">DJI Agras</a>
+      <a href="#accesorios">Accesorios</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#proceso">Proceso</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <a href="#repuestos" class="cta-ghost" style="display:none" id="dummy"></a>
+      <a href="#contacto" class="cta-btn">Solicitar info</a>
+      <button class="nav-toggle" aria-label="Abrir menú">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 01 · HERO ============ -->
+  <section id="hero" class="hero">
+    <div class="hex-overlay-el" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑01</span><span class="ln"></span><span class="name">Header + Hero</span></div>
+      <div class="hero-grid">
+        <div class="reveal">
+          <div class="eyebrow"><span class="dot"></span><span>Distribuidor oficial DJI Agriculture</span></div>
+          <h1>Tecnología agraria<br><em>de precisión</em>,<br>lista para volar.</h1>
+          <p class="lede">Venta, formación y soporte técnico de la gama DJI Agras en Castilla y León. Drones, accesorios y repuestos para explotaciones que no pueden permitirse paradas.</p>
+          <div class="actions">
+            <a href="#producto" class="cta-btn">Ver gama Agras</a>
+            <a href="#contacto" class="cta-ghost">Hablar con un técnico</a>
+          </div>
+          <div class="hud-stats">
+            <div class="stat"><div class="v">+120</div><div class="l">Hectáreas / día por unidad</div></div>
+            <div class="stat"><div class="v">24 / 7</div><div class="l">Soporte técnico</div></div>
+            <div class="stat"><div class="v">05</div><div class="l">Modelos Agras en catálogo</div></div>
+          </div>
+        </div>
+        <div class="hero-visual reveal">
+          <div class="hud-frame">
+            <span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
+            <div class="scanline"></div>
+            <!-- Radar sweep -->
+            <svg class="radar-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width=".8" opacity=".22"/>
+              <circle cx="100" cy="100" r="62" fill="none" stroke="currentColor" stroke-width=".6" opacity=".15"/>
+              <circle cx="100" cy="100" r="32" fill="none" stroke="currentColor" stroke-width=".5" opacity=".12"/>
+              <line x1="100" y1="8" x2="100" y2="192" stroke="currentColor" stroke-width=".5" opacity=".1"/>
+              <line x1="8" y1="100" x2="192" y2="100" stroke="currentColor" stroke-width=".5" opacity=".1"/>
+              <g class="radar-arm">
+                <path d="M100,100 L100,8 A92,92,0,0,1,191,137 Z" fill="rgba(255,255,255,.06)"/>
+                <line x1="100" y1="100" x2="100" y2="8" stroke="rgba(255,255,255,.55)" stroke-width="1.5" stroke-linecap="round"/>
+              </g>
+              <circle cx="134" cy="66" r="3" fill="currentColor" opacity=".5">
+                <animate attributeName="opacity" values=".5;1;.5" dur="2.1s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="72" cy="126" r="2" fill="currentColor" opacity=".4">
+                <animate attributeName="opacity" values=".4;.9;.4" dur="3.4s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="148" cy="118" r="1.5" fill="currentColor" opacity=".3">
+                <animate attributeName="opacity" values=".3;.8;.3" dur="1.8s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <svg class="drone-icon" viewBox="0 0 64 64"><use href="#ic-drone" style="color:#fff"/></svg>
+            <div class="hud-readout">
+              MODELO: DJI AGRAS T50<br>
+              MODO: <span class="ok">PULVERIZACIÓN</span><br>
+              ALT: 4.2M &nbsp; VEL: 6.1 M/S
+            </div>
+            <div class="hud-readout-br">
+              BASE: BENAVENTE · ZAMORA<br>
+              ESTADO: <span class="ok">EN LÍNEA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRANDS STRIP -->
+  <div class="brands-strip">
+    <div class="wrap">
+      <div class="brands-inner">
+        <span class="brands-label mono">Certificado y asociado</span>
+        <div class="brands-track-wrap">
+          <div class="brands-track" aria-hidden="true">
+            <span class="brand-tag">DJI AGRICULTURE</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">DISTRIBUIDOR OFICIAL</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">AESA AUTORIZADO</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">AGRAS CERTIFIED PARTNER</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">SOPORTE 24 H</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">CASTILLA Y LE&Oacute;N</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">DJI AGRICULTURE</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">DISTRIBUIDOR OFICIAL</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">AESA AUTORIZADO</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">AGRAS CERTIFIED PARTNER</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">SOPORTE 24 H</span><span class="brand-sep">&middot;</span>
+            <span class="brand-tag">CASTILLA Y LE&Oacute;N</span><span class="brand-sep">&middot;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 02 · FICHA DE PRODUCTO ============ -->
+  <section id="producto">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑02</span><span class="ln"></span><span class="name">Ficha de producto · DJI Agras</span></div>
+      <div class="product-grid">
+        <div class="product-gallery reveal">
+          <div class="ph" data-label="Foto producto · pendiente cliente"><svg viewBox="0 0 64 64"><use href="#ic-drone"/></svg></div>
+          <div class="thumb-row">
+            <div class="ph" data-label="01"><svg viewBox="0 0 64 64"><use href="#ic-drone"/></svg></div>
+            <div class="ph" data-label="02"><svg viewBox="0 0 64 64"><use href="#ic-tank"/></svg></div>
+            <div class="ph" data-label="03"><svg viewBox="0 0 64 64"><use href="#ic-battery"/></svg></div>
+            <div class="ph" data-label="04"><svg viewBox="0 0 64 64"><use href="#ic-antenna"/></svg></div>
+          </div>
+        </div>
+        <div class="product-info reveal">
+          <div class="badge-row">
+            <span class="badge">AGRICULTURA</span>
+            <span class="badge">DOBLE ATOMIZACIÓN</span>
+            <span class="badge">RTK INCLUIDO</span>
+          </div>
+          <h2>DJI Agras T50</h2>
+          <span class="model-tag">REF. AGRAS‑T50 · DISTRIBUCIÓN OFICIAL TAKEOFF</span>
+          <p class="desc">Pulverizador y esparcidor de altas prestaciones, pensado para grandes extensiones. Sistema de doble atomización centrífuga y radar de detección omnidireccional para vuelo seguro en terreno irregular.</p>
+          <div class="spec-table">
+            <div class="spec-row"><span class="k">Capacidad depósito líquido</span><span class="v">40 L</span></div>
+            <div class="spec-row"><span class="k">Capacidad tolva sólidos</span><span class="v">50 kg</span></div>
+            <div class="spec-row"><span class="k">Ancho de pulverización</span><span class="v">hasta 11 m</span></div>
+            <div class="spec-row"><span class="k">Caudal máximo</span><span class="v">16 L/min</span></div>
+            <div class="spec-row"><span class="k">Sistema de posicionamiento</span><span class="v">RTK + radar 3D</span></div>
+            <div class="spec-row"><span class="k">Batería</span><span class="v">Inteligente, carga rápida</span></div>
+          </div>
+          <p class="spec-note">* Ficha de ejemplo para maqueta — sustituir por datos técnicos oficiales DJI antes de publicar.</p>
+          <div class="product-actions">
+            <a href="#repuestos" class="cta-btn">Solicitar presupuesto</a>
+            <a href="#accesorios" class="cta-ghost">Ver accesorios compatibles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · ACCESORIOS ============ -->
+  <section id="accesorios">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑03</span><span class="ln"></span><span class="name">Grid de accesorios</span></div>
+      <div class="section-head reveal">
+        <h2>Accesorios y<br>repuestos compatibles</h2>
+        <p>Catálogo informativo organizado por familia. Consulta disponibilidad y compatibilidad por modelo.</p>
+      </div>
+      <div class="acc-grid reveal">
+        <a class="acc-card" href="#">
+          <svg viewBox="0 0 64 64"><use href="#ic-battery"/></svg>
+          <h3>Baterías</h3>
+          <p>Inteligentes, carga rápida y alta densidad.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="acc-card" href="#">
+          <svg viewBox="0 0 64 64"><use href="#ic-charger"/></svg>
+          <h3>Cargadores</h3>
+          <p>Estaciones de carga simple y multicarga.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="acc-card" href="#">
+          <svg viewBox="0 0 64 64"><use href="#ic-tank"/></svg>
+          <h3>Depósitos</h3>
+          <p>Tanques de líquido y tolvas para sólidos.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="acc-card" href="#">
+          <svg viewBox="0 0 64 64"><use href="#ic-antenna"/></svg>
+          <h3>Antenas RTK</h3>
+          <p>Posicionamiento centimétrico en campo.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="acc-card" href="#">
+          <svg viewBox="0 0 64 64"><use href="#ic-hub"/></svg>
+          <h3>Hubs y control</h3>
+          <p>Mandos, hubs de carga y módulos de control.</p>
+          <span class="arrow">→</span>
+        </a>
+        <a class="acc-card" href="#">
+          <svg viewBox="0 0 64 64"><use href="#ic-box"/></svg>
+          <h3>Otros accesorios</h3>
+          <p>Hélices, boquillas, cableado y consumibles.</p>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 · SERVICIOS + EQUIPO ============ -->
+  <section id="servicios">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑04</span><span class="ln"></span><span class="name">Servicios + Equipo</span></div>
+      <div class="section-head reveal">
+        <h2>Qué hacemos<br>antes, durante y después</h2>
+        <p>No solo vendemos el dron: acompañamos toda la operación agrícola.</p>
+      </div>
+      <div class="services-grid reveal">
+        <div class="svc-card"><span class="idx mono">01</span><h3>Venta y asesoramiento DJI Agras</h3><p>Elegimos el modelo según superficie, cultivo y tipo de tratamiento.</p></div>
+        <div class="svc-card"><span class="idx mono">02</span><h3>Asesoramiento técnico de campo</h3><p>Planificación de vuelo, dosificación y normativa aplicable.</p></div>
+        <div class="svc-card"><span class="idx mono">03</span><h3>Accesorios y complementos</h3><p>Baterías, depósitos, antenas y consumibles compatibles.</p></div>
+        <div class="svc-card"><span class="idx mono">04</span><h3>Gestión de repuestos</h3><p>Identificación rápida de piezas y disponibilidad real.</p></div>
+        <div class="svc-card"><span class="idx mono">05</span><h3>Formación y cursos</h3><p>Cursos oficiales DJI y formación propia en nuestras instalaciones.</p></div>
+        <div class="svc-card"><span class="idx mono">06</span><h3>Soporte y acompañamiento</h3><p>Asistencia técnica continuada tras la compra.</p></div>
+      </div>
+      <div class="team-grid reveal">
+        <div class="team-card">
+          <div class="ph" data-label="Foto equipo"><svg viewBox="0 0 64 64"><use href="#ic-person"/></svg></div>
+          <h4>Nombre Apellido</h4><span>Dirección técnica</span>
+        </div>
+        <div class="team-card">
+          <div class="ph" data-label="Foto equipo"><svg viewBox="0 0 64 64"><use href="#ic-person"/></svg></div>
+          <h4>Nombre Apellido</h4><span>Formación DJI</span>
+        </div>
+        <div class="team-card">
+          <div class="ph" data-label="Foto equipo"><svg viewBox="0 0 64 64"><use href="#ic-person"/></svg></div>
+          <h4>Nombre Apellido</h4><span>Atención comercial</span>
+        </div>
+        <div class="team-card">
+          <div class="ph" data-label="Foto equipo"><svg viewBox="0 0 64 64"><use href="#ic-person"/></svg></div>
+          <h4>Nombre Apellido</h4><span>Taller y soporte</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MOD‑05 · PROCESO ============ -->
+  <section id="proceso">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑05</span><span class="ln"></span><span class="name">Proceso de trabajo</span></div>
+      <div class="section-head reveal">
+        <h2 data-text="Así trabajamos">Así trabajamos</h2>
+        <p>De la consulta a la primera campaña: un proceso claro, sin burocracia.</p>
+      </div>
+      <div class="proceso-timeline reveal">
+        <div class="proceso-step">
+          <div class="ps-connector"><span class="ps-num mono">01</span><span class="ps-line"></span><span class="ps-dot"></span></div>
+          <h3>Consulta y diagnóstico</h3>
+          <p>Analizamos tu explotación, cultivos y superficie para recomendar el modelo y la configuración más adecuados.</p>
+        </div>
+        <div class="proceso-step">
+          <div class="ps-connector"><span class="ps-num mono">02</span><span class="ps-line"></span><span class="ps-dot"></span></div>
+          <h3>Propuesta y presupuesto</h3>
+          <p>Recibes una propuesta detallada con equipo, accesorios y coste real, sin sorpresas.</p>
+        </div>
+        <div class="proceso-step">
+          <div class="ps-connector"><span class="ps-num mono">03</span><span class="ps-line"></span><span class="ps-dot"></span></div>
+          <h3>Formación y puesta en marcha</h3>
+          <p>Formación en nuestras instalaciones o en campo. Primer vuelo supervisado incluido.</p>
+        </div>
+        <div class="proceso-step">
+          <div class="ps-connector"><span class="ps-num mono">04</span><span class="ps-line"></span><span class="ps-dot"></span></div>
+          <h3>Soporte continuo</h3>
+          <p>Asistencia técnica, actualizaciones de firmware y gestión de repuestos a lo largo de toda la vida útil del equipo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MOD‑06 · CASOS DE USO ============ -->
+  <section id="casos">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑06</span><span class="ln"></span><span class="name">Casos de uso</span></div>
+      <div class="section-head reveal">
+        <h2 data-text="Dónde vuela el Agras">Dónde vuela el Agras</h2>
+        <p>Tres cultivos, un mismo equipo. Resultados reales sobre el terreno de Castilla y León.</p>
+      </div>
+      <div class="casos-grid reveal">
+        <div class="caso-card">
+          <div class="caso-tag"><span class="dot"></span><span>Cereal y girasol</span></div>
+          <div class="caso-stat" data-count="120" data-suffix=" ha">+120 ha/día</div>
+          <h3>Grandes extensiones</h3>
+          <p>Pulverización uniforme sobre trigo, cebada y girasol con registro GPS de cada pasada. Reducción de herbicida del 25‑30&thinsp;%.</p>
+        </div>
+        <div class="caso-card">
+          <div class="caso-tag"><span class="dot"></span><span>Viñedo</span></div>
+          <div class="caso-stat" data-count="8" data-suffix=" ha/h">8 ha/h</div>
+          <h3>Viñedo en espaldera</h3>
+          <p>Vuelo entre filas, dosis variables por zona y tratamiento antifúngico sin compactación de suelo. Ideal para pendientes.</p>
+        </div>
+        <div class="caso-card">
+          <div class="caso-tag"><span class="dot"></span><span>Olivar y almendro</span></div>
+          <div class="caso-stat" data-count="95" data-suffix=" %">+95&thinsp;%</div>
+          <h3>Cobertura foliar</h3>
+          <p>Penetración de copa optimizada con los atomizadores centrífugos del T50. Dosis ajustadas por índice de biomasa (NDVI).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MOD‑07 · MULTIMEDIA ============ -->
+  <section id="multimedia">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑07</span><span class="ln"></span><span class="name">Vídeo / Multimedia</span></div>
+      <div class="reveal">
+        <div class="ph video-frame" data-label="Vídeo de vuelo · URL o embed pendiente de cliente">
+          <svg viewBox="0 0 64 64"><use href="#ic-drone"/></svg>
+          <div class="play-overlay">
+            <button class="play-btn-circle" aria-label="Reproducir vídeo">&#9654;</button>
+            <span class="play-label mono">Ver en vuelo &middot; DJI Agras T50</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MOD‑08 · FORMULARIO REPUESTOS ============ -->
+  <section id="repuestos">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑08</span><span class="ln"></span><span class="name">Formulario de repuestos</span></div>
+      <div class="form-wrap">
+        <div class="form-side reveal">
+          <h2>¿Necesitas<br>una pieza?</h2>
+          <p>Describe el repuesto, adjunta una foto y te confirmamos disponibilidad y precio en menos de 24h.</p>
+          <div class="steps">
+            <div class="step"><span class="n mono">01</span><span class="t"><b>Indica el modelo</b>Selecciona tu dron Agras.</span></div>
+            <div class="step"><span class="n mono">02</span><span class="t"><b>Describe la pieza</b>Cuanto más detalle, más rápida la respuesta.</span></div>
+            <div class="step"><span class="n mono">03</span><span class="t"><b>Adjunta una foto</b>Ayuda a identificar la referencia exacta.</span></div>
+            <div class="step"><span class="n mono">04</span><span class="t"><b>Recibe respuesta</b>Por email o teléfono, según prefieras.</span></div>
+          </div>
+        </div>
+        <form class="form-card reveal" id="spareForm">
+          <div class="f-row">
+            <div class="f-field">
+              <label>Modelo de dron</label>
+              <select>
+                <option>DJI Agras T25</option>
+                <option>DJI Agras T25P</option>
+                <option selected>DJI Agras T50</option>
+                <option>DJI Agras T70P</option>
+                <option>DJI Agras T100</option>
+              </select>
+            </div>
+            <div class="f-field">
+              <label>Teléfono de contacto</label>
+              <input type="tel" placeholder="+34 600 000 000">
+            </div>
+          </div>
+          <div class="f-field">
+            <label>Descripción de la pieza</label>
+            <textarea rows="3" placeholder="Ej. boquilla de pulverización lado derecho, brazo trasero..."></textarea>
+          </div>
+          <div class="f-field">
+            <label>Fotografía del repuesto</label>
+            <div class="upload-zone" id="uploadZone">
+              <span>Arrastra una imagen o haz clic para seleccionar</span>
+              <input type="file" accept="image/*" id="fileInput" style="display:none">
+            </div>
+            <div class="upload-preview" id="uploadPreview"></div>
+          </div>
+          <div class="f-row">
+            <div class="f-field"><label>Nombre</label><input type="text" placeholder="Nombre y apellidos"></div>
+            <div class="f-field"><label>Email</label><input type="email" placeholder="tu@email.com"></div>
+          </div>
+          <label class="f-check">
+            <input type="checkbox" required style="margin-top:2px;">
+            <span>He leído y acepto la <a href="#">Política de Privacidad</a>.</span>
+          </label>
+          <button type="submit" class="form-submit">Enviar solicitud</button>
+          <p class="form-toast mono" id="formToast">✓ Vista previa — formulario sin conexión real en este playground</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+  <!-- ============ MOD‑09 · FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="mod-kicker"><span class="num">MOD‑09</span><span class="ln"></span><span class="name">Preguntas frecuentes</span></div>
+      <div class="faq-wrap">
+        <div class="faq-intro reveal">
+          <h2 data-text="FAQ">Preguntas<br>frecuentes</h2>
+          <p>Resolvemos las dudas más habituales sobre drones agrícolas, normativa y nuestro servicio.</p>
+        </div>
+        <div class="faq-list reveal">
+          <details class="faq-item">
+            <summary>¿Necesito licencia de piloto para operar un DJI Agras?</summary>
+            <p>Sí. En España es obligatorio disponer de la habilitación de piloto UAS (categoría específica) expedida por AESA. Ofrecemos formación oficial para obtener esa habilitación.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Cuánto tiempo tarda un Agras T50 en tratar una hectárea?</summary>
+            <p>En condiciones óptimas, el T50 puede tratar entre 40 y 120&thinsp;ha por jornada dependiendo del cultivo, dosis y configuración de vuelo. Para cereal en llano con dosis estándar, la productividad media está en 40&ndash;50&thinsp;min/ha.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Está incluida la formación en el precio del dron?</summary>
+            <p>La formación básica de puesta en marcha está incluida. La formación oficial para habilitación AESA es un servicio separado que también ofrecemos en nuestras instalaciones de Benavente.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Cuánto tarda el servicio de repuestos?</summary>
+            <p>Para piezas en stock, el plazo de envío es de 24&ndash;48&thinsp;h. Para referencias bajo pedido a DJI, el plazo habitual es de 5&ndash;10 días hábiles. Te informamos del estado en tiempo real.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Qué zona cubre vuestro servicio técnico presencial?</summary>
+            <p>Prestamos servicio técnico presencial en toda Castilla y León. Para intervenciones urgentes en campo, cubrimos en un radio de 150&thinsp;km desde Benavente, Zamora.</p>
+          </details>
+          <details class="faq-item">
+            <summary>¿Puedo financiar la compra del equipo?</summary>
+            <p>Sí, disponemos de opciones de financiación a través de entidades colaboradoras, con plazos de 12 a 48 meses. Consulta condiciones con nuestro equipo comercial.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MOD‑10 · CTA FINAL ============ -->
+  <section class="cta-final" id="cta">
+    <!-- Patrón hex de fondo -->
+    <div class="hex-overlay-el" aria-hidden="true"></div>
+    <!-- Mark animado de fondo -->
+    <svg class="cta-mark-anim" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <polygon class="anim-hex-ring" points="32,9 88,9 114,60 88,111 32,111 6,60"/>
+      <polygon class="anim-c" points="56,28 64,28 64,90 60,98 56,90"/>
+      <polygon class="anim-l" points="40,38 54,32 54,88 40,94"/>
+      <polygon class="anim-r" points="80,38 66,32 66,88 80,94"/>
+      <line class="anim-thrust" x1="60" y1="94" x2="60" y2="112"/>
+      <line class="anim-thrust tl" x1="47" y1="91" x2="44" y2="108"/>
+      <line class="anim-thrust tr" x1="73" y1="91" x2="76" y2="108"/>
+    </svg>
+    <div class="wrap">
+      <div class="cta-inner reveal">
+        <div class="eyebrow" style="justify-content:center;"><span class="dot"></span><span>Takeoff Main Center &middot; Benavente, Zamora</span></div>
+        <h2 data-text="¿Listo para volar?">¿Listo para volar?</h2>
+        <p class="sub">Habla con nuestro equipo técnico y recibe una propuesta personalizada para tu explotación.</p>
+        <div class="cta-actions">
+          <a href="#contacto" class="cta-btn">Solicitar consulta gratuita</a>
+          <a href="tel:+34980000000" class="cta-ghost">Llamar ahora</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- ============ MOD‑11 · FOOTER / CONTACTO ============ -->
+<footer id="contacto" class="site-footer">
+  <div class="wrap">
+    <div class="mod-kicker"><span class="num">MOD‑11</span><span class="ln"></span><span class="name">Footer + Contacto</span></div>
+    <div class="footer-top">
+      <div class="footer-brand reveal">
+        <div class="brand">
+          <img class="logo-full logo-for-dark" src="TAKEOFF-logo-a-b.svg" alt="Takeoff Main Center" height="34">
+          <img class="logo-full logo-for-light" src="TAKEOFF-logo-a-n.svg" alt="Takeoff Main Center" height="34">
+        </div>
+        <p>Distribuidor oficial DJI Agriculture. Venta, formación y soporte técnico de drones agrícolas en Benavente y toda Castilla y León.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="11" x2="8" y2="17"/><line x1="8" y1="8" x2="8" y2="8"/><line x1="13" y1="17" x2="13" y2="11"/><path d="M13 13 C13 11 17 11 17 13 V17"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 10 L15 12 L11 14 Z" fill="currentColor"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Contacto</h5>
+        <a href="#">+34 980 00 00 00</a>
+        <a href="#">info@takeoffmaincenter.es</a>
+        <p>Polígono Industrial<br>49600 Benavente, Zamora</p>
+      </div>
+      <div class="footer-col reveal">
+        <h5>Navegación</h5>
+        <a href="#producto">DJI Agras</a>
+        <a href="#accesorios">Accesorios</a>
+        <a href="#servicios">Formación</a>
+        <a href="#repuestos">Repuestos</a>
+      </div>
+      <div class="footer-map reveal">
+        <h5>Cómo llegar</h5>
+        <div class="ph" data-label="Mapa · integrar Google Maps en WP">
+          <svg viewBox="0 0 64 64"><use href="#ic-photo"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="dji-strip">
+      <span>TAKEOFF MAIN CENTER</span><span class="divider"></span><span>DISTRIBUIDOR OFICIAL DJI AGRICULTURE</span>
+    </div>
+    <div class="footer-bottom">
+      <div class="legal">
+        <a href="#">Aviso legal</a><a href="#">Política de privacidad</a><a href="#">Política de cookies</a>
+      </div>
+      <span class="copy">© 2026 TAKEOFF MAIN CENTER · DEMO PLAYGROUND</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // --- Conmutador de tipografías ---
+  document.getElementById('fontSwitch').addEventListener('click', (e)=>{
+    const btn = e.target.closest('.pg-btn');
+    if(!btn) return;
+    document.documentElement.dataset.font = btn.dataset.font;
+    document.querySelectorAll('#fontSwitch .pg-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  });
+
+  // --- Theme toggle ---
+  const themeToggle = document.getElementById('themeToggle');
+  function applyTheme(theme){
+    document.documentElement.dataset.theme = theme;
+    themeToggle.textContent = theme === 'dark' ? '\u2600 Light' : '\u263e Dark';
+    try{ localStorage.setItem('tk-theme', theme); }catch(err){ console.warn('localStorage no disponible:', err); }
+  }
+  themeToggle.addEventListener('click', ()=>{
+    const cur = document.documentElement.dataset.theme || 'dark';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+  try{ const saved = localStorage.getItem('tk-theme'); if(saved) applyTheme(saved); }catch(err){ console.warn('localStorage no disponible:', err); }
+
+  // --- Cursor spotlight (dark mode) ---
+  document.addEventListener('mousemove', (e)=>{
+    document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+    document.documentElement.style.setProperty('--my', e.clientY + 'px');
+  });
+
+  // --- Reveal on scroll ---
+  const reduceMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(!en.isIntersecting) return;
+      const el = en.target;
+      el.classList.add('is-visible');
+      // Count-up animation
+      el.querySelectorAll('[data-count]').forEach(countEl => countUp(countEl));
+      // Heading scramble
+      if(!reduceMotion){
+        el.querySelectorAll('h2[data-text]').forEach(h=>{
+          setTimeout(()=>{ h.classList.add('glitch-on'); setTimeout(()=>h.classList.remove('glitch-on'), 500); scramble(h, h.dataset.text); }, 80);
+        });
+      }
+      obs.unobserve(el);
+    });
+  }, { threshold:.12 });
+  if(reduceMotion){
+    document.querySelectorAll('.reveal').forEach(el=>{ el.classList.add('is-visible'); el.querySelectorAll('[data-count]').forEach(countEl=>{ countEl.textContent = countEl.dataset.suffix ? countEl.dataset.count + countEl.dataset.suffix : countEl.dataset.count; }); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  }
+
+  // --- Count-up ---
+  function countUp(el){
+    const target = Number.parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    let start = null;
+    const duration = 1600;
+    function step(ts){
+      if(!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (Number.isInteger(target) ? Math.floor(eased * target) : (eased * target).toFixed(1)) + (p >= 1 ? suffix : '');
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // --- Text scramble ---
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ01234';
+  function scramble(el, finalText, duration=500){
+    let frame = 0;
+    const total = Math.ceil(duration / 28);
+    const original = Array.from(finalText);
+    const timer = setInterval(()=>{
+      el.textContent = original.map((ch, i)=>{
+        if(ch === ' ' || ch === '\n' || ch === '?' || ch === '¿') return ch;
+        if(frame / total > (i / original.length) * 0.85) return ch;
+        return CHARS[Math.floor(Math.random() * CHARS.length)];
+      }).join('');
+      if(frame++ >= total){ clearInterval(timer); el.textContent = finalText; }
+    }, 28);
+  }
+
+  // --- FAQ accordion (close others on open) ---
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    item.addEventListener('toggle', ()=>{
+      if(item.open){
+        document.querySelectorAll('.faq-item[open]').forEach(other=>{
+          if(other !== item) other.removeAttribute('open');
+        });
+      }
+    });
+  });
+
+  // --- Subida de imagen en formulario de repuestos ---
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput = document.getElementById('fileInput');
+  const uploadPreview = document.getElementById('uploadPreview');
+  uploadZone.addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', ()=>{
+    uploadPreview.innerHTML = '';
+    const file = fileInput.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      uploadPreview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // --- Envío de formulario (demo, sin backend) ---
+  document.getElementById('spareForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    document.getElementById('formToast').classList.add('show');
+  });
+</script>
+</body>
+</html>

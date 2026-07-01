@@ -1,0 +1,1258 @@
+<!--
+  REPLANTA · Landing /planes/cedro/
+  Listo para pegar en widget HTML de Elementor
+  El CSS específico va en la caja "Custom CSS" del mismo widget
+  Aprovecha tokens y utilities del global.css (Sora, Inter, Phosphor, variables --rep-*)
+  Tono: Hi-tech disruptor · Sin fotos · Dual CTA (form email + checkout)
+-->
+
+<div class="rpl-cedro">
+
+  <!-- ── 1. HERO ─────────────────────────────────────────────────── -->
+  <section class="cdr-hero">
+    <div class="cdr-hero-grid"></div>
+    <div class="cdr-hero-glow cdr-hero-glow--1"></div>
+    <div class="cdr-hero-glow cdr-hero-glow--2"></div>
+    <div class="cdr-hero-noise"></div>
+
+    <div class="wrap">
+      <div class="cdr-hero-inner">
+
+        <div class="cdr-hero-left reveal">
+
+          <div class="cdr-hero-badge">
+            <span class="cdr-hero-badge-dot"></span>
+            <span>Plan Cedro · Para empresas con obligaciones ESG</span>
+          </div>
+
+          <h1 class="cdr-h1">
+            Hosting verde
+            <span class="cdr-h1-grad">verificable</span>
+            para tu reporting CSRD.
+          </h1>
+
+          <p class="cdr-hero-sub">
+            Servidor cloud dedicado en datacenter alemán con hidroeléctrica
+            certificada. Cadena completa verificada por The Green Web Foundation.
+            Documentación auditable para Scope 3, dashboard CSRD propio y sello
+            carbon-negative para tu sitio.
+          </p>
+
+          <div class="cdr-hero-trust">
+            <div class="cdr-trust-item">
+              <i class="ph-bold ph-shield-check"></i>
+              <span>Datacenter ISO 27001</span>
+            </div>
+            <div class="cdr-trust-item">
+              <i class="ph-bold ph-leaf"></i>
+              <span>100% hidroeléctrica</span>
+            </div>
+            <div class="cdr-trust-item">
+              <i class="ph-bold ph-certificate"></i>
+              <span>Apto Scope 3 / CSRD</span>
+            </div>
+          </div>
+
+          <form class="cdr-hero-form" id="cdr-form-hero" onsubmit="return cdrSubmitForm(event,'hero');">
+            <div class="cdr-form-row">
+              <input
+                type="email"
+                name="email"
+                placeholder="email@tuempresa.com"
+                required
+                aria-label="Tu email de empresa"
+                class="cdr-form-input">
+              <button type="submit" class="cdr-btn cdr-btn-primary">
+                <span>Auditoría gratuita</span>
+                <i class="ph-bold ph-arrow-right"></i>
+              </button>
+            </div>
+            <div class="cdr-form-helper">
+              <i class="ph-bold ph-lock"></i>
+              <span>Te enviamos un análisis de tu hosting actual en menos de 24h. Sin compromiso.</span>
+            </div>
+          </form>
+
+          <div class="cdr-hero-or"><span>o</span></div>
+
+          <a href="https://clientes.replanta.net/order/product?pid=e2e071d9-31d5-e460-555a-646028758396&currency=EUR&bcm=1&coupons=LUISJA10" class="cdr-btn cdr-btn-secondary cdr-btn-block">
+            <i class="ph-bold ph-rocket-launch"></i>
+            <span>Contratar Cedro · 29,99€/mes</span>
+            <i class="ph-bold ph-arrow-right"></i>
+          </a>
+
+          <div class="cdr-hero-meta">
+            <div class="cdr-hero-meta-item">
+              <i class="ph-bold ph-clock"></i>
+              <span>Activación inmediata</span>
+            </div>
+            <div class="cdr-hero-meta-item">
+              <i class="ph-bold ph-x-circle"></i>
+              <span>Cancela cuando quieras</span>
+            </div>
+            <div class="cdr-hero-meta-item">
+              <i class="ph-bold ph-truck"></i>
+              <span>Migración asistida gratis</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="cdr-hero-right reveal" data-delay="2">
+          <div class="cdr-dashboard">
+
+            <div class="cdr-dash-window">
+              <div class="cdr-dash-titlebar">
+                <div class="cdr-dash-dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="cdr-dash-url">
+                  <i class="ph-bold ph-lock-key-open"></i>
+                  <span>panel.replanta.net</span>
+                </div>
+              </div>
+
+              <div class="cdr-dash-body">
+                <div class="cdr-dash-header">
+                  <div>
+                    <div class="cdr-dash-title">Dashboard CSRD</div>
+                    <div class="cdr-dash-domain">tu-empresa.com</div>
+                  </div>
+                  <div class="cdr-dash-live">
+                    <span class="cdr-dash-live-dot"></span>
+                    <span>En vivo</span>
+                  </div>
+                </div>
+
+                <div class="cdr-dash-kpis">
+                  <div class="cdr-dash-kpi cdr-dash-kpi--featured">
+                    <div class="cdr-dash-kpi-label">
+                      <i class="ph-bold ph-leaf"></i>
+                      CO₂ por visita
+                    </div>
+                    <div class="cdr-dash-kpi-val">0.34<small>g</small></div>
+                    <div class="cdr-dash-kpi-delta cdr-dash-kpi-delta--good">
+                      <i class="ph-bold ph-trend-down"></i>
+                      <span>−78% vs. media</span>
+                    </div>
+                    <svg class="cdr-dash-sparkline" viewBox="0 0 200 50" preserveAspectRatio="none">
+                      <path d="M0,38 L20,35 L40,32 L60,28 L80,30 L100,24 L120,20 L140,22 L160,16 L180,14 L200,10"
+                            stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                      <path d="M0,38 L20,35 L40,32 L60,28 L80,30 L100,24 L120,20 L140,22 L160,16 L180,14 L200,10 L200,50 L0,50 Z"
+                            fill="currentColor" opacity=".12"/>
+                    </svg>
+                  </div>
+
+                  <div class="cdr-dash-kpi">
+                    <div class="cdr-dash-kpi-label">
+                      <i class="ph-bold ph-lightning"></i>
+                      Energía
+                    </div>
+                    <div class="cdr-dash-kpi-val">12.4<small>kWh</small></div>
+                    <div class="cdr-dash-kpi-sub">100% hidroeléctrica</div>
+                  </div>
+
+                  <div class="cdr-dash-kpi">
+                    <div class="cdr-dash-kpi-label">
+                      <i class="ph-bold ph-tree"></i>
+                      Árboles
+                    </div>
+                    <div class="cdr-dash-kpi-val">3</div>
+                    <div class="cdr-dash-kpi-sub">via Tree-Nation</div>
+                  </div>
+                </div>
+
+                <div class="cdr-dash-row">
+                  <div class="cdr-dash-block">
+                    <div class="cdr-dash-block-head">
+                      <span>Uptime · 30d</span>
+                      <span class="cdr-dash-block-tag">99.98%</span>
+                    </div>
+                    <div class="cdr-dash-bars">
+                      <span style="--h:62%"></span>
+                      <span style="--h:78%"></span>
+                      <span style="--h:55%"></span>
+                      <span style="--h:88%"></span>
+                      <span style="--h:72%"></span>
+                      <span style="--h:81%"></span>
+                      <span style="--h:69%"></span>
+                      <span style="--h:75%"></span>
+                      <span style="--h:84%"></span>
+                      <span style="--h:91%"></span>
+                      <span style="--h:67%"></span>
+                      <span style="--h:79%"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="cdr-dash-footer">
+                  <div class="cdr-dash-footer-item">
+                    <div class="cdr-dash-footer-label">PUE datacenter</div>
+                    <div class="cdr-dash-footer-val">1.12</div>
+                  </div>
+                  <div class="cdr-dash-footer-item">
+                    <div class="cdr-dash-footer-label">Reporte CSRD</div>
+                    <div class="cdr-dash-footer-val cdr-dash-footer-val--ready">
+                      <i class="ph-bold ph-check-circle"></i>
+                      Listo
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="cdr-dash-badge">
+              <img src="https://replanta.net/wp-content/plugins/selloreplanta-main/imagenes/carbon-negative-b.svg"
+                   alt="Replanta Carbon Negative" />
+              <div class="cdr-dash-badge-pulse"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── 2. PROBLEMA ───────────────────────────────────────────── -->
+  <section class="cdr-problem">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker"><i class="ph-bold ph-warning"></i> El problema real</span>
+        <h2>
+          La mayoría del "hosting verde" del mercado
+          <span class="cdr-strike">no resiste</span>
+          una auditoría seria.
+        </h2>
+        <p class="muted">
+          Si tu empresa reporta CSRD o vende a clientes corporativos con obligaciones
+          ESG, estos son los tres callejones sin salida más comunes.
+        </p>
+      </div>
+
+      <div class="cdr-problem-grid">
+
+        <div class="cdr-problem-card reveal" data-delay="1">
+          <div class="cdr-problem-num">01</div>
+          <div class="cdr-problem-ico">
+            <i class="ph-bold ph-file-x"></i>
+          </div>
+          <h3>Tu hosting actual no entrega evidencia</h3>
+          <p>
+            Cuando le pides documentación a tu proveedor (certificados de origen
+            energético, mix por datacenter, ubicación física verificable), te
+            contestan con afirmaciones genéricas de marketing. Tu auditor
+            necesita papeles, no eslóganes.
+          </p>
+        </div>
+
+        <div class="cdr-problem-card reveal" data-delay="2">
+          <div class="cdr-problem-num">02</div>
+          <div class="cdr-problem-ico">
+            <i class="ph-bold ph-chart-line-down"></i>
+          </div>
+          <h3>Tus clientes corporativos piden Scope 3</h3>
+          <p>
+            Las empresas reguladas por CSRD trasladan sus obligaciones hacia
+            arriba en la cadena de valor. Te llegan cuestionarios pidiéndote
+            datos energéticos de tu infraestructura digital que no puedes
+            entregar. Pierdes oportunidades sin saberlo.
+          </p>
+        </div>
+
+        <div class="cdr-problem-card reveal" data-delay="3">
+          <div class="cdr-problem-num">03</div>
+          <div class="cdr-problem-ico">
+            <i class="ph-bold ph-shield-warning"></i>
+          </div>
+          <h3>Green Claims Directive te apunta</h3>
+          <p>
+            La nueva normativa europea convierte las afirmaciones de sostenibilidad
+            sin verificación en infracciones sancionables. Si tu web dice
+            "hosting verde" basándose en lo que tu proveedor afirma, y eso
+            no es defendible, la responsabilidad es tuya.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 3. SOLUCIÓN ───────────────────────────────────────────── -->
+  <section class="cdr-solution">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker kicker--green"><i class="ph-bold ph-check-circle"></i> Cómo Cedro lo resuelve</span>
+        <h2>
+          Trazabilidad documental,
+          <span class="cdr-h2-grad">no afirmaciones vacías.</span>
+        </h2>
+        <p class="muted">
+          Cada elemento de tu cadena está verificado por una entidad independiente
+          con registro público auditable. No tienes que confiar en nuestra palabra.
+        </p>
+      </div>
+
+      <div class="cdr-solution-grid">
+
+        <div class="cdr-pillar reveal" data-delay="1">
+          <div class="cdr-pillar-head">
+            <div class="cdr-pillar-ico cdr-pillar-ico--1">
+              <i class="ph-bold ph-buildings"></i>
+            </div>
+            <span class="cdr-pillar-num">01</span>
+          </div>
+          <h3>Datacenter alemán certificado</h3>
+          <p>
+            Servidor cloud dedicado en Falkenstein, Alemania. 100% energía
+            hidroeléctrica certificada con trazabilidad documental. Datacenter
+            con ISO 27001:2022 vigente y PUE de 1.12.
+          </p>
+          <div class="cdr-pillar-tags">
+            <span class="cdr-tag"><i class="ph-bold ph-leaf"></i> Hidroeléctrica</span>
+            <span class="cdr-tag"><i class="ph-bold ph-certificate"></i> ISO 27001</span>
+            <span class="cdr-tag"><i class="ph-bold ph-gauge"></i> PUE 1.12</span>
+          </div>
+        </div>
+
+        <div class="cdr-pillar reveal" data-delay="2">
+          <div class="cdr-pillar-head">
+            <div class="cdr-pillar-ico cdr-pillar-ico--2">
+              <i class="ph-bold ph-chart-line-up"></i>
+            </div>
+            <span class="cdr-pillar-num">02</span>
+          </div>
+          <h3>Dashboard CSRD propio</h3>
+          <p>
+            Métricas en tiempo real de tu dominio: consumo energético, CO₂ por
+            visita, uptime, eficiencia. Calculado con CO2.js y la metodología
+            Sustainable Web Design v4. Exportable para tu reporting Scope 3.
+          </p>
+          <div class="cdr-pillar-tags">
+            <span class="cdr-tag"><i class="ph-bold ph-database"></i> Prometheus + Grafana</span>
+            <span class="cdr-tag"><i class="ph-bold ph-download-simple"></i> Datos exportables</span>
+          </div>
+        </div>
+
+        <div class="cdr-pillar reveal" data-delay="3">
+          <div class="cdr-pillar-head">
+            <div class="cdr-pillar-ico cdr-pillar-ico--3">
+              <i class="ph-bold ph-medal"></i>
+            </div>
+            <span class="cdr-pillar-num">03</span>
+          </div>
+          <h3>Sello carbon-negative público</h3>
+          <p>
+            Tu sitio muestra automáticamente el sello Replanta Carbon Negative.
+            Clicable, conecta con tu panel público de datos verificables.
+            Visible para tus clientes, tus auditores y tu reporting interno.
+          </p>
+          <div class="cdr-pillar-tags">
+            <span class="cdr-tag"><i class="ph-bold ph-cursor-click"></i> Sello clicable</span>
+            <span class="cdr-tag"><i class="ph-bold ph-eye"></i> Panel público</span>
+          </div>
+        </div>
+
+        <div class="cdr-pillar reveal" data-delay="4">
+          <div class="cdr-pillar-head">
+            <div class="cdr-pillar-ico cdr-pillar-ico--4">
+              <i class="ph-bold ph-tree"></i>
+            </div>
+            <span class="cdr-pillar-num">04</span>
+          </div>
+          <h3>Reforestación con trazabilidad</h3>
+          <p>
+            Cada año plantamos un árbol en tu nombre dentro de nuestro bosque
+            público en Tree-Nation. Cada árbol con ID único, especie y
+            geolocalización registrada. Verificable individualmente.
+          </p>
+          <div class="cdr-pillar-tags">
+            <span class="cdr-tag"><i class="ph-bold ph-map-trifold"></i> Tree-Nation partner</span>
+            <span class="cdr-tag"><i class="ph-bold ph-fingerprint"></i> ID por árbol</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 4. STACK TÉCNICO ─────────────────────────────────────── -->
+  <section class="cdr-stack">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker"><i class="ph-bold ph-cpu"></i> Stack técnico</span>
+        <h2>Performance líder del mercado para WordPress y WooCommerce</h2>
+        <p class="muted">
+          Cedro no es solo verde. Es la configuración técnica más rápida disponible
+          para sitios PHP modernos. Veloz, seguro, optimizado para Core Web Vitals.
+        </p>
+      </div>
+
+      <div class="cdr-stack-grid">
+
+        <div class="cdr-stack-card reveal" data-delay="1">
+          <div class="cdr-stack-logo">
+            <img src="https://replanta.net/wp-content/uploads/2025/12/litespeed-icon.svg" alt="LiteSpeed" loading="lazy" />
+          </div>
+          <h3>OpenLiteSpeed + LSCache</h3>
+          <p>
+            Servidor web de alta eficiencia con HTTP/3 nativo y la caché líder
+            para WordPress. Hasta 9x más rápido que Apache. QUIC, Brotli y
+            ESI integrados.
+          </p>
+        </div>
+
+        <div class="cdr-stack-card reveal" data-delay="2">
+          <div class="cdr-stack-logo">
+            <img src="https://replanta.net/wp-content/uploads/2025/12/Redis.svg" alt="Redis" loading="lazy" />
+          </div>
+          <h3>Redis Object Cache</h3>
+          <p>
+            Caché en memoria optimizada específicamente para WooCommerce.
+            Reduce drásticamente la carga sobre base de datos en tiendas
+            con catálogo amplio o tráfico sostenido.
+          </p>
+        </div>
+
+        <div class="cdr-stack-card reveal" data-delay="3">
+          <div class="cdr-stack-logo">
+            <img src="https://replanta.net/wp-content/uploads/2025/12/Cloudflare.svg" alt="Cloudflare" loading="lazy" />
+          </div>
+          <h3>Cloudflare CDN + WAF</h3>
+          <p>
+            CDN global con más de 300 puntos de presencia. Mitigación DDoS
+            automática, Turnstile anti-bot, y reglas WAF específicas para
+            WordPress y WooCommerce.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="cdr-stack-extra reveal">
+        <div class="cdr-stack-extra-item">
+          <i class="ph-bold ph-shield-check"></i>
+          <div>
+            <strong>ModSecurity WAF</strong>
+            <span>Firewall de aplicación a nivel servidor</span>
+          </div>
+        </div>
+        <div class="cdr-stack-extra-item">
+          <i class="ph-bold ph-arrow-clockwise"></i>
+          <div>
+            <strong>Backups diarios offsite</strong>
+            <span>30 días retención encriptados</span>
+          </div>
+        </div>
+        <div class="cdr-stack-extra-item">
+          <i class="ph-bold ph-flask"></i>
+          <div>
+            <strong>Staging 1-click</strong>
+            <span>Entornos de prueba aislados</span>
+          </div>
+        </div>
+        <div class="cdr-stack-extra-item">
+          <i class="ph-bold ph-envelope"></i>
+          <div>
+            <strong>Email profesional</strong>
+            <span>5 buzones de 10 GB white-label</span>
+          </div>
+        </div>
+        <div class="cdr-stack-extra-item">
+          <i class="ph-bold ph-terminal-window"></i>
+          <div>
+            <strong>WP-CLI + SSH</strong>
+            <span>Acceso completo para desarrollo</span>
+          </div>
+        </div>
+        <div class="cdr-stack-extra-item">
+          <i class="ph-bold ph-lock-key"></i>
+          <div>
+            <strong>SSL automático</strong>
+            <span>Let's Encrypt con renovación</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 5. COMPARATIVA ───────────────────────────────────────── -->
+  <section class="cdr-compare">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker"><i class="ph-bold ph-scales"></i> Comparativa</span>
+        <h2>Cedro vs. el hosting "verde" del mercado</h2>
+        <p class="muted">
+          La mayoría de hostings genéricos venden la palabra verde sin la
+          documentación detrás. Esta es la diferencia, punto por punto.
+        </p>
+      </div>
+
+      <div class="cdr-compare-table reveal">
+
+        <div class="cdr-compare-row cdr-compare-row--head">
+          <div class="cdr-compare-cell">Criterio</div>
+          <div class="cdr-compare-cell">Hosting genérico</div>
+          <div class="cdr-compare-cell cdr-compare-cell--featured">
+            <span class="cdr-compare-badge">Cedro</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Origen energético verificable</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neg">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>Afirmaciones de marketing</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>Hidroeléctrica certificada</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Verificado por terceros</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neg">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>Sellos propios sin auditoría</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>The Green Web Foundation</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Dashboard CSRD propio</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neg">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>No disponible</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>Métricas en tiempo real</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Documentación auditable</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neg">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>Resistencia ante solicitudes</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>Dossier completo Scope 3</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Trazabilidad por árbol</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neg">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>Compensación opaca</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>ID único por árbol</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Stack performance Woo</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neutral">
+            <i class="ph-bold ph-minus-circle"></i>
+            <span>Apache / Nginx estándar</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>OpenLiteSpeed + LSCache</span>
+          </div>
+        </div>
+
+        <div class="cdr-compare-row">
+          <div class="cdr-compare-cell cdr-compare-cell--label">Compatible Green Claims Directive</div>
+          <div class="cdr-compare-cell cdr-compare-cell--neg">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>Riesgo regulatorio</span>
+          </div>
+          <div class="cdr-compare-cell cdr-compare-cell--pos">
+            <i class="ph-bold ph-check-circle"></i>
+            <span>Cada claim respaldado</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 6. SELLO + PANEL PÚBLICO ────────────────────────────── -->
+  <section class="cdr-seal">
+    <div class="cdr-seal-glow"></div>
+    <div class="wrap">
+
+      <div class="cdr-seal-inner">
+
+        <div class="cdr-seal-content reveal">
+          <span class="kicker kicker--light"><i class="ph-bold ph-medal"></i> Sello Replanta Carbon Negative</span>
+          <h2 class="cdr-seal-h2">
+            Tu compromiso climático,
+            <span class="cdr-seal-h2-grad">visible y verificable.</span>
+          </h2>
+          <p class="cdr-seal-text">
+            Al contratar Cedro, tu sitio puede mostrar automáticamente el sello
+            Replanta Carbon Negative. No es un gráfico estático. Es un enlace
+            vivo al panel público de tu dominio con datos reales: CO₂ evitado,
+            consumo energético, árboles plantados a tu nombre.
+          </p>
+
+          <ul class="cdr-seal-list">
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Plugin gratuito, instalación automática en WordPress</span>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Detecta el dominio y muestra el sello solo si tu plan lo incluye</span>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Posición, tamaño y estilo configurables</span>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Panel público al hacer clic con tus datos en vivo</span>
+            </li>
+            <li>
+              <i class="ph-bold ph-check-circle"></i>
+              <span>Argumento ESG para tus propios clientes corporativos</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="cdr-seal-visual reveal" data-delay="2">
+
+          <div class="cdr-seal-browser">
+            <div class="cdr-seal-browser-bar">
+              <div class="cdr-seal-browser-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="cdr-seal-browser-url">
+                <i class="ph-bold ph-lock-key-open"></i>
+                <span>tu-empresa.com</span>
+              </div>
+            </div>
+            <div class="cdr-seal-browser-content">
+              <div class="cdr-skel cdr-skel--h1"></div>
+              <div class="cdr-skel cdr-skel--text"></div>
+              <div class="cdr-skel cdr-skel--text cdr-skel--medium"></div>
+              <div class="cdr-skel-spacer"></div>
+              <div class="cdr-skel-cards">
+                <div class="cdr-skel-card"></div>
+                <div class="cdr-skel-card"></div>
+                <div class="cdr-skel-card"></div>
+              </div>
+              <div class="cdr-skel-spacer"></div>
+              <div class="cdr-skel cdr-skel--text"></div>
+              <div class="cdr-skel cdr-skel--text cdr-skel--short"></div>
+            </div>
+            <div class="cdr-seal-badge-wrap">
+              <img src="https://replanta.net/wp-content/plugins/selloreplanta-main/imagenes/carbon-negative-b.svg"
+                   alt="Replanta Carbon Negative" />
+              <div class="cdr-seal-badge-pulse"></div>
+            </div>
+          </div>
+
+          <div class="cdr-seal-caption">
+            <i class="ph-bold ph-cursor-click"></i>
+            <span>Clic en el sello abre tu panel público de sostenibilidad</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 7. ESPECIFICACIONES ─────────────────────────────────── -->
+  <section class="cdr-specs">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker"><i class="ph-bold ph-stack"></i> Lo que incluye Cedro</span>
+        <h2>Especificaciones técnicas completas</h2>
+        <p class="muted">
+          Recursos dimensionados al uso real. Sin promesas infladas, sin
+          "ilimitado" que se traduce en degradación. Lo que ves es lo que tienes.
+        </p>
+      </div>
+
+      <div class="cdr-specs-grid">
+
+        <div class="cdr-spec-block reveal" data-delay="1">
+          <div class="cdr-spec-block-head">
+            <div class="cdr-spec-block-ico"><i class="ph-bold ph-hard-drives"></i></div>
+            <h3>Recursos</h3>
+          </div>
+          <ul class="cdr-spec-list">
+            <li><strong>5 sitios</strong> WooCommerce o WordPress</li>
+            <li><strong>25 GB NVMe</strong> SSD garantizados</li>
+            <li><strong>4 GB RAM</strong> dedicados</li>
+            <li><strong>2 vCPU</strong> con burst</li>
+            <li><strong>20 TB</strong> tráfico mensual</li>
+          </ul>
+        </div>
+
+        <div class="cdr-spec-block reveal" data-delay="2">
+          <div class="cdr-spec-block-head">
+            <div class="cdr-spec-block-ico"><i class="ph-bold ph-lightning"></i></div>
+            <h3>Performance</h3>
+          </div>
+          <ul class="cdr-spec-list">
+            <li>OpenLiteSpeed con LSCache</li>
+            <li>HTTP/3, QUIC y Brotli</li>
+            <li>Redis Object Cache</li>
+            <li>PHP 8.1, 8.2 y 8.3</li>
+            <li>OpCache y JIT activados</li>
+          </ul>
+        </div>
+
+        <div class="cdr-spec-block reveal" data-delay="3">
+          <div class="cdr-spec-block-head">
+            <div class="cdr-spec-block-ico"><i class="ph-bold ph-shield-check"></i></div>
+            <h3>Seguridad</h3>
+          </div>
+          <ul class="cdr-spec-list">
+            <li>Cloudflare WAF + Turnstile</li>
+            <li>ModSecurity a nivel servidor</li>
+            <li>Mitigación DDoS automática</li>
+            <li>SSL Let's Encrypt automático</li>
+            <li>Fail2ban + UFW firewall</li>
+          </ul>
+        </div>
+
+        <div class="cdr-spec-block reveal" data-delay="4">
+          <div class="cdr-spec-block-head">
+            <div class="cdr-spec-block-ico"><i class="ph-bold ph-envelope"></i></div>
+            <h3>Email y dominios</h3>
+          </div>
+          <ul class="cdr-spec-list">
+            <li>5 buzones premium de 10 GB</li>
+            <li>Anti-spam empresarial</li>
+            <li>SMTP, IMAP y POP3</li>
+            <li>SPF, DKIM y DMARC</li>
+            <li>Hasta 5 dominios alojados</li>
+          </ul>
+        </div>
+
+        <div class="cdr-spec-block reveal" data-delay="5">
+          <div class="cdr-spec-block-head">
+            <div class="cdr-spec-block-ico"><i class="ph-bold ph-arrow-clockwise"></i></div>
+            <h3>Backups y continuidad</h3>
+          </div>
+          <ul class="cdr-spec-list">
+            <li>Backups diarios offsite</li>
+            <li>30 días de retención</li>
+            <li>Encriptación AES-256</li>
+            <li>Restauración bajo demanda</li>
+            <li>Staging 1-click ilimitado</li>
+          </ul>
+        </div>
+
+        <div class="cdr-spec-block reveal" data-delay="6">
+          <div class="cdr-spec-block-head">
+            <div class="cdr-spec-block-ico"><i class="ph-bold ph-leaf"></i></div>
+            <h3>Sostenibilidad</h3>
+          </div>
+          <ul class="cdr-spec-list">
+            <li>Datacenter hidroeléctrica certificada</li>
+            <li>Verificado Green Web Foundation</li>
+            <li>Dashboard CSRD con datos exportables</li>
+            <li>Sello carbon-negative para tu sitio</li>
+            <li>1 árbol Tree-Nation al año</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 8. PRICING ────────────────────────────────────────── -->
+  <section class="cdr-pricing">
+    <div class="cdr-pricing-glow"></div>
+    <div class="wrap">
+
+      <div class="cdr-section-head cdr-section-head--light reveal">
+        <span class="kicker kicker--light"><i class="ph-bold ph-currency-eur"></i> Precio transparente</span>
+        <h2 class="cdr-pricing-h2">Una opción. Todo incluido.</h2>
+        <p class="cdr-pricing-sub">
+          Sin upgrades sorpresa, sin recursos limitados que no te dicen,
+          sin "starter" con asteriscos. Lo que ves es lo que tienes.
+        </p>
+      </div>
+
+      <div class="cdr-pricing-card reveal" data-delay="2">
+
+        <div class="cdr-pricing-tag">
+          <i class="ph-bold ph-leaf"></i>
+          <span>Plan Cedro · Green Origin certificado</span>
+        </div>
+
+        <div class="cdr-pricing-toggle">
+          <button class="cdr-pricing-toggle-btn cdr-pricing-toggle-btn--active" data-cdr-period="monthly">
+            Mensual
+          </button>
+          <button class="cdr-pricing-toggle-btn" data-cdr-period="yearly">
+            Anual <span class="cdr-pricing-save">−2 meses</span>
+          </button>
+        </div>
+
+        <div class="cdr-pricing-amount">
+          <span class="cdr-pricing-currency">€</span>
+          <span class="cdr-pricing-num" data-cdr-monthly="29,99" data-cdr-yearly="299">29,99</span>
+          <span class="cdr-pricing-period">/mes</span>
+        </div>
+
+        <div class="cdr-pricing-equiv" data-cdr-monthly="Cancela cuando quieras" data-cdr-yearly="299€ al año, equivalente a 24,92€/mes">
+          Cancela cuando quieras
+        </div>
+
+        <div class="cdr-pricing-divider"></div>
+
+        <ul class="cdr-pricing-features">
+          <li><i class="ph-bold ph-check-circle"></i> 5 sitios WooCommerce/WordPress</li>
+          <li><i class="ph-bold ph-check-circle"></i> 25 GB NVMe SSD + 4 GB RAM dedicados</li>
+          <li><i class="ph-bold ph-check-circle"></i> OpenLiteSpeed + LSCache + Redis</li>
+          <li><i class="ph-bold ph-check-circle"></i> Datacenter Falkenstein hidroeléctrico</li>
+          <li><i class="ph-bold ph-check-circle"></i> Cloudflare CDN + WAF + Turnstile</li>
+          <li><i class="ph-bold ph-check-circle"></i> 5 buzones email premium 10 GB</li>
+          <li><i class="ph-bold ph-check-circle"></i> Backups diarios offsite encrypted</li>
+          <li><i class="ph-bold ph-check-circle"></i> Dashboard CSRD propio</li>
+          <li><i class="ph-bold ph-check-circle"></i> Sello carbon-negative incluido</li>
+          <li><i class="ph-bold ph-check-circle"></i> Migración asistida sin coste</li>
+          <li><i class="ph-bold ph-check-circle"></i> Soporte premium dedicado</li>
+          <li><i class="ph-bold ph-check-circle"></i> Tree-Nation: 1 árbol/año</li>
+        </ul>
+
+        <div class="cdr-pricing-divider"></div>
+
+        <a href="https://clientes.replanta.net/order/product?pid=e2e071d9-31d5-e460-555a-646028758396&currency=EUR&bcm=1&coupons=LUISJA10" class="cdr-btn cdr-btn-primary cdr-btn-block cdr-btn-lg">
+          <i class="ph-bold ph-rocket-launch"></i>
+          <span>Contratar Cedro ahora</span>
+          <i class="ph-bold ph-arrow-right"></i>
+        </a>
+
+        <div class="cdr-pricing-secondary">
+          <button class="cdr-link-btn" onclick="document.getElementById('cdr-form-final').scrollIntoView({behavior:'smooth'});">
+            <i class="ph-bold ph-chats-circle"></i>
+            <span>Antes prefiero una auditoría gratuita</span>
+          </button>
+        </div>
+
+        <div class="cdr-pricing-trust">
+          <div class="cdr-pricing-trust-item">
+            <i class="ph-bold ph-credit-card"></i>
+            <span>Pago seguro Stripe</span>
+          </div>
+          <div class="cdr-pricing-trust-item">
+            <i class="ph-bold ph-x-circle"></i>
+            <span>Sin permanencia</span>
+          </div>
+          <div class="cdr-pricing-trust-item">
+            <i class="ph-bold ph-truck"></i>
+            <span>Migración gratuita</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 9. MIGRACIÓN ──────────────────────────────────────── -->
+  <section class="cdr-migration">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker"><i class="ph-bold ph-arrow-fat-line-right"></i> Migración garantizada</span>
+        <h2>De tu hosting actual a Cedro en 7 días</h2>
+        <p class="muted">
+          Sin downtime, sin pérdida de datos, sin que tengas que tocar nada.
+          Nosotros nos encargamos del proceso completo, gratis.
+        </p>
+      </div>
+
+      <div class="cdr-migration-steps reveal">
+
+        <div class="cdr-mig-step">
+          <div class="cdr-mig-step-num">1</div>
+          <div class="cdr-mig-step-line"></div>
+          <h3>Día 1 · Auditoría</h3>
+          <p>
+            Analizamos tu hosting actual: rendimiento, tamaño, dependencias
+            técnicas. Te entregamos un informe con la huella actual y un
+            plan personalizado de migración.
+          </p>
+          <div class="cdr-mig-step-tag">Día de inicio</div>
+        </div>
+
+        <div class="cdr-mig-step">
+          <div class="cdr-mig-step-num">2</div>
+          <div class="cdr-mig-step-line"></div>
+          <h3>Días 2-5 · Migración</h3>
+          <p>
+            Clonamos tu sitio a Cedro en entorno de staging. Configuramos
+            base de datos, certificados SSL, redirecciones, email y CDN.
+            Validamos que todo funciona idéntico al original.
+          </p>
+          <div class="cdr-mig-step-tag">Sin tocar producción</div>
+        </div>
+
+        <div class="cdr-mig-step">
+          <div class="cdr-mig-step-num">3</div>
+          <div class="cdr-mig-step-line"></div>
+          <h3>Día 6 · Cutover</h3>
+          <p>
+            Cambiamos los DNS en una ventana de bajo tráfico. La transición
+            es transparente para tus visitantes. Monitorizamos en vivo
+            durante 24h para detectar cualquier incidencia.
+          </p>
+          <div class="cdr-mig-step-tag">Downtime &lt; 1min</div>
+        </div>
+
+        <div class="cdr-mig-step">
+          <div class="cdr-mig-step-num">4</div>
+          <h3>Día 7 · Dashboard activo</h3>
+          <p>
+            Tu dashboard CSRD empieza a recopilar datos en vivo. El sello
+            carbon-negative se activa en tu sitio. Te entregamos el dossier
+            de documentación verde para tu reporting.
+          </p>
+          <div class="cdr-mig-step-tag">Listo para CSRD</div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 10. FAQ ──────────────────────────────────────────── -->
+  <section class="cdr-faq">
+    <div class="wrap">
+
+      <div class="cdr-section-head reveal">
+        <span class="kicker"><i class="ph-bold ph-question"></i> Preguntas frecuentes</span>
+        <h2>Lo que se pregunta antes de firmar</h2>
+        <p class="muted">
+          Estas son las dudas reales que nos llegan de sustainability managers,
+          IT directors y responsables ESG durante la evaluación de Cedro.
+        </p>
+      </div>
+
+      <div class="cdr-faq-list reveal">
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Qué documentación recibo para auditoría CSRD y Scope 3?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Te entregamos un dossier que incluye: ubicación física exacta del
+              datacenter, certificación de origen energético hidroeléctrico,
+              certificación ISO 27001:2022 del datacenter, métricas de consumo
+              del periodo reportado, metodología de cálculo (CO2.js + SWD v4)
+              documentada, y referencias a fuentes de verificación independiente
+              (The Green Web Foundation, Tree-Nation). Diseñado para integrarse
+              directamente en reportes ESRS.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Cómo verifico que vuestras afirmaciones son ciertas?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Toda nuestra cadena tiene verificación pública por terceros
+              independientes. Puedes comprobar nuestro origen en
+              <a href="https://www.thegreenwebfoundation.org/" target="_blank" rel="noopener">The Green Web Foundation</a>,
+              nuestra reforestación en
+              <a href="https://tree-nation.com/es/perfil/replanta" target="_blank" rel="noopener">Tree-Nation</a>,
+              y la metodología de cálculo en la documentación pública de
+              <a href="https://developers.thegreenwebfoundation.org/co2js/overview/" target="_blank" rel="noopener">CO2.js</a>.
+              No necesitas confiar en nuestra palabra, comprueba las fuentes.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Cuánto tarda la migración exactamente?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Para un sitio WordPress estándar (incluso con WooCommerce
+              activo), la migración completa toma entre 5 y 7 días desde el
+              kick-off. El downtime real es inferior a 1 minuto durante el
+              cutover. Para arquitecturas más complejas, ajustamos el calendario
+              tras la auditoría inicial. La migración no tiene coste adicional.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Puedo darme de baja si no me convence?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Sí, sin permanencia ni penalizaciones. Cancelas desde tu panel
+              de cliente cuando quieras y dejas de pagar el siguiente periodo.
+              Te entregamos tu sitio en formato exportable (archivos + base de
+              datos) sin coste adicional. Los árboles plantados a tu nombre
+              en Tree-Nation se mantienen, no se retiran.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Cómo se compara Cedro con un hosting en hyperscaler verde?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Los hyperscalers (AWS, GCP, Azure) operan con annual matching:
+              compran certificados de renovable equivalentes al consumo anual
+              total, pero no garantizan que cada hora de tu sitio se sirva con
+              renovable. Falkenstein opera con hidroeléctrica certificada 24/7
+              directamente. Para reporting CSRD avanzado, esta diferencia
+              importa. Además, en Cedro tienes infraestructura dedicada con
+              soporte directo del equipo que lleva tu servidor, no soporte
+              genérico de centro de llamadas.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Qué pasa si necesito más de 5 sitios o más recursos?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Podemos escalar el plan a Cedro Pro con recursos ampliados
+              (mayor RAM, más espacio, más sitios) bajo presupuesto
+              personalizado. Si tu necesidad es atípica o tienes requisitos
+              específicos de cumplimiento, agenda una conversación y diseñamos
+              una propuesta a medida.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿El sello carbon-negative funciona con cualquier WordPress?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Sí, en cualquier WordPress 6.x y PHP 8.x. El plugin detecta
+              automáticamente si tu dominio está en plan Cedro y solo entonces
+              muestra el sello. Es compatible con todos los temas y la mayoría
+              de constructores (Elementor, Divi, Bricks, bloques nativos).
+              Configurable desde el panel WP estándar.
+            </p>
+          </div>
+        </details>
+
+        <details class="cdr-faq-item">
+          <summary>
+            <span>¿Aceptáis facturación a empresa con NIF intracomunitario?</span>
+            <i class="ph-bold ph-plus cdr-faq-icon"></i>
+          </summary>
+          <div class="cdr-faq-body">
+            <p>
+              Sí. Factura mensual o anual a nombre de tu empresa con tu NIF/CIF.
+              Si eres empresa con NIF intracomunitario fuera de España, aplicamos
+              inversión del sujeto pasivo automáticamente. Facturación gestionada
+              desde Replanta SL (España) cumpliendo SII y normativa fiscal vigente.
+            </p>
+          </div>
+        </details>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 11. CTA FINAL ────────────────────────────────────── -->
+  <section class="cdr-final">
+    <div class="cdr-final-glow"></div>
+    <div class="wrap">
+
+      <div class="cdr-final-inner reveal">
+
+        <span class="kicker kicker--light"><i class="ph-bold ph-rocket-launch"></i> Decisión inteligente</span>
+
+        <h2 class="cdr-final-h2">
+          Dos formas de empezar.
+          <br>
+          <span class="cdr-final-h2-grad">Cero compromiso en ambas.</span>
+        </h2>
+
+        <p class="cdr-final-sub">
+          Si quieres ver primero cómo está tu hosting actual antes de cambiar,
+          pídenos auditoría gratuita. Si ya lo tienes claro, contrata Cedro y
+          activamos tu migración esta misma semana.
+        </p>
+
+        <div class="cdr-final-grid">
+
+          <div class="cdr-final-card cdr-final-card--form">
+            <div class="cdr-final-card-head">
+              <div class="cdr-final-card-ico">
+                <i class="ph-bold ph-magnifying-glass"></i>
+              </div>
+              <div>
+                <h3>Quiero auditoría gratuita</h3>
+                <span>Recomendado si comparas opciones</span>
+              </div>
+            </div>
+            <form class="cdr-final-form" id="cdr-form-final" onsubmit="return cdrSubmitForm(event,'final');">
+              <input
+                type="email"
+                name="email"
+                placeholder="email@tuempresa.com"
+                required
+                aria-label="Tu email de empresa"
+                class="cdr-form-input cdr-form-input--dark">
+              <button type="submit" class="cdr-btn cdr-btn-primary cdr-btn-block">
+                <i class="ph-bold ph-paper-plane-tilt"></i>
+                <span>Solicitar auditoría</span>
+              </button>
+            </form>
+            <div class="cdr-final-card-foot">
+              <i class="ph-bold ph-clock"></i>
+              <span>Recibes el análisis en menos de 24h</span>
+            </div>
+          </div>
+
+          <div class="cdr-final-card cdr-final-card--buy">
+            <div class="cdr-final-card-head">
+              <div class="cdr-final-card-ico cdr-final-card-ico--green">
+                <i class="ph-bold ph-rocket-launch"></i>
+              </div>
+              <div>
+                <h3>Contratar Cedro ya</h3>
+                <span>Activación inmediata</span>
+              </div>
+            </div>
+            <div class="cdr-final-buy-amount">
+              <span class="cdr-final-buy-num">29,99€</span>
+              <span class="cdr-final-buy-per">/ mes</span>
+            </div>
+            <a href="https://clientes.replanta.net/order/product?pid=e2e071d9-31d5-e460-555a-646028758396&currency=EUR&bcm=1&coupons=LUISJA10" class="cdr-btn cdr-btn-accent cdr-btn-block">
+              <i class="ph-bold ph-shopping-cart"></i>
+              <span>Ir a checkout seguro</span>
+              <i class="ph-bold ph-arrow-right"></i>
+            </a>
+            <div class="cdr-final-card-foot">
+              <i class="ph-bold ph-shield-check"></i>
+              <span>Sin permanencia. Cancela cuando quieras.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.08, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.rpl-cedro .reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rpl-cedro .reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  /* Pricing toggle */
+  var toggleBtns = document.querySelectorAll('.cdr-pricing-toggle-btn');
+  var priceNum = document.querySelector('.cdr-pricing-num');
+  var pricePeriod = document.querySelector('.cdr-pricing-period');
+  var priceEquiv = document.querySelector('.cdr-pricing-equiv');
+
+  toggleBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var period = btn.getAttribute('data-cdr-period');
+      toggleBtns.forEach(function(b){ b.classList.remove('cdr-pricing-toggle-btn--active'); });
+      btn.classList.add('cdr-pricing-toggle-btn--active');
+      if(period === 'yearly'){
+        priceNum.textContent = priceNum.getAttribute('data-cdr-yearly');
+        pricePeriod.textContent = '/año';
+        priceEquiv.textContent = priceEquiv.getAttribute('data-cdr-yearly');
+      } else {
+        priceNum.textContent = priceNum.getAttribute('data-cdr-monthly');
+        pricePeriod.textContent = '/mes';
+        priceEquiv.textContent = priceEquiv.getAttribute('data-cdr-monthly');
+      }
+    });
+  });
+})();
+
+/* Form handler */
+function cdrSubmitForm(e, source){
+  e.preventDefault();
+  var form = e.target;
+  var email = form.querySelector('input[type=email]').value;
+  var btn = form.querySelector('button');
+  var originalHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="ph-bold ph-check-circle"></i> <span>Recibido</span>';
+  btn.disabled = true;
+  form.querySelector('input').value = '';
+  /* TODO: integrar con tu endpoint real, ej. FluentCRM, ConvertKit, MailerLite, etc. */
+  /* Ejemplo: fetch('/wp-json/replanta/v1/lead', { method:'POST', body: JSON.stringify({email:email, source:source}) }); */
+  setTimeout(function(){
+    btn.innerHTML = originalHTML;
+    btn.disabled = false;
+  }, 3500);
+  return false;
+}
+</script>
